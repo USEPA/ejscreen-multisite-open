@@ -27,38 +27,44 @@ Several helper functions are used to query it such as \code{\link[=fixcolnames]{
 You can see examples of what it contains like this, for example:
 
 \code{data.frame(t(map_headernames[1:2, ]))}
-
-See how many variables are on each list, for example:
-
-data.table::setDT(copy(map_headernames))\link[=, .(
+}
+\examples{
+  #   See how many variables are on each list, for example: 
+  \dontrun{
+  
+  
+  data.table::setDT(copy(map_headernames))[, .(
     variables = .N, 
     has_apiname = sum(apiname != ""), 
     has_csvname = sum(csvname != ""), 
     has_acsname = sum(acsname != "")
     ), 
- keyby = c("raw_pctile_avg", "DEJ", "ratio.to", "pctile.", "avg.",  "varlist" )]{, .( variables = .N, has_apiname = sum(apiname != ""), has_csvname = sum(csvname != ""), has_acsname = sum(acsname != "") ), keyby = c("raw_pctile_avg", "DEJ", "ratio.to", "pctile.", "avg.",  "varlist" )}
+ keyby = c("raw_pctile_avg", "DEJ", "ratio.to", "pctile.", "avg.",  "varlist" )]
+  
+  
+ # Which sources provide which key variables or indicators? 
+ 
+ some <- unique(map_headernames$rname[map_headernames$varlist != "" 
+   & map_headernames$varlist != "x_anyother"])
+ 
+ info <- cbind(
+   varinfo(some, info = c('api', 'csv', 'acs', 'varlist')), 
+   usastats = some \%in\% names(usastats), 
+   statestats = some \%in\% names(statestats))
+ info <- info[nchar(paste0(info$api, info$csv, info$acs)) > 0, ]
+ info
+ 
+ # any others
+ 
+ some <- unique(map_headernames$rname[map_headernames$varlist != "" 
+   & map_headernames$varlist == "x_anyother"])
+ 
+ info <- cbind(
+   varinfo(some, info = c('api', 'csv', 'acs', 'varlist')), 
+   usastats = some \%in\% names(usastats), 
+   statestats = some \%in\% names(statestats))
+ info <- info[nchar(paste0(info$api, info$csv, info$acs)) > 0, ]
+ info
+  }
+ 
 }
-\section{Which sources provide which key variables or indicators?}{
-some <- unique(map_headernames$rname\link[=map_headernames$varlist != "" 
-   & map_headernames$varlist != "x_anyother"]{map_headernames$varlist != "" & map_headernames$varlist != "x_anyother"})
-
-info <- cbind(
-varinfo(some, info = c('api', 'csv', 'acs', 'varlist')),
-usastats = some \%in\% names(usastats),
-statestats = some \%in\% names(statestats))
-info <- info\link{nchar(paste0(info$api, info$csv, info$acs)) > 0, }
-info
-}
-
-\section{any others}{
-some <- unique(map_headernames$rname\link[=map_headernames$varlist != "" 
-   & map_headernames$varlist == "x_anyother"]{map_headernames$varlist != "" & map_headernames$varlist == "x_anyother"})
-
-info <- cbind(
-varinfo(some, info = c('api', 'csv', 'acs', 'varlist')),
-usastats = some \%in\% names(usastats),
-statestats = some \%in\% names(statestats))
-info <- info\link{nchar(paste0(info$api, info$csv, info$acs)) > 0, }
-info
-}
-

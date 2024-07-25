@@ -292,7 +292,7 @@ app_ui_EJAMejscreenapi <- function(request) {
 	      # _____ INPUTS _____ (LH column) ####
 	      column(
 	        4, 
-	        HTML(paste('<a href=\"', 'README.html', '\", target=\"_blank\">', 'About this app',  '</a>', sep = '')),
+	        HTML(paste('<a href=\"', 'README.html', '\", target=\"_blank\">', 'About',  '</a>', sep = '')),
 	        tags$br(),tags$br(),
 	        
 	        ##################################################### # 

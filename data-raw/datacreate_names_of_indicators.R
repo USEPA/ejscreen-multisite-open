@@ -102,22 +102,170 @@ datacreate_names_of_indicators <- function() {
   
   
   ############################################################################## ############################################################################### #
-  # An alternative approach, to create ALL the lists all at once, would be this: 
-  #
-  # new indicators for v2.3 lists of variables
-  vlists = unique(map_headernames$varlist)
+  
+  # An alternative approach, 
+  # relying entirely on map_headernames$varlist and map_headernames$rname
+  # 
+  ## note these are the same:  all(names_climate == names_from_varlist("names_climate"))
+  
+  # to create ALL the lists all at once, would be this: 
+  # 
+  # load_all() # needs EJAM to work, including map_headernames has to be available
+  vlists <- unique(map_headernames$varlist)
+
+  # assign all the lists of variable names to the global environment
   for (i in seq_along(vlists)) {
     vns <- varlist2names(vlists[i])
     assign(vlists[i], vns)
   }
+  # assign metadata to all those lists
+  for (i in seq_along(vlists)) {
+    assign(vlists[i], metadata_add(get(vlists[i])))
+  }
+  # save all those lists to the package as lazyloaded datasets
+  # golem::detach_all_attached() # to avoid any lazyloaded versions of these objects
+  for (i in seq_along(vlists)) {
+    # for (i in 1:2) {
+    codetosource <- paste0("usethis::use_data(", vlists[i], ", overwrite=TRUE)")
+    eval(parse(text = codetosource)) 
+  }
+  # make placeholders for any missing documentation of those datasets
+  # - note this does not remove obsolete or update existing documentation
+  
+  ## but will improve this to avoid so many files of documentation... 
+  ## see https://jsta.rbind.io/blog/automated-roxygen-documentation-of-r-package-data/
+  ## see https://roxygen2.r-lib.org/reference/tags-reuse.html
+  for (i in seq_along(vlists)) {
+    if (!file.exists(paste0("./R/data_", vlists[i], ".R"))) {
+      cat(paste0("Creating documentation placeholder: data_", vlists[i], ".R \n"))
+      filecontents <- paste0(
+        "#' @name ", vlists[i], " 
+#' @docType data
+#' @title a list of variable names for internal use in EJAM
+'", vlists[i],"'
+"
+      )
+      fname = paste0("./R/data_", vlists[i], ".R")
+      writeChar(filecontents, con = fname)             ############# #
+      # file.exists(fname)
+    }
+  }
+  rm(vns, i, codetosource, vlists)
+  
   #   *******   BUT...another alternative is instead of always using code like   ####
   ##       c(names_health, names_criticalservice)
   ## we could switch to using  
-  ##      vnames(c('names_health', 'names_criticalservice'))
+  ## note these are the same:  all(names_climate == names_from_varlist("names_climate"))
+  ##      names_from_varlist(c('names_health', 'names_criticalservice'))
   #  to avoid having so many objects like names_d, names_e, etc. that get lazyloaded as datasets.
+  
   ############################################################################## ############################################################################### #
   
+  # **names_these_ ####
   
+  names_these                    <- c(names_d,              names_d_subgroups,              names_e)
+  names_these_avg                <- c(names_d_avg,          names_d_subgroups_avg,          names_e_avg)                         # <- paste0("avg.",       names_these) #
+  names_these_state_avg          <- c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  # paste0("state.avg.", names_these)
+  names_these_ratio_to_avg       <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_these_avg )
+  names_these_ratio_to_state_avg <- c(names_d_ratio_to_state_avg,  names_d_subgroups_ratio_to_state_avg,    names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_these_state_avg)
+  
+  names_these <- metadata_add(names_these) 
+  names_these_avg <- metadata_add(names_these_avg) 
+  names_these_state_avg <- metadata_add(names_these_state_avg) 
+  names_these_ratio_to_avg <- metadata_add(names_these_ratio_to_avg) 
+  names_these_ratio_to_state_avg <- metadata_add(names_these_ratio_to_state_avg) 
+  # pctile and friendly not used here
+  
+  use_data(names_these, overwrite = TRUE)
+  use_data(names_these_avg, overwrite = TRUE)
+  use_data(names_these_state_avg, overwrite = TRUE)
+  use_data(names_these_ratio_to_avg, overwrite = TRUE)
+  use_data(names_these_ratio_to_state_avg, overwrite = TRUE)
+  
+ 
+  ############################################################################## #
+  
+  # **names_all_r ####
+  
+  names_all_r <- varlist2names(sapply(ls(pattern = "^names_"), c)) # all the ones that are in lists already
+  names_all_r <- sort(unique(names_all_r))
+  names_all_r <- metadata_add(names_all_r)
+  use_data(names_all_r, overwrite = TRUE)
+  
+  ############################################################################## #
+  # y = askYesNo("Do you want to continue and create the metadata for all the lists of variable names and save them to the package as lazyloaded datasets?")
+  # if (is.na(y) || !y) {return()} 
+
+  # **namez__ ####
+  
+  # try putting these all in one list instead of multiple objects? could recode later to use namez$d_friendly instead of names_d_friendly etc.
+  # and/or    just store them in a big table
+  
+  namesoflistsofnames = c('names_all_r', sort(unique(map_headernames$varlist)))
+  namez <- lapply(namesoflistsofnames, get)
+  names(namez) <- gsub("^names_","", namesoflistsofnames)
+    #  metadata_add & USE_DATA # 
+  namez <- metadata_add(namez)
+  usethis::use_data(namez, overwrite = TRUE)
+  ############################################################################## #
+  
+  # **names_all__ ####
+  
+  # NOTE THIS IS VERY DIFFERENT THAN names_all_batch !!
+  names_all <- as.vector(unlist(namez))
+  names_all <- unique(names_all) # pop would appear twice
+  names_all <- metadata_add(names_all)
+  use_data(names_all, overwrite = TRUE)
+
+  ############################################################################## #
+  
+  namesoflistsofnames <- c('names_all', namesoflistsofnames)
+  for (vl in unique(map_headernames$varlist)) {
+    if (nchar(vl) > 0 && !exists(vl)) {warning(paste0(vl, " was not created as a data object."))}
+  }
+  ############################################################################## #
+
+  # other missing documentation?
+  
+  vlists =  sapply(ls(pattern = "^names_"), c)
+  
+  for (i in seq_along(vlists)) {
+    if (!file.exists(paste0("./R/data_", vlists[i], ".R"))) {
+      cat(paste0("Creating documentation placeholder: data_", vlists[i], ".R \n"))
+      filecontents <- paste0(
+        "#' @name ", vlists[i], " 
+#' @docType data
+#' @title a list of variable names for internal use in EJAM
+'", vlists[i],"'
+"
+      )
+      fname = paste0("./R/data_", vlists[i], ".R")
+      writeChar(filecontents, con = fname)             ############# #
+      # file.exists(fname)
+    }
+  }
+  ############################################################################## #
+  
+  if (exists("usastats") && exists("statestats")) {
+    cat("checking new names_these vs colnames of whatever versions of usastats and statestats are attached or just created or else lazy loaded from installed pkg\n")
+    notfound    = setdiff(names_these, names(usastats))   # uses attached possibly new version if different than installed version. fails if pkg not attached and new usastats not just made
+    notfound_st = setdiff(names_these, names(statestats)) # ditto
+    if (length(notfound   ) > 0) {warning('some of names_these are not column names found in usastats  ... ',        paste0(notfound,    collapse = ', '), '\n')} else {print('ok')}
+    if (length(notfound_st) > 0) {warning('some of names_these are not column names found in statestats  ... ',      paste0(notfound_st, collapse = ', '), '\n')} else {print('ok')}
+    rm(notfound, notfound_st)
+  } else {
+    warning("did not check if all names_these are in names(statestats) and names(usastats) because usastats or statestats is missing")
+  }
+  if (exists("blockgroupstats")) {
+    cat("checking new names_these vs colnames of whatever versions of blockgroupstats is attached or just created or else lazy loaded from installed pkg\n")
+    notfound_bg = setdiff(names_these, names(blockgroupstats))   # ditto
+    if (length(notfound_bg) > 0) {warning('some of names_these are not column names found in blockgroupstats  ... ', paste0(notfound_bg, collapse = ', '), '\n')} else {print('ok')}
+    rm(notfound_bg)
+  }
+  return(names_these)
+  
+  
+  if ("replaced by code above" == "not")  { 
   
   subgroups_type <- c(  'nh', 'alone')[1]  # simple names without _nh or _alone should be usable/ what is used in code, and here get set same as nh for now and set to same as alone when want to switch 
   
@@ -755,476 +903,14 @@ datacreate_names_of_indicators <- function() {
   
   # setdiff(unique(map_headernames$varlist), paste0("names_", names(namez)))
   # 
-  names_d_demogindexstate <- namesbyvarlist('names_d_demogindexstate')$rname # xxx
-  names_d_language        <- namesbyvarlist('names_d_language'       )$rname
-  names_d_language_count  <- namesbyvarlist('names_d_language_count' )$rname
+  names_d_demogindexstate <- names_from_varlist('names_d_demogindexstate')  # xxx
+  names_d_language        <- names_from_varlist('names_d_language'       )
+  names_d_language_count  <- names_from_varlist('names_d_language_count' )
   
   
-  
-  ############################################################################## #
-  # these ####
-  
-  # names_these is just another way to conveniently refer to these much-used variables from within server code
-  
-  ## see doaggregate() where these are used:
-  
-  #  Only one of the 3 ways can be used here:
-  #  DO NOT INCLUDE 3 versions here (subgroups, subgroups_alone, subgroups_nh) - just the one we are actually going to use
-  # 
-  # if (subgroups_type == 'alone') {
-  #   names_these                    <- c(names_d,              names_d_subgroups_alone,              names_e)   
-  #   names_these_avg                <- c(names_d_avg,          names_d_subgroups_alone_avg,          names_e_avg)                         # <- paste0("avg.",       names_these) #
-  #   names_these_state_avg          <- c(names_d_state_avg,    names_d_subgroups_alone_state_avg,    names_e_state_avg)  # paste0("state.avg.", names_these)
-  #   names_these_ratio_to_avg       <- c(names_d_ratio_to_avg, names_d_subgroups_alone_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_these_avg )
-  #   names_these_ratio_to_state_avg <- c(names_d_ratio_to_state_avg,  names_d_subgroups_alone_ratio_to_state_avg,   names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_these_state_avg)
-  # } else {
-  #   names_these                    <- c(names_d,              names_d_subgroups_nh,              names_e)   
-  #   names_these_avg                <- c(names_d_avg,          names_d_subgroups_nh_avg,          names_e_avg)                         # <- paste0("avg.",       names_these) #
-  #   names_these_state_avg          <- c(names_d_state_avg,    names_d_subgroups_nh_state_avg,    names_e_state_avg)  # paste0("state.avg.", names_these)
-  #   names_these_ratio_to_avg       <- c(names_d_ratio_to_avg, names_d_subgroups_nh_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_these_avg )
-  #   names_these_ratio_to_state_avg <- c(names_d_ratio_to_state_avg,  names_d_subgroups_nh_ratio_to_state_avg,      names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_these_state_avg)
-  # }
-  # if (subgroups_type == 'original') {  #  ONLY 
-  names_these                    <- c(names_d,              names_d_subgroups,              names_e)
-  names_these_avg                <- c(names_d_avg,          names_d_subgroups_avg,          names_e_avg)                         # <- paste0("avg.",       names_these) #
-  names_these_state_avg          <- c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  # paste0("state.avg.", names_these)
-  names_these_ratio_to_avg       <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_these_avg )
-  names_these_ratio_to_state_avg <- c(names_d_ratio_to_state_avg,  names_d_subgroups_ratio_to_state_avg,    names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_these_state_avg)
-  # }
-  
-  # no need for friendly versions?
-  
-  # counts and e and ej not included here in names_these  ***
-  
-  ############################################################################## #
-  #  compilations of names (these lack friendly version of the group)
-  
-  # [14,] "names_wts"         
-  
-  # [1,] "names_all_r"      
-  
-  # [13,] "names_these"        
-  # [2,]  "names_these_avg"          
-  # [11,] "names_these_state_avg"         
-  # [9,]  "names_these_ratio_to_avg"      
-  # [10,] "names_these_ratio_to_state_avg"
-  
-  # [6,] "names_need_pctile"             
-  # [7,] "names_need_state_pctile"       
-  
-  
-  ############################################################################## #
-  # all_r ####
-  #   this is not used by the app but may be useful in maintaining map_headernames or namez, etc.
-  
-  names_all_r =  c(
-    
-    names_d_other_count,
-    names_d_count, 
-    names_d, 
-    names_d_avg,           names_d_state_avg, 
-    names_d_pctile,        names_d_state_pctile,       
-    names_d_ratio_to_avg,  names_d_ratio_to_state_avg,
-    
-    # subgroups_lists,   #   ONLY INCLUDE THE ONE BEING USED BY CODE ?  # subgroups   # not sure we need to include here all 3 versions of names of subgroups indicators
-    names_d_subgroups,         
-    # names_d_subgroups_friendly,
-    names_d_subgroups_avg,         names_d_subgroups_state_avg,
-    # names_d_subgroups_avg_friendly,names_d_subgroups_state_avg_friendly,
-    names_d_subgroups_pctile,      names_d_subgroups_state_pctile, 
-    # names_d_subgroups_pctile_friendly, names_d_subgroups_state_pctile_friendly, 
-    names_d_subgroups_ratio_to_avg,          names_d_subgroups_ratio_to_state_avg,
-    # names_d_subgroups_ratio_to_avg_friendly, names_d_subgroups_ratio_to_state_avg_friendly,
-    # names_d_subgroups_med,     names_d_subgroups_state_med,
-    names_d_subgroups_count,  # no avg, no ratio, no pctiles, for counts
-    
-    # subgroups_alone
-    c(names_d_subgroups_alone, names_d_subgroups_alone_avg,names_d_subgroups_alone_state_avg, names_d_subgroups_alone_pctile, names_d_subgroups_alone_state_pctile, names_d_subgroups_alone_ratio_to_avg, names_d_subgroups_alone_ratio_to_state_avg, names_d_subgroups_alone_count),
-    
-    ########################### #
-    names_d_demogindexstate,
-    names_d_language, names_d_language_count,
-    names_d_extra,    names_d_extra_count,
-    x_anyother,
-    
-    ########################### #
-    c(names_e,  
-      names_e_avg,          names_e_state_avg, 
-      names_e_pctile,       names_e_state_pctile),
-    names_e_ratio_to_avg, names_e_ratio_to_state_avg,
-    
-    # c(names_these_ratio_to_avg, names_these_ratio_to_state_avg), 
-    
-    c(names_ej,             names_ej_state,
-      names_ej_supp,        names_ej_supp_state,
-      names_ej_pctile,      names_ej_state_pctile,
-      names_ej_supp_pctile, names_ej_supp_state_pctile)  # no ratios for EJ
-  )
-  names_all_r <- unique(names_all_r)
-  
-  ############################################################################## #
-  # sub_nh_text    <- c( 'names_d_subgroups_nh_count',           
-  #                   c('names_d_subgroups_nh',    'names_d_subgroups_nh_avg',    'names_d_subgroups_nh_state_avg',    'names_d_subgroups_nh_pctile',    'names_d_subgroups_nh_state_pctile') )
-  sub_nh_text    <- c('names_d_subgroups_nh',        
-                      'names_d_subgroups_nh_friendly', 
-                      'names_d_subgroups_nh_avg',             'names_d_subgroups_nh_state_avg',   
-                      'names_d_subgroups_nh_avg_friendly',    'names_d_subgroups_nh_state_avg_friendly',  
-                      'names_d_subgroups_nh_pctile',          'names_d_subgroups_nh_state_pctile',   
-                      'names_d_subgroups_nh_pctile_friendly', 'names_d_subgroups_nh_state_pctile_friendly',   
-                      'names_d_subgroups_nh_ratio_to_avg',          'names_d_subgroups_nh_ratio_to_state_avg',  
-                      'names_d_subgroups_nh_ratio_to_avg_friendly', 'names_d_subgroups_nh_ratio_to_state_avg_friendly',   
-                      # names_d_subgroups_nh_med,     names_d_subgroups_nh_state_med,       
-                      'names_d_subgroups_nh_count'  # no avg, no ratio, no pctiles, for counts 
-  )
-  
-  # sub_alone_text <- c( 'names_d_subgroups_alone_count',  
-  #                   c('names_d_subgroups_alone', 'names_d_subgroups_alone_avg', 'names_d_subgroups_alone_state_avg', 'names_d_subgroups_alone_pctile', 'names_d_subgroups_alone_state_pctile') )   
-  sub_alone_text <- c(
-    'names_d_subgroups_alone',        
-    'names_d_subgroups_alone_friendly', 
-    'names_d_subgroups_alone_avg',             'names_d_subgroups_alone_state_avg',   
-    'names_d_subgroups_alone_avg_friendly',    'names_d_subgroups_alone_state_avg_friendly',  
-    'names_d_subgroups_alone_pctile',          'names_d_subgroups_alone_state_pctile',   
-    'names_d_subgroups_alone_pctile_friendly', 'names_d_subgroups_alone_state_pctile_friendly',   
-    'names_d_subgroups_alone_ratio_to_avg',          'names_d_subgroups_alone_ratio_to_state_avg',  
-    'names_d_subgroups_alone_ratio_to_avg_friendly', 'names_d_subgroups_alone_ratio_to_state_avg_friendly',   
-    # names_d_subgroups_alone_med,     names_d_subgroups_alone_state_med,       
-    'names_d_subgroups_alone_count' # no avg, no ratio, no pctiles, for counts   
-  )
-  
-  if ("alone" %in% subgroups_type) {
-    sub_o_text <-  sub_alone_text
-  } else {
-    sub_o_text <-  sub_nh_text
-  }
-  
-  subgroups_lists_text <-  sub_o_text  
-  
-  
-  
-  # 'names_d_subgroups',               
-  # 'names_d_subgroups_friendly',      
-  # 'names_d_subgroups_avg',             'names_d_subgroups_state_avg',      
-  # 'names_d_subgroups_avg_friendly',    'names_d_subgroups_state_avg_friendly',      
-  # 'names_d_subgroups_pctile',          'names_d_subgroups_state_pctile',       
-  # 'names_d_subgroups_pctile_friendly', 'names_d_subgroups_state_pctile_friendly',       
-  # 'names_d_subgroups_ratio_to_avg',          'names_d_subgroups_ratio_to_state_avg',      
-  # 'names_d_subgroups_ratio_to_avg_friendly', 'names_d_subgroups_ratio_to_state_avg_friendly',        
-  # # names_d_subgroups_med,     names_d_subgroups_state_med,          
-  # 'names_d_subgroups_count', # no avg, no ratio, no pctiles, for counts         
-  
-  
+}
   ############################################################################## #
   
-  # **namez__ ####
-  
-  # try putting these all in one list instead of multiple objects? could recode later to use namez$d_friendly instead of names_d_friendly etc.
-  # and/or    just store them in a big table
-  
-  namesoflistsofnames = c(
-    'names_all_r',  # and names_all will get created 
-    'names_wts',
-    ############################################ # 
-    
-    'names_d', 
-    'names_d_friendly', # not for percentiles and counts?
-    'names_d_avg',             'names_d_state_avg', 
-    'names_d_avg_friendly',    'names_d_state_avg_friendly' ,
-    'names_d_pctile',          'names_d_state_pctile',       
-    'names_d_pctile_friendly', 'names_d_state_pctile_friendly' , # new
-    'names_d_ratio_to_avg',          'names_d_ratio_to_state_avg',
-    'names_d_ratio_to_avg_friendly', 'names_d_ratio_to_state_avg_friendly', 
-    # names_d_med,  names_d_state_med,
-    
-    'names_d_count',     
-    'names_d_count_friendly', 
-    'names_d_other_count', # includes pop and other denominator counts. no avg, no ratio, no pctiles for this needed.
-    'names_d_other_count_friendly',  # no avg, no ratios, no percentiles, for counts
-    
-    ############################################ # 
-    # subgroups 
-    
-    # 'names_d_subgroups',
-    # 'names_d_subgroups_nh',
-    # 'names_d_subgroups_alone',
-    # subgroups_lists_text, 
-    # sub_nh_text,
-    # sub_alone_text,
-    
-    #  plain subgroups,   subgroups_alone will match ejscreen v 2.2
-    'names_d_subgroups',         
-    'names_d_subgroups_friendly',
-    'names_d_subgroups_avg',         'names_d_subgroups_state_avg',
-    'names_d_subgroups_avg_friendly','names_d_subgroups_state_avg_friendly',
-    'names_d_subgroups_pctile',      'names_d_subgroups_state_pctile', 
-    'names_d_subgroups_pctile_friendly', 'names_d_subgroups_state_pctile_friendly', 
-    'names_d_subgroups_ratio_to_avg',          'names_d_subgroups_ratio_to_state_avg',
-    'names_d_subgroups_ratio_to_avg_friendly', 'names_d_subgroups_ratio_to_state_avg_friendly',
-    # names_d_subgroups_med,     names_d_subgroups_state_med,
-    'names_d_subgroups_count',  # no avg, no ratio, no pctiles, for counts
-    
-    'names_d_subgroups_nh',         
-    'names_d_subgroups_nh_friendly',
-    'names_d_subgroups_nh_avg',         'names_d_subgroups_nh_state_avg',
-    'names_d_subgroups_nh_avg_friendly','names_d_subgroups_nh_state_avg_friendly',
-    'names_d_subgroups_nh_pctile',      'names_d_subgroups_nh_state_pctile', 
-    'names_d_subgroups_nh_pctile_friendly', 'names_d_subgroups_nh_state_pctile_friendly', 
-    'names_d_subgroups_nh_ratio_to_avg',          'names_d_subgroups_nh_ratio_to_state_avg',
-    'names_d_subgroups_nh_ratio_to_avg_friendly', 'names_d_subgroups_nh_ratio_to_state_avg_friendly',
-    # names_d_subgroups_nh_med,     names_d_subgroups_nh_state_med,
-    'names_d_subgroups_nh_count',  # no avg, no ratio, no pctiles, for counts
-    
-    'names_d_subgroups_alone',         
-    'names_d_subgroups_alone_friendly',
-    'names_d_subgroups_alone_avg',         'names_d_subgroups_alone_state_avg',
-    'names_d_subgroups_alone_avg_friendly','names_d_subgroups_alone_state_avg_friendly',
-    'names_d_subgroups_alone_pctile',      'names_d_subgroups_alone_state_pctile', 
-    'names_d_subgroups_alone_pctile_friendly', 'names_d_subgroups_alone_state_pctile_friendly', 
-    'names_d_subgroups_alone_ratio_to_avg',          'names_d_subgroups_alone_ratio_to_state_avg',
-    'names_d_subgroups_alone_ratio_to_avg_friendly', 'names_d_subgroups_alone_ratio_to_state_avg_friendly',
-    # names_d_subgroups_alone_med,     names_d_subgroups_alone_state_med,
-    'names_d_subgroups_alone_count',  # no avg, no ratio, no pctiles, for counts
-    
-    ########################### # xxx
-    'names_d_demogindexstate', 
-    'names_d_language', 'names_d_language_count',
-    'names_d_extra',    'names_d_extra_count',
-    'x_anyother',
-    ############################################ # 
-    
-    'names_e',           
-    'names_e_friendly',
-    'names_e_avg',             'names_e_state_avg', 
-    'names_e_avg_friendly',    'names_e_state_avg_friendly'  ,
-    'names_e_pctile',          'names_e_state_pctile', 
-    'names_e_pctile_friendly', 'names_e_state_pctile_friendly', # new
-    'names_e_ratio_to_avg',          'names_e_ratio_to_state_avg',
-    'names_e_ratio_to_avg_friendly', 'names_e_ratio_to_state_avg_friendly',
-    # names_e_med, names_e_state_med,  
-    ############################################ # 
-    
-    'names_ej',           'names_ej_state', # RAW EJ SCORE
-    'names_ej_friendly',  'names_ej_state_friendly', # FRIENDLY (RAW) SCORE BUT CAN USE FOR PCTILE SINCE THAT IS THE ONLY THING REPORTED
-    
-    'names_ej_supp',          'names_ej_supp_state', 
-    'names_ej_supp_friendly', 'names_ej_supp_state_friendly', 
-    
-    'names_ej_pctile',          'names_ej_state_pctile' ,
-    'names_ej_pctile_friendly', 'names_ej_state_pctile_friendly',  # new
-    
-    'names_ej_supp_pctile',          'names_ej_supp_state_pctile',  ################################ # had been missing
-    'names_ej_supp_pctile_friendly', 'names_ej_supp_state_pctile_friendly', # new
-    ############################################ # 
-    
-    # 'names_pctile',  # all US pctile indicators #  - this is not used though
-    # 'names_state_pctile', #  - this is not used though
-    'names_need_pctile',  # base indicators that need to be reported as US percentiles not just raw scores
-    'names_need_state_pctile', 
-    
-    'names_these',
-    'names_these_avg',
-    'names_these_state_avg',
-    'names_these_ratio_to_avg',
-    'names_these_ratio_to_state_avg'
-  )
-  # print(exists('names_d_demogindexstate'))
-  namez <- lapply(namesoflistsofnames, get)
-  names(namez) <- gsub("^names_","", namesoflistsofnames)
-  
-  # **names_all__ ####
-  # NOTE THIS IS VERY DIFFERENT THAN names_all_batch !!
-  names_all <- as.vector(unlist(namez))
-  names_all <- unique(names_all) # pop would appear twice
-  
-  namesoflistsofnames <- c('names_all', namesoflistsofnames)
-  ############################################################################## #
-  
-  # could double check to see if fixcolnames and map_headernames give same answers as the lists here. 
-  
-  
-  
-  
-  
-  
-  ############################################################################## ############################################################################### #
-  
-  for (vl in unique(map_headernames$varlist)) {
-    if (nchar(vl) > 0 && !exists(vl)) {warning(paste0(vl, " was not created as a data object."))}
-  }
-  
-  #  metadata_add & USE_DATA ####
-  
-  
-  namez <- metadata_add(namez)
-  usethis::use_data(namez, overwrite = TRUE)
-  
-  #  STORE EVERY OBJECT but dont add metadata to each ####
-  
-  names_d_subgroups <- metadata_add(names_d_subgroups)
-  names_d     <- metadata_add(names_d)
-  names_e     <- metadata_add(names_e)
-  
-  names_ej            <- metadata_add(names_ej)
-  names_ej_supp       <- metadata_add(names_ej_supp)
-  names_ej_state      <- metadata_add(names_ej_state)
-  names_ej_supp_state <- metadata_add(names_ej_supp_state)
-  
-  names_all_r <- metadata_add(names_all_r)
-  
-  usethis::use_data(
-    
-    names_all, names_all_r,
-    names_wts, 
-    ############################################ # 
-    
-    names_d, 
-    names_d_friendly, # not for percentiles and counts?
-    names_d_avg,          names_d_state_avg, 
-    names_d_avg_friendly, names_d_state_avg_friendly ,
-    names_d_pctile,       names_d_state_pctile,           
-    names_d_pctile_friendly, names_d_state_pctile_friendly , # new
-    names_d_ratio_to_avg,          names_d_ratio_to_state_avg,
-    names_d_ratio_to_avg_friendly, names_d_ratio_to_state_avg_friendly, 
-    # names_d_med,  names_d_state_med,
-    names_d_count,
-    names_d_count_friendly,
-    names_d_other_count,  # includes pop and other denominator counts. no avg, no ratio, no pctiles for this needed.
-    names_d_other_count_friendly, # no avg, no ratios, no percentiles, for counts
-    
-    ############################################ # 
-    # subgroups 
-    
-    #  plain subgroups,   subgroups_alone will match ejscreen v 2.2
-    names_d_subgroups,         
-    names_d_subgroups_friendly,
-    names_d_subgroups_avg,         names_d_subgroups_state_avg,
-    names_d_subgroups_avg_friendly,names_d_subgroups_state_avg_friendly,
-    names_d_subgroups_pctile,      names_d_subgroups_state_pctile, 
-    names_d_subgroups_pctile_friendly, names_d_subgroups_state_pctile_friendly, 
-    names_d_subgroups_ratio_to_avg,          names_d_subgroups_ratio_to_state_avg,
-    names_d_subgroups_ratio_to_avg_friendly, names_d_subgroups_ratio_to_state_avg_friendly,
-    # names_d_subgroups_med,     names_d_subgroups_state_med,
-    names_d_subgroups_count,  # no avg, no ratio, no pctiles, for counts
-    
-    names_d_subgroups_nh,         
-    names_d_subgroups_nh_friendly,
-    names_d_subgroups_nh_avg,         names_d_subgroups_nh_state_avg,
-    names_d_subgroups_nh_avg_friendly,names_d_subgroups_nh_state_avg_friendly,
-    names_d_subgroups_nh_pctile,      names_d_subgroups_nh_state_pctile, 
-    names_d_subgroups_nh_pctile_friendly, names_d_subgroups_nh_state_pctile_friendly, 
-    names_d_subgroups_nh_ratio_to_avg,          names_d_subgroups_nh_ratio_to_state_avg,
-    names_d_subgroups_nh_ratio_to_avg_friendly, names_d_subgroups_nh_ratio_to_state_avg_friendly,
-    # names_d_subgroups_nh_med,     names_d_subgroups_nh_state_med,
-    names_d_subgroups_nh_count,  # no avg, no ratio, no pctiles, for counts
-    
-    names_d_subgroups_alone,         
-    names_d_subgroups_alone_friendly,
-    names_d_subgroups_alone_avg,         names_d_subgroups_alone_state_avg,
-    names_d_subgroups_alone_avg_friendly,names_d_subgroups_alone_state_avg_friendly,
-    names_d_subgroups_alone_pctile,      names_d_subgroups_alone_state_pctile, 
-    names_d_subgroups_alone_pctile_friendly, names_d_subgroups_alone_state_pctile_friendly, 
-    names_d_subgroups_alone_ratio_to_avg,          names_d_subgroups_alone_ratio_to_state_avg,
-    names_d_subgroups_alone_ratio_to_avg_friendly, names_d_subgroups_alone_ratio_to_state_avg_friendly,
-    # names_d_subgroups_alone_med,     names_d_subgroups_alone_state_med,
-    names_d_subgroups_alone_count,  # no avg, no ratio, no pctiles, for counts
-    
-    # subgroups_alone
-    
-    ########################### #
-    
-    names_d_demogindexstate, 
-    
-    names_age, names_age_count, 
-    
-    names_climate, names_climate_avg, names_climate_pctile, names_climate_state_avg,  names_climate_state_pctile, names_community, names_community_count, 
-    names_criticalservice, names_criticalservice_avg, names_criticalservice_pctile, names_criticalservice_state_avg, names_criticalservice_state_pctile, 
-    names_health, names_health_avg, names_health_count, names_health_pctile, names_health_state_avg, names_health_state_pctile, 
-    
-    names_featuresinarea, names_flag, names_geo, 
-    names_misc, names_sitesinarea,
-    
-    # names_d, names_d_avg, names_d_count, 
-    # names_d_pctile, names_d_ratio_to_avg, names_d_ratio_to_state_avg, names_d_state_avg, names_d_state_pctile, names_d_subgroups, 
-    # names_d_subgroups_alone, names_d_subgroups_alone_avg, names_d_subgroups_alone_count, names_d_subgroups_alone_pctile, names_d_subgroups_alone_ratio_to_avg, names_d_subgroups_alone_ratio_to_state_avg, names_d_subgroups_alone_state_avg, names_d_subgroups_alone_state_pctile,
-    # names_d_subgroups_avg, names_d_subgroups_count, names_d_subgroups_nh, names_d_subgroups_nh_avg, names_d_subgroups_nh_count, names_d_subgroups_nh_pctile, names_d_subgroups_nh_ratio_to_avg, names_d_subgroups_nh_ratio_to_state_avg, names_d_subgroups_nh_state_avg, names_d_subgroups_nh_state_pctile, 
-    # names_d_subgroups_pctile, names_d_subgroups_ratio_to_avg, names_d_subgroups_ratio_to_state_avg, names_d_subgroups_state_avg, names_d_subgroups_state_pctile, 
-    
-    names_d_language, names_d_language_count, 
-    names_d_languageli, names_d_languageli_count, 
-    
-    names_d_other_count, 
-    names_d_extra, names_d_extra_count, 
-    # 
-    # names_e, names_e_avg, names_e_other, 
-    # names_e_pctile, names_e_ratio_to_avg, names_e_ratio_to_state_avg, 
-    # names_e_state_avg, names_e_state_pctile,
-    # 
-    # names_ej, names_ej_pctile, 
-    # names_ej_state, names_ej_state_pctile, names_ej_supp, names_ej_supp_pctile, 
-    # names_ej_supp_state, names_ej_supp_state_pctile
-    
-    # names_d_extra,    names_d_extra_count,
-    # x_anyother,
-    ############################################ # 
-    
-    names_e,           
-    names_e_friendly,
-    names_e_avg,          names_e_state_avg, 
-    names_e_avg_friendly, names_e_state_avg_friendly,
-    names_e_pctile,       names_e_state_pctile, 
-    names_e_pctile_friendly, names_e_state_pctile_friendly, # new
-    names_e_ratio_to_avg,          names_e_ratio_to_state_avg,
-    names_e_ratio_to_avg_friendly, names_e_ratio_to_state_avg_friendly,
-    # names_e_med, names_e_state_med,  
-    ############################################ # 
-    
-    names_ej,           names_ej_state, # RAW EJ SCORE
-    names_ej_friendly,  names_ej_state_friendly, # FRIENDLY (RAW) SCORE BUT CAN USE FOR PCTILE SINCE THAT IS THE ONLY THING REPORTED
-    
-    names_ej_supp,          names_ej_supp_state, 
-    names_ej_supp_friendly, names_ej_supp_state_friendly, 
-    
-    names_ej_pctile,          names_ej_state_pctile ,
-    names_ej_pctile_friendly, names_ej_state_pctile_friendly,  # new
-    
-    names_ej_supp_pctile,          names_ej_supp_state_pctile,  ################################ # had been missing
-    names_ej_supp_pctile_friendly, names_ej_supp_state_pctile_friendly, # new
-    
-    ############################################ # 
-    
-    # names_pctile,  # all US pctile indicators - this is not used though
-    # names_state_pctile,  #  - this is not used though
-    names_need_pctile,  # base indicators that need to be reported as US percentiles not just raw scores
-    names_need_state_pctile,
-    
-    names_these,                # used in code, and was set up to contain only subgroups or _alone or _nh but only one of those types
-    names_these_avg,
-    names_these_state_avg,
-    names_these_ratio_to_avg,
-    names_these_ratio_to_state_avg,
-    
-    overwrite = TRUE
-  )
-  
-  ############################################################################## #
-  
-  if (exists("usastats") && exists("statestats")) {
-    cat("checking new names_these vs colnames of whatever versions of usastats and statestats are attached or just created or else lazy loaded from installed pkg\n")
-    notfound    = setdiff(names_these, names(usastats))   # uses attached possibly new version if different than installed version. fails if pkg not attached and new usastats not just made
-    notfound_st = setdiff(names_these, names(statestats)) # ditto
-    if (length(notfound   ) > 0) {warning('some of names_these are not column names found in usastats  ... ',        paste0(notfound,    collapse = ', '), '\n')} else {print('ok')}
-    if (length(notfound_st) > 0) {warning('some of names_these are not column names found in statestats  ... ',      paste0(notfound_st, collapse = ', '), '\n')} else {print('ok')}
-    rm(notfound, notfound_st)
-  } else {
-    warning("did not check if all names_these are in names(statestats) and names(usastats) because usastats or statestats is missing")
-  }
-  if (exists("blockgroupstats")) {
-    cat("checking new names_these vs colnames of whatever versions of blockgroupstats is attached or just created or else lazy loaded from installed pkg\n")
-    notfound_bg = setdiff(names_these, names(blockgroupstats))   # ditto
-    if (length(notfound_bg) > 0) {warning('some of names_these are not column names found in blockgroupstats  ... ', paste0(notfound_bg, collapse = ', '), '\n')} else {print('ok')}
-    rm(notfound_bg)
-  }
-  return(names_these)
 }
 # ( make sure all the Envt variables etc are actually in usastats dataset)
 # message('make sure all the Demog and Envt variables etc are actually in the latest installed usastats dataset')

@@ -68,13 +68,12 @@ load_all()
 #
 ## List of datacreate_ files ####
 ## & when to use each 
-
-fnames <- dir(rawdir, pattern = 'datacreate_')
+# fnames <- dir(rawdir, pattern = 'datacreate_')
 # cat("\n \n\n", "To open & edit one of the datacreate_ files,
 #     you can source a line below\n\n",
 #     paste0(paste0(
 #       "\t documentOpen('", rawdir, "/", fnames, "')"), collapse = "\n"))
-if (0 == 1) {
+if (0 == 1) {  # collapsable list
           ####   THESE ARE SORTED INTO GROUPS THAT GO TOGETHER : 
   x <- c("datacreate_0_UPDATE_ALL_DATASETS.R", "datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R",
     "datacreate_map_headernames.R", "datacreate_names_of_indicators.R", "datacreate_names_pct_as_fraction.R", "datacreate_metadata4pins.R", "datacreate_blockgroupstats2.3.R", "datacreate_blockgroupstats2.3_add_d_acs22columns.R", "datacreate_usastats2.3.R", "datacreate_usastats2.3_add_dsubgroups.R", "datacreate_avg.in.us.R", "datacreate_high_pctiles_tied_with_min.R", "datacreate_formulas.R", "datacreate_test_address.R", "datacreate_testpoints_testoutputs.R", 
@@ -83,13 +82,14 @@ if (0 == 1) {
     "datacreate_frs_.R", "datacreate_frs_by_mact.R", "datacreate_frs_by_sic.R", "datacreate_frsprogramcodes.R", "datacreate_epa_programs.R", "datacreate_testids_program_sys_id.R", "datacreate_testids_registry_id.R", "datacreate_naics_counts.R", "datacreate_naicstable.R", "datacreate_SIC.R", "datacreate_sic_counts.R", "datacreate_sictable.R", 
     "datacreate_lat_alias.R", "datacreate_ejampackages.R", "datacreate_meters_per_mile.R"
     )
-  setdiff(x, dir(rawdir, pattern = 'datacreate_') )
+  setdiff(x, dir(rawdir, pattern = 'datacreate_') )   # confirm the organized list x is completely reflecting current actual files
   setdiff( dir(rawdir, pattern = 'datacreate_'), x )
   cat("\n \n\n", "To open & edit one of the datacreate_ files,
     you can source a line below\n\n",
       paste0(paste0(
         "\t documentOpen('", rawdir, "/", x, "')"), collapse = "\n"))
   # cbind(x)
+  rm(x)
   # [1,] "datacreate_0_UPDATE_ALL_DATASETS.R"                       
   # [2,] "datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R"  
   
@@ -213,8 +213,6 @@ if (0 == 1) {
   
 } # outline/list of datacreate_ files
 ######################################### ########################################## #
-
-######################################### #
 ## metadata notes ####
 #
 ## use simple metadata for data not related to EJScreen or Census, like just frs-related, naics-related, etc.
@@ -223,10 +221,8 @@ if (0 == 1) {
 
 ## use full metadata if related to ejscreen or census/acs
 # x <- metadata_add(x)
-
 ######################################### #
 ## Verify pins board access ####
-
 x <- datawrite_to_pins(justchecking = T) # load_all() first or use EJAM:::
 if (!is.null(x)) {
   # must use VPN to have access to pins board 
