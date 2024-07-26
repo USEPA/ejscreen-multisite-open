@@ -24,7 +24,8 @@
 #'   names are standard colnames like "street"
 #'   and each named element in list is a vector of aliases
 #'   for that standard name
-#'
+#' @param ignore.case whether to ignore case in matching to aliases
+#' @param verbose set to TRUE for testing/ to check what this function does
 #' @return vector like currentnames but some renamed to a
 #'   standard name if alias found, ignoring case.
 #'   
@@ -42,58 +43,67 @@ fixcolnames_infer <- function(currentnames,
                                 state = c("state", "mystate", "statename", "ST"),
                                 zip = c("zip", "zipcode", "zip code")
                               ), 
-                              ignore.case = TRUE) {
-
+                              ignore.case = TRUE, 
+                              verbose = FALSE) {
+  
   ######################################## #
   # see also fixnames_aliases1() in fixnames_aliases()
   
   fixcolname1_infer <- function(currentnames, standardname, aliases = NULL, ignore.case = TRUE) {
+    if (missing(currentnames)) stop('currentnames missing')
+    if (missing(standardname)) stop('standardname missing')
     
-    lword <- standardname
-    x <- currentnames
-    
-    if (!(lword %in% x)) {
-      if (lword == 'lat') {
+    if (standardname %in% currentnames) {
+      currentnames_now <- currentnames
+    } else {
+      if (standardname == 'lat') {
         # try to infer lat, using these in order of preferred to less
         # aliases <- tolower(c('lat', 'latitude83', 'latitude', 'latitudes', 'faclat', 'lats'))
         aliases <- lat_alias
       }
-      if (lword == 'lon') {
+      if (standardname == 'lon') {
         # try to infer lon, using these in order of preferred to less
         # aliases <- tolower(c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'long', 'longs', 'lons','lng'))
         aliases <- lon_alias
       }
+      if (is.null(aliases)) stop('aliases missing - must be provided unless standardname is lat or lon') # 
+      
+      # compare all currentnames to all aliases of this 1 standarname being sought (e.g., lat)
+      # bestfound should be the one of the currentnames that is the first to match any alias, going in order of aliases preferred to least
+      # 
       if (ignore.case) {
-        # bestfound <- intersect(aliases, tolower(x))[1]
-        bestfound <- aliases[match(tolower(x), tolower(aliases) ) ] # should ignore case but return alias in whatever case it is stored as
+        # bestfound <- intersect(aliases, tolower(currentnames))[1]
+        # aliases[match(tolower(currentnames), tolower(aliases) ) ] # should ignore case but return alias in whatever case it is stored as
+        bestfound <- na.omit(currentnames[match(tolower(aliases), tolower(currentnames))])[1]
       } else {
-        bestfound <- aliases[match(x, aliases)] # case must match
+        bestfound <- na.omit(currentnames[match(aliases, currentnames)])[1]
       }
-      if (is.na(bestfound)) { # intersect()[1] returns NA if none
-        # warning(paste0(lword, ' missing and no synonyms found')) # do not change x at all
+      if (is.na(bestfound)) {
+        # warning(paste0(standardname, ' missing and no synonyms found')) # do not change currentnames at all
+        currentnames_now <- currentnames
       } else {
         #  replace any exact match(es) to that one word. # should ideally confirm unique?
-        x <- gsub(paste0('^', bestfound, '$'), lword, x, ignore.case = ignore.case) # ok?
+        currentnames_now <- gsub(paste0('^', bestfound, '$'), standardname, currentnames, ignore.case = ignore.case) # ok?
       }
     }
-    if (sum(grepl(paste0('^', lword, '$'), x), ignore.case = ignore.case) > 1) {warning(paste0('DUPLICATED ', lword))}
-    x
+    return(currentnames_now)
   }
   ######################################## #
   
-  newer <- currentnames
+  currentnames_now <- currentnames
   
   for (i in seq_along(alias_list)) {
     standardname <- names(alias_list)[i]
     aliases <- alias_list[[i]]
     
-    newer <- fixcolname1_infer(
-      currentnames = newer,
+    currentnames_now <- fixcolname1_infer(
+      currentnames = currentnames_now,
       standardname = standardname,
       aliases = aliases,
       ignore.case = ignore.case
     )
   }
-  return(newer)
+  if (verbose) {print(data.frame(currentnames = currentnames, currentnames_now = currentnames_now))}
+  return(currentnames_now)
 }
 ####################################################################### #
