@@ -2411,9 +2411,12 @@ app_server <- function(input, output, session) {
     if (input$plotkind_1pager == 'bar') {
       if (!is.null(cur_button())) {
         selected_row <- as.numeric(gsub('button_', '', isolate(cur_button())))
-        plot_barplot_ratios(
-          unlist(data_processed()$results_bysite[selected_row, c(..names_d_ratio_to_avg, ..names_d_subgroups_ratio_to_avg)]),
-          names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel')
+        plot_barplot_ratios_ez(
+          out = data_processed(),
+          varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),
+          main = "Demographics at the Analyzed Location Compared to US Overall",
+          single_location = TRUE,
+          row_index = selected_row
         )
       } else {
              if (input$Custom_title_for_bar_plot_of_indicators == ''){
