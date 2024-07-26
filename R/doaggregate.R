@@ -718,7 +718,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   weight_types <- setdiff(unique(calcweight(wtdmeancols_inbgstats)), "pop")
   
-  for (i in seqalong(weight_types)) {
+  for (i in seq_along(weight_types)) {
     
     #  weights = each type
     this_weight_type_cols <- wtdmeancols_inbgstats[calcweight(wtdmeancols_inbgstats) == weight_types[i]]
