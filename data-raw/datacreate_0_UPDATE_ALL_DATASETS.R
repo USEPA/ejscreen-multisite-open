@@ -339,6 +339,18 @@ source_maybe("datacreate_high_pctiles_tied_with_min.R")
 source_maybe("datacreate_formulas.R")
 ######################################### #
  
+## Test data & examples of outputs ####
+######################################### #
+### datacreate_test_address.R #### 
+# rstudioapi::documentOpen('./data-raw/datacreate_test_address.R')  
+source_maybe("datacreate_test_address.R")
+
+
+############################### pause here
+
+
+# save.image(file.path(localfolder, "work in progress.rda"))
+
 
 # may want to rebuild/ reinstall the package here,
 # or at least load_all()  ?
@@ -347,33 +359,13 @@ source_maybe("datacreate_formulas.R")
 devtools::install(quick = TRUE)
 
 
-load_all()
-
-## Test data & examples of outputs ####
-######################################### #
-### datacreate_test_address.R #### 
-# rstudioapi::documentOpen('./data-raw/datacreate_test_address.R')  
-source_maybe("datacreate_test_address.R")
-
-
-
-save.image(file.path(localfolder, "work in progress.rda"))
-
-
-
-############################### pause here
-
-
-
-devtools::check() 
+# devtools::check() 
 
 
 devtools::test()
 
 
 load_all()
-
-
 
 
 ######################################### #
@@ -544,8 +536,8 @@ source_maybe('datacreate_sictable.R')
 # misc ####
 # probably do not need to update these often or ever, but ok to do so
 ######################################### #
-### datacreate_latalias.R ####
-source_maybe('datacreate_latalias.R')
+### datacreate_lat_alias.R ####
+source_maybe('datacreate_lat_alias.R')
 ######################################### #
 ### datacreate_ejampackages.R ####
 source_maybe('datacreate_ejampackages.R')

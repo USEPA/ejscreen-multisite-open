@@ -222,7 +222,6 @@ reference:
   - statestats_query
   - statestats_queryd
   - statestats_querye
-  - regionstats
 - subtitle: "Comparing Distances / Multiple Radius Values"
   contents:
   - ejamit_compare_distances
