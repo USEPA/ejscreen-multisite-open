@@ -570,7 +570,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # and not sure I can calculate results at same time, since this kind of join is getting a subset of blockgroupstats but grouping by sites2bgs_bysite$ejam_uniq_id  and
   # maybe cannot use blockgroupstats[sites2bgs_bysite,    by=.(ejam_uniq_id)    since ejam_uniq_id is in sites2bgs_bysite not in blockgroupstats table.
   # So, first join blockgroupstats necessary variables to the shorter sites2bgs_bysite:
-  
+  ## *** might be efficient to drop the cols we wont need to avoid doing sums aggreg of all subgroups_nh and also subgroups_alone for example if only reporting one of those
   if (include_ejindexes) { # was already set to FALSE if bgej not available
     #blockgroupstats <- merge(blockgroupstats, bgej, by=c('OBJECTID','bgfips','ST','pop','bgid'))
     setDT(bgej)
@@ -584,7 +584,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # wtdmeancols    # we want average persons (or hhld etc.) raw score,  for Environmental (but maybe avg PERCENTILE for EJ indexes ??)
   # calculatedcols  # use formulas for these, like  sum of counts of lowincome divided by sum of counts of those with known poverty ratio (universe)
   countcols_inbgstats      <- intersect(countcols,      names(blockgroupstats))
-  wtdmeancols_inbgstats    <- intersect(wtdmeancols,    names(blockgroupstats))
+  wtdmeancols_inbgstats    <- intersect(wtdmeancols,    names(blockgroupstats)) # and blockgroupstats here includes bgej columns too if include_ejindexes = TRUE
   calculatedcols_inbgstats <- intersect(calculatedcols, names(blockgroupstats))
   
   sites2bgs_plusblockgroupdata_bysite  <- merge(sites2bgs_bysite,  #  but has other cols like   "distance_avg" , "proximityscore"  etc.
@@ -1126,15 +1126,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # specify which variables get converted to percentile form
   
 
-  
-   # quick fix to make all the new varlists available here but note this overwrites (within this function namespace)
-  #  any that were already defined !!
-  
-   vlists = unique(map_headernames$varlist)
-   for (i in seq_along(vlists)) {
-       vns <- varlist2names(vlists[i])
-       assign(vlists[i], vns)
-     }
+
   # the ejscreen community report shows percentiles only for E,D,EJ, plus health,climate,criticalservice tables:
   namelists <- intersect(c('names_health', 'names_climate', 'names_criticalservice'), unique(map_headernames$varlist))
   varsneedpctiles <- unique(c(names_e,  names_d, subs, 

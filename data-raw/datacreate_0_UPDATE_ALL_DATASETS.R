@@ -474,7 +474,7 @@ warning("frs functions need cleanup here")
 ## frs_by_ (lat,lon, regid,program,mact) ####
 
 ### ? datacreate_frs_.R ####
-# documentOpen('./data-raw/datacreate_frs_.R')            #  BUT SEE IF THIS HAS BEEN REVISED/ REPLACED  ***
+# rstudioapi::documentOpen('./data-raw/datacreate_frs_.R')            #  BUT SEE IF THIS HAS BEEN REVISED/ REPLACED  ***
 # THAT SCRIPT USES frs_update_datasets() to download data, create datasets for pkg, 
 # and save them locally, and read them into memory.
 # That creates frs, frs_by_programid, frs_by_naics, frs_by_sic, frs_by_mact
