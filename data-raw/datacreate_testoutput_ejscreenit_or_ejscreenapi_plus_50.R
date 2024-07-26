@@ -14,7 +14,7 @@
 #   lat = c(33.5604162, 41.0613821, 40.8304508, 33.6014344, 33.7420278)
 # ), row.names = c(NA, -5L), class = "data.frame")
 
-# EJAMejscreenapi::testids_program_sys_id
+# testids_program_sys_id
 ######################################################################################################## # 
 
 # testpoints were already made ##################
@@ -37,7 +37,7 @@ file.exists('./R/data_testpoints_500.R')
 # > testpoints_5$lat[1]
 # [1] 33.56042
 testoutput_ejscreenRESTbroker_1pts_1miles <- ejscreenRESTbroker(lon = testpoints_5$lon[1], lat = testpoints_5$lat[1], radius = 1)
-EJAM:::metadata_add(testoutput_ejscreenRESTbroker_1pts_1miles)
+testoutput_ejscreenRESTbroker_1pts_1miles <- EJAM:::metadata_add(testoutput_ejscreenRESTbroker_1pts_1miles)
 usethis::use_data(testoutput_ejscreenRESTbroker_1pts_1miles,   overwrite = TRUE)
 
 # SAVE DOCUMENTATION AS A FILE ####
@@ -73,7 +73,7 @@ testoutput_ejscreenapi_1pts_1miles <- ejscreenapi(lon = testpoints_5$lon[1], lat
                                                   save_when_report = FALSE, format_report_or_json = "pjson", on_server_so_dont_save_files = FALSE, ipurl = "ejscreen.epa.gov",
                                                   updateProgress = NULL, drop_redundant_indicators = FALSE)
 
-EJAM:::metadata_add(testoutput_ejscreenapi_1pts_1miles)
+testoutput_ejscreenapi_1pts_1miles <- EJAM:::metadata_add(testoutput_ejscreenapi_1pts_1miles)
 usethis::use_data(testoutput_ejscreenapi_1pts_1miles,   overwrite = TRUE)
 
 # SAVE DOCUMENTATION AS A FILE ####
@@ -117,15 +117,15 @@ file.exists(fname)
 # ejscreenapi_plus ##################
 
 testoutput_ejscreenapi_plus_5   <- ejscreenapi_plus(testpoints_5 ,  radius = 1, save_when_report = F, on_server_so_dont_save_files = T, verbose = F)
-EJAM:::metadata_add(testoutput_ejscreenapi_plus_5)
+testoutput_ejscreenapi_plus_5 <- EJAM:::metadata_add(testoutput_ejscreenapi_plus_5)
 usethis::use_data(testoutput_ejscreenapi_plus_5,   overwrite = TRUE)
 
 testoutput_ejscreenapi_plus_50  <- ejscreenapi_plus(testpoints_50,  radius = 1, save_when_report = F, on_server_so_dont_save_files = T, verbose = F)
-EJAM:::metadata_add(testoutput_ejscreenapi_plus_50)
+testoutput_ejscreenapi_plus_50  <- EJAM:::metadata_add(testoutput_ejscreenapi_plus_50)
 usethis::use_data(testoutput_ejscreenapi_plus_50,  overwrite = TRUE)
 
 testoutput_ejscreenapi_plus_500 <- ejscreenapi_plus(testpoints_500, radius = 1, save_when_report = F, on_server_so_dont_save_files = T, verbose = F)
-EJAM:::metadata_add(testoutput_ejscreenapi_plus_500)
+testoutput_ejscreenapi_plus_500 <- EJAM:::metadata_add(testoutput_ejscreenapi_plus_500)
 usethis::use_data(testoutput_ejscreenapi_plus_500, overwrite = TRUE)
 
 # for (object_name in c("testoutput_ejscreenapi_plus_5", "testoutput_ejscreenapi_plus_50", "testoutput_ejscreenapi_plus_500")) {
@@ -148,23 +148,23 @@ usethis::use_data(testoutput_ejscreenapi_plus_500, overwrite = TRUE)
 # }
 
 ## confirm documentation exists already ####
-file.exists("./R/data_testoutput_ejscreenapi_plus_5.R")
-file.exists("./R/data_testoutput_ejscreenapi_plus_50.R")
-file.exists("./R/data_testoutput_ejscreenapi_plus_500.R")
+if (!file.exists("./R/data_testoutput_ejscreenapi_plus_5.R")) {warning("did not find file ./R/data_testoutput_ejscreenapi_plus_5.R")}
+if (!file.exists("./R/data_testoutput_ejscreenapi_plus_50.R")) {warning("did not find file ./R/data_testoutput_ejscreenapi_plus_50.R")}
+if (!file.exists("./R/data_testoutput_ejscreenapi_plus_500.R")) {warning("did not find file ./R/data_testoutput_ejscreenapi_plus_500.R")}
 ################################################################################################### # 
 
 # ejscreenit ##################
 
 testoutput_ejscreenit_5               <- ejscreenit(testpoints_5,   radius = 1, nosee = T, nosave = T, save_map = F, save_plot = F, save_table = F, interactiveprompt = F)
-EJAM:::metadata_add(testoutput_ejscreenit_5)
+testoutput_ejscreenit_5 <- EJAM:::metadata_add(testoutput_ejscreenit_5)
 usethis::use_data(testoutput_ejscreenit_5,         overwrite = TRUE)
 
 testoutput_ejscreenit_50              <- ejscreenit(testpoints_50,  radius = 1, nosee = T, nosave = T, save_map = F, save_plot = F, save_table = F, interactiveprompt = F)
-EJAM:::metadata_add(testoutput_ejscreenit_50)
+testoutput_ejscreenit_50 <- EJAM:::metadata_add(testoutput_ejscreenit_50)
 usethis::use_data(testoutput_ejscreenit_50,        overwrite = TRUE)
 
 testoutput_ejscreenit_500             <- ejscreenit(testpoints_500, radius = 1, nosee = T, nosave = T, save_map = F, save_plot = F, save_table = F, interactiveprompt = F)
-EJAM:::metadata_add(testoutput_ejscreenit_500)
+testoutput_ejscreenit_500 <- EJAM:::metadata_add(testoutput_ejscreenit_500)
 usethis::use_data(testoutput_ejscreenit_500,       overwrite = TRUE)
 
 # for (object_name in c("testoutput_ejscreenit_5", "testoutput_ejscreenit_50", "testoutput_ejscreenit_50")) {
@@ -187,9 +187,9 @@ usethis::use_data(testoutput_ejscreenit_500,       overwrite = TRUE)
 # }
 
 ## confirm documentation exists already ####
-file.exists("./R/data_testoutput_ejscreenit_5.R")
-file.exists("./R/data_testoutput_ejscreenit_50.R")
-file.exists("./R/data_testoutput_ejscreenit_500.R")
+if (!file.exists("./R/data_testoutput_ejscreenit_5.R")) {warning("did not find file ./R/data_testoutput_ejscreenit_5.R")}
+if (!file.exists("./R/data_testoutput_ejscreenit_50.R")) {warning("did not find file ./R/data_testoutput_ejscreenit_50.R")}
+if (!file.exists("./R/data_testoutput_ejscreenit_500.R")) {warning("did not find file ./R/data_testoutput_ejscreenit_500.R")}
 
 
 # clean up ###############################

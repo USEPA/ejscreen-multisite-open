@@ -14,6 +14,6 @@ cat(paste0(" critical EJAM-related packages being saved as 'ejampackages' are th
   ejampackages <- c('", paste0(ejampackages, collapse = "', '"), "')\n"))
 cat('\n')
 
-metadata_add(ejampackages)
+ejampackages <- metadata_add(ejampackages)
 usethis::use_data(ejampackages, overwrite = TRUE)
 

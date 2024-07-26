@@ -26,31 +26,31 @@ create_filename <- function(file_desc = '', title = '',
   fname <- 'EJAM'
   
   ## add file description
-  if(!is.null(file_desc) && nchar(file_desc) > 0){
-    fname <- paste(fname, gsub(' ', sep, file_desc), sep=sep)
+  if (!is.null(file_desc) && nchar(file_desc) > 0) {
+    fname <- paste(fname, gsub(' ', sep, file_desc), sep = sep)
   }
   ## add analysis title
-  if(!is.null(title) && nchar(title) > 0){
-    fname <- paste(fname, gsub(' ', sep, title), sep=sep)
+  if (!is.null(title) && nchar(title) > 0) {
+    fname <- paste(fname, gsub(' ', sep, title), sep = sep)
   }
   ## add buffer distance, if applicable
-  if(!is.null(buffer_dist) && !is.na(buffer_dist) && buffer_dist > 0 ){
-    fname <- paste(fname, buffer_dist, 'Miles_from', sep=sep)
+  if (!is.null(buffer_dist) && !is.na(buffer_dist) && buffer_dist > 0 ) {
+    fname <- paste(fname, buffer_dist, 'Miles_from', sep = sep)
   }
   ## add site selection method
-  if(!is.null(site_method) && nchar(site_method) > 0){
-    fname <- paste(fname, 'places_by', site_method, sep=sep)
+  if (!is.null(site_method) && nchar(site_method) > 0) {
+    fname <- paste(fname, 'places_by', site_method, sep = sep)
   }
   
   ## add date and time of download
-  if(with_datetime){
+  if (with_datetime) {
   fname <- paste(fname, format(Sys.time(),'%Y%m%d_%H%M%S'),
                  sep = sep)
   }
   ## add file extension
-  if(!is.null(ext) && nchar(ext) > 0){
+  if (!is.null(ext) && nchar(ext) > 0) {
     ## check for missing . at beginning
-    if(!grepl('\\.', ext)){
+    if (!grepl('\\.', ext)) {
       fname <- paste0(fname,'.', ext)
     } else {
       fname <- paste0(fname, ext)

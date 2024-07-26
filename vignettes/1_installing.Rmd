@@ -127,9 +127,19 @@ Just in case you need more details on how that works, the following describes th
 
 ### Details on the automatic data downloads
 
-To work in the RStudio console, EJAM needs some datasets not stored as part of the package. However, they already should be downloaded and loaded into memory automatically as soon as you use `require(EJAM)` assuming that the current version of `EJAM:::on.Attach()` source code uses `asap_aws <- TRUE; asap_index <- TRUE; asap_bg`. If you want to be sure or if something is missing, you can do this manually:
+To work in the RStudio console, EJAM needs some datasets not stored as part of the package. However, they already should be downloaded and loaded into memory automatically as soon as you use `require(EJAM)`. If you want to check access, you can use `dataload_from_pins(justchecking = T)`. 
+
+Typically you would not need to download any datasets yourself, because EJAM just downloads these when the app starts (technically, when the R package is attached) (or only as needed in the case of certain datasets that are not always needed). Some datasets are installed along with the package, such as the [blockgroupstats] data. But large files like "[blockpoints]" are stored on a "pins board" server and EJAM downloads them from there. You might want your own local copies, though, for these reasons:
+
+1. If your computer can’t immediately access the pins board server due to authentication/ credentials setup that you prefer to skip. Access to the datasets may change during development and before they are public datasets they might not be as easy to get access to without setting up access to the pins board, etc.
+2. If you have local copies, EJAM avoids the slight delay of downloading some essential data (e.g., blockpoints) when you first do library(EJAM), and then when you first use EJ Indexes (relying on bgej) or the FRS/ NAICS/ SIC/ programid/ registryid features (relying on datasets like "frs" etc.).
+
+In case you do want copies of the datasets EJAM normally downloads, and have access to those files, you can save them in the data subfolder of the EJAM package source code folder and then install from source. That way, the locally-run EJAM code avoids downloading them because it always first checks for local copies.
+
+If you do have access to the pins board, and want to download them manually:
 
 ```{r dataload_from_pins, eval = FALSE}
+dataload_from_pins(justchecking = T)
 dataload_from_pins('all')
 # It takes a moment for the large downloads, while EJAM is still in development.
 ```

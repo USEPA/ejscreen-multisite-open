@@ -1,7 +1,6 @@
 #' @name frs_by_sic
-#' @docType data
 #' @title frs_by_sic (DATA) data.table of SIC code(s) for each EPA-regulated site in Facility Registry Service
 #' @description 
 #'    This is the format with one row per site-SIC pair, 
 #'    so multiple rows for one site if it is in multiple SIC.
-NULL
+"frs_by_sic"

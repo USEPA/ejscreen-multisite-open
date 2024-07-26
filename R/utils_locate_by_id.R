@@ -18,7 +18,7 @@
 #' @examples 
 #'   \dontrun{
 #'     
-#'   ids <- EJAMejscreenapi::testids_program_sys_id
+#'   ids <- testids_program_sys_id
 #'   # ids <- c('ILR000128264','600039382','TXR1592DZ','TSCA8851', 
 #'   #    'CT0000000900908716', 'CEDRI10043548',  'CO0000000812305826')
 #'   # ids <- c('ILR000128264','600039382')

@@ -1,5 +1,4 @@
 #' @name frs_by_programid
-#' @docType data
 #' @title frs_by_programid (DATA) data.table of Program System ID code(s) for each EPA-regulated site in 
 #'   the Facility Registry Service
 #' @seealso frs() frs_by_naics()  
@@ -29,4 +28,4 @@
 #'      3: 47.00071 -120.5649 110037546493 WA-FSIS      7886103
 #'   }
 #'  
-NULL
+"frs_by_programid"
