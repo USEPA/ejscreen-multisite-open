@@ -1,8 +1,8 @@
 ## code to prepare datasets 
 
-testpoints_5                 <- read_csv_or_xl('./inst/testdata/testpoints_5.xlsx')
-testpoints_50                <- read_csv_or_xl('./inst/testdata/testpoints_50.xlsx')
-testpoints_500               <- read_csv_or_xl('./inst/testdata/testpoints_500.xlsx')
+testpoints_5                 <- read_csv_or_xl('./inst/testdata/latlon/testpoints_5.xlsx')
+testpoints_50                <- read_csv_or_xl('./inst/testdata/latlon/testpoints_50.xlsx')
+testpoints_500               <- read_csv_or_xl('./inst/testdata/latlon/testpoints_500.xlsx')
 
 testpoints_5$ejscreenmap <- NULL  
 testpoints_50$ejscreenmap <- NULL # works ok in excel but not once saved as dataset and imported for use in ejscreenit() etc.
@@ -24,9 +24,9 @@ usethis::use_data(testpoints_500,               overwrite = TRUE)
 
 # SAVE AS EXCEL FILE?  ####
 #
-writexl::write_xlsx(list(testpoints = testpoints_5),   path = paste0("./inst/testdata/", "testpoints_5",   ".xlsx"))    ############# #
-writexl::write_xlsx(list(testpoints = testpoints_50),  path = paste0("./inst/testdata/", "testpoints_50",  ".xlsx"))    ############# #
-writexl::write_xlsx(list(testpoints = testpoints_500), path = paste0("./inst/testdata/", "testpoints_500", ".xlsx"))    ############# #
+writexl::write_xlsx(list(testpoints = testpoints_5),   path = paste0("./inst/testdata/latlon/", "testpoints_5",   ".xlsx"))    ############# #
+writexl::write_xlsx(list(testpoints = testpoints_50),  path = paste0("./inst/testdata/latlon/", "testpoints_50",  ".xlsx"))    ############# #
+writexl::write_xlsx(list(testpoints = testpoints_500), path = paste0("./inst/testdata/latlon/", "testpoints_500", ".xlsx"))    ############# #
 
 # SAVE DOCUMENTATION AS A FILE ####
 for (testpoints_name in c("testpoints_5", "testpoints_50", "testpoints_500")) {

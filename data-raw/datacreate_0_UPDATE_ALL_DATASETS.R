@@ -362,10 +362,7 @@ devtools::install(quick = TRUE)
 # devtools::check() 
 
 
-devtools::test()
-
-
-load_all()
+# devtools::test()
 
 
 ######################################### #
@@ -380,6 +377,7 @@ source_maybe("datacreate_testpoints_testoutputs.R")
 ### datacreate_default_points_shown_at_startup.R ####
 source_maybe('datacreate_default_points_shown_at_startup.R')
 ### datacreate_testpoints_5_50_500.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_testpoints_5_50_500.R")
 source_maybe('datacreate_testpoints_5_50_500.R')
 
 ### datacreate_ejscreenRESTbroker2table_na_filler.R ####
@@ -392,7 +390,10 @@ source_maybe('datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R')
 ######################################### ########################################## #
 
 
-install()
+
+load_all()
+# 
+# install()
 
 
 ######################################### #

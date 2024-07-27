@@ -19,18 +19,11 @@
 
 # testpoints were already made ##################
 # 
-# # load the existing testpoints
-data("testpoints_5",   package = "EJAMejscreenapi")
-data("testpoints_50",  package = "EJAMejscreenapi")
-data("testpoints_500", package = "EJAMejscreenapi")
-
-file.exists('./R/data_testpoints_5.R')
-file.exists('./R/data_testpoints_50.R')
-file.exists('./R/data_testpoints_500.R')
+# # read the existing testpoints files ?   load_all()  should find them in /data/ folder
 
 ######################################################################################################## # 
 
-# ejscreenRESTbroker ? ##################
+# ejscreenRESTbroker  ##################
 
 # > testpoints_5$lon[1]
 # [1] -111.904
@@ -55,7 +48,6 @@ filecontents <- paste0(
 #'   
 #'   [testoutput_ejscreenit_5] [testoutput_ejscreenit_50] [testoutput_ejscreenit_500]
 #'   
-#'   [testoutput_ejscreenapi_plus_5] [testoutput_ejscreenapi_plus_50] [testoutput_ejscreenapi_plus_500] 
 'testoutput_ejscreenRESTbroker_1pts_1miles'
 "
 )
@@ -102,7 +94,6 @@ filecontents <- paste0(
 #'   
 #'   [testoutput_ejscreenit_5] [testoutput_ejscreenit_50] [testoutput_ejscreenit_500]
 #'   
-#'   [testoutput_ejscreenapi_plus_5] [testoutput_ejscreenapi_plus_50] [testoutput_ejscreenapi_plus_500] 
 'testoutput_ejscreenapi_1pts_1miles'
 "
 )
@@ -114,6 +105,8 @@ file.exists(fname)
 
 ######################################################################################################## # 
 
+if (1 == 0) {       # skip these now - just do ejscreenit() examples
+  
 # ejscreenapi_plus ##################
 
 testoutput_ejscreenapi_plus_5   <- ejscreenapi_plus(testpoints_5 ,  radius = 1, save_when_report = F, on_server_so_dont_save_files = T, verbose = F)
@@ -128,31 +121,29 @@ testoutput_ejscreenapi_plus_500 <- ejscreenapi_plus(testpoints_500, radius = 1, 
 testoutput_ejscreenapi_plus_500 <- EJAM:::metadata_add(testoutput_ejscreenapi_plus_500)
 usethis::use_data(testoutput_ejscreenapi_plus_500, overwrite = TRUE)
 
-# for (object_name in c("testoutput_ejscreenapi_plus_5", "testoutput_ejscreenapi_plus_50", "testoutput_ejscreenapi_plus_500")) {
-# filecontents <- paste0("
-# #' @name 'object_name'
-# #' @docType data
-# #' @title test data examples of output from [ejscreenapi_plus()] using testpoints, radius = 1
-# #' @details 
-# #'  Just for convenience, installed with the package.
-# #'  Has header row, plus a row for each point, and about 300+ columns of buffer summary results.
-# #' @seealso 
-# #'   [testpoints_5] [testpoints_50] [testpoints_500]
-# #'   
-# #'   [testoutput_ejscreenit_5] [testoutput_ejscreenit_50] [testoutput_ejscreenit_500]
-# #'   
-# #'   [testoutput_ejscreenapi_plus_5] [testoutput_ejscreenapi_plus_50] [testoutput_ejscreenapi_plus_500] 
-# 'object_name'
-# ")
-# writeChar(filecontents, con = paste0("./R/data_", object_name, ".R"))             ############# #
-# }
+for (object_name in c("testoutput_ejscreenapi_plus_5", "testoutput_ejscreenapi_plus_50", "testoutput_ejscreenapi_plus_500")) {
+filecontents <- paste0("
+#' @name 'object_name'
+#' @docType data
+#' @title test data examples of output from [ejscreenapi_plus()] using testpoints, radius = 1
+#' @details
+#'  Just for convenience, installed with the package.
+#'  Has header row, plus a row for each point, and about 300+ columns of buffer summary results.
+#' @seealso
+#'   [testpoints_5] [testpoints_50] [testpoints_500]
+#'
+#'   [testoutput_ejscreenit_5] [testoutput_ejscreenit_50] [testoutput_ejscreenit_500]
+'object_name'
+")
+writeChar(filecontents, con = paste0("./R/data_", object_name, ".R"))             ############# #
+}
 
-## confirm documentation exists already ####
+# ## confirm documentation exists already ####
 if (!file.exists("./R/data_testoutput_ejscreenapi_plus_5.R")) {warning("did not find file ./R/data_testoutput_ejscreenapi_plus_5.R")}
 if (!file.exists("./R/data_testoutput_ejscreenapi_plus_50.R")) {warning("did not find file ./R/data_testoutput_ejscreenapi_plus_50.R")}
 if (!file.exists("./R/data_testoutput_ejscreenapi_plus_500.R")) {warning("did not find file ./R/data_testoutput_ejscreenapi_plus_500.R")}
 ################################################################################################### # 
-
+}
 # ejscreenit ##################
 
 testoutput_ejscreenit_5               <- ejscreenit(testpoints_5,   radius = 1, nosee = T, nosave = T, save_map = F, save_plot = F, save_table = F, interactiveprompt = F)
