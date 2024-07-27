@@ -6,7 +6,7 @@
 \usage{
 plot_distance_by_pctd(
   s2b = NULL,
-  sitenum = 1,
+  sitenumber = 1,
   score_colname = names_these[3],
   scorewts_colname = "pop",
   score_label = fixcolnames(score_colname, "r", "shortlabel"),
@@ -20,7 +20,7 @@ If NULL (not provided as a parameter to the function),
 will prompt for a file to upload and use, if interactive() is TRUE, or else
 the function will just show an example using a random point.}
 
-\item{sitenum}{If used, one number that is the unique ID
+\item{sitenumber}{If used, one number that is the unique ID
 (the row number of original list of points) to look at in s2b.
 This should be the same as the value of s2b$ejam_uniq_id for
 the site to be analyzed.
@@ -73,7 +73,7 @@ which provides only block group resolution information about distance.
  # 10 to 30 miles away from this specific point
  pts = data.table(lat = 45.75464, lon = -94.36791)
  plot_distance_by_pctd(pts,
-   sitenum = 1, score_colname = "pcthisp")
+   sitenumber = 1, score_colname = "pcthisp")
  # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 10))
  # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 30))
  

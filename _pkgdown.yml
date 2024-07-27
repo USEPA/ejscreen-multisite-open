@@ -49,6 +49,7 @@ reference:
   - ejamit_compare_types_of_places
   - ejam2report
   - ejam2ratios
+  - ejam2table_tall
   - ejam2excel
   - ejam2map
   - ejam2shapefile
@@ -290,7 +291,7 @@ reference:
   - ejam2report
   - ejam2excel
   - ejam2ratios
-  - table_tall_from_overall
+  - ejam2table_tall
   - table_round
   - table_rounding_info
   - table_order_variables
@@ -381,6 +382,9 @@ reference:
   - custom_doaggregate
   - custom_ejamit
   - ST_by_site_from_sites2blocks
+  - table_tall_from_overall
+  - table_tall_from_site
+  - table_tall_from_bysite
   - tablefixed
   - table_validated_ejamit_row
   - table_xls_from_ejam

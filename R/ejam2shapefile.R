@@ -5,7 +5,7 @@
 
 #' DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.
 #'
-#' @param out output of EJAM such as from [ejamit()]
+#' @param ejamitout output of EJAM such as from [ejamit()]
 #' @param fname a filename no path and must be .shp extension
 #' @param folder optional folder (directory), path to where it should be saved
 #' @param crs optional coord ref system
@@ -22,7 +22,7 @@
 #' 
 #' @export
 #' 
-ejam2shapefile <- function(out, fname = "bysite.shp",  folder = ".", 
+ejam2shapefile <- function(ejamitout, fname = "bysite.shp",  folder = ".", 
                            crs = 4269
 ) { 
   # ,   ...) {
@@ -34,8 +34,8 @@ ejam2shapefile <- function(out, fname = "bysite.shp",  folder = ".",
   
   
   # library(EJAM);  library(data.table); library(sf)
-  #    out <- testoutput_ejamit_10pts_1miles; crs = 4269; fname = "bysite.shp" ;  folder =  "~/../Downloads"  # getwd()
-  df <- data.table::setDF(out$results_bysite)
+  #    ejamitout <- testoutput_ejamit_10pts_1miles; crs = 4269; fname = "bysite.shp" ;  folder =  "~/../Downloads"  # getwd()
+  df <- data.table::setDF(ejamitout$results_bysite)
   ## and may not support 255 or larger number of characters in a field like the URLs so they get truncated
   ## perhaps should alter or remove the url columns
   unlinkify = function(x) {gsub('.*https', 'https', gsub('=report.*', '=report', gsub('., target.*', '', x)))}
@@ -57,7 +57,7 @@ ejam2shapefile <- function(out, fname = "bysite.shp",  folder = ".",
   bysite_shp <-  shape_buffered_from_shapefile_points(bysite_shp, radius.miles = radius, crs = crs)
   
   ## note this removes the columns lat,lon   and  adds a column at the end called geometry
-  ## so its columns are not directly comparable to column names of out$results_bysite
+  ## so its columns are not directly comparable to column names of ejamitout$results_bysite
   
   ### need short colnames for .shp format 
   ### so for DRAFT,  try shortening all but geometry which must be intact

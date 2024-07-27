@@ -20,7 +20,7 @@ table4gt_from_scorevectors(
 \arguments{
 \item{varnames_r}{vector of variable names like names_d}
 
-\item{varnames_shown}{vector like names_d_friendly}
+\item{varnames_shown}{vector like fixcolnames(names_d,'r','short')}
 
 \item{value}{indicator values for a place or overall}
 

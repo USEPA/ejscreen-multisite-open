@@ -14,7 +14,7 @@ This table has some useful information about selected variables that are availab
 It notes which are the most useful for EJAM-related work, and notes
 the name and ID of the variable, which is needed to request that info via the API.
 
-Also see  \code{\link[EJAMejscreenapi:get_facility_info_via_ECHO]{EJAMejscreenapi::get_facility_info_via_ECHO()}}
+Also see  \code{\link[=get_facility_info_via_ECHO]{get_facility_info_via_ECHO()}}
 This table has 316 rows and these columns:
 "ObjectName", "desc", "ColumnID", "critical", "best", "useful",
 "programid", "ej", "ColumnName", "DataType", "DataLength", "Description",
@@ -33,6 +33,6 @@ etc.
 
 To see a full list of variables of interest:
 
-subset(EJAMejscreenapi::varsinfo_ECHO_API, EJAMejscreenapi::varsinfo_ECHO_API$useful)
+subset(varsinfo_ECHO_API, varsinfo_ECHO_API$useful)
 }
 \keyword{internal}
