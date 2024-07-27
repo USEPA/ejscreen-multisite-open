@@ -13,5 +13,4 @@
 #'     
 #'     names(blockid2fips)
 #'     dim(blockid2fips)
-"blockid2fips"
-
+NULL

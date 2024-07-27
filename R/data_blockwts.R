@@ -15,5 +15,4 @@
 #'     
 #'     names(blockwts)
 #'     dim(blockwts)
-"blockwts"
-
+NULL

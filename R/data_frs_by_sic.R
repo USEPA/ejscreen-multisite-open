@@ -3,4 +3,4 @@
 #' @description 
 #'    This is the format with one row per site-SIC pair, 
 #'    so multiple rows for one site if it is in multiple SIC.
-"frs_by_sic"
+NULL

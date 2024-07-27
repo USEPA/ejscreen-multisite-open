@@ -39,4 +39,4 @@
 #'   table(frs_by_mact[, howmany := .N, by="programid"][order(howmany), howmany])
 #'   
 #' @seealso [mact_table] [frs_by_programid]  [frs]
-"frs_by_mact"
+NULL

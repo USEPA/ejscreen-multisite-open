@@ -15,5 +15,4 @@
 #'     
 #'     names(blockpoints)
 #'     dim(blockpoints)
-"blockpoints"
-
+NULL

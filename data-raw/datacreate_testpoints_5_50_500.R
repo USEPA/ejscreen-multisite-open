@@ -44,13 +44,18 @@ for (testpoints_name in c("testpoints_5", "testpoints_50", "testpoints_500")) {
 #'   
 #'   [testoutput_ejscreenit_5] [testoutput_ejscreenit_50] [testoutput_ejscreenit_500]
 #'   
-#'   [testoutput_ejscreenapi_plus_5] [testoutput_ejscreenapi_plus_50] [testoutput_ejscreenapi_plus_500] 
-NULL
+'", testpoints_name, "'
 "
   )
+  # cat(filecontents, "\n\n")
   writeChar(filecontents, con = paste0("./R/data_", testpoints_name, ".R"))             ############# #
 }
+
 ## confirm documentation exists  ####
-file.exists("./R/data_testpoints_5.R")
-file.exists("./R/data_testpoints_50.R")
-file.exists("./R/data_testpoints_500.R")
+if (!all(
+  file.exists("./R/data_testpoints_5.R"),
+  file.exists("./R/data_testpoints_50.R"),
+  file.exists("./R/data_testpoints_500.R")
+  
+)) {stop("documentation file(s) not created")}
+

@@ -59,12 +59,6 @@ plot_ridgeline_ratios <- function(ratio.to.us.d.bysite, names2plot_friendly = NU
     names(ratio.to.us.d.bysite) <- supershortnames
   }
 
-  ## assign column names (could use left_join like elsewhere)
-  # names(ratio.to.us.d.bysite) <-  c(
-  #   names_d_friendly,
-  #   names_d_subgroups_friendly
-  # ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)] #names_d_fixed and long_names_d no longer exist. use names_d_friendly, etc.
-
 ## pivot data from wide to long - now one row per indicator
 ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>%
   tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>%

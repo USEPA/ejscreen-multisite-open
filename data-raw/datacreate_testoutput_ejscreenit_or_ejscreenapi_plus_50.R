@@ -56,7 +56,7 @@ filecontents <- paste0(
 #'   [testoutput_ejscreenit_5] [testoutput_ejscreenit_50] [testoutput_ejscreenit_500]
 #'   
 #'   [testoutput_ejscreenapi_plus_5] [testoutput_ejscreenapi_plus_50] [testoutput_ejscreenapi_plus_500] 
-NULL
+'testoutput_ejscreenRESTbroker_1pts_1miles'
 "
 )
 fname = paste0("./R/data_", "testoutput_ejscreenRESTbroker_1pts_1miles", ".R")
@@ -103,7 +103,7 @@ filecontents <- paste0(
 #'   [testoutput_ejscreenit_5] [testoutput_ejscreenit_50] [testoutput_ejscreenit_500]
 #'   
 #'   [testoutput_ejscreenapi_plus_5] [testoutput_ejscreenapi_plus_50] [testoutput_ejscreenapi_plus_500] 
-NULL
+'testoutput_ejscreenapi_1pts_1miles'
 "
 )
 fname = paste0("./R/data_", "testoutput_ejscreenapi_1pts_1miles", ".R")
@@ -142,7 +142,7 @@ usethis::use_data(testoutput_ejscreenapi_plus_500, overwrite = TRUE)
 # #'   [testoutput_ejscreenit_5] [testoutput_ejscreenit_50] [testoutput_ejscreenit_500]
 # #'   
 # #'   [testoutput_ejscreenapi_plus_5] [testoutput_ejscreenapi_plus_50] [testoutput_ejscreenapi_plus_500] 
-# NULL
+# 'object_name'
 # ")
 # writeChar(filecontents, con = paste0("./R/data_", object_name, ".R"))             ############# #
 # }
@@ -181,7 +181,7 @@ usethis::use_data(testoutput_ejscreenit_500,       overwrite = TRUE)
 # #'   [testoutput_ejscreenit_5] [testoutput_ejscreenit_50] [testoutput_ejscreenit_500]
 # #'   
 # #'   [testoutput_ejscreenapi_plus_5] [testoutput_ejscreenapi_plus_50] [testoutput_ejscreenapi_plus_500] 
-# NULL
+# 'object_name'
 # ")
 # writeChar(filecontents, con = paste0("./R/data_", object_name, ".R"))             ############# #
 # }

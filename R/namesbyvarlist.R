@@ -2,8 +2,7 @@
 
 #' Get indicator names within a varlist like names_d
 #' @aliases varlist2names
-#' @details Note names_d_friendly refers to the semi-long names to use in labels.
-#' 
+#' @details
 #'   varlist2names() is a way to just get a vector of variable names even if the varlist is not stored as a separate data object
 #'   and is only found in the map_headernames$varlist column: 
 #'   
@@ -23,13 +22,13 @@
 #'  namesbyvarlist('names_e_avg', 'rname')
 #'  namesbyvarlist('names_d')
 #'  namesbyvarlist('names_d', 'r')
-#'  namesbyvarlist('names_d', 'friendly')
+#'  namesbyvarlist('names_d', 'long')
 #'  namesbyvarlist('names_d', 'shortlabel')
 #'  
 #'  namesbyvarlist( 'names_e_pctile', c('r', 'longname'))    
 #'  namesbyvarlist(c('names_e_pctile', 'names_e_state_pctile'), 
-#'    c('varlist', 'r', 'api',   'names_friendly', 'longname'))
-#' @seealso [varin_map_headernames()] [varinfo()] [names_whichlist_multi_key()] [vnames()]
+#'    c('varlist', 'rname', 'apiname', 'csvname', 'shortlabel', 'longname'))
+#' @seealso  [varlist2names()] [varin_map_headernames()] [varinfo()] [names_whichlist_multi_key()] [vnames()]
 #' 
 #' @keywords internal
 #' @export
@@ -44,7 +43,7 @@ namesbyvarlist <- function(varlist, nametype=c('rname','longname','apiname')[1])
                           acs = 'acsname',
                            original = 'oldname',   # which might be csvname2.2 or apiname or rname
                           shortlabel = 'shortlabel', 
-                          long = 'longname',      # similar to names_friendly or csvlongname or gdb23longname or csv_descriptions_name, etc.
+                          long = 'longname',     
                            nametype[i]) # if no match above, use as-is
   }
   if (!(any(varlist %in% unique(map_headernames$varlist)))) {stop('specified varlist is not found among map_headernames$varlist')}

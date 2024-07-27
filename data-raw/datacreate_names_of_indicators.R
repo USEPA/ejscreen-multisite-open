@@ -150,7 +150,7 @@ datacreate_names_of_indicators <- function() {
 #' @docType data
 #' @title a list of variable names for internal use in EJAM
 '", vlists[i],"'
-"
+"                   # vlists[i] here is the name of the object and is quoted, as the last line in the documentation file for a dataset in \data\ folder, but must be NULL if it is documentation for a large dataset stored only in pins.
       )
       fname = paste0("./R/data_", vlists[i], ".R")
       writeChar(filecontents, con = fname)             ############# #
