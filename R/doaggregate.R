@@ -698,8 +698,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   #  weights = population count
   
-  popmeancols_inbgstats <- wtdmeancols_inbgstats[calcweight(wtdmeancols_inbgstats) == "pop"]
-  
+  ### XXX TEMPORARILY TRY TO SEE IF IT WORKS TO USE pop AS THE WEIGHT FOR ALL THE WTDMEANCOLS BEFORE GETTING THE OTHER WEIGHTS WORKING 
+  use_pop_as_only_weight = TRUE ############################################################################################################### will remove
+  if (use_pop_as_only_weight) { ############################################################################################################### will remove
+  popmeancols_inbgstats <- wtdmeancols_inbgstats  ## WILL REMOVE THIS LINE LATER  ############################################################################################################### will remove
+  } else { ############################################################################################################### will remove
+  popmeancols_inbgstats <- wtdmeancols_inbgstats[calcweight(wtdmeancols_inbgstats) == "pop"] # WILL USE THIS LATER / WILL UNCOMMENT IT LATER
+  } ############################################################################################################### will remove
   ## mean by SITE ###
   results_bysite_popmeans <- sites2bgs_plusblockgroupdata_bysite[   ,  lapply(.SD, FUN = function(x) {
     collapse::fmean(x, w = bgwt * pop)
@@ -713,7 +718,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   }), .SDcols = popmeancols_inbgstats  ]
   results_overall <- cbind(results_overall, results_overall_popmeans) # many columns (the popwtd mean cols)
   ############################################### #
-  
+  if (!use_pop_as_only_weight) { ############################################################################################################### will remove
   #  weights = other types of weights than pop
   
   weight_types <- setdiff(unique(calcweight(wtdmeancols_inbgstats)), "pop")
@@ -737,7 +742,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     results_overall <- cbind(results_overall, results_overall_wtdmeans) # many columns (the popwtd mean cols)
   }
   ############################################### #
-  
+  } ############################################################################################################### will remove
   
   ##################################################### #
   # * MIN or MAX distance or sitecount ####
@@ -1132,7 +1137,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   varsneedpctiles <- unique(c(names_e,  names_d, subs, 
                        namesbyvarlist(namelists)$rname
   ) )
-  varsneedpctiles <- intersect(varsneedpctiles, names(blockgroupstats))
+  varsneedpctiles <- intersect(varsneedpctiles, names(results_bysite))
   
   varnames.us.pctile    <- paste0(      'pctile.', varsneedpctiles) # but EJ indexes do not follow that naming scheme and are handled with separate code
   varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles) # but EJ indexes do not follow that naming scheme and are handled with separate code
@@ -1363,8 +1368,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   ############# #
   #
-  # >>> calc overall popwtd mean of each state avg !!   ####
-  # but isn't this available from statestats ?? ***
+  # >>> calc Overall avg person at group of sites as a whole, as popwtd mean of all the various states' averages !!   ####
+  # This is not something EJScreen ever had to do for a single site because it is (entirely or at least mostly) in a single state.
+  # using pop as weights is fine for this I think even though technically you might want to use a different denominator (weight) for some indicators as is done when aggregating all block groups at one site.
   state.avg.cols_overall <-  results_bysite[ ,  lapply(.SD, FUN = function(x) {
     collapse::fmean(x, w = pop)   # stats::weighted.mean(x, w = pop, na.rm = TRUE)
   }), .SDcols = names_these_state_avg] # fixed now?
@@ -1375,10 +1381,11 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #
   # INCLUDE US AVERAGE FOR EACH SITE AND INDICATOR AND OVERALL ###
   #  -  THIS IS WASTING TIME AND SPACE, BUT IS CONVENIENT I GUESS
-  
+
   #  overall
   avg.cols_overall <-   usastats[ usastats$PCTILE == "mean",  names_these] # not a data.table, or it would need to say  usastats[ PCTILE == "mean",  ..names_these]
-  # rename the colnames to avg instead of just basic names?
+  ## all.equal( as.vector(unlist(avg.cols_overall)), as.vector(unlist( data.frame(t( usastats_means(names_these, dig = 7)  ))  ) ) ) # TRUE, but that function is not any simpler for getting the means
+  # rename the colnames to avg instead of just basic name
   setnames(avg.cols_overall,  names_these,  names_these_avg)
   
   results_overall <- cbind(results_overall, avg.cols_overall)
@@ -1409,26 +1416,25 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     ratios_to_state_avg_overall <-
       results_overall[  , ..names_these] /
       results_overall[, ..names_these_state_avg]
-    
-    
-    ############################### #
-    # >>> RATIO CALC SPECIAL CASE: ####
-    
-    ratios_to_state_avg_bysite$ratio.to.state.avg.Demog.Index.Supp <- 
-      results_bysite$Demog.Index.Supp.State / 
-      results_bysite$state.avg.Demog.Index.Supp 
-    
-    ratios_to_state_avg_overall$ratio.to.state.avg.Demog.Index
-    results_overall$Demog.Index.State /
-      results_overall$state.avg.Demog.Index
-    
-    ############################### #
-    
+
     # add those all to results tables
     colnames(ratios_to_avg_bysite)  <- names_these_ratio_to_avg
     colnames(ratios_to_avg_overall) <- names_these_ratio_to_avg
     colnames(ratios_to_state_avg_bysite)  <- names_these_ratio_to_state_avg
     colnames(ratios_to_state_avg_overall) <- names_these_ratio_to_state_avg
+    
+    ############################### #
+    # >>> FIX RATIO CALC FOR THIS SPECIAL CASE: ####
+    
+    ratios_to_state_avg_bysite$ratio.to.state.avg.Demog.Index.Supp <- 
+      results_bysite$Demog.Index.Supp.State / 
+      results_bysite$state.avg.Demog.Index.Supp 
+    
+    ratios_to_state_avg_overall$ratio.to.state.avg.Demog.Index <- 
+      results_overall$Demog.Index.State /
+      results_overall$state.avg.Demog.Index
+    
+    ############################### #
     
     results_bysite  <- cbind(results_bysite,  ratios_to_avg_bysite,  ratios_to_state_avg_bysite)   # collapse:: has a faster way than cbind here!
     results_overall <- cbind(results_overall, ratios_to_avg_overall, ratios_to_state_avg_overall)
