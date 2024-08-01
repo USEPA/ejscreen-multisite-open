@@ -18,15 +18,15 @@ test_that('warns if no alias found',{
 # only the best alias is converted/used
 test_that('only the best alias #1',{
   suppressWarnings(
-            expect_warning({val <- latlon_infer(c('a', 'LONG', 'Longitude', 'lat'))})
-            )
-            expect_equal(val, c('a', 'LONG', 'lon', 'lat'))
+    expect_message({val <- latlon_infer(c('a', 'LONG', 'Longitude', 'lat'))})
+  )
+  expect_equal(val, c('a', 'LONG', 'lon', 'lat'))
 })
 
 # only the best alias is converted/used
 test_that('only the best alias #2', {
   suppressWarnings(
-  expect_warning({val <- latlon_infer(c('a', 'LONGITUDE', 'Long', 'Lat'))})
+    expect_message({val <- latlon_infer(c('a', 'LONGITUDE', 'Long', 'Lat'))})
   )
   expect_equal(val, c('a', 'lon', 'Long', 'lat'))
 })
@@ -63,3 +63,28 @@ test_that('dupes left as dupes',{
 #   latlon_infer(c('LONG', 'LONG')) # dupes of an alias are renamed and still are dupes! warn!
 #   latlon_infer(c('lat', 'lat', 'Lon')) # dupes left as dupes but warn!
 
+test_that("stops if data.frame not colnames passed as input to latlon_infer", {
+  expect_error(
+    latlon_infer(testpoints_10)
+  )
+})
+
+
+test_that("handles NA", {
+  suppressWarnings({
+    suppressMessages({
+      expect_warning(
+        latlon_infer(NA)
+      )
+      expect_warning(
+        latlon_infer(c(NA, NA))
+      )
+      
+      expect_warning(
+        latlon_infer(c(NA, NA, "Latitude", "long"))
+      )
+    })
+    
+  })
+  
+})

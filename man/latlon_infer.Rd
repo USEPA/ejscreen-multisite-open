@@ -29,6 +29,6 @@ Guess which columns have lat and lon based on aliases like latitude, FacLat, etc
 
 }
 \seealso{
-latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
+latlon_df_clean() latlon_is.valid() latlon_as.numeric()\code{\link[=fixnames_aliases]{fixnames_aliases()}} \code{\link[=fixcolnames_infer]{fixcolnames_infer()}}
 }
 \keyword{internal}

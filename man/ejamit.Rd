@@ -12,7 +12,7 @@ ejamit(
   avoidorphans = FALSE,
   quadtree = NULL,
   fips = NULL,
-  shapefile_folder = NULL,
+  shapefile = NULL,
   countcols = NULL,
   popmeancols = NULL,
   calculatedcols = NULL,
@@ -67,7 +67,7 @@ It can be automatically created when the package is attached via the .onAttach()
 \item{fips}{optional FIPS code vector to provide if using FIPS instead of sitepoints to specify places to analyze,
 such as a list of US Counties or tracts. Passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
 
-\item{shapefile_folder}{optional path to folder that has shapefiles to analyze polygons}
+\item{shapefile}{optional sf shapefile object or path to .zip, .gdb, or folder that has a shapefiles, to analyze polygons}
 
 \item{countcols}{character vector of names of variables to aggregate within a buffer using a sum of counts,
 like, for example, the number of people for whom a poverty ratio is known,
@@ -98,7 +98,7 @@ although a more accurate slower way would be to use reported distance of each of
 \item{need_blockwt}{if fips parameter is used, passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
 
 \item{thresholds}{list of percentiles like list(80,90) passed to
-batch.summarize() in the EJAMbatch.summarizer package, to be
+batch.summarize(), to be
 counted to report how many of each set of indicators exceed thresholds
 at each site. (see default)}
 
@@ -125,7 +125,7 @@ passed to \code{\link[=doaggregate]{doaggregate()}} also. app server sets this t
 
 \item{testing}{used while testing this function}
 
-\item{...}{passed to getblocksnearby() etc. such as  report_progress_every_n = 0}
+\item{...}{passed to \code{\link[=getblocksnearby]{getblocksnearby()}} etc. such as  report_progress_every_n = 0}
 }
 \value{
 A list of tables of results
@@ -135,7 +135,13 @@ This is the main function in EJAM that runs the analysis.
 It does essentially what the web app does, to analyze/summarize near a set of points,
 or in a set of polygons from a shapefile, or in a list of Census Units like Counties.
 }
+\details{
+See examples in vignettes/ articles at https://usepa.github.io/EJAM/index.html
+}
 \examples{
+
+# See examples in vignettes/ articles at https://usepa.github.io/EJAM/index.html
+
  # All in one step, using functions not shiny app:
  out <- ejamit(testpoints_100_dt, 2)
 
@@ -150,7 +156,7 @@ or in a set of polygons from a shapefile, or in a list of Census Units like Coun
   # use facility points in an excel or csv file
    testsites <- latlon_from_anything(
      system.file(paste0("testdata/latlon/",
-      "testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv"),
+      "testpoints_10.xlsx"),
     package = "EJAM")
     )
    # head(testsites)

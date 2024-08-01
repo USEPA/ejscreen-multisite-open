@@ -1,8 +1,7 @@
 
 
 #' Map popups - Simple map popup from a data.frame, one point per row
-#' 
-#' Creates popup that leaflet::addPopups can use.
+#' MAY DEPRECATE - See popup_from_any() for newer more general replacement for this.
 #' 
 #' @details Each popup is made from one row of the data.frame. 
 #'   Each popup has one row of text per column of the data.frame
@@ -40,12 +39,17 @@ popup_from_df <- function(x, column_names=names(x), labels=column_names, n="all"
   if (n == 'all' | n > NCOL(x)) {
     # x <- x
   } else {
-    x <- x[ , 1:n]  
+    x <- x[ , 1:n, drop = FALSE]  #  drop = FALSE  is in case only 1 column specified
   }
-   if (any(!(column_names %in% names(x)))) {stop("some column_names not found in x for popup")}
+  if (missing(column_names)) {column_names <- names(x)}
+   if (any(!(column_names %in% names(x)))) {
+     stop("some column_names not found in x for popup")
+     }
+  
+  
   if (length(labels) != length(column_names)) {labels = column_names; warning('column_names and labels must be same length. Using column_names as labels.')}
   # x <- x[ , names(x) %in% column_names]
-  x <- x[ ,  column_names]
+  x <- x[ ,  column_names, drop = FALSE] # , drop = FALSE  is in case only 1 column specified
   
   for (i in 1:NCOL(x)) { x[,i] <- paste(labels[i] , x[,i], sep = ': ' )}
   

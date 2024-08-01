@@ -1,45 +1,62 @@
 
 
 #' Show EJAM results as a map of points
-#'
-#' Takes the output of ejamit() and uses [mapfastej()] to 
+#' @description Takes the output of ejamit() and uses [mapfastej()] to 
 #' create a map of the points.
 #' @details Gets radius by checking ejamitout$results_overall$radius.miles
-#' 
+#' You can use browse=TRUE to save it as a shareable .html file
+#' and see it in your web browser.
 #' @inheritParams mapfast
 #' @return like what [mapfastej()] returns
-#' 
 #' @examples
-#' # out = ejamit(testpoints_100, radius = 1)
+#' pts = testpoints_100
+#' mapfast(pts)
+#' 
+#' # out = ejamit(pts, radius = 1)
 #' out = testoutput_ejamit_100pts_1miles
+#' 
+#' # See in RStudio viewer pane
+#' ejam2map(out)
+#' mapfastej(out$results_bysite[c(12,31),])
+#' \dontrun{
+#' 
+#' # See in local browser instead
+#' ejam2map(out, browse = T)
+#' 
+#' # Open folder where interactive map
+#' #  .html file is saved, so you can share it:
 #' x = ejam2map(out)
-#' map2browser(x)
-#' # to see it in the local browser instead of RStudio viewer pane
-#'  
+#' fname = map2browser(x)
+#' # browseURL(dirname(fname)) # to open the temp folder
+#' # file.copy(fname, "./map.html") # to copy map file to working directory
+#' 
+#' out <- testoutput_ejscreenapi_plus_50
+#' mapfastej(out)
+#' }
 #' @export
 #'
-ejam2map <- function(ejamitout, ...) {
-  
+ejam2map <- function(ejamitout, radius = NULL, column_names = "ej", browse = FALSE) {
+  # mydf, radius = 3, column_names='all', labels = column_names, 
+  if (is.null(radius)) {
+    radius <- ejamitout$results_bysite$radius.miles[1]
+  }
   mapfast(mydf = ejamitout$results_bysite,
-          radius = ejamitout$results_overall$radius.miles,
-          column_names = 'ej',
-          ...)
+          radius = radius,
+          column_names = column_names,
+          browse = browse
+          )
 }
 ############################################################################ #
 
 
-#' quick way to open a map html widget in the local browser (by saving it as a tempfile)
+#' quick way to open a map html widget in local browser (saved as tempfile you can share)
 #'
 #' @param x output of [ejam2map()] or [mapfastej()] or [mapfast()]
 #'
 #' @return launches local browser to show x, but also returns
 #'   name of tempfile that is the html widget
-#'
-#' @examples
-#' x = ejam2map(testoutput_ejamit_100pts_1miles)
-#' map2browser(x)
-#' # to see it in the local browser instead of RStudio viewer pane
-#'    
+#' @inherit ejam2map examples
+#' 
 #' @export
 #' 
 map2browser = function(x) {
@@ -50,6 +67,12 @@ map2browser = function(x) {
   mytempfilename = file.path(tempfile("map", fileext = ".html"))
   htmlwidgets::saveWidget(x, file = mytempfilename)
   browseURL(mytempfilename)
+  cat("HTML interactive map saved as in this directory:\n",
+      dirname(mytempfilename), "\n",
+      "with this filename:\n", 
+      basename(mytempfilename), "\n",
+      "You can open that folder from RStudio like this:\n",
+      paste0("browseURL('", dirname(mytempfilename), "')"), "\n\n")
   return(mytempfilename)
 }
 ############################################################################ #

@@ -4,7 +4,8 @@
 #' @description This is the main function in EJAM that runs the analysis.
 #'   It does essentially what the web app does, to analyze/summarize near a set of points,
 #'   or in a set of polygons from a shapefile, or in a list of Census Units like Counties.
-#'
+#' @details See examples in vignettes/ articles at https://usepa.github.io/EJAM/index.html
+#' 
 #' @param sitepoints data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param radius in miles, defining circular buffer around a site point
 #' @param radius_donut_lower_edge radius of lower edge of donut ring if analyzing a ring not circle
@@ -26,7 +27,7 @@
 #'   It can be automatically created when the package is attached via the .onAttach() function
 #' @param fips optional FIPS code vector to provide if using FIPS instead of sitepoints to specify places to analyze,
 #'   such as a list of US Counties or tracts. Passed to [getblocksnearby_from_fips()]
-#' @param shapefile_folder optional path to folder that has shapefiles to analyze polygons
+#' @param shapefile optional sf shapefile object or path to .zip, .gdb, or folder that has a shapefiles, to analyze polygons
 #' @param countcols character vector of names of variables to aggregate within a buffer using a sum of counts,
 #'   like, for example, the number of people for whom a poverty ratio is known,
 #'   the count of which is the exact denominator needed to correctly calculate percent low income.
@@ -47,7 +48,7 @@
 #' @param need_blockwt if fips parameter is used, passed to [getblocksnearby_from_fips()]
 #' 
 #' @param thresholds list of percentiles like list(80,90) passed to 
-#'   batch.summarize() in the EJAMbatch.summarizer package, to be 
+#'   batch.summarize(), to be 
 #'   counted to report how many of each set of indicators exceed thresholds
 #'   at each site. (see default)
 #' @param threshnames list of groups of variable names (see default)
@@ -64,11 +65,14 @@
 #'   [ejamit()] default is to set this to FALSE when calling [doaggregate()].
 #' @param called_by_ejamit Set to TRUE by [ejamit()] to suppress some outputs even if ejamit(silentinteractive=F)
 #' @param testing used while testing this function
-#' @param ... passed to getblocksnearby() etc. such as  report_progress_every_n = 0
+#' @param ... passed to [getblocksnearby()] etc. such as  report_progress_every_n = 0
 #' 
 #' @return A list of tables of results
 #'
 #' @examples
+#' 
+#' # See examples in vignettes/ articles at https://usepa.github.io/EJAM/index.html
+#' 
 #'  # All in one step, using functions not shiny app:
 #'  out <- ejamit(testpoints_100_dt, 2)
 #'
@@ -83,7 +87,7 @@
 #'   # use facility points in an excel or csv file
 #'    testsites <- latlon_from_anything(
 #'      system.file(paste0("testdata/latlon/",
-#'       "testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv"),
+#'       "testpoints_10.xlsx"),
 #'     package = "EJAM")
 #'     )
 #'    # head(testsites)
@@ -141,7 +145,7 @@ ejamit <- function(sitepoints,
                    avoidorphans = FALSE,
                    quadtree = NULL,
                    fips = NULL,
-                   shapefile_folder = NULL,
+                   shapefile = NULL,
                    countcols = NULL,
                    popmeancols = NULL,
                    calculatedcols = NULL,
@@ -175,8 +179,8 @@ ejamit <- function(sitepoints,
   
   ## get blocks in POLYGONS / SHAPEFILES ####
   
-  if (!is.null(shapefile_folder)) {
-    shp <- shapefile_from_folder(folder = shapefile_folder, cleanit = TRUE)
+  if (!is.null(shapefile)) {
+    shp <- shapefile_from_any(shapefile, cleanit = TRUE)
     if (!missing(radius)) {
       # add buffers around the polygons
       if (!silentinteractive) {cat('Adding buffer around each polygon.\n')}
@@ -286,8 +290,9 @@ ejamit <- function(sitepoints,
       ################################################################################## #
       
       if (!silentinteractive) {cat('Finding blocks nearby.\n')}
-      
+      ################################################################################## #
       # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
+      # sitepoints <- sitepoints_from_anything(sitepoints) # COULD SWITCH TO USE THIS AND DROP ejam_uniq_id code below
       sitepoints <- latlon_from_anything(sitepoints)
       stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
       
@@ -296,7 +301,7 @@ ejamit <- function(sitepoints,
         # message('sitepoints did not contain a column named ejam_uniq_id, so one was added')
         sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
       }
-      
+      ################################################################################## #
       mysites2blocks <- getblocksnearby(
         sitepoints = sitepoints,
         radius = radius,
@@ -430,10 +435,10 @@ ejamit <- function(sitepoints,
   
   # (doaggregate does not provide this)
   
-  out$results_summarized <- EJAMbatch.summarizer::batch.summarize(   # disabled only in ejam lite package ***
+  out$results_summarized <- EJAMbatch.summarizer::batch.summarize(
     sitestats = data.frame(out$results_bysite),
     # popstats =  data.frame(out$results_bysite), # now does not have to get passed twice
-    
+    quiet = quiet,
     ## user-selected quantiles to use
     #probs = as.numeric(input$an_list_pctiles),
     thresholds = thresholds, # list(90, 90),
@@ -479,10 +484,11 @@ ejamit <- function(sitepoints,
     )
     ###################################### #
     
-    cat("To view or save, see ejam2report(), ejam2excel(), ejam2map(), ejam2ratios(), ejam2barplot(), etc.   \n\n")
-    
     cat('Output is a list with the following names:\n')
     print(EJAM:::structure.of.output.list(out) )
+    
+    cat("\nTo view or save, see ejam2report(), ejam2excel(), ejam2map(), ejam2ratios(), ejam2barplot(), etc.   \n\n")
+
 
   }
   ################################################################ #

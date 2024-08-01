@@ -1,9 +1,7 @@
 
 
 #' Map popups - Simple map popup from a data.table or data.frame, one point per row
-#' 
-#' Creates popup vector that leaflet::addCircles or leaflet::addPopups can use.
-#' Works similarly to popup_from_df, but now extends to data.table
+#' @description Creates popup vector leaflet::addCircles or leaflet::addPopups can use.
 #' @details Each popup is made from one row of the data.frame. 
 #'   Each popup has one row of text per column of the data.frame
 #' @param x, a data table or data frame
@@ -42,7 +40,11 @@
 #'   
 #' @export
 #'
-popup_from_any <- function(x, column_names = names(x), labels = column_names, n = "all", testing=FALSE) {
+popup_from_any <- function(x, column_names = names(x), labels = column_names, n = "all", testing = FALSE) {
+  
+  if (!is.data.frame(x)) {
+    stop("x must be a data.frame for popup_from_any() to be able to create map popups")
+  }
   if (testing) {print('popup_from_any'); print(names(x)); print(labels); print(n)}
   if (n == "all" | n > NCOL(x)) {
     # nothing
@@ -50,11 +52,12 @@ popup_from_any <- function(x, column_names = names(x), labels = column_names, n 
     if (data.table::is.data.table(x)) {
       x <- x[1:n]
     } else {
-      x <- x[, 1:n]
+      x <- x[, 1:n, drop = FALSE]
     }
   }
-  # could warn if both n is specified and some of column_names requested are beyond n
+  if (missing(column_names)) {column_names <- names(x)} # because maybe n was used and now x has fewer cols than defaults assume
   
+  # could warn if both n is specified and some of column_names requested are beyond n
   if (any(!(column_names %in% names(x)))) {
     
     #   If some of column_names requested are not found in names(x), 
@@ -75,7 +78,7 @@ popup_from_any <- function(x, column_names = names(x), labels = column_names, n 
   if (data.table::is.data.table(x)) {
     x <- x[, ..column_names]
   } else {
-    x <- x[, column_names]
+    x <- x[, column_names, drop = FALSE]
   }
   
   if (missing(labels) & !missing(column_names)) {labels <- column_names}

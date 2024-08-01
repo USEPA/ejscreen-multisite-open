@@ -4,7 +4,13 @@
 \alias{mapfast}
 \title{Map - points - Create leaflet html widget map of points using table with lat lon}
 \usage{
-mapfast(mydf, radius = 3, column_names = "all", labels = column_names)
+mapfast(
+  mydf,
+  radius = 3,
+  column_names = "all",
+  labels = column_names,
+  browse = FALSE
+)
 }
 \arguments{
 \item{mydf}{data.frame or data.table with lat and lon columns or
@@ -18,6 +24,11 @@ in the popup. If a vector of colnames, only those are shown in popups.}
 
 \item{labels}{The labels used before the column_names, for map popups,
 like  label: column_name  (ignored if column_names is ej or all)}
+
+\item{browse}{optional logical, set to TRUE if you want the function to
+launch a default browser window to show the map
+and print the temp filepath and filename in the console.
+Normally the map would be shown in the default RStudio viewer pane.}
 }
 \value{
 plots a leaflet map with popups with all the columns from mydf,
@@ -27,40 +38,31 @@ and returns html widget
 Map - points - Create leaflet html widget map of points using table with lat lon
 }
 \examples{
- mapfast(testpoints_500)
- \dontrun{
- 
- mapfastej(testoutput_ejamit_1000pts_1miles$results_bysite, radius = 1)
- 
- ejam2map(testoutput_ejamit_1000pts_1miles)
- 
- # see random sample of 1k FRS facilities
- if (!exists("frs")) {
-   x <- try(require(EJAM)); if (!inherits(x, "try-error")) {
-     dataload_from_pins("frs")
-   }
-   mydf <-  frs[sample(1:NROW( frs), 1000), 1:5]
-   mapfast(mydf)
- }
- # out <- EJAMejscreenapi::testoutput_ejscreenit_50$table
- # names(out) <- fixcolnames(names(out), 'long', 'r')
- out <- testoutput_ejscreenapi_plus_50
- mapfastej(out)
- mapfast(out, column_names = 'ej')
- mapfast(out)
+pts = testpoints_100
+mapfast(pts)
 
- # Save .html file and view it in your browser
+# out = ejamit(pts, radius = 1)
+out = testoutput_ejamit_100pts_1miles
 
- mytable <- testoutput_ejscreenit_5$table
- # names(mytable) <- fixcolnames(names(mytable), 'long', 'r')
- ## now, that renaming is done by mapfast function
- mymap <- mapfastej(mytable)
- tfile <- paste0(tempfile(), '.html')
- htmltools::save_html(mymap, file = tfile)
- browseURL(tfile)
-  }
+# See in RStudio viewer pane
+ejam2map(out)
+mapfastej(out$results_bysite[c(12,31),])
+\dontrun{
 
+# See in local browser instead
+ejam2map(out, browse = T)
+
+# Open folder where interactive map
+#  .html file is saved, so you can share it:
+x = ejam2map(out)
+fname = map2browser(x)
+# browseURL(dirname(fname)) # to open the temp folder
+# file.copy(fname, "./map.html") # to copy map file to working directory
+
+out <- testoutput_ejscreenapi_plus_50
+mapfastej(out)
+}
 }
 \seealso{
-\code{\link[=ejam2map]{ejam2map()}} \code{\link[=popup_from_df]{popup_from_df()}} \code{\link[=mapfastej]{mapfastej()}}
+\code{\link[=ejam2map]{ejam2map()}} \code{\link[=popup_from_any]{popup_from_any()}} \code{\link[=mapfastej]{mapfastej()}}
 }

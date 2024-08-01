@@ -2,7 +2,7 @@
 % Please edit documentation in R/ejam2map.R
 \name{map2browser}
 \alias{map2browser}
-\title{quick way to open a map html widget in the local browser (by saving it as a tempfile)}
+\title{quick way to open a map html widget in local browser (saved as tempfile you can share)}
 \usage{
 map2browser(x)
 }
@@ -14,11 +14,31 @@ launches local browser to show x, but also returns
 name of tempfile that is the html widget
 }
 \description{
-quick way to open a map html widget in the local browser (by saving it as a tempfile)
+quick way to open a map html widget in local browser (saved as tempfile you can share)
 }
 \examples{
-x = ejam2map(testoutput_ejamit_100pts_1miles)
-map2browser(x)
-# to see it in the local browser instead of RStudio viewer pane
-   
+pts = testpoints_100
+mapfast(pts)
+
+# out = ejamit(pts, radius = 1)
+out = testoutput_ejamit_100pts_1miles
+
+# See in RStudio viewer pane
+ejam2map(out)
+mapfastej(out$results_bysite[c(12,31),])
+\dontrun{
+
+# See in local browser instead
+ejam2map(out, browse = T)
+
+# Open folder where interactive map
+#  .html file is saved, so you can share it:
+x = ejam2map(out)
+fname = map2browser(x)
+# browseURL(dirname(fname)) # to open the temp folder
+# file.copy(fname, "./map.html") # to copy map file to working directory
+
+out <- testoutput_ejscreenapi_plus_50
+mapfastej(out)
+}
 }

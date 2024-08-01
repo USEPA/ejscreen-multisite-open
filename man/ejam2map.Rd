@@ -4,7 +4,19 @@
 \alias{ejam2map}
 \title{Show EJAM results as a map of points}
 \usage{
-ejam2map(ejamitout, ...)
+ejam2map(ejamitout, radius = NULL, column_names = "ej", browse = FALSE)
+}
+\arguments{
+\item{radius}{in miles, converted to meters and passed to leaflet::addCircles()}
+
+\item{column_names}{If "ej" then nice popup made based on just key EJScreen
+indicators. If "all" then every column in the entire mydf table is shown
+in the popup. If a vector of colnames, only those are shown in popups.}
+
+\item{browse}{optional logical, set to TRUE if you want the function to
+launch a default browser window to show the map
+and print the temp filepath and filename in the console.
+Normally the map would be shown in the default RStudio viewer pane.}
 }
 \value{
 like what \code{\link[=mapfastej]{mapfastej()}} returns
@@ -15,12 +27,32 @@ create a map of the points.
 }
 \details{
 Gets radius by checking ejamitout$results_overall$radius.miles
+You can use browse=TRUE to save it as a shareable .html file
+and see it in your web browser.
 }
 \examples{
-# out = ejamit(testpoints_100, radius = 1)
+pts = testpoints_100
+mapfast(pts)
+
+# out = ejamit(pts, radius = 1)
 out = testoutput_ejamit_100pts_1miles
+
+# See in RStudio viewer pane
+ejam2map(out)
+mapfastej(out$results_bysite[c(12,31),])
+\dontrun{
+
+# See in local browser instead
+ejam2map(out, browse = T)
+
+# Open folder where interactive map
+#  .html file is saved, so you can share it:
 x = ejam2map(out)
-map2browser(x)
-# to see it in the local browser instead of RStudio viewer pane
- 
+fname = map2browser(x)
+# browseURL(dirname(fname)) # to open the temp folder
+# file.copy(fname, "./map.html") # to copy map file to working directory
+
+out <- testoutput_ejscreenapi_plus_50
+mapfastej(out)
+}
 }

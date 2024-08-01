@@ -1284,7 +1284,7 @@ mod_ejscreenapi_server <- function(id,
     output$plot1out <- shiny::renderPlot({
       req(results_table())
       out <- results_table()
-      names(out) <- fixnames(names(out), oldtype = 'api', newtype = 'r', mapping_for_names = map_headernames)
+      names(out) <- fixcolnames(names(out), oldtype = 'api', newtype = 'r', mapping_for_names = map_headernames)
       us.ratios    <- ratios_to_avg(out)
       #state.ratios <- ratios_to_avg(out = out, zone.prefix = 'state')
       ## boxplots_ratios(us.ratios$ratios_d)

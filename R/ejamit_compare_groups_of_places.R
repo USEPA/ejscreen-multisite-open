@@ -143,7 +143,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   
   # Note sitepoints_from_any() is able to check if sitepoints was missing 
   #  in expected params of ejamit_compare_types_of_places()
-  sitepoints <- sitepoints_from_any(sitepoints, silentinteractive = silentinteractive)   
+  sitepoints <- sitepoints_from_any(sitepoints)   
   sitepoints <- data.frame(sitepoints)
   # sitepoints$typeofsite <- typeofsite # that would not get used
   #################### # 

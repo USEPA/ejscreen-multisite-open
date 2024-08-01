@@ -12,3 +12,29 @@ like what \code{\link[=mapfast]{mapfast()}} returns
 \description{
 Like \code{\link[=mapfast]{mapfast()}} but with column_names = "ej"
 }
+\examples{
+pts = testpoints_100
+mapfast(pts)
+
+# out = ejamit(pts, radius = 1)
+out = testoutput_ejamit_100pts_1miles
+
+# See in RStudio viewer pane
+ejam2map(out)
+mapfastej(out$results_bysite[c(12,31),])
+\dontrun{
+
+# See in local browser instead
+ejam2map(out, browse = T)
+
+# Open folder where interactive map
+#  .html file is saved, so you can share it:
+x = ejam2map(out)
+fname = map2browser(x)
+# browseURL(dirname(fname)) # to open the temp folder
+# file.copy(fname, "./map.html") # to copy map file to working directory
+
+out <- testoutput_ejscreenapi_plus_50
+mapfastej(out)
+}
+}
