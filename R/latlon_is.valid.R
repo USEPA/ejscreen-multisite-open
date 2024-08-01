@@ -9,6 +9,18 @@
 #' @keywords internal
 #'
 latlon_is.available  <- function(lat, lon) {
+  if(missing(lat) | missing(lon)){
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
+    return(FALSE)
+  }
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
+    warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
+  if(is.null(lat) | is.null(lon)){
+    warning('No lat or lon column found')
+    return(FALSE)
+  }
   !is.na(lat) & !is.na(lon)
 }
 ############################################### #
@@ -27,6 +39,18 @@ latlon_is.available  <- function(lat, lon) {
 #' @keywords internal
 #'
 latlon_is.usa <- function(lat, lon) {
+  if(missing(lat) | missing(lon)){
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
+    return(FALSE)
+  }
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
+    warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
+  if(is.null(lat) | is.null(lon)){
+    warning('No lat or lon column found')
+    return(FALSE)
+  }
   !(
     (lat < 17.5 | lat > 71.5) |   (lon > -64 & lon < 172) |  (lon > 180 | lon < -180)
   )
@@ -44,6 +68,17 @@ latlon_is.usa <- function(lat, lon) {
 #' @keywords internal
 #'
 latlon_is.possible   <- function(lat, lon) {
+  if(missing(lat) | missing(lon)){
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
+    return(FALSE)
+  }else if (is.null(lat) | is.null(lon)){ 
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
+    return(FALSE)
+  }
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
+    warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
   (lat < 180 & lat > -180  &  lon < 180 & lon > -180)
 }
 ############################################### #
@@ -68,6 +103,18 @@ latlon_is.possible   <- function(lat, lon) {
 #' @keywords internal
 #'
 latlon_is.islandareas <- function(lat, lon)  {
+  if(missing(lat) | missing(lon)){
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
+    return(FALSE)
+  }
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
+    warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
+  if(is.null(lat) | is.null(lon)){
+    warning('No lat or lon column found')
+    return(FALSE)
+  }
 
   x <- islandareas
   states <- unique(x$ST)
@@ -116,7 +163,14 @@ latlon_is.islandareas <- function(lat, lon)  {
 #' @export
 #'
 latlon_is.valid <- function(lat, lon, quiet = TRUE) {
-
+  if(missing(lat) | missing(lon)){
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
+    return(FALSE)
+  }
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
+    warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
   if(is.null(lat) | is.null(lon)){
     warning('No lat or lon column found')
     return(FALSE)
