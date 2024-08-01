@@ -64,7 +64,7 @@ ejamit_compare_distances_fulloutput <- function(sitepoints, radii = c(1,2,3),
   suppressMessages({
     # avoid message about ejam_uniq_id already being there since this might be called by ejamit_compare_distances() which already added ejam_uniq_id
     # but do sitepoints_from_any() here even if can be redundant, in case someone wants to use only ejamit_compare_distances_fulloutput() alone (not via ejamit_compare_distances() function)
-    sitepoints <- sitepoints_from_any(sitepoints, silentinteractive = silentinteractive)
+    sitepoints <- sitepoints_from_any(sitepoints)
   })
   out_bydistance <- list()
   
@@ -206,7 +206,7 @@ ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3),
   ################################################################################## #
   
   # Check and clean input points and radii
-  sitepoints <- sitepoints_from_any(sitepoints, silentinteractive = silentinteractive) # also done again in ejamit_compare_distances_fulloutput()
+  sitepoints <- sitepoints_from_any(sitepoints) # also done again in ejamit_compare_distances_fulloutput()
   radii <- as.numeric(radii) # 1:2 is integer but c(1,2) is numeric, so this keeps class of radius.miles in output consistently always numeric, like for ejamit(). also done in ejamit_compare_distances_fulloutput() so this is redundant but if refactoring replaced the fulloutput approach this would ensure it still happens
   if (length(radii) > 30 || max(radii, na.rm = T) > 31 || any(!is.numeric(radii)) || any(radii < 0.5)) {
     stop("radii must be numbers between 0.5 and 31, and 30 different radii is the max allowed.")

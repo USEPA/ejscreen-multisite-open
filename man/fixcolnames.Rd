@@ -4,51 +4,45 @@
 \alias{fixcolnames}
 \title{helper function to rename variables that are colnames of data.frame}
 \usage{
-fixcolnames(
-  namesnow,
-  oldtype = "original",
-  newtype = "friendly",
-  mapping_for_names
-)
+fixcolnames(namesnow, oldtype = "original", newtype = "r", mapping_for_names)
 }
 \arguments{
 \item{namesnow}{vector of colnames to be renamed}
 
-\item{oldtype}{friendly or long or original, or csv or r or api,
+\item{oldtype}{"longname" or "shortname", or "csv" or "r" or "api", etc.
 or a colname of map_headernames, used if one of those known types was not specified.}
 
-\item{newtype}{friendly or long or original, or csv or r or api,
+\item{newtype}{"longname" or "shortname", or "csv" or "r" or "api", etc.
 or a colname of map_headernames, used if one of those known types was not specified.}
 
-\item{mapping_for_names}{default is a dataset already in the package.
-A data.frame passed to \code{\link[=fixnames]{fixnames()}} to do the work
-with columns oldnames (original), longname_tableheader (long), newnames_ejscreenapi (friendly)}
+\item{mapping_for_names}{default is a dataset already in the package.}
 }
 \value{
 Vector or new column names same length as input
 }
 \description{
-Changes column names to friendly or long from original names in FTP site file
+Changes variable names like colnames to long plain-English headers or short labels for plots
 }
 \details{
-YOU SPECIFY A TYPE LIKE "api" or "long"
-or a colnames from map_headernames like "rname" or "vartype"
+You specify a type like "api" or "longname" or "shortname"
+or one of \code{colnames(map_headernames)} like "rname" or "vartype"
 
-Note that you actually can use this to extract any info from map_headernames (which
+Also, you can use this to extract any info from \code{map_headernames} (which
 here is called mapping_for_names).
 
 NOTE: if you ask to rename your words to a known type like rname or apiname, and
 the namesnow is not found among the oldtype, then it is not renamed, and those are returned as unchanged.
 BUT, if you specify as newtype some column that is not a known type of name, like "varcategory"
 then it will instead return an empty string for those in namesnow that are not found among the oldtype.
-That way if you are really seeking a new name, but it cannot rename, it keeps the old name; while
-if you are really seeking metadata like what category it is in, it returns a blank if the old name is not found at all.
+That way if you are really seeking a new name, but it cannot rename, it keeps the old name
+while if you are really seeking metadata like what category it is in,
+it returns a blank if the old name is not found at all.
 }
 \examples{
  # see package tests
   fixcolnames(c("RAW_D_INCOME", "S_D_LIFEEXP")) # assumes it was in original format as API outputs
-  fixcolnames(c("RAW_D_INCOME", "S_D_LIFEEXP"), newtype = "long")
-  fixcolnames(c("resp","rsei"),  oldtype = "r", newtype = "long")
+  fixcolnames(c("RAW_D_INCOME", "S_D_LIFEEXP"), newtype = "longname")
+  fixcolnames(c("resp","rsei"),  oldtype = "r", newtype = "longname")
   fixcolnames(c("resp","rsei"),  oldtype = "r", newtype = "api")
   fixcolnames(c("resp","pctlowinc"), oldtype = "r", newtype = "varlist")
   

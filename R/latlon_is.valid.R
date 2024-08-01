@@ -9,6 +9,18 @@
 #' @keywords internal
 #'
 latlon_is.available  <- function(lat, lon) {
+  if(missing(lat) | missing(lon)){
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
+    return(FALSE)
+  }
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
+    warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
+  if(is.null(lat) | is.null(lon)){
+    warning('No lat or lon column found')
+    return(FALSE)
+  }
   !is.na(lat) & !is.na(lon)
 }
 ############################################### #
@@ -27,6 +39,18 @@ latlon_is.available  <- function(lat, lon) {
 #' @keywords internal
 #'
 latlon_is.usa <- function(lat, lon) {
+  if(missing(lat) | missing(lon)){
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
+    return(FALSE)
+  }
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
+    warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
+  if(is.null(lat) | is.null(lon)){
+    warning('No lat or lon column found')
+    return(FALSE)
+  }
   !(
     (lat < 17.5 | lat > 71.5) |   (lon > -64 & lon < 172) |  (lon > 180 | lon < -180)
   )
@@ -44,6 +68,17 @@ latlon_is.usa <- function(lat, lon) {
 #' @keywords internal
 #'
 latlon_is.possible   <- function(lat, lon) {
+  if(missing(lat) | missing(lon)){
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
+    return(FALSE)
+  }else if (is.null(lat) | is.null(lon)){ 
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
+    return(FALSE)
+  }
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
+    warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
   (lat < 180 & lat > -180  &  lon < 180 & lon > -180)
 }
 ############################################### #
@@ -68,6 +103,18 @@ latlon_is.possible   <- function(lat, lon) {
 #' @keywords internal
 #'
 latlon_is.islandareas <- function(lat, lon)  {
+  if(missing(lat) | missing(lon)){
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
+    return(FALSE)
+  }
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
+    warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
+  if(is.null(lat) | is.null(lon)){
+    warning('No lat or lon column found')
+    return(FALSE)
+  }
 
   x <- islandareas
   states <- unique(x$ST)
@@ -99,7 +146,8 @@ latlon_is.islandareas <- function(lat, lon)  {
 #'   lat must be between 17.5 and 71.5, and
 #'
 #'   lon must be ( between -180 and -64) OR (between 172 and 180)
-#' @param lat vector of latitudes
+#' @param lat vector of latitudes 
+#'   (or data.frame with colnames lat and lon, in which case lon param must be missing)
 #' @param lon vector of longitudes
 #' @param quiet optional logical, if TRUE, show list of bad values in console
 #' @return logical vector, one element per lat lon pair (location)
@@ -116,32 +164,58 @@ latlon_is.islandareas <- function(lat, lon)  {
 #' @export
 #'
 latlon_is.valid <- function(lat, lon, quiet = TRUE) {
-
-  if(is.null(lat) | is.null(lon)){
-    warning('No lat or lon column found')
+  if(missing(lat) | missing(lon)){
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
     return(FALSE)
   }
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
+    warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
+  if(is.null(lat) | is.null(lon)){
+    warning('No lat or lon column found')
 
+    return(FALSE)
+  }
+  if (missing(lon)) {
+    if (is.data.frame(lat)) {
+      # do no use latlon_infer() here -- needs to have been done already elsewhere
+      if (!all(c("lat", "lon") %in% colnames(lat))) {
+        warning("if lat is a data.frame it must have lat and lon as colnames")
+        return(FALSE)
+      }
+      lon <- lat$lon
+      lat <- lat$lat
+    } else {
+      warning('no lon values(s) provided')
+      return(FALSE)
+    }
+  }
+  if (is.null(lat) | is.null(lon)) {
+    warning('No lat provided or no lon provided')
+    return(FALSE)
+  }
+  
   # assume none bad until proven otherwise
   bad         <- rep(FALSE, length(lat))
-
+  
   unavailable <- !latlon_is.available(lat = lat, lon = lon) # is.na(lat) | is.na(lon)
-
+  
   impossible  <-  !latlon_is.possible(lat = lat, lon = lon) # lat > 180 | lat < -180  |  lon > 180 | lon < -180
-
+  
   roughly_in_core_usa_excluding_islandareas <- latlon_is.usa(lat = lat, lon = lon)
   #   !(
   #   (lat < 17.5 | lat > 71.5) |   (lon > -64 & lon < 172) |  (lon > 180 | lon < -180)
   # )
-
+  
   in_islandareas <- latlon_is.islandareas(lat = lat, lon = lon)
   if (any(in_islandareas, na.rm = TRUE)) {
     message("Some points appear to be in US Island Areas, which may lack some data such as demographic data here")
   }
-
+  
   bad <- unavailable | impossible |
     ( !roughly_in_core_usa_excluding_islandareas & !in_islandareas )
-
+  
   if (any(bad)) {
     warning('Some lat or lon values are invalid - NA or number entirely outside expected ranges (US including Island Areas)')
     if (!quiet) {
@@ -149,15 +223,20 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE) {
       print(data.table(lat = lat[bad], lon = lon[bad]))
       cat('\n\n')
     }
+    if (all(bad)) {
+      if (any(latlon_is.valid(lat = lon, lon = lat))) {
+        warning("Maybe lat vs lon got mixed up. Did you accidentally provide lon,lat instead of lat,lon ?")
+      }
+    } 
   }
-
+  
   return(!bad)
-
+  
   # sort(unique(substr(bgpts$bgfips,1,2)))     # bgpts has PR not island areas
   # sort(unique(substr(blockid2fips$blockfips,1,2))) #  has PR not island areas
   ## same for bgid2fips
   # sort(unique(substr(blockgroupstats$bgfips,1,2))) # has island areas too: "60" "66" "69" "72" "78" (but not lat,lon)
-
+  
   #
   #   > range(blockpoints$lat)
   # [1] 17.88513 71.39840
@@ -168,16 +247,16 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE) {
   # > max(blockpoints$lon[blockpoints$lon < 0])
   # [1] -65.20799 # and must be > -180 (min seen is -179.1084)
   # > # lon must be ( between -180 and -65) OR (between 172 and 180) -- but actually US VI might reach almost -64 longitude
-
+  
   #    NOTE THAT Guam etc. have points outside these ranges!
-
+  
   # BUT NOTE FRS SEEMS TO HAVE PROBLEMATIC LAT LON VALUES
   #
   # > range(frs$lat)
   # [1] -43.78711  88.07278
   # > range(frs$lon)
   # [1] -179.3000  179.2599
-
+  
   # > table(latlon_is.valid(lat = frs$lat, lon=frs$lon))
   #
   # FALSE    TRUE

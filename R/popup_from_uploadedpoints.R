@@ -2,7 +2,7 @@
 #'
 #' @param mypoints data.frame (or tibble?) with lat and lon columns preferably
 #' @param n Show the first n columns of mypoints, in popup. "all" means all of them.
-#' @seealso [popup_from_df()]
+#' @seealso [popup_from_any()]
 #' @return popups vector to be used in leaflet maps
 #' 
 #' @keywords internal

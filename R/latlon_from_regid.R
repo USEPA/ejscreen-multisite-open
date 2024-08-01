@@ -16,7 +16,7 @@
 #'
 latlon_from_regid <- function(regid) {
   
-  if (missing(regid)) {return(NULL)}
+  if (missing(regid)) {return(NULL)} else if (all(is.na(regid)) | is.null(regid)){return(NULL)}
   
   if (!exists("frs")) dataload_from_pins("frs")
   

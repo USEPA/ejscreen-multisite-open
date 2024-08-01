@@ -1,3 +1,5 @@
+# !diagnostics off
+##   disables diagnostics within this document
 
 if (1 == 0) { # so it does not do anything if source() is done by testing 
   
@@ -171,7 +173,7 @@ tdat[is.na(tdat$test) & !is.na(tdat$R) & "data_" != substr(tdat$name, 1,5), ] |>
 
 # 78 popshare_xyz                               R/popshare_xyz.R                               NA        
 # 79 popup_from_any                             R/popup_from_any.R                             NA        
-# 80 popup_from_df                              R/popup_from_df.R                              NA        
+# 80     
 # 81 popup_from_ejscreen                        R/popup_from_ejscreen.R                        NA        
 # 82 popup_from_uploadedpoints                  R/popup_from_uploadedpoints.R                  NA        
 # 83 proximity.score.in.miles                   R/proximity.score.in.miles.R                   NA        

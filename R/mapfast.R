@@ -5,6 +5,7 @@
 #' Like [mapfast()] but with column_names = "ej"
 #'
 #' @inheritParams mapfast
+#' @inherit ejam2map examples
 #' @return like what [mapfast()] returns
 #' @export
 #'
@@ -29,44 +30,12 @@ mapfastej <- function(...) {
 #'   launch a default browser window to show the map
 #'   and print the temp filepath and filename in the console.
 #'   Normally the map would be shown in the default RStudio viewer pane.
-#' @seealso [ejam2map()] [popup_from_df()] [mapfastej()]
+#' @seealso [ejam2map()] [popup_from_any()] [mapfastej()]
 #' @return plots a leaflet map with popups with all the columns from mydf,
 #'   and returns html widget
 #' @import leaflet
 #' @import leaflet.extras2
-#' @examples
-#'  mapfast(testpoints_500)
-#'  \dontrun{
-#'  
-#'  mapfastej(testoutput_ejamit_1000pts_1miles$results_bysite, radius = 1)
-#'  
-#'  ejam2map(testoutput_ejamit_1000pts_1miles)
-#'  
-#'  # see random sample of 1k FRS facilities
-#'  if (!exists("frs")) {
-#'    x <- try(require(EJAM)); if (!inherits(x, "try-error")) {
-#'      dataload_from_pins("frs")
-#'    }
-#'    mydf <-  frs[sample(1:NROW( frs), 1000), 1:5]
-#'    mapfast(mydf)
-#'  }
-#'  # out <- EJAMejscreenapi::testoutput_ejscreenit_50$table
-#'  # names(out) <- fixcolnames(names(out), 'long', 'r')
-#'  out <- testoutput_ejscreenapi_plus_50
-#'  mapfastej(out)
-#'  mapfast(out, column_names = 'ej')
-#'  mapfast(out)
-#'
-#'  # Save .html file and view it in your browser
-#'
-#'  mytable <- testoutput_ejscreenit_5$table
-#'  # names(mytable) <- fixcolnames(names(mytable), 'long', 'r')
-#'  ## now, that renaming is done by mapfast function
-#'  mymap <- mapfastej(mytable)
-#'  tfile <- paste0(tempfile(), '.html')
-#'  htmltools::save_html(mymap, file = tfile)
-#'  browseURL(tfile)
-#'   }
+#' @inherit ejam2map examples
 #'
 #' @export
 #'
@@ -115,8 +84,10 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
                         popup = mypop) |>
     leaflet.extras2::addEasyprint( ) # button to print or print to pdf and save
   
-  if (browse) {
+
+  if (browse) {  # map2browser() would do the same
     htmlwidgets::saveWidget(x, file = fname <- tempfile("mapfast_", fileext = ".html"))
+    # htmltools::save_html(x, file = fname <- tempfile("mapfast_", fileext = ".html"))  # might work also?
     browseURL(fname)
     cat(fname, "\n")
   }

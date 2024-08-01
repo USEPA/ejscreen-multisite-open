@@ -28,7 +28,6 @@ latlon_from_programid <- function(programname,programid) {
   if (missing(programid) | missing(programname)) {
     warning('Please provide both programname and programid.')
     return(NULL)
-  }
   
   if (!exists("frs_by_programid")) dataload_from_pins("frs_by_programid")
   

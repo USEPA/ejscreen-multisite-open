@@ -15,7 +15,7 @@ test_that('case simple example, return data.table',{
 test_that("testpoints_5 has same colnames as testpoints_5,500", {
   expect_identical(names(testpoints_5), names(testpoints_50))
   expect_identical(names(testpoints_5), names(testpoints_500))
-  expect_in(names(testpoints_5), names(testpoints_conus5)) # different order but same columns
+  
 })
 test_that("testpoints_10 has same colnames as testpoints_5 etc", {
   expect_in(names(testpoints_10), names(testpoints_5))

@@ -18,6 +18,6 @@ popups vector to be used in leaflet maps
 Map popups - make simple popups for map to show info about uploaded points
 }
 \seealso{
-\code{\link[=popup_from_df]{popup_from_df()}}
+\code{\link[=popup_from_any]{popup_from_any()}}
 }
 \keyword{internal}

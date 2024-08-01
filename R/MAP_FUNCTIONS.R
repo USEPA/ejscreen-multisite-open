@@ -354,9 +354,11 @@ map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenS
     warning("mapview package would be needed and is not attached - checking if installed")
     junk <- try(find.package("mapview"), silent = TRUE)
     if (inherits(junk, "try-error")) {
-      stop("mapview package is not available")
+      warning("mapview package does not appear to be installed")
+      return(NULL)
     } else {
-      stop("mapview package appears to be installed but not attached. Try using library() or require()")
+      warning("mapview package appears to be installed but not attached. Try using library(mapview) or require(mapview)")
+      return(NULL)
     }
   } else {
     mapview(shapes, col.regions = col.regions, map.types = map.types)
@@ -514,9 +516,12 @@ mapfast_gg <- function(mydf=data.frame(lat = 40, lon = -100)[0,],
                        xlab = "Longitude", ylab = "Latitude", ...) {
 
   plotout <- ggplot2::ggplot() +
-    # The usa data.frame has cols long, lat, group, etc.
-    ggplot2::geom_polygon(data = ggplot2::map_data("usa"), ggplot2::aes(x = long, y = lat, group = group), fill = "gray", alpha = 0.75) +
-    ggplot2::geom_point(  data = mydf, ggplot2::aes(lon, lat), color = ptcolor, size = dotsize) +
+    ggplot2::geom_polygon(data = ggplot2::map_data("usa"), 
+                          # Note the ggplot2 "usa" dataset 
+                          # longitude is called "long" but mydf calls it "lon"
+                          ggplot2::aes(x = long, y = lat, group = group), fill = "gray", alpha = 0.75) +
+    ggplot2::geom_point(  data = mydf, 
+                          ggplot2::aes(x = lon, y = lat), color = ptcolor, size = dotsize) +
     ggplot2::labs(x = xlab, y = ylab, ...)
   return(plotout)
 }

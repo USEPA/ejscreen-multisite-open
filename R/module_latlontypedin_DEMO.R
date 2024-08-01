@@ -15,7 +15,7 @@ if (try_demo_module_here) {
   golem::detach_all_attached()
   rm(list = ls())
   pkgs <- c('shiny', 'dplyr', 'rhandsontable', 'data.table', 'leaflet') 
-  # note it does not require EJAM package but does need to be able to do this- EJAMejscreenapi :: popup_from_df(mypoints) 
+  # 
   for (pkg in pkgs) {require(pkg, character.only = TRUE)}
   
   ################################################ ################################################# #
@@ -87,7 +87,7 @@ if (try_demo_module_here) {
       sitenumber = c(1,  2,     3,     4,      5),
       sitename = c("Site in upper northwest", "Site in Maine", "Site near Los Angeles", "Site in south FL", "Site near Lincoln Nebraska")
     ), row.names = 1:5, class = "data.frame")
-     # init_data <-  EJAM::testpoints_conus5   # EJAM::testpoints_10[1:2, ]
+     # init_data <-  testpoints_10[1:2, ]
     reactive_data1 <-  reactiveVal(init_data)
     
     MODULE_SERVER_latlontypedin_DEMO(id = "tab1", reactdat = reactive_data1)  # ************************* THE server logic OF THE MODULE IS used HERE
@@ -113,7 +113,7 @@ if (try_demo_module_here) {
             addCircles(      lat = ~latitude, lng = ~longitude,
                              radius = 50000, # 50000 meters is 50km   #  3 * meters_per_mile ,  # radius_miles() * meters_per_mile, 
                              color = "red", fillColor = "red",   fill = TRUE,  
-                             popup = popup_from_df(mypoints)     
+                             popup = popup_from_any(mypoints)     
             )
           #### %>% clearBounds() # clears the bound, so that the view will be automatically determined by the range of latitude/longitude data in the map layers if provided;
           mymap

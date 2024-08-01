@@ -2043,7 +2043,7 @@ app_server <- function(input, output, session) {
         #                          sf::st_drop_geometry()),
         ## user-selected quantiles to use
         #probs = as.numeric(input$an_list_pctiles),
-        
+        quiet = TRUE,
         thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
         threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
         threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
@@ -2055,7 +2055,7 @@ app_server <- function(input, output, session) {
         # popstats =  data.frame(data_processed()$results_bysite), # batch.summarize no longer needs it passed
         ## user-selected quantiles to use
         #probs = as.numeric(input$an_list_pctiles),
-        
+        quiet = TRUE,
         thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
         threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
         threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")

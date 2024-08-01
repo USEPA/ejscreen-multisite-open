@@ -21,18 +21,11 @@ set_state_inspector(function() {
 # require(data.table)
 # require(magrittr)
 require(mapview)
-#   require(EJAM)
-############### does testthat already attach or load the package?
-# suppressPackageStartupMessages({
-#   if (interactive()) {
-#     useloadall = askYesNo("Do you want to load and test the current source code files version of EJAM (via devtools::load_all() etc., rather than testing the installed version)?", default = TRUE)
-#     if (useloadall) {
-#       devtools::load_all()
-#     } else {
-#       #  ### library(EJAM)  # need or not?
-#     }
-#   }
-# })
+
+#   require(EJAM) ############## does testthat already attach or load the package?
+##  if you use require or library, then it does not have access to internal functions like latlon_infer()
+## so those tests fail unless you use load_all() or if test were changed to say EJAM:::latlon_infer() but that would ONLY test installed version, never the source version if it differs
+
 suppressMessages({suppressWarnings({
   dataload_from_pins("all", silent = TRUE) # needs frs, etc.
 })})
@@ -51,14 +44,14 @@ suppressMessages({suppressWarnings({
 
 if (exists("ejamit") & exists("blockgroupstats") & exists("testpoints_10")) {
   if (!exists("ejamoutnow")) {
-  suppressMessages(  suppressWarnings({  ejamoutnow <- try(
-    ejamit(testpoints_10, radius = 1,
-           quiet = TRUE, silentinteractive = TRUE,
-           include_ejindexes = TRUE)) # include_ejindexes = FALSE was the default but we want to test with them included
-  }))
+    suppressMessages(  suppressWarnings({  ejamoutnow <- try(
+      ejamit(testpoints_10, radius = 1,
+             quiet = TRUE, silentinteractive = TRUE,
+             include_ejindexes = TRUE)) # include_ejindexes = FALSE was the default but we want to test with them included
+    }))
   }
   # NOTE THE DEFAULT VALUES OF ejamit() !
-
+  
 } else {
   warning("missing ejamit() or blockgroupstats, so using pre-calculated results in tests")
   if (exists("testoutput_ejamit_10pts_1miles")) {
