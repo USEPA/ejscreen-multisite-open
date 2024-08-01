@@ -8,7 +8,8 @@ testpoints_n(
   n = 10,
   weighting = c("frs", "pop", "area", "bg", "block"),
   dt = TRUE,
-  ST_needed = NULL
+  ST_needed = NULL,
+  validonly = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ Note the default is frs, but you may want to use pop even though it is slower.
 \item{dt}{logical, whether to return a data.table (DEFAULT) instead of normal data.frame}
 
 \item{ST_needed}{optional, can be a character vector of 2 letter State abbreviations to pick from only some States.}
+
+\item{validonly}{return only points with valid lat/lon coordinates. Defaults to TRUE.}
 }
 \value{
 data.frame or data.table with columns lat, lon in decimal degrees, and
