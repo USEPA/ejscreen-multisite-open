@@ -92,6 +92,8 @@ batch.summarize <- function(sitestats, popstats, cols = 'all',
   # Set population weights to use unique residents, not double count if near 2 sites. #####
   stopifnot(wtscolname %in% names(sitestats))
   wts <- unlist(sitestats[ , wtscolname])
+  ## set pop = 0 for invalid sites
+  wts[is.na(wts)] <- 0
   
   #|################################################################################# ####
   # SUMMARY AT EACH SITE - Max or # of high scores at a site. ####
