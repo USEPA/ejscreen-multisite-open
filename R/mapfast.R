@@ -84,6 +84,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
                         popup = mypop) |>
     leaflet.extras2::addEasyprint( ) # button to print or print to pdf and save
   
+
   if (browse) {  # map2browser() would do the same
     htmlwidgets::saveWidget(x, file = fname <- tempfile("mapfast_", fileext = ".html"))
     # htmltools::save_html(x, file = fname <- tempfile("mapfast_", fileext = ".html"))  # might work also?
