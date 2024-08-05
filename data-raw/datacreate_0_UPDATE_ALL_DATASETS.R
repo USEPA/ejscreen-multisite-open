@@ -622,9 +622,14 @@ x[,c("name", "created", "ejscreen_version")]
 
 cat("These datasets get written to pins board by the function dataload_from_pins() \n")
 print(formals(dataload_from_pins)$varnames)
-
 cat("\n\n")
-#   
+
+## Example if manually obtained and saved these locally, then reading them into memory:
+# dataload_from_local(folder_local_source = "~/../Downloads/EJAMbigfiles", varnames = c("frs", "frs_by_mact", "frs_by_sic", "frs_by_naics", "frs_by_programid")  )
+## then saving to pins
+  # EJAM:::datawrite_to_pins(varnames = c("frs", "frs_by_mact", "frs_by_sic", "frs_by_naics", "frs_by_programid"))
+
+
 datawrite_to_pins() # it will ask interactively to confirm which ones among defaults to save to pins
 
 ######################################### #
