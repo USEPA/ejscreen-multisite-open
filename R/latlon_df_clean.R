@@ -15,7 +15,10 @@
 #' @keywords internal
 #'
 latlon_df_clean <- function(df) {
-  
+  if(missing(df)){
+    warning('No value provided for argument "df".')
+    return(NULL)
+  }
   # figure out which columns seem to have lat lon values, rename those in the data.frame
   # $ signifies the end of a string, so only will be removed if at end
   names(df) <- latlon_infer(gsub(".1$", "", names(df)))

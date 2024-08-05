@@ -22,6 +22,14 @@
 #'
 latlon_infer <- function(mycolnames) {
   
+  if (missing(mycolnames)){
+    warning('No value provided for argument "mycolnames".')
+    return(NULL)
+  }
+  else if(all(is.na(mycolnames)) | is.null(mycolnames)){
+    warning('NULL or NA "mycolnames" passed as inputs.')
+    return(NULL)
+  }
   x <- mycolnames
   if (!is.atomic(x) || !is.vector(x)) {
     if (is.data.frame(x)) {
