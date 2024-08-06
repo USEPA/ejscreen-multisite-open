@@ -51,12 +51,17 @@ plot_distance_mean_by_group <- function(results_bybg_people,
     warning('results_bybg_people must be a data.frame or data.table - returning empty results')
     return(NA)
   }
-  miss <- setdiff(c( demogvarname  ), names(results_bybg_people))
+  miss <- setdiff(c('distance_min_avgperson', demogvarname  ), names(results_bybg_people))
   if ( length(miss) > 0) {
     warning('These must be column names in results_bybg_people but are missing: ', paste0( miss, collapse = ", "))
     return(
       NA
     )
+  }
+  
+  if(all(is.nan(results_bybg_people$distance_min_avgperson))){
+    warning('distance_min_avgperson contains only NaN values')
+    return(NA)
   }
 
   dlist <- demogvarname
