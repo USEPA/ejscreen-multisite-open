@@ -148,7 +148,7 @@ testthat::test_that("shapefile_from_folder(testfilename_dirshp) not crash", {
     "sf" %in% class(JUNK)
   )
   expect_equal(
-    dim(testshape),
+    dim(JUNK),
     c(98,12)
   )
   rm(JUNK, junk)
@@ -394,6 +394,7 @@ testthat::test_that("shapefile_from_any(testfilename_shp_alone) works", {
 })
 ######################################################### # 
 testthat::test_that("shapefile_from_any(testfilenameset_4) works", {
+  testfilename_shp_alone <- system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp", package = "EJAM")
   testfilenameset_4 <- shapefile_filepaths_validize(testfilename_shp_alone)
   expect_no_error({junk <- capture.output({
     JUNK <- shapefile_from_any(testfilenameset_4)
