@@ -269,7 +269,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       countcols <-  c(countcols, c(
         
         namesbyvarlist('names_d_language_count', 'rname')$rname, #  see also [varin_map_headernames()] [varinfo()] [names_whichlist_multi_key()]
-        
+        namesbyvarlist('names_d_languageli_count', 'rname')$rname,
         "over17", "under18",  "male", "female", "ownedunits", "occupiedunits",
           "disab_universe", "disability", "poor"
         ))
@@ -1343,14 +1343,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     ############################### #
     # >>> RATIO CALC SPECIAL CASE: ####
     
-    ratios_to_state_avg_bysite$ratio.to.state.avg.Demog.Index.Supp <- 
-      results_bysite$Demog.Index.Supp.State / 
-      results_bysite$state.avg.Demog.Index.Supp 
-
-    ratios_to_state_avg_overall$ratio.to.state.avg.Demog.Index
-      results_overall$Demog.Index.State /
-      results_overall$state.avg.Demog.Index
-
       ############################### #
     
     # add those all to results tables
@@ -1359,6 +1351,21 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     colnames(ratios_to_state_avg_bysite)  <- names_these_ratio_to_state_avg
     colnames(ratios_to_state_avg_overall) <- names_these_ratio_to_state_avg
     
+    ratios_to_state_avg_bysite$ratio.to.state.avg.Demog.Index.Supp <- 
+      results_bysite$Demog.Index.Supp.State / 
+      results_bysite$state.avg.Demog.Index.Supp 
+    
+    ratios_to_state_avg_overall$ratio.to.state.avg.Demog.Index.Supp <- 
+      results_overall$Demog.Index.Supp.State / 
+      results_overall$state.avg.Demog.Index.Supp 
+    
+    ratios_to_state_avg_bysite$ratio.to.state.avg.Demog.Index <-
+      results_bysite$Demog.Index.State /
+      results_bysite$state.avg.Demog.Index
+    
+    ratios_to_state_avg_overall$ratio.to.state.avg.Demog.Index <-
+      results_overall$Demog.Index.State /
+      results_overall$state.avg.Demog.Index
     results_bysite  <- cbind(results_bysite,  ratios_to_avg_bysite,  ratios_to_state_avg_bysite)   # collapse:: has a faster way than cbind here!
     results_overall <- cbind(results_overall, ratios_to_avg_overall, ratios_to_state_avg_overall)
   }
