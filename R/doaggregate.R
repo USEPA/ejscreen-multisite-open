@@ -1014,6 +1014,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   if (missing(sites2states_or_latlon) | !("ST" %in% names(sites2states_or_latlon))) { # must or should figure out state based on blockid -> blockfips -> ST
     sites2states <- ST_by_site_from_sites2blocks(sites2blocks)
+    sites2states$ST[is.na(sites2states$ST)] <- 'CT'
     # returns a data.table with these columns:  ejam_uniq_id, ST  (and only 1 row per ejam_uniq_id! It is just to know the ST of each unique ejam_uniq_id)
     if (!missing(sites2states_or_latlon)) {
       # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there

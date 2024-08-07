@@ -353,7 +353,7 @@ fill_tbl_full_subgroups <- function(output_df) {
   
   full_html <- paste(full_html, tbl_head3, collapse = '\n')
   
-  var_values_d_lim <- intersect(names_d_language, names(blockgroupstats))  
+  var_values_d_lim <- namesbyvarlist('names_d_languageli')$rname#intersect(names_d_language, names(blockgroupstats))  
  # names_d_language_li
   var_names_d_lim <- fixcolnames(var_values_d_lim, 'r', 'short')
   

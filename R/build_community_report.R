@@ -30,24 +30,26 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
   
   output_df_rounded <-   as.data.frame( output_df) 
   
+  names_demog_index <- c(names_d[1:2], names_d_avg[1:2], names_d_state_avg[1:2])
   #  basic rounding and units
-  r100x <- colnames(output_df_rounded) %in% c(names_d, names_d_avg, names_d_state_avg) # units were 0-1 not 0-100
-  output_df_rounded[, r100x] <- 100 * (output_df_rounded[, r100x])
+  r100x <- colnames(output_df_rounded) %in% setdiff(c(names_d, names_d_avg, names_d_state_avg), names_demog_index) # units were 0-1 not 0-100
+  #r100x <- setdiff(r100x, names_demog_index)
+   output_df_rounded[, r100x] <- 100 * (output_df_rounded[, r100x])
   if (include_ejindexes) {
     r2 <- colnames(output_df_rounded) %in% c(names_e, names_e_avg, names_e_state_avg, 
-                                             names_ej, names_ej_supp)
+                                             names_ej, names_ej_supp, names_demog_index)
   } else {
-    r2 <- colnames(output_df_rounded) %in% c(names_e, names_e_avg, names_e_state_avg)
+    r2 <- colnames(output_df_rounded) %in% c(names_e, names_e_avg, names_e_state_avg, names_demog_index)
   }
   output_df_rounded[, r2] <- round(output_df_rounded[, r2], 2)
   if (include_ejindexes) {
-    r0 <-  colnames(output_df_rounded) %in%  c(names_e_pctile, names_d_pctile, names_e_state_pctile, names_d_state_pctile, c(names_d, names_d_avg, names_d_state_avg),
+    r0 <-  colnames(output_df_rounded) %in%  c(names_e_pctile, names_d_pctile, names_e_state_pctile, names_d_state_pctile, setdiff(c(names_d, names_d_avg, names_d_state_avg),names_demog_index),
                                                names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)
   } else {
-    r0 <-  colnames(output_df_rounded) %in%  c(names_e_pctile, names_d_pctile, names_e_state_pctile, names_d_state_pctile, c(names_d, names_d_avg, names_d_state_avg) )
+    r0 <-  colnames(output_df_rounded) %in%  c(names_e_pctile, names_d_pctile, names_e_state_pctile, names_d_state_pctile, setdiff(c(names_d, names_d_avg, names_d_state_avg),names_demog_index) )
   }
   output_df_rounded[, r0] <- round(output_df_rounded[, r0], 0)
-  pctsign <- colnames(output_df_rounded) %in% c(names_d, names_d_avg, names_d_state_avg)
+  pctsign <- colnames(output_df_rounded) %in% setdiff(c(names_d, names_d_avg, names_d_state_avg), names_demog_index)
   output_df_rounded[, pctsign] <- paste0(output_df_rounded[, pctsign], "%")
   
   
