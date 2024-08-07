@@ -29,8 +29,13 @@ See what same-named objects (functions or data) are exported by some (installed)
 \details{
 utility to find same-named exported objects (functions or datasets) within source code
 of 2+ packages, and see what is on search path, for dev renaming / moving functions/ packages
-}
-\seealso{
-\code{\link[=all_equal_functions]{all_equal_functions()}}
+
+See \code{\link[=dupeRfiles]{dupeRfiles()}} for files supporting a shiny app that is not a package, e.g.
+
+See \code{\link[=dupenames]{dupenames()}} for objects that are in R packages.
+
+See \code{\link[=functions_in_pkg]{functions_in_pkg()}}
+
+See \code{\link[=datapack]{datapack()}}
 }
 \keyword{internal}
