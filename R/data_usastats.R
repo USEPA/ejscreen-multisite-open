@@ -8,5 +8,10 @@
 #'   
 #'   This should be similar to the lookup tables in the gdb on the FTP site of EJScreen,
 #'   except it also has data for the demographic race/ethnicity subgroups.
-#'   For details on how the table was made, see /EJAM/data-raw/usastats_subgroups.R
+#'   
+#'   For details on how the table was made, see source package files
+#'   EJAM/data-raw/datacreate_usastats_2023-08-28.R 
+#'   and possibly /EJAM/data-raw/usastats_subgroups.R
+#'   
+#'   See also [statestats]
 NULL

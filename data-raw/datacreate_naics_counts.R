@@ -1,5 +1,5 @@
 
-library(magrittr)
+library(magrittr) # or maybe can now use |>  that is built into R 
 
 ## compute counts without subcodes 
 naics_counts_nosub <- frs_by_naics[, .N, by = 'NAICS']
@@ -27,5 +27,8 @@ naics_counts <- tibble::enframe(NAICS,value = 'NAICS') %>%
                          name)
   )
 
-## save to EJAM package dataset 
+## save to EJAM package dataset
+
+# naics_counts <- metadata_add(naics_counts)
+attr(naics_counts, "date_saved_in_package") <- as.character(Sys.Date())
 usethis::use_data(naics_counts, overwrite = TRUE)

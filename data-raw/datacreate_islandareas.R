@@ -38,12 +38,12 @@ row.names = c(NA, -8L))
 
 getwd()
 
-islandareas <- as.data.frame(readr::read_csv("data-raw/islandareas.csv"))
+islandareas <- as.data.frame(readr::read_csv("data-raw/datafile_islandareas.csv"))
 
 all.equal(islandareas_check, islandareas_check)
 
 
-writexl::write_xlsx(islandareas,    "./data-raw/islandareas.xlsx")
+writexl::write_xlsx(islandareas,    "./data-raw/datafile_islandareas.xlsx")
 
 usethis::use_data(islandareas, overwrite = TRUE)
 

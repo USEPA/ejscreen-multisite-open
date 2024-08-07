@@ -97,18 +97,19 @@ fixnames_aliases <- function(x, na_if_no_match = FALSE, alias_list = NULL, ignor
       lon = lon_alias, #"lon" "longitude83" "longitude" "longitudes" "faclong" "lons" "long" "longs" "lng" "x"
       
       # used in fixcolnames("pctlowinc", "rname", "long") etc.
-      rname = "r",
+      rname = c("r", "friendly", "newnames_ejscreenapi"),
       
-      # longname_tableheader = long, # *** problem! we already interpret "long" as "lon" (longitude)
-      longname_tableheader = c(
+      # longname = long, # *** problem! we already interpret "long" as "lon" (longitude)
+      longname = c(
         # "long", 
-        "longname", "longnames", "full", "description", "longname_tableheader", "header"),
+        "longname", "longnames", "full", "description", "header"),
       
       shortlabel = c("short", "shortname", "shortnames", "shortlabel", "shortlabels", "labels", "label"),
       apiname = c('api', 'apiname'),
-      csvname2.2 = c("csv", "csvname2.2"),
-      oldnames = c("original", "old", "oldname", "oldnames"),
-      newnames_ejscreenapi = c("friendly", "newnames_ejscreenapi")
+      csvname = c("csv", "csvname"),
+      acsname = c('acs', 'acsname'),
+      oldname = c("original", "old", "oldnames", "oldname") 
+       
     )
   } else {
     stopifnot(is.list(alias_list), all(sapply(alias_list, is.atomic)), all(sapply(alias_list, length) > 0))

@@ -4,10 +4,7 @@
 \alias{namesbyvarlist}
 \title{Get indicator names within a varlist like names_d}
 \usage{
-namesbyvarlist(
-  varlist,
-  nametype = c("rname", "longname_tableheader", "apiname")[1]
-)
+namesbyvarlist(varlist, nametype = c("rname", "longname", "apiname")[1])
 }
 \arguments{
 \item{varlist}{one character string like "names_d", or a vector of them}
@@ -33,9 +30,11 @@ Note names_d_friendly refers to the semi-long names to use in labels
  namesbyvarlist('names_d', 'friendly')
  namesbyvarlist('names_d', 'shortlabel')
  
- namesbyvarlist( 'names_e_pctile', c('r', 'longname_tableheader'))    
+ namesbyvarlist( 'names_e_pctile', c('r', 'longname'))    
  namesbyvarlist(c('names_e_pctile', 'names_e_state_pctile'), 
-   c('varlist', 'r', 'api',   'names_friendly', 'longname_tableheader'))
-
+   c('varlist', 'r', 'api',   'names_friendly', 'longname'))
+}
+\seealso{
+\code{\link[=varin_map_headernames]{varin_map_headernames()}} \code{\link[=varinfo]{varinfo()}} \code{\link[=names_whichlist_multi_key]{names_whichlist_multi_key()}}
 }
 \keyword{internal}

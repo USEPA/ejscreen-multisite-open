@@ -121,24 +121,13 @@ fill_tbl_full <- function(output_df) {
   
   full_html <- paste(full_html, tbl_head, sep = '\n')
   
-  var_values_e <- c('pm','o3','dpm','cancer','resp','rsei','traffic.score','pctpre1960',
-                    'proximity.npl','proximity.rmp','proximity.tsdf','ust','proximity.npdes')
+  ## reorder indicators to match report order
+  var_values_e <- map_headernames |>
+    dplyr::filter(varlist == 'names_e') |>
+    dplyr::arrange(sort_within_varlistEJSCREENREPORT) |>
+    dplyr::pull(rname)
   
-  var_names_e <- c(
-    'Particulate Matter&nbsp;&nbsp;(&mu;g/m<span class=\"table-superscript\"><sup>3</sup></span>)',
-    'Ozone&nbsp;&nbsp;(ppb)',
-    'Diesel Particulate Matter&nbsp;&nbsp;(&mu;g/m<span class=\"table-superscript\"><sup>3</sup></span>)',
-    'Air Toxics Cancer Risk*&nbsp;&nbsp;(lifetime risk per million)',
-    'Air Toxics Respiratory HI*',
-    'Toxic Releases to Air',
-    'Traffic Proximity&nbsp;&nbsp;(daily traffic count/distance to road)',
-    'Lead Paint&nbsp;&nbsp;(% Pre-1960 Housing)',
-    'Superfund Proximity&nbsp;&nbsp;(site count/km distance)',
-    'RMP Facility Proximity&nbsp;&nbsp;(facility count/km distance)',
-    'Hazardous Waste Proximity&nbsp;&nbsp;(facility count/km distance)',
-    'Underground Storage Tanks&nbsp;&nbsp;(count/km<span class=\"table-superscript\"><sup>3</sup></span>)',
-    'Wastewater Discharge&nbsp;&nbsp;(toxicity-weighted concentration/m distance)'
-  )
+  var_names_e <- fixcolnames(var_values_e, oldtype = 'r', newtype = 'long')
   
   tbl_rows_e <- sapply(seq_along(var_values_e), function(x) {
     fill_tbl_row(output_df,
@@ -147,26 +136,17 @@ fill_tbl_full <- function(output_df) {
   })
   full_html <- paste(full_html,
                      paste(tbl_rows_e , collapse = '\n'),
-                     
                      sep = '', collapse = '\n')
   full_html <- paste(full_html, tbl_head2,collapse = '\n')
   
   
-  var_values_d <- c(
-    'Demog.Index', 'Demog.Index.Supp','pctmin','pctlowinc','pctunemployed',
-    'pctlingiso','pctlths','pctunder5','pctover64','lowlifex')
+  ## reorder indicators to match report order
+  var_values_d <- map_headernames |>
+    dplyr::filter(varlist == 'names_d') |>
+    dplyr::arrange(sort_within_varlistEJSCREENREPORT) |>
+    dplyr::pull(rname)
   
-  var_names_d <- c('Demographic Index',
-                   'Supplemental Demographic Index',
-                   'People of Color',
-                   'Low Income',
-                   'Unemployment Rate',
-                   'Limited English Speaking Households',
-                   'Less Than High School Education',
-                   'Under Age 5',
-                   'Over Age 64',
-                   'Low Life Expectancy'
-  )
+  var_names_d <- fixcolnames(var_values_d, oldtype = 'r', newtype = 'long')
   
   tbl_rows_d <- sapply(seq_along(var_values_d),
                        function(x) {
@@ -213,39 +193,44 @@ fill_tbl_full_ej <- function(output_df) {
   
   full_html <- tbl_head #paste(full_html, tbl_head, sep='\n')
   
+  ## reorder indicators to match report order
+  var_values_ej <- map_headernames |>
+    dplyr::filter(varlist == 'names_ej') |>
+    dplyr::arrange(sort_within_varlistEJSCREENREPORT) |>
+    dplyr::pull(rname)
+  
+  var_names_ej <- fixcolnames(var_values_ej, oldtype = 'r', newtype = 'long')
+  
+  tbl_rows_ej <- sapply(seq_along(var_values_ej),
+                        function(x) {
+                          fill_tbl_row_ej(output_df, 
+                                          var_value = var_values_ej[x],
+                                          var_name = var_names_ej[x])
+                        })
   
   full_html <- paste(full_html,
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.pm.eo', var_name='Particulate Matter'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.o3.eo', var_name='Ozone'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.dpm.eo', var_name='Diesel Particulate Matter'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.cancer.eo', var_name='Air Toxics Cancer Risk'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.resp.eo', var_name='Air Toxics Respiratory HI'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.rsei.eo', var_name='Toxic Releases to Air'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.traffic.score.eo', var_name='Traffic Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.pctpre1960.eo', var_name='Lead Paint'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.npl.eo', var_name='Superfund Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.rmp.eo', var_name='RMP Facility Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.tsdf.eo', var_name='Hazardous Waste Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.ust.eo', var_name='Underground Storage Tanks'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.npdes.eo', var_name='Wastewater Discharge')
-                     , sep='', collapse='\n')
+                      paste(tbl_rows_ej, collapse = '\n'),
+                      sep = '', collapse = '\n')
   full_html <- paste(full_html, tbl_head2, collapse = '\n')
   
+  ## reorder indicators to match report order
+  var_values_ej_supp <- map_headernames |>
+    dplyr::filter(varlist == 'names_ej_supp') |>
+    dplyr::arrange(sort_within_varlistEJSCREENREPORT) |>
+    dplyr::pull(rname)
+  
+  var_names_ej_supp <- fixcolnames(var_values_ej_supp, oldtype = 'r', newtype = 'long')
+  
+  tbl_rows_ej_supp <- sapply(seq_along(var_values_ej_supp),
+                        function(x) {
+                          fill_tbl_row_ej(output_df, 
+                                          var_value = var_values_ej_supp[x],
+                                          var_name = var_names_ej_supp[x])
+                        })
+  
   full_html <- paste(full_html,
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.pm.supp', var_name='Particulate Matter'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.o3.supp', var_name='Ozone'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.dpm.supp', var_name='Diesel Particulate Matter'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.cancer.supp', var_name='Air Toxics Cancer Risk'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.resp.supp', var_name='Air Toxics Respiratory HI'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.rsei.supp', var_name='Toxic Releases to Air'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.traffic.score.supp', var_name='Traffic Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.pctpre1960.supp', var_name='Lead Paint'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.npl.supp', var_name='Superfund Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.rmp.supp', var_name='RMP Facility Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.tsdf.supp', var_name='Hazardous Waste Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.ust.supp', var_name='Underground Storage Tanks'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.npdes.supp', var_name='Wastewater Discharge')
-                     , sep='', collapse='\n')
+                      paste(tbl_rows_ej_supp, collapse = '\n'),
+                      sep = '', collapse = '\n')
   
   full_html <- paste(full_html, '</tbody>
 </table>', collapse = '\n')
@@ -330,24 +315,25 @@ fill_tbl_full_subgroups <- function(output_df) {
 <th colspan=\"7\">Limited English Speaking Breakdown</th>
   </tr>'
   
-  full_html <- paste(full_html, tbl_head, sep='\n')
+  full_html <- paste(full_html, tbl_head, sep = '\n')
   
-  var_values_d_race <- c('pctnhwa','pctnhba','pctnhaa','pcthisp',
-                         'pctnhaiana','pctnhnhpia','pctnhotheralone',
-                         'pctnhmulti')
-  var_names_d_race <- c('% White', '% Black','% Asian','% Hispanic',
-                        '% American Indian','% Hawaiian/Pacific Islander',
-                        '% Other Race','% Two or more races')
+  ## reorder indicators to match report order
+  var_values_d_race <- map_headernames |>
+    dplyr::filter(varlist == 'names_d_subgroups') |>
+    dplyr::arrange(sort_within_varlistEJSCREENREPORT) |>
+    dplyr::pull(rname)
+  
+  var_names_d_race <- fixcolnames(var_values_d_race, oldtype = 'r', newtype = 'long')
   
   tbl_rows_d_race <- sapply(seq_along(var_values_d_race), function(x) {
     fill_tbl_row_subgroups(output_df,
                            var_value = var_values_d_race[x],
-                           var_name=var_names_d_race[x])
+                           var_name = var_names_d_race[x])
   })
   full_html <- paste(full_html,
-                     paste(tbl_rows_d_race , collapse='\n'),
+                     paste(tbl_rows_d_race , collapse = '\n'),
                      
-                     sep='', collapse='\n')
+                     sep = '', collapse = '\n')
   full_html <- paste(full_html, tbl_head2,collapse = '\n')
   
   
@@ -367,9 +353,9 @@ fill_tbl_full_subgroups <- function(output_df) {
   
   full_html <- paste(full_html, tbl_head3, collapse = '\n')
   
-  var_values_d_lim <- c("pctspanish_li", "pctie_li", "pctapi_li", "pctother_li")
-  var_names_d_lim <- fixcolnames(var_values_d_lim, 'r', 'shortlabel')
-  # c('Speak Spanish', 'Speak Other Indo-European Languages','Speak Asian-Pacific Island Languages', 'Speak Other Languages')
+  var_values_d_lim <- intersect(names_d_language, names(blockgroupstats))  
+ # names_d_language_li
+  var_names_d_lim <- fixcolnames(var_values_d_lim, 'r', 'short')
   
   tbl_rows_d_lim <- sapply(seq_along(var_values_d_lim), function(x) {
     fill_tbl_row_subgroups(output_df,

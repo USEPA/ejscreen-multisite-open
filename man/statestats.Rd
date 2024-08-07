@@ -13,5 +13,5 @@ Each column is one indicator (or specifies the percentile).
 
 This should be similar to the lookup tables in the gdb on the FTP site of EJScreen,
 except it also has data for the demographic race/ethnicity subgroups.
-For details on how the table was made, see /EJAM/data-raw/usastats_subgroups.R
+See also \link{usastats}
 }

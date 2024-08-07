@@ -72,10 +72,6 @@ EJAM is provided by the US Environmental Protection Agency (US EPA), and is bein
 
 -   [4. Advanced Features in the EJAM R package](https://usepa.github.io/EJAM/articles/4_advanced.html)
 
--   [5. Accessing a Batch of EJScreen Reports via EJAM](https://usepa.github.io/EJAM/articles/5_ejscreenapi.html)
-
--   [6. Future Plans for EJAM](https://usepa.github.io/EJAM/articles/6_future_plans.html)
-
 -   [Reference Manual Documenting all EJAM Package Functions and Data](https://usepa.github.io/EJAM/articles/index.html)
 
 -   [GitHub Repository - Code and Data, at USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")

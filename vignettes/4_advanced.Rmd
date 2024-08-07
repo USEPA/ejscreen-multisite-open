@@ -120,7 +120,7 @@ testpoint_files <- list.files(
   )
 testpoint_files
 
-latlon_from_anything(testpoint_files[2]) # aka latlon_any_format()
+latlon_from_anything(testpoint_files[2]) 
 ```
 
 

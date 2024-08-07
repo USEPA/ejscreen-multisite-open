@@ -743,9 +743,10 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     # How many decimals (or ideally significant digits but not possible here) to report?  This could be done via rounding values before put in excel,
     #  OR probably better, sending exact values to Excel but using Excel formatting to display them correctly.
     # 
-    # sigfigs_table <-  map_headernames[ "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsbgname",	"csvname2.2")]
-    digitstable <- map_headernames[ "" != (map_headernames$decimals) | "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsbgname",	"csvname2.2")]
-    decimals_cols <- names(eachsite)[names(eachsite) %in% digitstable$rname[digitstable$decimals != "" & !is.na(digitstable$decimals)]]
+
+    # sigfigs_table <-  map_headernames[ "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsname",	"csvname")]
+    digitstable <- map_headernames[ "" != (map_headernames$decimals) | "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsname",	"csvname", "apiname")]
+    decimals_cols <- names(eachsite)[names(eachsite) %in% digitstable$rname[digitstable$decimals != ""]]
     decimals_colnum <- match(decimals_cols, names(eachsite)) # and overall has same exact names and sort order of names
     decimals_tosee <- digitstable$decimals[match(decimals_cols, digitstable$rname)]
     dec2format <- function(decimalscount) ifelse(decimalscount == 0, "#,###,###", paste0("#,###,##0.", paste0(rep("0", decimalscount), collapse = '')))

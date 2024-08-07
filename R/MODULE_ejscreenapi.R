@@ -875,9 +875,9 @@ mod_ejscreenapi_server <- function(id,
         #
         if (input$include_ratios ) {
 
-          names_e_FOR_RATIOS <- map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_e"]  # this should be identical to names_e or namez$e
-          names_d_FOR_RATIOS <- map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_d"]  # this should be identical to names_d or namez$d
-          names_d_subgroups_FOR_RATIOS <- map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_d_subgroups"]  # same as names_d_subgroups or namez$d_subgroups
+          names_e_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_e"]  # this should be identical to names_e or namez$e
+          names_d_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_d"]  # this should be identical to names_d or namez$d
+          names_d_subgroups_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups"]  # same as names_d_subgroups or namez$d_subgroups
 
           ##  ratio to US avg -------------
 
@@ -891,8 +891,8 @@ mod_ejscreenapi_server <- function(id,
           # switch from names of indicators to names of the ratios of those indicators?
           # a PROBLEM HERE IS LIST OF RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES:
 
-          names(eratios) <-   map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_e_FOR_RATIOS) # names_e_ratio_to_avg  # lacks state percentiles here ****
-          names(dratios) <-   map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_d_FOR_RATIOS) # names_d_ratio_to_avg  # lacks state percentiles here ****
+          names(eratios) <-   map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_e_FOR_RATIOS) # names_e_ratio_to_avg  # lacks state percentiles here ****
+          names(dratios) <-   map_headernames$rname[ map_headernames$varlist == "names_d_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_d_FOR_RATIOS) # names_d_ratio_to_avg  # lacks state percentiles here ****
           table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
 
           ##  ratio to STATE avg --------------
@@ -900,8 +900,8 @@ mod_ejscreenapi_server <- function(id,
           st_ratios <- ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
           eratios <- round(st_ratios$ratios_e, 4)
           dratios <- round(st_ratios$ratios_d, 4)    # lacks subgroups and supplementary ?
-          names(eratios) <- map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
-          names(dratios) <- map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d_ratio_to_state_avg"]
+          names(eratios) <- map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
+          names(dratios) <- map_headernames$rname[ map_headernames$varlist == "names_d_ratio_to_state_avg"]
           table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
 
         } # end of ratio calculations
@@ -1033,21 +1033,13 @@ mod_ejscreenapi_server <- function(id,
           }
           table_as_displayed <- table_as_displayed_reactive()
 
-          # already renamed to whatever was requested via input$usewhichnames
-          # if (input$usewhichnames == 'r') { # friendly here actually means rname
-          #   names(table_as_displayed) <- fixcolnames(names(table_as_displayed), oldtype = 'api', newtype = 'r', mapping_for_names = map_headernames) }
-          # if (input$usewhichnames == 'long') {
-          #   names(table_as_displayed) <- fixcolnames(names(table_as_displayed), oldtype = 'api', newtype = 'long', mapping_for_names = map_longnames)
-          #   # map_longnames <- data.frame(oldnames = map_headernames$oldnames, newnames_ejscreenapi = map_headernames$longname_tableheader, stringsAsFactors = FALSE)
-          #   # names(table_as_displayed) <- fixnames(names(table_as_displayed), mapping_for_names = map_longnames) }
-
           ########################################################  #
           # prep for excel
           #
           currentnametype <- input$usewhichnames
           pctile_colnums <-  which('pctile' ==  fixcolnames(names(table_as_displayed), oldtype = currentnametype, newtype = 'jsondoc_shortvartype') ) # this should get what type each is.
-          # pctile_colnums <- which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$oldnames)])
-          # pctile_colnums <- union(pctile_colnums, which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$longname_tableheader)]))
+          # pctile_colnums <- which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$oldname)])
+          # pctile_colnums <- union(pctile_colnums, which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$longname)]))
 
           # fix URLs to work in csv pulled into Excel or in Excel files (as opposed to datatable shown in web brwsr)
           table_as_displayed$`EJScreen Report` <- gsub('.*(http.*)\", target=.*', '\\1', table_as_displayed$`EJScreen Report`)
