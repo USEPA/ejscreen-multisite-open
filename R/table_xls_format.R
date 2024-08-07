@@ -329,6 +329,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       z <- mapfast(eachsite, radius = radius_or_buffer_in_miles, column_names = 'ej')
       htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
     }
+    Sys.setenv(OPENSSL_CONF="/dev/null")
     webshot::webshot(mypath, file = file.path(mytempdir, "map1.png"), cliprect = "viewport")
     if (testing) cat(file.path(mytempdir, "map1.png"), '\n')
     openxlsx::insertImage(wb, sheet = 'map', file = file.path(mytempdir, 'map1.png'),
