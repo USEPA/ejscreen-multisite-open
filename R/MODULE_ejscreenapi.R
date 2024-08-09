@@ -786,7 +786,8 @@ mod_ejscreenapi_server <- function(id,
               report_every_n = report_every_n_default,
               save_when_report = FALSE, on_server_so_dont_save_files = TRUE,
               updateProgress = updateProgress, # updateProgress is a function that has been defined already and gets passed here to the slow function that needs to report progress bar updates
-              drop_redundant_indicators = TRUE
+              drop_redundant_indicators = TRUE,
+              getstatefromplacename = TRUE
             )
 
             # if (attr(results_table, 'noresults') ) { # needs to be fixed ****

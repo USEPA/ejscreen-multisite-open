@@ -22,70 +22,70 @@
 #' @export
 #'
 map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {
-
+  
   #, map_units = 'miles'){
-
+  
   ## map settings
   base_color      <- '#000080'
-    cluster_color   <- 'red'
-      highlight_color <- 'orange'   #  NOT USED YET
-        circleweight <- 4
-
-        ## convert units to miles for circle size
-        # if (map_units == 'kilometers'){
-        #   rad = rad * 0.62137119
-        # }
-
-        ## if checkbox to highlight clusters is checked
-        if (highlight == TRUE) {
-          ## compare latlons using is_clustered() reactive
-          circle_color <- ifelse(clustered == TRUE, cluster_color, base_color)
-        } else {
-          circle_color <- base_color
-        }
-        # print(head(mypoints))
-
-        if (length(mypoints) != 0) {
-          #isolate({ # do not redraw entire map and zoom out and reset location viewed just because radius changed?
-
-          #if (circle_type == 'circles'){
-          mymap <- leaflet::leaflet(mypoints) %>%
-            addTiles()  %>%
-            addCircles(
-              #radius = input$radius * meters_per_mile,
-              radius = rad * meters_per_mile,
-              color = circle_color, fillColor = circle_color,
-              fill = TRUE, weight = circleweight,
-              group = 'circles',
-              popup = popup_from_any(mypoints)
-
-            ) %>%
-            addCircleMarkers(
-              #radius = input$radius * meters_per_mile,
-              radius = rad,
-              color = circle_color, fillColor = circle_color,
-              fill = TRUE, weight = circleweight,
-              clusterOptions = markerClusterOptions(),
-              popup = popup_from_any(mypoints)
-              ## possible way to use circleMarkers - need conversion of meters to pixels so they scale properly
-              #meters_per_px <- 156543.03392 * cos(mean(m$x$limits$lat) * pi/180) / m$x$options
-            ) %>%
-            groupOptions(group = 'markers', zoomLevels = 1:6) %>%
-            groupOptions(group = 'circles', zoomLevels = 6:20) %>%
-            leaflet.extras::addFullscreenControl()
-
-          ## return map
-          mymap
-
-          #})
-        } else {  # length(mypoints) == 0
-          mymap <- leaflet() %>%
-            addTiles() %>%
-            setView(-110, 46, zoom = 3)
-          mymap
-        }
-        ### Button to print map 
-        leaflet.extras2::addEasyprint(map = mymap, options = leaflet.extras2::easyprintOptions(exportOnly = TRUE, title = 'Save Map Snapshot'))
+  cluster_color   <- 'red'
+  highlight_color <- 'orange'   #  NOT USED YET
+  circleweight <- 4
+  
+  ## convert units to miles for circle size
+  # if (map_units == 'kilometers'){
+  #   rad = rad * 0.62137119
+  # }
+  
+  ## if checkbox to highlight clusters is checked
+  if (highlight == TRUE) {
+    ## compare latlons using is_clustered() reactive
+    circle_color <- ifelse(clustered == TRUE, cluster_color, base_color)
+  } else {
+    circle_color <- base_color
+  }
+  # print(head(mypoints))
+  
+  if (length(mypoints) != 0) {
+    #isolate({ # do not redraw entire map and zoom out and reset location viewed just because radius changed?
+    
+    #if (circle_type == 'circles'){
+    mymap <- leaflet::leaflet(mypoints) %>%
+      addTiles()  %>%
+      addCircles(
+        #radius = input$radius * meters_per_mile,
+        radius = rad * meters_per_mile,
+        color = circle_color, fillColor = circle_color,
+        fill = TRUE, weight = circleweight,
+        group = 'circles',
+        popup = popup_from_any(mypoints)
+        
+      ) %>%
+      addCircleMarkers(
+        #radius = input$radius * meters_per_mile,
+        radius = rad,
+        color = circle_color, fillColor = circle_color,
+        fill = TRUE, weight = circleweight,
+        clusterOptions = markerClusterOptions(),
+        popup = popup_from_any(mypoints)
+        ## possible way to use circleMarkers - need conversion of meters to pixels so they scale properly
+        #meters_per_px <- 156543.03392 * cos(mean(m$x$limits$lat) * pi/180) / m$x$options
+      ) %>%
+      groupOptions(group = 'markers', zoomLevels = 1:6) %>%
+      groupOptions(group = 'circles', zoomLevels = 6:20) %>%
+      leaflet.extras::addFullscreenControl()
+    
+    ## return map
+    mymap
+    
+    #})
+  } else {  # length(mypoints) == 0
+    mymap <- leaflet() %>%
+      addTiles() %>%
+      setView(-110, 46, zoom = 3)
+    mymap
+  }
+  ### Button to print map 
+  leaflet.extras2::addEasyprint(map = mymap, options = leaflet.extras2::easyprintOptions(exportOnly = TRUE, title = 'Save Map Snapshot'))
 }
 ########################### # ########################### # ########################### # ########################### #
 
@@ -106,62 +106,143 @@ map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {
 #'
 map_facilities_proxy <- function(mymap, rad = 3, highlight = FALSE, clustered = FALSE,
                                  popup_vec = NULL, use_marker_clusters = FALSE) {
-
+  
   ## map settings
   base_color      <- '#000080'
-    cluster_color   <- 'red'
-      circleweight <- 4
-
-      ## if checkbox to highlight clusters is checked
-      if (highlight == TRUE) {
-        ## compare latlons using is_clustered() reactive
-        circle_color <- ifelse(clustered == TRUE, cluster_color, base_color)
-      } else {
-        circle_color <- base_color
-      }
-
-      if (use_marker_clusters == FALSE) {
-        ## add to leafletProxy call from Shiny app
-        mymap <- mymap %>%
-          clearShapes() %>%
-          addCircles(
-            radius = rad * meters_per_mile,
-            color = circle_color, fillColor = circle_color,
-            fill = TRUE, weight = circleweight,
-            group = 'circles',
-            popup = popup_vec
-          ) %>%
-          leaflet.extras::addFullscreenControl()
-      } else {
-        ## add to leafletProxy call from Shiny app
-        mymap <- mymap %>%
-          clearShapes() %>%
-          clearMarkerClusters() %>%
-          addCircles(
-            radius = rad * meters_per_mile,
-            color = circle_color, fillColor = circle_color,
-            fill = TRUE, weight = circleweight,
-            group = 'circles',
-            popup = popup_vec
-          ) %>%
-          addCircleMarkers(
-            radius = 0,
-            color = circle_color, fillColor = circle_color,
-            fill = TRUE, weight = circleweight,
-            clusterOptions = markerClusterOptions(),
-            popup = popup_vec
-          ) %>%
-          groupOptions(group = 'markers', zoomLevels = 1:6) %>%
-          groupOptions(group = 'circles', zoomLevels = 7:20) %>%
-          leaflet.extras::addFullscreenControl()
-      }
-      ## return map
-      mymap
+  cluster_color   <- 'red'
+  circleweight <- 4
+  
+  ## if checkbox to highlight clusters is checked
+  if (highlight == TRUE) {
+    ## compare latlons using is_clustered() reactive
+    circle_color <- ifelse(clustered == TRUE, cluster_color, base_color)
+  } else {
+    circle_color <- base_color
+  }
+  
+  if (use_marker_clusters == FALSE) {
+    ## add to leafletProxy call from Shiny app
+    mymap <- mymap %>%
+      clearShapes() %>%
+      addCircles(
+        radius = rad * meters_per_mile,
+        color = circle_color, fillColor = circle_color,
+        fill = TRUE, weight = circleweight,
+        group = 'circles',
+        popup = popup_vec
+      ) %>%
+      leaflet.extras::addFullscreenControl()
+  } else {
+    ## add to leafletProxy call from Shiny app
+    mymap <- mymap %>%
+      clearShapes() %>%
+      clearMarkerClusters() %>%
+      addCircles(
+        radius = rad * meters_per_mile,
+        color = circle_color, fillColor = circle_color,
+        fill = TRUE, weight = circleweight,
+        group = 'circles',
+        popup = popup_vec
+      ) %>%
+      addCircleMarkers(
+        radius = 0,
+        color = circle_color, fillColor = circle_color,
+        fill = TRUE, weight = circleweight,
+        clusterOptions = markerClusterOptions(),
+        popup = popup_vec
+      ) %>%
+      groupOptions(group = 'markers', zoomLevels = 1:6) %>%
+      groupOptions(group = 'circles', zoomLevels = 7:20) %>%
+      leaflet.extras::addFullscreenControl()
+  }
+  ## return map
+  mymap
 }
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Map - County polygons / boundaries - Create leaflet or static map
+#' Basic map of county outlines within specified state(s)
+#'
+#' @param ST a vector of one or more state abbreviations, like 
+#' 
+#'   ST = "ME"  or  ST = c("de", "RI"), or 
+#'   
+#'   ST = fips2state_abbrev(fips_state_from_statename(c("Rhode Island", "district of columbia")))
+#'   
+#'   or e.g., all counties in EPA Region 1: 
+#'   
+#'   ST = stateinfo$ST[stateinfo$REGION == 1]
+#'   
+#' @param colorcolumn name of column to use in setting colors of counties on map,
+#'   but must be one returned by [shapes_counties_from_countyfips()] like "STATE_NAME"
+#' @param type must be "leaflet" or can be "mapview" if installed and loaded 
+#' @examples
+#' \dontrun{
+#' map_counties_in_state(ST = c('id', 'mt'))
+#' map_counties_in_state(ST = c('id', 'mt'),
+#'   colorcolumn = "STATE_NAME")
+#'  
+#' map_counties_in_state(ST = c('id', 'mt'), type = "mapview")
+#' map_counties_in_state(ST = c('id', 'mt'), type = "mapview",
+#'   colorcolumn = "STATE_NAME")
+#'
+#'  map_counties_in_state(
+#'   ST = c( 'md', 'pa'),
+#'    type = "mapview", colorcolumn = "POP_SQMI") 
+#' }
+#' @return a map
+#' 
+#' @export
+#'
+map_counties_in_state <- function(ST = "DE", colorcolumn = c("NAME", "POP_SQMI", "STATE_NAME")[1], 
+                                  type = c("leaflet", "mapview")[1]) {
+  
+  # to add to vignette etc.
+  
+  cshapes <- shapes_counties_from_countyfips(fips_counties_from_state_abbrev(ST))
+  
+  if (is.null(colorcolumn) || !(colorcolumn %in% names(cshapes))) {
+    if ("STATE_NAME" %in% names(cshapes)) {
+      colorcolumn <- "STATE_NAME"
+    } else {
+      colorcolumn <- names(cshapes)[1]
+    }}
+  colorscore = as.vector(unlist(sf::st_drop_geometry(cshapes[,colorcolumn])))
+  
+  if (type == "leaflet") {
+    
+    if (length(unique(colorscore)) > 10 & is.numeric(colorscore)) {
+      # continuous ramp of map colors
+      vpal <- leaflet::colorNumeric("viridis", domain = NULL)
+      x = map_shapes_leaflet(cshapes,
+                         color = ~vpal(colorscore))
+    } else {
+      # bins of map color
+      vpal <- leaflet::colorFactor('viridis' , domain = NULL)
+      x = map_shapes_leaflet(cshapes, 
+                         color = ~vpal(factor(colorscore))  ) }
+  }
+  if (type == "mapview") {
+    if (length(unique(colorscore))  > 10 && !is.numeric(colorscore)) {
+      x = map_shapes_mapview(cshapes,
+                             zcol = colorcolumn, legend = FALSE,
+                               col.regions = mapviewGetOption("raster.palette"))
+      # col.regions = colorscore
+      
+    } else {
+    x = map_shapes_mapview(cshapes,
+                           zcol = colorcolumn, legend = TRUE
+                           , col.regions = mapviewGetOption("raster.palette"))
+                       #col.regions = colorscore)
+    }
+  }
+  # print(x)
+  return(x)
+}
+########################### # ########################### # ########################### # ########################### #
+
+
+#' Map - County polygons / boundaries - Create leaflet or static map of EJ results
 #'
 #' @param mydf something like  ejamit(fips = fips_counties_from_statename("Kentucky"), radius = 0)$results_bysite
 #' @param colorvarname colname of indicator in mydf that drives color-coding
@@ -183,21 +264,21 @@ map_facilities_proxy <- function(mymap, rad = 3, highlight = FALSE, clustered = 
 #'
 mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
                                static_not_leaflet = FALSE, main = "Selected Counties", ...) {
-
+  
   # *** CANNOT HANDLE colorvarname = ANYTHING ELSE BESIDES THOSE SCALED 0 TO 100, SO FAR
-
+  
   # fips_ky <- fips_counties_from_statename("Kentucky")
   # x <- ejamit(fips = fips_ky, radius = 0)
   # mydf <- x$results_bysite
-
+  
   mymapdata <- shapes_counties_from_countyfips(mydf$ejam_uniq_id)
-setDT(mydf)
+  setDT(mydf)
   ## see color-coding of one percentile variable:
   pal <- colorBin(palette = c("yellow","yellow", "orange", "red"), bins = 80:100)
   shading <- pal(as.vector(unlist(mydf[ , ..colorvarname])))
-
+  
   if (static_not_leaflet) {
-
+    
     map_shapes_plot(mymapdata, main = main, ...) # or just # plot(mymapdata)
     plot(mymapdata, col = shading, add = TRUE)
     # to color code and flag the max value county:
@@ -205,9 +286,9 @@ setDT(mydf)
     # plot(mymapdata[flagged, ], col = "purple", add = TRUE)
     mymap <- mymapdata # if ggplot, youd return the plot object but with plot() you cannot I think do that
     legend("topright", legend = c(80, 90, 100), fill = c("yellow", "orange", "red"), title = fixcolnames(colorvarname, 'rname', 'shortlabel'))
-
+    
   } else {
-
+    
     myindicators <- c(colorvarname, names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg)
     myindicators <- c(names(mydf)[1:9], myindicators)
     popindicators <- mydf[ , ..myindicators]
@@ -216,15 +297,15 @@ setDT(mydf)
     popindicators <- cbind(County = countynames, popindicators)
     poplabels <- fixcolnames(names(popindicators), 'r', 'shortlabel') # friendly labels for indicators
     popup2 <- popup_from_any(popindicators, labels = poplabels)
-
-
+    
+    
     mymap <- map_shapes_leaflet(mymapdata, popup = popup2, color = shading)
     mymap <- mymap %>% leaflet::addLegend(
       colors = c("yellow", "orange", "red"),
       labels = c(80, 90, 100),
       title = fixcolnames(colorvarname, 'rname', 'shortlabel'))
   }
-
+  
   return(mymap)
 }
 ########################### # ########################### # ########################### # ########################### #
@@ -247,18 +328,18 @@ setDT(mydf)
 #' @export
 #'
 map_blockgroups_over_blocks <- function(y) {
-
+  
   # y is output of plotblocksnearby(returnmap = TRUE)
   if ("leaflet" %in% class(y)) {
-  # This is to extract bgids from the output of the leaflet htmlwidget map object y,
-  #   as from  y = plotblocksnearby(testpoints_10[1,], returnmap = TRUE)
-  bgids <-  unique(as.vector(sapply( y$x$calls[[2]]$args[[7]], function(z)   gsub(   ".*bgid: ([0-9]*)<.*", "\\1", z))))
+    # This is to extract bgids from the output of the leaflet htmlwidget map object y,
+    #   as from  y = plotblocksnearby(testpoints_10[1,], returnmap = TRUE)
+    bgids <-  unique(as.vector(sapply( y$x$calls[[2]]$args[[7]], function(z)   gsub(   ".*bgid: ([0-9]*)<.*", "\\1", z))))
   } else {
     # can we still work with y if it was created with returnmap = FALSE ?
     # bgids <- unique(y$bgid)
     stop('y must be output of something like plotblocksnearby(testpoints_10[1,], returnmap = TRUE)')
   }
-
+  
   if (!exists("bgid2fips")) dataload_from_pins("bgid2fips")
   bgfips <- bgid2fips[bgid %in% bgids, bgfips]
   x <- shapes_blockgroups_from_bgfips(bgfips) # but not for 60+ fips!  SLOW
@@ -282,7 +363,7 @@ map_blockgroups_over_blocks <- function(y) {
 #'
 #'
 map_shapes_plot <- function(shapes, main = "Selected Census Units", ...) {
-
+  
   plot(sf::st_combine(shapes), main = main, ...)
 }
 ########################### # ########################### # ########################### # ########################### #
@@ -299,7 +380,7 @@ map_shapes_plot <- function(shapes, main = "Selected Census Units", ...) {
 #' @export
 #'
 map_shapes_leaflet <- function(shapes, color = "green", popup = shapes$NAME) {
-
+  
   mymap <- leaflet(shapes) %>% addPolygons(color = color, popup = popup) %>% addTiles()
   return(mymap)
 }
@@ -317,12 +398,12 @@ map_shapes_leaflet <- function(shapes, color = "green", popup = shapes$NAME) {
 #' @export
 #'
 map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = shapes$NAME)  {
-
+  
   mymap <- mymap %>%
     addPolygons(data = shapes, color = color,  popup = popup) %>%
     addTiles()
   return(mymap)
-  }
+}
 ########################### # ########################### # ########################### # ########################### #
 
 
@@ -331,6 +412,7 @@ map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = sha
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param col.regions passed to [mapview::mapview()]
 #' @param map.types  passed to  [mapview::mapview()]
+#' @param ... passed to mapview 
 #' @return like output of mapview function [mapview::mapview()],
 #'   if mapview package is installed,
 #'   when used with an input that is a spatial object as via [sf::read_sf()]
@@ -342,8 +424,8 @@ map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = sha
 #'
 #' @export
 #'
-map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenStreetMap") {
-
+map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenStreetMap", ...) {
+  
   if (!"package:mapview" %in% search()) {
     message("this function is a nice way to map counties etc. but requires the mapview package, which EJAM does not load")
     warning("mapview package would be needed and is not attached - checking if installed")
@@ -356,7 +438,7 @@ map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenS
       return(NULL)
     }
   } else {
-    mapview(shapes, col.regions = col.regions, map.types = map.types)
+    mapview(shapes, col.regions = col.regions, map.types = map.types, ...)
   }
 }
 ########################### # ########################### # ########################### # ########################### #
@@ -382,14 +464,34 @@ map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenS
 #'
 #' @export
 #'
-shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = "",
+shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = c("NAME", "FIPS", "STATE_ABBR", "STATE_NAME", "POP_SQMI"), # "",
                                             myservice = c(
                                               "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Boundaries_2022/FeatureServer/2/query",
                                               "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_and_States_with_PR/FeatureServer/0/query",
                                               "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/EJScreen_2_22_US_Percentiles_Tracts/FeatureServer/query")[1]
 ) {
   # for a vector of  FIPS, use arcgis API to obtain map boundaries of just those census units
-
+  
+  if (length(outFields) > 1) {
+    outFields <- paste0(outFields, collapse = ",")
+  }
+  # outFields values: 
+  # from   https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Boundaries_2022/FeatureServer/2
+  # OBJECTID (type: esriFieldTypeOID, alias: OBJECTID, SQL Type: sqlTypeOther, length: 0, nullable: false, editable: false)
+  # NAME (type: esriFieldTypeString, alias: County Name, SQL Type: sqlTypeOther, length: 50, nullable: true, editable: true)
+  # STATE_NAME (type: esriFieldTypeString, alias: State Name, SQL Type: sqlTypeOther, length: 20, nullable: true, editable: true)
+  # STATE_ABBR (type: esriFieldTypeString, alias: State Abbreviation, SQL Type: sqlTypeOther, length: 2, nullable: true, editable: true)
+  # STATE_FIPS (type: esriFieldTypeString, alias: State FIPS, SQL Type: sqlTypeOther, length: 2, nullable: true, editable: true)
+  # COUNTY_FIPS (type: esriFieldTypeString, alias: County FIPS, SQL Type: sqlTypeOther, length: 3, nullable: true, editable: true)
+  # FIPS (type: esriFieldTypeString, alias: FIPS Code, SQL Type: sqlTypeOther, length: 5, nullable: true, editable: true)
+  # POPULATION (type: esriFieldTypeInteger, alias: 2022 Total Population, SQL Type: sqlTypeOther, nullable: true, editable: true)
+  # POP_SQMI (type: esriFieldTypeDouble, alias: 2022 Population per square mile, SQL Type: sqlTypeOther, nullable: true, editable: true)
+  # SQMI (type: esriFieldTypeDouble, alias: Area in square miles, SQL Type: sqlTypeOther, nullable: true, editable: true)
+  # POPULATION_2020 (type: esriFieldTypeInteger, alias: 2020 Total Population, SQL Type: sqlTypeOther, nullable: true, editable: true)
+  # POP20_SQMI (type: esriFieldTypeDouble, alias: 2020 Population per square mile, SQL Type: sqlTypeOther, nullable: true, editable: true)
+  # Shape__Area (type: esriFieldTypeDouble, alias: Shape__Area, SQL Type: sqlTypeDouble, nullable: true, editable: false)
+  # Shape__Length (type: esriFieldTypeDouble, alias: Shape__Length, SQL Type: sqlTypeDouble, nullable: true, editable: false)
+  
   if (length(countyfips) > 50) {
     # The API does let you get >50 at once but instead of figuring out that syntax, this function works well enough
     batchsize <- 50
@@ -404,7 +506,7 @@ shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = ""
     out <- do.call(rbind, out)
     return(out)
   }
-
+  
   if (grepl("ejscreen", myservice, ignore.case = TRUE)) {FIPSVARNAME <- "ID"} else {FIPSVARNAME <- "FIPS"}
   myurl <- httr2::url_parse(myservice)
   myurl$query <- list(
@@ -443,11 +545,11 @@ shapes_blockgroups_from_bgfips <- function(bgfips = '010890029222', outFields = 
                                              "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Block_Groups/FeatureServer/0/query",
                                              "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/EJScreen_2_21_US_Percentiles_Block_Groups/FeatureServer/0/query")[1]
 ) {
-
+  
   # for a vector of blockgroup FIPS, use arcgis API to obtain map boundaries of just those blockgroups
-
+  
   if (length(bgfips) > 50) {
-
+    
     # The API does let you get >50 at once but instead of figuring out that syntax, this function works well enough
     batchsize <- 50
     batches <- 1 + (length(bgfips) %/% batchsize)
@@ -463,7 +565,7 @@ shapes_blockgroups_from_bgfips <- function(bgfips = '010890029222', outFields = 
     # warning("Cannot get so many blockgroup shapes in one query, via this API, as coded! Using first 50 only.")
     # bgfips <- bgfips[1:50]
   }
-
+  
   if (grepl("ejscreen", myservice, ignore.case = TRUE)) {FIPSVARNAME <- "ID"} else {FIPSVARNAME <- "FIPS"}
   myurl <- httr2::url_parse(myservice)
   myurl$query <- list(
@@ -509,7 +611,7 @@ shapes_blockgroups_from_bgfips <- function(bgfips = '010890029222', outFields = 
 mapfast_gg <- function(mydf=data.frame(lat = 40, lon = -100)[0,],
                        dotsize = 1, ptcolor = "black",
                        xlab = "Longitude", ylab = "Latitude", ...) {
-
+  
   plotout <- ggplot2::ggplot() +
     ggplot2::geom_polygon(data = ggplot2::map_data("usa"), 
                           # Note the ggplot2 "usa" dataset 

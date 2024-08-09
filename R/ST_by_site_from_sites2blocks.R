@@ -20,12 +20,42 @@
 #'   ST_by_site_from_sites2blocks(testoutput_getblocksnearby_10pts_1miles) 
 #'   
 ST_by_site_from_sites2blocks <- function(sites2blocks) {
+
   setDT(sites2blocks)
   if (!all(c('ejam_uniq_id', 'blockid', 'distance') %in% names(sites2blocks) )) {
-      warning("column names must include siteid, blockid, and distance, as in output of getblocksnearby() - see ?testoutput_getblocksnearby_10pts_1miles")
-      return(NULL)
+    warning("column names must include siteid, blockid, and distance, as in output of getblocksnearby() - see ?testoutput_getblocksnearby_10pts_1miles")
+    return(NULL)
   }
-
-  nearestbg <- blockwts[sites2blocks[ , .( blockid = blockid[which.min(distance)]) , by = "ejam_uniq_id"], .(ejam_uniq_id, bgid), on = "blockid" ]
-  blockgroupstats[nearestbg, .(ejam_uniq_id, ST), on = "bgid"][order(ejam_uniq_id),]
+  # sites2blocks <- getblocksnearby(testpoints_1000, radius = 3.1)
+  s2st <- blockgroupstats[sites2blocks, .(ejam_uniq_id, ST), on = "bgid"][ , .(st1 = ST[1], in_how_many_states = length(unique(ST))), by = "ejam_uniq_id"]
+  setorder(s2st, ejam_uniq_id)
+  
+  # s2st[, multistate := in_how_many_states > 1]
+  # multistate_ids  <- s2st[in_how_many_states > 1, ejam_uniq_id]
+  # s2st is like this:
+  #    ejam_uniq_id    st1 in_how_many_states
+  #           <int> <char>              <int>
+  # 1:          365     AL                  1
+  # 2:          806     AL                  1
+  # 3:          890     AL                  1
+  
+  s2st[in_how_many_states == 1, ST := st1] # done. same state for 1st bgid as for all bgids
+  s2st[in_how_many_states != 1, ST := NA]  # will need sitepoints lat lon and shapefile of states for these.
+  s2st[, st1 := NULL]
+  
+  # table(gotST = !is.na(x$ST), states = x$in_how_many_states )
+  ## a few cases where in only 1 state but still assigns NA as the ST? why?
+  ## because Connecticut FIPS not yet fixed for v2.3 update!
+  # mapfast(testpoints_1000[testpoints_1000$sitenumber %in% (s2st[in_how_many_states == 1 & is.na(ST),ejam_uniq_id]), ])
+  
+       # states_infer(sites2blocks[ ejam_uniq_id %in% multistate_ids, ]) ]  # slow accurate way if in multiple states
+  
+  return(s2st) 
 }
+################################################################### # 
+
+## example of 2 ways to add statename columns using ST
+# results_bysite = copy(testoutput_ejamit_100pts_1miles$results_bysite)[,4:9]
+#   results_bysite[, statename2 := fips2statename(fips_state_from_state_abbrev(ST))] # like  
+#   results_bysite[, statename3 := stateinfo$statename[match(ST, stateinfo$ST)]]
+

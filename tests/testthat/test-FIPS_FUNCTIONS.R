@@ -336,7 +336,7 @@ test_that("fips_from_table() works", {
     expect_true(
       fips_from_table(mydat_z) == "10"
     )
-    expect_error(
+    expect_warning(
       # no suitable colname found
       fips_from_table(data.frame(x = 1:3, y = 1:3))
     )

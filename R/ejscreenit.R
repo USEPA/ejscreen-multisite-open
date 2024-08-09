@@ -127,6 +127,9 @@
 #'   If interactive() is TRUE, this actually defaults to TRUE.
 #' @param see_table  logical, whether to display interactive table
 #' @param calculate_ratios whether to add columns with ratio of raw score to the US or State average
+#' @param getstatefromplacename set to FALSE if you need the exact output of API and
+#'   TRUE if you want to try to extract ST abbrev and statename from the placename field,
+#'   which is more likely to be correct than the stateAbbr and stateName fields in the API output.
 #' @param ... passed to [ejscreenapi_plus()]
 #'
 #' @return Returns a list with map, boxplot, table 
@@ -217,6 +220,7 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
                        nicenames = TRUE, # e.g.,  "Particulate Matter (PM 2.5 in ug/m3)" not "pm"
                        folder=".",
                        # codefilesourced='./global.R', codefoldersourced='./R',
+                       getstateinfofromplacename = TRUE,
                        ...) {
   
   ################################################### #  ################################################### #
@@ -258,7 +262,9 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
                           usewhichnames = usewhichnames,
                           fips = fips,
                           # verbose = FALSE, # ALREADY THE DEFAULT IN ejscreenapi_plus() and putting it here causes problems if user tries to specify a value for it in ejscreenit()
-                          calculate_ratios = calculate_ratios, ...)
+                          calculate_ratios = calculate_ratios,
+                          getstatefromplacename = TRUE,
+                          ...)
   
   errorhappened <- TRUE # gets changed once all is finished without problems
   on.exit(if (errorhappened) return(out))
@@ -270,7 +276,8 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
   if (0 == 1) {
     ## ejscreenapi_plus() combines these steps: ####
     ## use API to get results for each site ####
-    out2 <- ejscreenapi(lon = pts$lon, lat = pts$lat, radius = radius, drop_redundant_indicators = TRUE)    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  
+    out2 <- ejscreenapi(lon = pts$lon, lat = pts$lat, radius = radius, drop_redundant_indicators = TRUE,
+                        getstatefromplacename = TRUE)    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  
     ## add weblinks #### 
     out2 <- urls_clusters_and_sort_cols(out2)
     # and ejscreenapi_plus() now adds ratios as well

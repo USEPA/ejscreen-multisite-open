@@ -119,10 +119,10 @@ latlon_from_anything <- function(anything, lon_if_used, interactiveprompt = TRUE
         } else {
           # FAILED
           if (shiny::isRunning()) {
-            warning('the first input parameter could not be interpreted as a valid input')
+            warning('the first input parameter could not be interpreted as a valid latitude or table of lat,lon or filename')
             return(NULL)
           } else {
-            stop('the first input parameter could not be interpreted as a valid input')
+            stop('the first input parameter could not be interpreted as a valid latitude or table of lat,lon or filename')
           }
         }
         

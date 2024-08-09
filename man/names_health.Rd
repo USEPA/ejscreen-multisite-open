@@ -5,7 +5,7 @@
 \alias{names_health}
 \title{a list of variable names for internal use in EJAM}
 \format{
-An object of class \code{character} of length 16.
+An object of class \code{character} of length 5.
 }
 \usage{
 names_health

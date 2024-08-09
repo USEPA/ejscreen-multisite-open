@@ -304,6 +304,17 @@ blockgroupstats_new_state$bgfips <- fips_lead_zero(blockgroupstats_new$OBJECTID)
 blockgroupstats_new$OBJECTID <- NULL
 blockgroupstats_new_state$OBJECTID <- NULL
 
+#### THIS REQUIRES USING THE UPDATED/LATEST VERSION OF bgpts and bgid2fips ! 
+#### e.g., from v2.2 to v2.3, FIPS changed in Connecticut,
+#### since THE NEW blockgroupstats_new$bgfips will not match the old bgpts$bgfips and bgid2fips$bgfips !!
+
+# > attributes(bgid2fips)$ejscreen_version
+# [1] "2.1"
+# > attributes(bgpts)$ejscreen_version
+# NULL
+if (!all(blockgroupstats_new$bgfips %in% bgpts$bgfips))     {stop("not all new bgfips can be found in the version of bgpts available/attached")}
+if (!all(blockgroupstats_new$bgfips %in% bgid2fips$bgfips)) {stop("not all new bgfips can be found in the version of bgid2fips available/attached")}
+
 blockgroupstats_new$bgid       <- bgpts$bgid[match(blockgroupstats_new$bgfips,       bgpts$bgfips)]
 blockgroupstats_new_state$bgid <- bgpts$bgid[match(blockgroupstats_new_state$bgfips, bgpts$bgfips)]
 # > table(is.na(blockgroupstats$bgfips))

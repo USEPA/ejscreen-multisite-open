@@ -370,17 +370,26 @@ is.island <- function(ST=NULL, statename=NULL, fips=NULL) {
 #'
 #' @return vector of fips codes
 #' @seealso [fips_bg_from_anyfips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
-#'
+#' @examples
+#'  fips_from_table( data.frame(countyfips=0, FIPS=1, bgfips=2, other=3, fips=4))
+#' 
 #' @export
 #'
 fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
   
-  # fips_table can be data.frame or data.table, as long as colnames has one alid fips alias
+  # fips_table can be data.frame or data.table, as long as colnames has one valid fips alias
   ## create named vector of FIPS codes (names used as location id)
-  fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips',
-                  'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST', 'FIPS.COUNTY', 'FIPS.TRACT')
+  
+  fips_alias <- c('fips', 'FIPS', 'Fips', 'fips_code', 'fipscode',
+                  'blockfips', 
+                  'bgfips', 'blockgroupfips', 'blockgroup_fips', 'blockgroup_fips_code',
+                  'FIPS.TRACT', 'tractfips', 'tract_fips',
+                  'countyfips', 'FIPS.COUNTY',
+                  'statefips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST'
+  )
   if (any(tolower(colnames(fips_table)) %in% fips_alias)) {
     firstmatch <- intersect(fips_alias, colnames(fips_table))[1]
+    
     if (addleadzeroes) {
       fips_vec <- fips_lead_zero(as.character(fips_table[[firstmatch]]))
     }
@@ -392,7 +401,8 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
       fips_vec <- NULL
     } else {
       # outside shiny:
-      stop(    paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
+      warning(    paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
+      fips_vec <- NULL
     }
   }
   return(fips_vec)

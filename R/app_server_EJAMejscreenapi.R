@@ -376,13 +376,14 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
         
         # *_EJScreen API Get Results*  ####
         batchtableout <- ejscreenapi(
-          lon = pts()$lon, lat=pts()$lat, 
-          radius = radius_miles(), unit ='miles', wkid=4326 , 
-          format_report_or_json='pjson', ipurl=whichip,  # was  input$whichip
-          report_every_n=report_every_n_default,
-          save_when_report=FALSE, on_server_so_dont_save_files=TRUE,
+          lon = pts()$lon, lat = pts()$lat, 
+          radius = radius_miles(), unit = 'miles', wkid = 4326 , 
+          format_report_or_json = 'pjson', ipurl = whichip,  # was  input$whichip
+          report_every_n = report_every_n_default,
+          save_when_report = FALSE, on_server_so_dont_save_files = TRUE,
           updateProgress = updateProgress, # updateProgress is a function that has been defined already and gets passed here to the slow function that needs to report progress bar updates
-          drop_redundant_indicators = TRUE
+          drop_redundant_indicators = TRUE,
+          getstatefromplacename = TRUE
         )
         
         # if (attr(batchtableout, 'noresults') ) { # needs to be fixed ****

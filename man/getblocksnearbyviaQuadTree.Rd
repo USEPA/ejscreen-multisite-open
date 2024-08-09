@@ -12,6 +12,7 @@ getblocksnearbyviaQuadTree(
   avoidorphans = FALSE,
   report_progress_every_n = 500,
   quiet = FALSE,
+  use_unadjusted_distance = FALSE,
   retain_unadjusted_distance = TRUE,
   quadtree,
   updateProgress = NULL
@@ -44,6 +45,8 @@ mostly for testing, but a progress bar feature might be useful unless this is su
 
 \item{quiet}{Optional. set to TRUE to avoid message about using getblock_diagnostics(),
 which is relevant only if a user saved the output of this function.}
+
+\item{use_unadjusted_distance}{logical, whether to find points within unadjusted distance}
 
 \item{retain_unadjusted_distance}{set to FALSE to drop it and save memory/storage. If TRUE,
 the distance_unadjusted column will save the actual distance of site to block internal point

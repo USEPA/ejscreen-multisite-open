@@ -46,7 +46,9 @@
 #'   nearby Census block internal points, with columns ejam_uniq_id, blockid, distance,
 #'   created by getblocksnearby  function.
 #'   See [sites2blocks_example10pts_1miles] aka [testoutput_getblocksnearby_10pts_1miles] dataset in package, as input to this function
-#' @param sites2states_or_latlon data.table or just data.frame, with columns ejam_uniq_id (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon
+#' @param sites2states_or_latlon data.table or just data.frame, 
+#'   with columns ejam_uniq_id (each unique one in sites2blocks) and 
+#'   ST (2-character State abbreviation) or lat and lon
 #' @param radius Optional radius in miles to limit analysis to. By default this function uses
 #'   all the distances that were provided in the output of getblocksnearby(),
 #'   and reports radius estimated as rounded max of distance values in inputs to doaggregate.
@@ -156,8 +158,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     # Some stats or plots analyzing proximity (i.e., 1/distance) will not work, but they are not supposed to work for an analysis where distance is not an issue.
     radius <- 0
   } else {
-    if (is.null(radius)) {radius <- NA}
-    if ( missing(radius) | is.na(radius) | (length(radius) != 1) | (!is.numeric(radius)) | (radius < 0)  ) {
+    
+    if (missing(radius) || is.null(radius) || is.na(radius) || (length(radius) != 1) || (!is.numeric(radius)) || (radius < 0)) {
       if (!is.numeric(sites2blocks$distance)) {
         warning('Values found in sites2blocks$distance were not but must be numeric - doaggregate() will treat them as zero values')
         radius <- 0
@@ -168,30 +170,19 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         message('Inferring approximate radius is ', radius, ' miles, based on distances found.')
       }
     }
-    
     if (radius >= 1.5 * max(sites2blocks$distance)) {
       warning('radius passed to doaggregate() is at least 1.5x any distance found in sites2blocks,
                 suggesting it is larger than the radius that was analyzed by getblocksnearby() --
                 changing the reported radius now to be the inferred radius')
       radius <- radius_inferred(sites2blocks)
     }
-    
     if (any(sites2blocks$distance > radius)) {message(paste0(
       "Restricting this analysis to blocks (residents) at distances smaller than radius of ", radius, "\n",
       "as specified in radius parameter passed to doaggregate(), or else inferred from distances reported to doaggregate()\n",
-      "even though some larger distances were found in sites2blocks table passed from getblocksnearby() to doaggregate()\n",
-      "which sometimes occurs if small radius is used where blocks are very large (low pop density)\n",
-      "so reported distance to avg person was > radius requested for analysis"))}
-    # only reporting results for residents at distances <= that apparent cutoff in distance even if large block led to getblocksnearby() reporting distance > radius!')
-    # *** note this may eliminate from analysis a site that is in a very large rural block if there are no other blocks nearby and the block very large
-    # -- see notes elsewhere
-    
+      "even though some larger distances were somehow found in sites2blocks table passed from getblocksnearby() to doaggregate()\n" 
+    ))}
     sites2blocks <- sites2blocks[distance <= radius, ]
-    
     # is sites2blocks already keying on distance? that would speed it up! ***
-    # and, can this subset rows be done faster by reference in data.table somehow?/avoiding copy?
-    # maybe something similar to this:  ???
-    # sites2blocks[distance > radius, .SD := NULL]  #???
   }
   # end of radius adjustments
   ###################################################### #
@@ -199,9 +190,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ## validate other inputs? ####
   
   # could check if optional input params, when provided, are all valid ***
-  
-  
-  
   
   
   ##################################################### #  ##################################################### #
@@ -224,7 +212,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ## SUM OF COUNTS, vs WTD AVG, vs via FORMULA (usually ratio of sums of counts)
   # That info is sort of stored already in map_headernames$calculation_type and $denominator
   # see notes in custom_doaggregate() and  calc_ejam() and formulas_d
-  # 
   
   ##################################################### #
   
@@ -327,7 +314,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ## Use pop weights of nearby blocks ####
   # to track what fraction of each parent block group is considered inside the buffer.
   #    getblocksnearby() already did join that added blockwt column
-  # and block_radius_miles was already used to adjust short distances in sites2blocks.
+  # 
   
   # sort rows
   
@@ -336,7 +323,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ################################################################ #
   # Just create some new columns in sites2blocks,
   #    by="blockid" here already
-  
   # Using                 DT[, newcolumn := min(xyz), by="blockid"] creates new column in existing DT, with repeat of the same info in each row for duplicate blockids, which is ok. Typically not a large % are duplicated so it is not much slower, and dupes are removed later for overall stats.
   # Using  rolledup_DT <- DT[, summarycol = sum(xyz), by="blockid"] creates a new DT with fewer rows, by summarizing over the 1-2 sites near a given block.
   
@@ -347,27 +333,22 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ## _min distance to any site, for each block (each resident's distance from the nearest site) ####
   
   if (need_proximityscore) {
-    
     ## _Proximity Score of block   ####
-    # Note the distance was already adjusted to be the minimum possible value of 0.9 * effective radius of block_radius_miles, in getblocksnearbyviaQuadTree()
-    
+    warning( "Note the distance for proximity score might need to get adjusted to be the minimum possible value of 0.9 * effective radius of block_radius_miles which is no longer done by default in getblocksnearby() and 1/d is wrong if distance unadjusted is 0, e.g.")
     sites2blocks[, `:=`(
       proximityscore =  1 / distance,  # score here is for only 1 site per block. summed later across all sites near a given block, then get popwtd mean of block prox scores.
-      sitecount = .N,   # done again below, right?
-      # How far is closest site, for each unique block (resident, essentially, or actually avg resident in the block)?
-      # distance_min = collapse::fmin(distance) #,
+      sitecount = .N,   # but that is done again below, right?
+      # How far is closest site, for each unique block (resident, essentially, or actually avg resident in the block)? # distance_min = collapse::fmin(distance) #,
       distance_min = distance[1]   # temporarily use first distance among sites near this block to see if essential and how much does this slow it down?
     ),
     by = "blockid"]
-    
-    if (anyNA(sites2blocks$proximityscore)) {message("Proximity scores were requested but set to Inf where distance=0 as when analyzing unbuffered polygons or FIPS")}
+    if (anyNA(sites2blocks$proximityscore)) {message("Proximity scores were requested but set to Inf where distance=0 as when analyzing unbuffered polygons or FIPS or using unadjusted small distances that can equal zero")}
     
   } else {
     
     sites2blocks[, `:=`(
-      sitecount = .N,  # done again below, right?
-      # How far is closest site, for each unique block (resident, essentially, or actually avg resident in the block)?
-      # distance_min = collapse::fmin(distance) #,
+      sitecount = .N,  # but that is done again below, right?
+      # How far is closest site, for each unique block (resident, essentially, or actually avg resident in the block)?  # distance_min = collapse::fmin(distance) #,
       distance_min = distance[1] # temporarily use first distance among sites near this block to see if essential and how much does this slow it down?
     ),
     by = "blockid"]
@@ -701,9 +682,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ### XXX TEMPORARILY TRY TO SEE IF IT WORKS TO USE pop AS THE WEIGHT FOR ALL THE WTDMEANCOLS BEFORE GETTING THE OTHER WEIGHTS WORKING 
   use_pop_as_only_weight = TRUE ############################################################################################################### will remove
   if (use_pop_as_only_weight) { ############################################################################################################### will remove
-  popmeancols_inbgstats <- wtdmeancols_inbgstats  ## WILL REMOVE THIS LINE LATER  ############################################################################################################### will remove
+    popmeancols_inbgstats <- wtdmeancols_inbgstats  ## WILL REMOVE THIS LINE LATER  ############################################################################################################### will remove
   } else { ############################################################################################################### will remove
-  popmeancols_inbgstats <- wtdmeancols_inbgstats[calcweight(wtdmeancols_inbgstats) == "pop"] # WILL USE THIS LATER / WILL UNCOMMENT IT LATER
+    popmeancols_inbgstats <- wtdmeancols_inbgstats[calcweight(wtdmeancols_inbgstats) == "pop"] # WILL USE THIS LATER / WILL UNCOMMENT IT LATER
   } ############################################################################################################### will remove
   ## mean by SITE ###
   results_bysite_popmeans <- sites2bgs_plusblockgroupdata_bysite[   ,  lapply(.SD, FUN = function(x) {
@@ -719,29 +700,29 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   results_overall <- cbind(results_overall, results_overall_popmeans) # many columns (the popwtd mean cols)
   ############################################### #
   if (!use_pop_as_only_weight) { ############################################################################################################### will remove
-  #  weights = other types of weights than pop
-  
-  weight_types <- setdiff(unique(calcweight(wtdmeancols_inbgstats)), "pop")
-  
-  for (i in seq_along(weight_types)) {
+    #  weights = other types of weights than pop
     
-    #  weights = each type
-    this_weight_type_cols <- wtdmeancols_inbgstats[calcweight(wtdmeancols_inbgstats) == weight_types[i]]
+    weight_types <- setdiff(unique(calcweight(wtdmeancols_inbgstats)), "pop")
     
-    ## mean by SITE ###
-    results_bysite_wtdmeans <- sites2bgs_plusblockgroupdata_bysite[   ,  lapply(.SD, FUN = function(x) {
-      collapse::fmean(x, w = bgwt * weight_types[i])
-    }), .SDcols = this_weight_type_cols, by = .(ejam_uniq_id), with = FALSE] # NOT TESTED
-    results_bysite <- merge(results_bysite, results_bysite_wtdmeans, by = "ejam_uniq_id")
-    
-    ## mean OVERALL ###
-    ## later, for results_overall, will calc state pctiles once we have them for each site
-    results_overall_wtdmeans <- sites2bgs_plusblockgroupdata_overall[ ,  lapply(.SD, FUN = function(x) {
-      collapse::fmean(x, w = bgwt * weight_types[i]) 
-    }), .SDcols = this_weight_type_cols  ]
-    results_overall <- cbind(results_overall, results_overall_wtdmeans) # many columns (the popwtd mean cols)
-  }
-  ############################################### #
+    for (i in seq_along(weight_types)) {
+      
+      #  weights = each type
+      this_weight_type_cols <- wtdmeancols_inbgstats[calcweight(wtdmeancols_inbgstats) == weight_types[i]]
+      
+      ## mean by SITE ###
+      results_bysite_wtdmeans <- sites2bgs_plusblockgroupdata_bysite[   ,  lapply(.SD, FUN = function(x) {
+        collapse::fmean(x, w = bgwt * weight_types[i])
+      }), .SDcols = this_weight_type_cols, by = .(ejam_uniq_id), with = FALSE] # NOT TESTED
+      results_bysite <- merge(results_bysite, results_bysite_wtdmeans, by = "ejam_uniq_id")
+      
+      ## mean OVERALL ###
+      ## later, for results_overall, will calc state pctiles once we have them for each site
+      results_overall_wtdmeans <- sites2bgs_plusblockgroupdata_overall[ ,  lapply(.SD, FUN = function(x) {
+        collapse::fmean(x, w = bgwt * weight_types[i]) 
+      }), .SDcols = this_weight_type_cols  ]
+      results_overall <- cbind(results_overall, results_overall_wtdmeans) # many columns (the popwtd mean cols)
+    }
+    ############################################### #
   } ############################################################################################################### will remove
   
   ##################################################### #
@@ -1083,41 +1064,71 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # *** popwtd avg of sites state pctiles (not raw scores) will be used as the overall state pctiles.
   #  (Because each site has a different site, you cannot just convert overall raw scores to state pctiles).
   
-  if (missing(sites2states_or_latlon) | !("ST" %in% names(sites2states_or_latlon))) { # must or should figure out state based on blockid -> blockfips -> ST
-    sites2states <- ST_by_site_from_sites2blocks(sites2blocks)
-    # returns a data.table with these columns:  ejam_uniq_id, ST  (and only 1 row per ejam_uniq_id! It is just to know the ST of each unique ejam_uniq_id)
-    if (!missing(sites2states_or_latlon)) {
-      # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
-      sites2states_or_latlon <- latlon_from_anything(sites2states_or_latlon)
-      
-      if (!("character" %in% class(sites2states_or_latlon)) & !c('ejam_uniq_id') %in% names(sites2states_or_latlon)) {
-        warning('sites2states_or_latlon did not contain a column named ejam_uniq_id, so one was added')
-        sites2states_or_latlon$ejam_uniq_id <- seq.int(length.out = NROW(sites2states_or_latlon))
-      }
-      # add in the lat,lon columns - this is always available if ejamit() called this since it passes the pts as sites2states_or_latlon
-      if ("ejam_uniq_id" %in% names(sites2states_or_latlon) & "ejam_uniq_id" %in% names(sites2states)) {
-        
-        sites2states <- merge(sites2states, sites2states_or_latlon, by = 'ejam_uniq_id') #  error if  ejam_uniq_id is not there
-      } else {
-        sites2states <- cbind(sites2states, sites2states_or_latlon) #   ***xxx  HAVE NOT CHECKED IF THIS WORKS OR IS CORRECT !
-      }
-    } else {
-      # maybe get latlon of closest block?? no, just omit lat,lon in this case
-    }
-  } else { # hope it has ST, which is best, or latlon which is slowest, but in between was via blockid, done above!
-    sites2states <- states_infer(sites2states_or_latlon)
+  
+  #  ##################################################### #  #  ##################################################### #  
+  warning('work in progress on state identification')
+  if (missing( sites2states_or_latlon) || !("lat" %in% names(sites2states_or_latlon)) || !("lon" %in% names(sites2states_or_latlon))) {
+    #  For multistate sites, ensure we have lat lon of site: ALWAYS TRUE IF IN SHINY APP OR EJAMIT
+    warning('assuming NY state for all percentiles because not yet implemented for case where sites2states_or_latlon is missing')
+    sites2states <- data.table(ejam_uniq_id = unique(sites2blocks$ejam_uniq_id), ST = NA_character_)
+    sites2states[, ST := "NY"]  # placeholder until done
   }
-  # sites2states  is df or dt with just 1 row/site, and columns= ejam_uniq_id,ST ; and MIGHT have lat,lon and other info.
   
-  results_bysite[sites2states,  ST := ST,  on = "ejam_uniq_id"] # check this, including when ST is NA
+  if (!missing(sites2states_or_latlon) && 
+      "ST" %in% names(sites2states_or_latlon) && 
+      "ejam_uniq_id" %in% names(sites2states_or_latlon) &&
+      all(unique(sites2blocks$ejam_uniq_id) %in% sites2states_or_latlon$ejam_uniq_id) &&
+      !anyNA(sites2states_or_latlon$ST)) {
+    # already have ST for each site
+    sites2states <- sites2states_or_latlon[, .(ejam_uniq_id, ST)]
+  } else {
+    
+    simple_state_identification = TRUE
+    # For now, could use very slow but accurate shapefile method to find state based on states shapefile and statepoints latlon values -- adds ST column if not already there.
+    if (simple_state_identification) {
+      
+      sites2states <- states_infer(sites2states_or_latlon)
+      sites2states[is.na(ST), ST := "NY"]  # placeholder until fixed
+      ## trying to recode this, below, however, to do it that way ONLY at sites that covers 2+ states
+      # since it is faster to get ST via bgid join to blockgroupstats for sites that cover only 1 state, as determined by their blockpoints nearby.
+    
+      } else {
+      
+      # first quickly join on bgid to get ST for each site from blockgroupstats, 
+      # and count how many states each site spans.
+      sites2states <- ST_by_site_from_sites2blocks(sites2blocks)
+      # ST was obtained for single-state sites.
+      # ST is still NA for multistate sites here.
+      multistate_ids  <- sites2states[in_how_many_states > 1, ejam_uniq_id]
+      
+      if (missing( sites2states_or_latlon) || !("lat" %in% names(sites2states_or_latlon)) || !("lon" %in% names(sites2states_or_latlon))) {
+        #  For multistate sites, ensure we have lat lon of site: ALWAYS TRUE IF IN SHINY APP OR EJAMIT
+        stop('not yet implemented for case where sites2states_or_latlon is missing')        
+        #     # get the latlon of each multistate site
+        #       sites2states[ejam_uniq_id %in% multistate_ids, ] JOIN ON EJAMID WITH  latlon_from_s2b(sites2blocks[ejam_uniq_id %in% multistate_ids, ]) 
+        #     ## needed only if missing sitepoints latlon (never if using app or ejamit) AND even then only if blocks near site span 2+ states!
+        # **********   do we need to join on ejam_uniq_id ??
+      } else {
+        # already have latlon of each multistate site 
+      }
+      # get the lat lon info of sites so we can use that at multistate sites
+      sites2states <- merge(sites2states, sites2states_or_latlon, by = "ejam_uniq_id")
+      # use latlon of each multistate site in shapefile to infer ST
+      # need to confirm this works and does not require merge or join approach:
+      sites2states[ejam_uniq_id %in% multistate_ids, ST] <- states_infer( sites2states[ejam_uniq_id %in% multistate_ids] )$ST
+      }
+    
+  }
+  setorder(sites2states, ejam_uniq_id)
+  #  ##################################################### #  #  ##################################################### #  
+  
+  results_bysite[sites2states,  ST := ST,  on = "ejam_uniq_id"] # check this, including when ST is NA ***
+  results_bysite[, statename :=  stateinfo$statename[match(ST, stateinfo$ST)]]  #  results_bysite[, statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  
   results_overall$ST <- NA
-  results_bysite[, statename :=  stateinfo$statename[match(ST, stateinfo$ST)]]
   results_overall$statename <- NA
-  ## add blank ejam_uniq_id column to results_overall (no longer tied to include_ejindexes)
-  results_overall$ejam_uniq_id <- NA
+  results_overall$ejam_uniq_id <- NA  ## adds blank ejam_uniq_id column to results_overall (no longer tied to include_ejindexes)
   #  ##################################################### #  ##################################################### #
-  
-  if (missing(radius)) {radius.miles <- round(max(sites2blocks$distance, na.rm = TRUE), 1)}
   
   ##################################################### #
   ## PERCENTILES - express raw scores (from results_bysite AND  results_overall) in percentile terms ####
@@ -1130,12 +1141,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # these lines about names of variables should be pulled out of here and defined as params or another way   xxx
   # specify which variables get converted to percentile form
   
-
-
+  
+  
   # the ejscreen community report shows percentiles only for E,D,EJ, plus health,climate,criticalservice tables:
   namelists <- intersect(c('names_health', 'names_climate', 'names_criticalservice'), unique(map_headernames$varlist))
   varsneedpctiles <- unique(c(names_e,  names_d, subs, 
-                       namesbyvarlist(namelists)$rname
+                              namesbyvarlist(namelists)$rname
   ) )
   varsneedpctiles <- intersect(varsneedpctiles, names(results_bysite))
   
@@ -1381,7 +1392,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #
   # INCLUDE US AVERAGE FOR EACH SITE AND INDICATOR AND OVERALL ###
   #  -  THIS IS WASTING TIME AND SPACE, BUT IS CONVENIENT I GUESS
-
+  
   #  overall
   avg.cols_overall <-   usastats[ usastats$PCTILE == "mean",  names_these] # not a data.table, or it would need to say  usastats[ PCTILE == "mean",  ..names_these]
   ## all.equal( as.vector(unlist(avg.cols_overall)), as.vector(unlist( data.frame(t( usastats_means(names_these, dig = 7)  ))  ) ) ) # TRUE, but that function is not any simpler for getting the means
@@ -1416,7 +1427,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     ratios_to_state_avg_overall <-
       results_overall[  , ..names_these] /
       results_overall[, ..names_these_state_avg]
-
+    
     # add those all to results tables
     colnames(ratios_to_avg_bysite)  <- names_these_ratio_to_avg
     colnames(ratios_to_avg_overall) <- names_these_ratio_to_avg

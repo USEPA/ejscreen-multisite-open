@@ -42,6 +42,8 @@ test_that("ejscreenRESTbroker() output $headers$`content-type` is still identica
 
 cat('\ntesting ejscreenRESTbroker2table\n')
 
+## also could add here a test of the getstatefromplacename parameter now
+
 
 test_that("ejscreenRESTbroker2table() does not crash on 1 point", {
   # NOTE IT IS NOT MEANT TO HANDLE 2+ POINTS AT A TIME

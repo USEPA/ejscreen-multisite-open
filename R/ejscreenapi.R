@@ -68,11 +68,13 @@
 #' @param updateProgress Used to create progress bar in Shiny app
 #' @param drop_redundant_indicators Set to FALSE if you do not want to exclude from results the indicators that appear twice 
 #'   just under 2 different names, like RAW_D_LIFEEXP and RAW_HI_LIFEEXPPCT which are identical.
-#' @seealso [ejscreenit()] [ejscreenapi_plus()] [ejscreenapi()]
 #' @param nicenames Set it to TRUE if you want to have it rename headers as long friendly plain English not R variable names
 #'   but note downstream functions mostly expect rname format
 #'    that uses [ejscreenapi1()] and [ejscreenRESTbroker()]  and [ejscreenRESTbroker2table()]
-#' 
+#' @param getstatefromplacename set to FALSE if you need the exact output of API and
+#'   TRUE if you want to try to extract ST abbrev and statename from the placename field,
+#'   which is more likely to be correct than the stateAbbr and stateName fields in the API output.
+#' @seealso [ejscreenit()] [ejscreenapi_plus()] [ejscreenapi()]
 #' @examples  
 #'  \dontrun{
 #'  # Specify size of buffer circle and pick random points as example data
@@ -94,7 +96,8 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
                         report_every_n=1000, save_when_report=FALSE, 
                         format_report_or_json='pjson', on_server_so_dont_save_files=FALSE, 
                         ipurl='ejscreen.epa.gov', updateProgress=NULL, drop_redundant_indicators=TRUE, 
-                        nicenames=FALSE) {
+                        nicenames=FALSE,
+                        getstatefromplacename = TRUE) {
   
   if (any(!is.null(fips))) {
     radius <- 0
@@ -210,7 +213,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
       # ej.data <- try(data.table::as.data.table(jsonlite::fromJSON(
       #   rawToChar(ej.data$content)
       # )))
-      ej.data <- try(ejscreenRESTbroker2table(ej.data)) # now it is one data.frame
+      ej.data <- try(ejscreenRESTbroker2table(ej.data, getstatefromplacename = getstatefromplacename)) # now it is one data.frame
       
       if (failed | inherits(ej.data, 'try-error')) {
         failed <- TRUE; warning('error in parsing JSON returned by API for point number ', i, ' - Returning no result for that point.')

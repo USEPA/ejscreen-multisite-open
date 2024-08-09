@@ -5,6 +5,12 @@
 \name{testoutput_ejscreenRESTbroker_1pts_1miles}
 \alias{testoutput_ejscreenRESTbroker_1pts_1miles}
 \title{test data, output from this function}
+\format{
+An object of class \code{response} of length 10.
+}
+\usage{
+testoutput_ejscreenRESTbroker_1pts_1miles
+}
 \description{
 test data, output from this function
 }
@@ -17,6 +23,5 @@ the equivalent of results of
 \link{testpoints_5} \link{testpoints_50} \link{testpoints_500}
 
 \link{testoutput_ejscreenit_5} \link{testoutput_ejscreenit_50} \link{testoutput_ejscreenit_500}
-
-\link{testoutput_ejscreenapi_plus_5} \link{testoutput_ejscreenapi_plus_50} \link{testoutput_ejscreenapi_plus_500}
 }
+\keyword{datasets}

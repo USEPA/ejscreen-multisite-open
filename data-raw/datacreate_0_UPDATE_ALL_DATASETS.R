@@ -176,6 +176,8 @@ if (0 == 1) {  # collapsable list
   # 
   #   blocks
   documentOpen('./data-raw/datacreate_blockwts.R')           # needs Island Areas added
+  #    and be sure to obtain correct version either from census or directly from ejscreen team
+  
   #   blockgroups
   documentOpen('./data-raw/datacreate_bg_cenpop2020.R')      # confirm if changed since 2020
   documentOpen('./data-raw/datacreate_bgpts.R')              # redundant w bg_cenpop2020, pick one to use
@@ -226,7 +228,7 @@ if (0 == 1) {  # collapsable list
 x <- datawrite_to_pins(justchecking = T) # load_all() first or use EJAM:::
 if (!is.null(x)) {
   # must use VPN to have access to pins board 
-  #               name                                        title  type file_size             created ejscreen_version varnames
+  #                name                                        title  type file_size             created ejscreen_version varnames  - through July 2024
   # 1  frs_by_programid frs_by_programid data from EJScreen for EJAM arrow   124.14M 2023-12-11 17:21:17              2.2     TRUE
   # 2              bgej             bgej data from EJScreen for EJAM arrow     97.5M 2023-12-05 22:20:29              2.2     TRUE
   # 3       frs_by_mact      frs_by_mact data from EJScreen for EJAM arrow     2.31M 2023-12-11 17:22:00              2.2     TRUE
@@ -238,6 +240,23 @@ if (!is.null(x)) {
   # 9       blockpoints                    blockpoints data for EJAM arrow   155.97M 2023-11-17 19:12:57              2.2     TRUE
   # 10     blockid2fips                   blockid2fips data for EJAM arrow    98.17M 2023-11-17 19:12:36              2.2     TRUE
   # 11        bgid2fips                      bgid2fips data for EJAM arrow     2.98M 2023-11-17 19:12:19              2.2     TRUE
+  
+  #                name                                        title  type file_size             created ejscreen_version varnames - August 5, 2024
+  # 1  frs_by_programid frs_by_programid data from EJScreen for EJAM arrow    154.7M 2024-08-05 14:43:33              2.3     TRUE
+  # 2      frs_by_naics     frs_by_naics data from EJScreen for EJAM arrow    14.68M 2024-08-05 14:43:28              2.3     TRUE
+  # 3        frs_by_sic       frs_by_sic data from EJScreen for EJAM arrow    20.25M 2024-08-05 14:43:21              2.3     TRUE
+  # 4       frs_by_mact      frs_by_mact data from EJScreen for EJAM arrow     4.63M 2024-08-05 14:43:17              2.3     TRUE
+  # 5               frs              frs data from EJScreen for EJAM arrow   146.01M 2024-08-05 14:42:49              2.3     TRUE
+  
+  # 6              bgej             bgej data from EJScreen for EJAM arrow     97.5M 2023-12-05 22:20:29              2.3     TRUE - but not actually updated for v2.3 yet!!
+  # 7          blockwts         blockwts data from EJScreen for EJAM arrow    91.67M 2023-11-17 19:14:23              2.3     TRUE - but not actually updated for v2.3 yet!!
+  # 8          quaddata                       quaddata data for EJAM arrow   218.36M 2023-11-17 19:13:32              2.3     TRUE - but not actually updated for v2.3 yet!!
+  # 9       blockpoints                    blockpoints data for EJAM arrow   155.97M 2023-11-17 19:12:57              2.3     TRUE - but not actually updated for v2.3 yet!!
+  # 10     blockid2fips                   blockid2fips data for EJAM arrow    98.17M 2023-11-17 19:12:36              2.3     TRUE - but not actually updated for v2.3 yet!!
+  # 11        bgid2fips                      bgid2fips data for EJAM arrow     2.98M 2023-11-17 19:12:19              2.3     TRUE - but not actually updated for v2.3 yet!!
+  
+  
+  # 
   pin_seen <- x$name
   pin_expected = c(
     'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
@@ -408,18 +427,22 @@ load_all()
 ######################################### #
 ### datacreate_blockwts.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_blockwts.R")
-source_maybe('datacreate_blockwts.R', DOIT = FALSE) # script that includes metadata_add() and use_data()
-# Creates blockwts, blockpoints, etc.,
-# but does not have to get updated 
-# except when FIPS codes or boundaries change for blocks or blockgroups.
-#  or possibly to add data that had been missing, for Island Areas AS, GU, MP, VI ***
+### this requires package called ejanalysis/census2020download, which is not on CRAN!
+source_maybe('datacreate_blockwts.R', DOIT = FALSE) # script that can include metadata_add() and use_data()
+#    and be sure to obtain correct version either from census or directly from ejscreen team
+# Creates mylistoftables, a list that includes tables blockwts, blockpoints, etc.,
+#   gets updated when FIPS codes or boundaries change for blocks or blockgroups
+#  such as in Connecticut for v2.2 change to v2.3 !
+
+#  & possibly to add data that had been missing, for Island Areas AS, GU, MP, VI ***
+
 ######################################### #
 ## blockgroups ####
 # documentOpen('./data-raw/datacreate_bg_cenpop2020.R')      # confirm if changed since 2020
 # documentOpen('./data-raw/datacreate_bgpts.R')              # redundant w bg_cenpop2020, pick one to use
 
 ### datacreate_bg_cenpop2020.R ####
-# rstudioapi::documentOpen("./data-raw/datacreate_bg_cenpop2020.R")
+# rstudioapi::documentOpen("./data-raw/datacreate_bg_cenpop2020.R")       IS IT USED AT ALL BY EJAM THOUGH??
 source_maybe("datacreate_bg_cenpop2020.R", DOIT = FALSE, folder = rawdir)
 ######################################### #
 ### datacreate_bgpts.R ####

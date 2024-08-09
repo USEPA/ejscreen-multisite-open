@@ -130,27 +130,24 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
       }
     }
     
-    # Get the lat,lon of each block so we can map them - could try join instead?? ####
-    bl <- latlon_join_on_blockid(sites2blocks) # now checks 1st to see if lat lon already there.  #old:   merge( sites2blocks, blockpoints , on = "blockid")
+    # Get the lat,lon of each block so we can map them  ####
+    bl <- latlon_join_on_blockid(sites2blocks) # now checks 1st to see if lat lon already there.
     setDT(bl) # redundant but fast
-    setnames(bl, 'lat', 'blocklat')
-    setnames(bl, 'lon', 'blocklon')
     
     # in the scenario where we got only output of getblocksnearby() not actual sitepoints,
-    # we could use block lat,lon values to approximate the lat,lon of each site, since we were not given that 
-    # but this approximation would be really bad...
+    # we could use latlon_from_s2b()
     if (!really_sitepoints) {
       # infer radius approximately??? ####
-      if (missing(radius)) {radius <- round(max(bl$distance, na.rm = TRUE), 1)}
-      # VERY roughly infer sitepoints lat,lon of sites from info in sites2blocks table... just for a rough map... but 
-      # *** should FIX/ IMPROVE THIS APPROXIMATION BY USING trilaterate() to 
-      #  really more accurately recreate the sitepoints lat,lon info from distances and lat,lon of blocks!
-      # (once trilaterate() is debugged/checked -- it was very inaccurate for some reason as drafted ***)
+      if (missing(radius)) {radius <- radius_inferred(bl)} # round(max(bl$distance, na.rm = TRUE), 1)}
+      #  roughly infer sitepoints lat,lon of sites from info in sites2blocks table... just for a rough map...  
+      # USING   latlon_from_s2b()  
       # sitepoints <- bl[ , list(lat = mean(blocklat), lon = mean(blocklon)), by = siteidvarname]
       # create dummy empty info for now
-      sitepoints <- data.frame(willrename = -999); colnames(sitepoints) <- siteidvarname
+      sitepoints <- latlon_from_s2b(bl)  ### did not bother handling siteidvarname vs ejam_uniq_id here... probably never use that option anyway
+      # sitepoints <- data.frame(willrename = -999); colnames(sitepoints) <- siteidvarname
     }
-    
+    setnames(bl, 'lat', 'blocklat')
+    setnames(bl, 'lon', 'blocklon')    
     
     # Put site point(s) (which have lat,lon) and surrounding block points (which have blocklat,blocklon) into one table
     setDT(sitepoints) # not sure this is needed

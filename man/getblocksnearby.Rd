@@ -13,6 +13,7 @@ getblocksnearby(
   quadtree = NULL,
   quiet = FALSE,
   parallel = FALSE,
+  use_unadjusted_distance = TRUE,
   ...
 )
 }
@@ -45,6 +46,8 @@ It can be automatically created when the package is attached via the .onAttach()
 
 \item{quiet}{Optional. set to TRUE to avoid message about using getblock_diagnostics(),
 which is relevant only if a user saved the output of this function.}
+
+\item{use_unadjusted_distance}{logical, whether to find points within unadjusted distance}
 
 \item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 }

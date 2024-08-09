@@ -36,6 +36,9 @@
 #'   (counties, tracts, or blockgroups)
 #' @param format_report_or_json default is "pjson" but could "report" to get URL for a pdf report
 #' @param ipurl IP or URL start
+#' @param getstatefromplacename set to FALSE if you need the exact output of API and
+#'   TRUE if you want to try to extract ST abbrev and statename from the placename field,
+#'   which is more likely to be correct than the stateAbbr and stateName fields in the API output.
 #' @seealso [ejscreenit()] [ejscreenapi_plus()] [ejscreenapi()]
 #'    that uses [ejscreenapi1()] and [ejscreenRESTbroker()]  and [ejscreenRESTbroker2table()]
 #' @examples  
@@ -58,7 +61,8 @@
 #'  
 ejscreenapi1 <- function(lon, lat, radius = 3, unit ='miles', wkid=4326, 
                          fips=NULL,
-                         format_report_or_json='pjson', ipurl='ejscreen.epa.gov') {
+                         format_report_or_json='pjson', ipurl='ejscreen.epa.gov',
+                         getstatefromplacename = TRUE) {
   
   if (any(!is.null(fips))) {
     radius <- 0
@@ -114,7 +118,7 @@ ejscreenapi1 <- function(lon, lat, radius = 3, unit ='miles', wkid=4326,
   
   # parse pjson results to data.frame format, for just this one buffer ####
   # and ejscreenRESTbroker2table does error-checking
-  ej.data <- ejscreenRESTbroker2table(ej.data)
+  ej.data <- ejscreenRESTbroker2table(ej.data, getstatefromplacename = getstatefromplacename)
   
   ################################################################## #
   invisible(ej.data)

@@ -24,13 +24,16 @@
 #'   this function will return a row with the right columns but all NA values if the input seems wrong.
 #'   
 #' @param brokeroutput the results of [ejscreenRESTbroker()]
+#' @param getstatefromplacename set to FALSE if you need the exact output of API and
+#'   TRUE if you want to try to extract ST abbrev and statename from the placename field,
+#'   which is more likely to be correct than the stateAbbr and stateName fields in the API output.
 #' @return a data.frame of 1 row (a site) and many columns (indicators)
 #' 
 #' @export
 #' @keywords internal
 #'
-ejscreenRESTbroker2table <- function(brokeroutput) {
-
+ejscreenRESTbroker2table <- function(brokeroutput, getstatefromplacename = TRUE) {
+  
   # Check if valid input provided to this function ####
   ej.data <- brokeroutput
   if (!("content" %in% names(ej.data))) {
@@ -102,8 +105,42 @@ ejscreenRESTbroker2table <- function(brokeroutput) {
   
   # Will convert to data.table format later, in ejscreenapi(). now just leave it as a data.frame
   
-  return(results)
+  ################################################# #
+  ## patch to use placename info (if possible) to obtain name of state and abbreviation of state:
   
+  if ("stateAbbr" %in% names(results) && "stateName" %in% names(results)) {
+    results$stateAbbr_from_api <- results$stateAbbr
+    results$stateName_from_api <- results$stateName
+  } else {
+    # they must have been phased out
+    results$stateAbbr_from_api <- NA
+    results$stateName_from_api <- NA
+  }
+  if (getstatefromplacename) {
+    ## instead of stateAbbr and stateName info directly from the API, which was sometimes wrong and may get phased out
+    ## per EJScreen tech support suggestion 8/2024:
+    # results$placename = "Beaver County, OK" # example
+    if (!("placename" %in% names(results))) {
+      warning("API did not return placename, so cannot infer stateAbbr and stateName from placename, so just returning whatever API provided")
+    } else {
+      stateAbbr_hopefully <- substr(results$placename, nchar(results$placename) - 1, nchar(results$placename)) # get last two characters which should be 2-char State abbreviation
+      
+      if (all(stateAbbr_hopefully %in% c(state.abb, "DC", "PR", "AS", "GU", "MP", "UM", "VI" ) )) {
+        results$stateAbbr <- stateAbbr_hopefully
+        results$stateName <- c(state.name, 
+                               c("District of Columbia", "Puerto Rico", "American Samoa", "Guam", "Northern Mariana Islands", "U.S. Minor Outlying Islands", "U.S. Virgin Islands"
+                               ))[match(results$stateAbbr, c(
+                                 state.abb,
+                                 "DC", "PR", "AS", "GU", "MP", "UM", "VI" ) )]
+        # fips2statename(fips_state_from_state_abbrev(results$stateAbbr)) # get full state name from 2-char abbreviation, if relying on EJAM pkg
+        
+      } else {
+        warning("Unable to infer valid state abbreviations from the placename field provided by the API, so just returning whatever API provided as stateAbbr aka ST and stateName aka statename")
+      }
+    }
+    ################################################# #
+    return(results)
+  }
   
   ################################################################################################################### #
   # brokeroutput is results of ejscreenRESTbroker()

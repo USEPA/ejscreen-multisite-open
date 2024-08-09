@@ -37,6 +37,9 @@
 #' @param usewhichnames default is to use the short friendly ones?
 #' @param calculate_ratios whether to add columns with ratio of raw score to the US or State average
 #' @param verbose whether to print to console / viewer / plot
+#' @param getstatefromplacename set to FALSE if you need the exact output of API and
+#'   TRUE if you want to try to extract ST abbrev and statename from the placename field,
+#'   which is more likely to be correct than the stateAbbr and stateName fields in the API output.
 #'
 #' @return Returns a data.frame of results, one row per buffer (site), one column per indicator,
 #'   with over 300 columns. 
@@ -80,7 +83,8 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
                              mapping_for_names = NULL, 
                              usewhichnames='r',
                              calculate_ratios=TRUE,
-                             verbose=FALSE) {
+                             verbose=FALSE,
+                             getstatefromplacename = TRUE) {
   
   if (is.null(mapping_for_names)) {mapping_for_names <- map_headernames} # should be available as data via package or loaded via global.R
   
@@ -106,7 +110,8 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
     format_report_or_json = format_report_or_json, ipurl = ipurl,
     report_every_n = report_every_n, save_when_report = save_when_report, 
     on_server_so_dont_save_files = on_server_so_dont_save_files,
-    drop_redundant_indicators = TRUE
+    drop_redundant_indicators = TRUE,
+    getstatefromplacename = getstatefromplacename
   ) # possibly could add progress bar as a widget here 
   
   ############################################################## #

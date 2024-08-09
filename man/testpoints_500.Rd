@@ -4,6 +4,12 @@
 \name{testpoints_500}
 \alias{testpoints_500}
 \title{test points data.frame with columns sitenumber, lat, lon}
+\format{
+An object of class \code{data.frame} with 500 rows and 4 columns.
+}
+\usage{
+testpoints_500
+}
 \description{
 Examples of what could be input to functions
 that needs points specified by lat lon
@@ -16,6 +22,5 @@ the equivalent of results of reading the .xlsx test data files.
 \link{testpoints_5} \link{testpoints_50} \link{testpoints_500}
 
 \link{testoutput_ejscreenit_5} \link{testoutput_ejscreenit_50} \link{testoutput_ejscreenit_500}
-
-\link{testoutput_ejscreenapi_plus_5} \link{testoutput_ejscreenapi_plus_50} \link{testoutput_ejscreenapi_plus_500}
 }
+\keyword{datasets}
