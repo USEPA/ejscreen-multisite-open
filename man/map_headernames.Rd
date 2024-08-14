@@ -66,5 +66,17 @@ You can see examples of what it contains like this, for example:
  info <- info[nchar(paste0(info$api, info$csv, info$acs)) > 0, ]
  info
   }
- 
 }
+
+\section{any others}{
+some <- unique(map_headernames$rname\link[=map_headernames$varlist != "" 
+   & map_headernames$varlist == "x_anyother"]{map_headernames$varlist != "" & map_headernames$varlist == "x_anyother"})
+
+info <- cbind(
+varinfo(some, info = c('api', 'csv', 'acs', 'varlist')),
+usastats = some \%in\% names(usastats),
+statestats = some \%in\% names(statestats))
+info <- info\link{nchar(paste0(info$api, info$csv, info$acs)) > 0, }
+info
+}
+

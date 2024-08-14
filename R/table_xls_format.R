@@ -12,6 +12,9 @@
 #' @param plot_distance_by_group logical, whether to try to add a plot of mean distance by group. 
 #'   This requires that bybg be provided as a parameter input to this function. 
 #' @param summary_plot optional plot object passed from EJAM shiny app to save in 'Plot' sheet of Excel table
+#' @param community_image html object of community report passed from EJAM shiny app. Defaults to NULL.
+#' @param community_reportadd optional logical. If TRUE, adds a tab with an image of the full community report.
+#' @param summary_plot optional plot object passed from EJAM shiny app to save in 'Plot' sheet of Excel table
 #' @param plotlatest optional logical. If TRUE, the most recently displayed plot (prior to this function being called) will be inserted into a tab called plot2
 #' @param plotfilename the full path including name of .png file to insert
 #' @param mapadd logical optional - try to include a map of the points 
@@ -64,7 +67,9 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                              plotlatest = FALSE, 
                              plotfilename = NULL, 
                              mapadd = FALSE,
+                             community_reportadd = FALSE,
                              report_map=NULL,
+                             community_image=NULL,
                              ok2plot = TRUE,
                              analysis_title = "EJAM analysis",
                              buffer_desc = "Selected Locations", 
@@ -216,6 +221,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   if (!is.null(formatted)) {openxlsx::addWorksheet(wb, sheetName = 'Overall 2') }
   openxlsx::addWorksheet(wb, sheetName = 'longnames')
   openxlsx::addWorksheet(wb, sheetName = 'map') 
+  openxlsx::addWorksheet(wb, sheetName = 'Community Report')
   
   # openxlsx::addWorksheet(wb, sheetName = 'bybg') # a lot of rows and not essential except to calculate distance vs demog group stats/plots
   # the plot sheets and notes sheet are created below
@@ -332,11 +338,45 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       z <- mapfast(eachsite, radius = radius_or_buffer_in_miles, column_names = 'ej')
       htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
     }
+    Sys.setenv(OPENSSL_CONF="/dev/null")
     webshot::webshot(mypath, file = file.path(mytempdir, "map1.png"), cliprect = "viewport")
     if (testing) cat(file.path(mytempdir, "map1.png"), '\n')
     openxlsx::insertImage(wb, sheet = 'map', file = file.path(mytempdir, 'map1.png'),
                           width = 9, height = 7)
   }
+  
+  if(is.function(updateProgress)){
+    boldtext <- 'Rendering community report'
+    updateProgress(message_main = boldtext, value = 0.35)
+  }
+  
+  if (community_reportadd) {
+    mytempdir <- tempdir()
+    png_file <- file.path(mytempdir, 'community_report.png')
+    
+    # Convert HTML to image using webshot
+    tryCatch({
+      webshot::webshot(url = community_image, file = png_file)
+    }, error = function(e) {
+      message("Error converting HTML to PNG:", e$message)
+      # Handle the error (e.g., fallback mechanism, logging, etc.)
+    })
+    
+    # Insert image into workbook
+    if (file.exists(png_file)) {
+      tryCatch({
+        # height and width are static, need to be updated if content on community report changes
+        openxlsx::insertImage(wb, sheet = 'Community Report', file = png_file, width = 11, height = 30, dpi = 500)
+      }, error = function(e) {
+        message("Error inserting image into Excel:", e$message)
+        # Handle the error (e.g., fallback mechanism, logging, etc.)
+      })
+    } else {
+      message("PNG file not found or could not be generated.")
+    }
+  }
+  
+  
   
   ######################################################################## #
   ## write to NOTES sheet  ####
@@ -504,6 +544,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   #        "geo")
   vartypes_overall  <- varname2vartype_ejam(headers_overall,  map_headernames)
   vartypes_eachsite <- varname2vartype_ejam(headers_eachsite, map_headernames)
+  cat('\n vartypes \n'); print(unique(c(vartypes_eachsite, vartypes_overall)))
   # but note varname2color_ejam() can return a color appropriate to each variable name
   
   ## ratio colnums
@@ -521,22 +562,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     heatmap_colnames <- headers_eachsite[heatmap_colnums]
   }
   
-  ## define PERCENTAGE columns
-  
-  is.percentage_overall  <- 1 == fixcolnames(headers_overall, oldtype = "r", newtype = "percentage")
-  percentage_colnums_overall <- which(is.percentage_overall)
-  is.percentage_eachsite  <- 1 == fixcolnames(headers_eachsite, oldtype = "r", newtype = "percentage")
-  percentage_colnums_eachsite <- which(is.percentage_eachsite)
-  # vlist          <-      fixcolnames(headers_eachsite, oldtype = "r", newtype = "varlist")
-  # percentage_colnums_check <-  which(headers_eachsite %in% c("pctpre1960", "avg.pctpre1960", "state.avg.pctpre1960")  |  vlist %in% c(
-  #   "names_d", "names_d_avg", "names_d_state_avg", 
-  #   "names_d_subgroups", "names_d_subgroups_avg", "names_d_subgroups_state_avg",
-  #   "names_d_subgroups_nh", "names_d_subgroups_nh_avg", "names_d_subgroups_nh_state_avg",
-  #   "names_d_subgroups_alone", "names_d_subgroups_alone_avg", "names_d_subgroups_alone_state_avg"))
-  #   print(setdiff2(percentage_colnums_check, percentage_colnums))
-  ######################################################################## #
-  
-  if (is.function(updateProgress)) {
+
+  if(is.function(updateProgress)){
     boldtext <- 'Applying formatting'
     updateProgress(message_main = boldtext, value = 0.7)
   }
@@ -568,10 +595,15 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   }
   openxlsx::setColWidths(wb, "longnames", cols = 1:2, widths = 90)
   
+  
+  openxlsx::setColWidths(wb, sheet = 'Each Site', 12:162, widths = narrow6)
+  openxlsx::setColWidths(wb, sheet = 'Overall', 10:160, widths = narrow6)
+  
+  
   # HEADER ROW HEIGHT   ####
   
-  openxlsx::setRowHeights(wb, sheet = 'Each Site', rows = 1, heights = 115)
-  openxlsx::setRowHeights(wb, sheet = 'Overall',   rows = 1, heights = 115)
+  openxlsx::setRowHeights(wb, sheet = 'Each Site', rows = 1, heights = 175)
+  openxlsx::setRowHeights(wb, sheet = 'Overall',   rows = 1, heights = 175)
   
   # HEADER ROW COLOR ####
   
@@ -621,7 +653,6 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     
     ## split heatmap columns into sequences of consecutive columns
     hc_split <- split(heatmap_colnums, cumsum(c(1, diff(heatmap_colnums) != 1)))
-    
     
     for (i in 1:length(heatmap_colors)) {
       if (testing) {
@@ -673,6 +704,125 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                                       cols = hc2_split[[k]],#heatmap2_colnums[j],
                                       style = style_cur, #stack = TRUE,
                                       rule = paste0(">=", heatmap2_cuts[i]))
+    }
+  }
+  
+  
+  # conditionalFormatting(wb, "colourScale",
+  #                       cols = 1:ncol(df), rows = 1:(1 + NROW(df)),
+  #                       style = createStyle(bgFill = "yellow"),
+  #                       rule = c(80,89.999),
+  #                       type = "between"
+  # ) 
+  # conditionalFormatting(wb, "colourScale",
+  #                       cols = 1:ncol(df), rows = 1:(1 + NROW(df)),
+  #                       style = createStyle(bgFill = "orange"),
+  #                       rule = c(90,94.999),
+  #                       type = "between"
+  # )
+  # conditionalFormatting(wb, "colourScale",
+  #                       cols = 1:ncol(df), rows = 1:(1 + NROW(df)),
+  #                       style = createStyle(bgFill = "red"),
+  #                       rule = c(95,100),
+  #                       type = "between"
+  # )
+  ###########################################  ###########################################  ########################################## #
+  
+  
+    # NUMBER FORMATS ####
+    
+    ###   decimal places / rounding  ####
+    
+    ### Number format default for raw indicator columns - should get replaced though by table_round() or table_rounding_info() in most or all cases  ####
+    
+
+    raw_colnums_overall   <- which(vartypes_overall  %in% c("raw","usraw","stateraw"))
+    raw_colnums_eachsite  <- which(vartypes_eachsite %in% c("raw","usraw","stateraw"))
+    raw_var_style <- openxlsx::createStyle(numFmt = '#,##0.00')
+    # openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = raw_colnums_overall,  style=raw_var_style, stack = TRUE)
+    # openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:((1 + NROW(eachsite)), cols = raw_colnums_eachsite, style=raw_var_style, stack = TRUE, gridExpand = TRUE)
+    
+    ## define PERCENTAGE columns
+    is.percentage_overall  <- 1 == fixcolnames(headers_overall, oldtype = "r", newtype = "percentage")
+    percentage_colnums_overall <- which(is.percentage_overall)
+    is.percentage_eachsite  <- 1 == fixcolnames(names(eachsite), oldtype = "r", newtype = "percentage")
+    percentage_colnums_eachsite <- which(is.percentage_eachsite)
+    
+    # GET INFO FROM map_headernames THAT SPECIFIES NUMBER OF DECIMAL PLACES FOR MOST OR ALL INDICATORS !!
+    #
+    # How many decimals (or ideally significant digits but not possible here) to report?  This could be done via rounding values before put in excel,
+    #  OR probably better, sending exact values to Excel but using Excel formatting to display them correctly.
+    # 
+
+    # sigfigs_table <-  map_headernames[ "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsname",	"csvname")]
+    digitstable <- map_headernames[ "" != (map_headernames$decimals) | "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsname",	"csvname", "apiname")]
+    decimals_cols <- names(eachsite)[names(eachsite) %in% digitstable$rname[digitstable$decimals != ""]]
+    decimals_colnum <- match(decimals_cols, names(eachsite)) # and overall has same exact names and sort order of names
+    decimals_tosee <- digitstable$decimals[match(decimals_cols, digitstable$rname)]
+    dec2format <- function(decimalscount) ifelse(decimalscount == 0, "#,###,###", paste0("#,###,##0.", paste0(rep("0", decimalscount), collapse = '')))
+    # dec2formats <- Vectorize(dec2format)
+    ## only loop over unique values
+    for (i in unique(decimals_tosee)){
+      print(i); print(paste0(dec2format(i),"%"))
+      perc_cols <- decimals_colnum[which(decimals_tosee == i & decimals_colnum %in%  percentage_colnums_eachsite)]
+      print("percentages:"); print(names(eachsite)[perc_cols])
+      print(i); print(dec2format(i))
+      non_perc_cols <- decimals_colnum[which(decimals_tosee == i & !(decimals_colnum %in%  percentage_colnums_eachsite))]
+      print("non-percentages:"); print(names(eachsite)[non_perc_cols])
+      
+      style_cur <- openxlsx::createStyle(numFmt = dec2format(i))
+      style_perc <- openxlsx::createStyle(numFmt = paste0(dec2format(i),"%"))
+      
+      openxlsx::addStyle(wb, 'Overall',   cols = perc_cols, rows = 2                    ,  style = style_perc, stack = TRUE)
+      openxlsx::addStyle(wb, 'Each Site', cols = perc_cols, rows = 2:(1 + NROW(eachsite)), style = style_perc, stack = TRUE, gridExpand = TRUE)
+      
+      openxlsx::addStyle(wb, 'Overall',   cols = non_perc_cols, rows = 2                    ,  style = style_cur, stack = TRUE)
+      openxlsx::addStyle(wb, 'Each Site', cols = non_perc_cols, rows = 2:(1 + NROW(eachsite)), style = style_cur, stack = TRUE, gridExpand = TRUE)
+    }
+   # openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = percentage_colnums, style=openxlsx::createStyle(numFmt = '#0'), stack = TRUE)
+    # openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:((1 + NROW(eachsite)), cols = percentage_colnums, style=openxlsx::createStyle(numFmt = '#0'), stack = TRUE, gridExpand = TRUE)  
+    
+    
+    ### apply a default general number format to all OTHER columns ? or just assume all were already covered above  ***  ####
+    # 
+    # other_colnums_overall  <- setdiff(1:length(vartypes_overall),  c(decimals_colnum, distance_colnums, heatmap_colnums, pctile_colnums_overall,  raw_colnums_overall,  percentage_colnums, count_colnums_overall))
+    # other_colnums_eachsite <- setdiff(1:length(vartypes_eachsite), c(decimals_colnum, distance_colnums, heatmap_colnums, pctile_colnums_eachsite, raw_colnums_eachsite, percentage_colnums, count_colnums_eachsite))
+    # other_var_style <- openxlsx::createStyle(numFmt = '##,##0.00')
+    # openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = other_colnums_overall,  style = other_var_style, stack = TRUE)
+    # openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = count_colnums_eachsite, style = other_var_style, stack = TRUE, gridExpand = TRUE)
+    
+    
+    # can group columns too, to help user hide some of them
+    average_colnums_eachsite <- which(vartypes_eachsite %in% c('usavg', 'stateavg'))
+    openxlsx::groupColumns(wb, "Each Site", cols = average_colnums_eachsite, hidden = TRUE)
+    
+    
+    ###########################################  ###########################################  ########################################## #
+    
+    # RENAME TOP ROW TO long names ####
+    # how to replace the header row but without replacing any formatting! ***
+    openxlsx::writeData(wb, sheet = 'Overall',   x = as.data.frame(rbind(longnames_overall), row.names = NULL), xy = c(1,1), colNames = FALSE)
+    openxlsx::writeData(wb, sheet = 'Each Site', x = as.data.frame(rbind(longnames), row.names = NULL), xy = c(1,1), colNames = FALSE)
+    
+    # add FILTER ROW 1 in case it did not remain in place
+    openxlsx::addFilter(wb, "Each Site", rows = 1, cols = 1:ncol(eachsite))
+    
+    # openxlsx::addWorksheet(wb, "Overall tall")
+    # openxlsx::writeData(wb, 
+    #                     sheet = 'Overall tall', x = t(overall), 
+    #                     xy = c(1,1), colNames = TRUE, 
+    #                     withFilter = FALSE, 
+    #                     keepNA = FALSE, # NA converted to blank or to #N/A
+    #                     ...
+    # )
+    
+    # Rename longnames tab or remove it
+    
+    # put overall 2 as 2d tab
+    
+    if(is.function(updateProgress)){
+      boldtext <- 'Saving file'
+      updateProgress(message_main = boldtext, value = 1)
     }
   }
   
@@ -819,19 +969,28 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   if (!is.null(saveas)) {
     thatfolder = dirname(saveas)
     
-    if (file.exists(thatfolder)) {
-      fname = basename(saveas)
-      xext = gsub(".*\\.(x.*)","\\1", fname)
-      if (xext %in% c("xls", "xlsx")) {
-        attempt = try(openxlsx::saveWorkbook(wb, file = saveas, overwrite = TRUE))
-        cat('Saving as ', saveas, '\n')
-      } else {
-        warning(saveas, ' does not appear to be a path and filename ending in .xls or .xlsx')
-      }
+    # Launch in Excel before saving file ####
+    if (launchexcel) {
+      openxlsx::openXL(wb)
+    }
+    # SAVEAS local file ####
+    if (!is.null(saveas)) {
+      thatfolder = dirname(saveas)
+      
+      if (file.exists(thatfolder)) {
+        fname = basename(saveas)
+        xext = gsub(".*\\.(x.*)","\\1", fname)
+        if (xext %in% c("xls", "xlsx")) {
+          attempt = try(openxlsx::saveWorkbook(wb, file = saveas, overwrite = TRUE))
+          cat('Saving as ', saveas, '\n')
+        } else {
+          warning(saveas, ' does not appear to be a path and filename ending in .xls or .xlsx')
+        }
+        
     } else {
       warning(thatfolder, ' folder does not appear to exist')
-    }
-  }
+    }}
+
   # done ###################### 
   
   return(wb)

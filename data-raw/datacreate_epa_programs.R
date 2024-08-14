@@ -19,6 +19,7 @@ epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text
 
 # save in EJAM/data/ folder for use as a dataset loaded with the EJAM package:
 
+# Finally, save it in the EJAM/data/ folder for use as a dataset loaded with the EJAM package:
 epa_programs <- metadata_add(epa_programs)
 usethis::use_data(epa_programs, overwrite = TRUE)
 

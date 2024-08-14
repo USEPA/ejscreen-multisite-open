@@ -1194,7 +1194,7 @@ app_server <- function(input, output, session) {
     <div class="usa-alert__body">
       <p class="usa-alert__text">
         <strong>', ' Warning! ','</strong>', 'There are ', prettyNum(invalid_alert[[current_upload_method()]],big.mark = ","), ' selected sites without associated lat/lon information.',
-'</p>
+          '</p>
     </div>
   </div>
 </section>'))
@@ -1210,7 +1210,7 @@ app_server <- function(input, output, session) {
     <div class="usa-alert__body">
       <p class="usa-alert__text">
         <strong>', 'Warning! ','</strong>', 'There are ', invalid_alert[[current_upload_method()]], ' invalid location(s) in your dataset.',
-'</p>
+          '</p>
     </div>
   </div>
 </section>'))
@@ -1482,6 +1482,9 @@ app_server <- function(input, output, session) {
     'FIPS' = minradius_shapefile, 'SHP' = minradius_shapefile  # but disabled for FIPS  
   )
   
+  ## record radius at time of analysis
+  submitted_radius_val <- reactiveVal(NULL)
+                                         
   # set/update based on advanced tab set by global.R and then might be changed by a user
   observeEvent(
     input$default_miles,
@@ -1693,6 +1696,8 @@ app_server <- function(input, output, session) {
   
   observeEvent(input$bt_get_results, {  # (button is pressed)
     submitted_upload_method(current_upload_method())
+    submitted_radius_val(current_slider_val[[submitted_upload_method()]])
+    
     showNotification('Processing sites now!', type = 'message', duration = 1)
     
     ## progress bar setup overall for 3 operations  (getblocksnearby, doaggregate, batch.summarize)
@@ -2222,7 +2227,7 @@ app_server <- function(input, output, session) {
     #req(data_processed())
     validate(need(data_processed(), 'Please run an analysis to see results.'))
     circle_color <- '#000080'
-      
+    
     #if shapefile, merge geometry and create buffer if nonzero buffer is set
     if (submitted_upload_method() == "SHP") {
       
@@ -2265,7 +2270,7 @@ app_server <- function(input, output, session) {
           #options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>%
           addTiles()  %>%
           addCircles(
-            radius = 1 * meters_per_mile,
+            radius = submitted_radius_val() * meters_per_mile,#1 * meters_per_mile,
             color = circle_color, fillColor = circle_color,
             fill = TRUE, weight = input$circleweight_in,
             #group = 'circles',
@@ -2353,7 +2358,7 @@ app_server <- function(input, output, session) {
         
         d_upload <- data_uploaded()
         base_color      <- '#000080'
-          # cluster_color   <- 'red'
+        # cluster_color   <- 'red'
         #req(input$bt_rad_buff)
         
         ## convert units to miles for circle size
@@ -2396,12 +2401,37 @@ app_server <- function(input, output, session) {
     req(data_processed())
     # data_processed() needed for ridgeline or boxplot, and ratio.to.us.d() which is made from data_processed() is needed for boxplots,
     
-    if (input$plotkind_1pager == 'bar') { # do BARPLOT NOT BOXPLOT
+    if (input$plotkind_1pager == 'bar') {
+      if (!is.null(cur_button())) {
+        selected_row <- as.numeric(gsub('button_', '', isolate(cur_button())))
+        plot_barplot_ratios_ez(
+          out = data_processed(),
+          varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),
+          main = "Demographics at the Analyzed Location Compared to US Overall",
+          single_location = TRUE,
+          row_index = selected_row
+        )
+      } else {
+             if (input$Custom_title_for_bar_plot_of_indicators == ''){
+        
+        #Default way
+        plot_barplot_ratios_ez(
+          out= data_processed(),
+          varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), 
+        )
+        
+      }else{
+        #If there is a new title in advanced settings
+        plot_barplot_ratios_ez(
+          out= data_processed(),
+          varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), 
+          main = input$Custom_title_for_bar_plot_of_indicators
+        )
+      }
       
-      plot_barplot_ratios(unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]),
-                          names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel'))
-      
-    } else if (input$plotkind_1pager == 'ridgeline') {
+      }
+    }
+else if (input$plotkind_1pager == 'ridgeline') {
       
       ## ratios by site  (demog each site / demog avg in US)
       ratio.to.us.d.bysite <- data_processed()$results_bysite[ ,  c(
@@ -2526,100 +2556,204 @@ app_server <- function(input, output, session) {
     # box
   })
   
+  
   ## output: show box/barplot of indicator ratios in Summary Report #
   output$view1_summary_plot <- renderPlot({
     v1_summary_plot()
   })
   
+  observeEvent(input$results_tabs, {
+
+    if (!is.null(cur_button())) {
+    cur_button(NULL)
+      # Trigger a re-render of the summary plot
+      output$view1_summary_plot <- renderPlot({
+        v1_summary_plot()
+      })
+    }
+    })
+
+  
   #############################################################################  #
   
-  ## Community report download ##
-  output$community_download <- downloadHandler(
-    filename =
-      create_filename(file_desc = 'community report',
-                      title = input$analysis_title,
-                      buffer_dist = current_slider_val[[submitted_upload_method()]],
-                      site_method = submitted_upload_method(),
-                      with_datetime = TRUE,
-                      ext = ifelse(input$format1pager == 'pdf', '.pdf','.html')
-      ),
-    content = function(file) {
-      # Copy the report file to a temporary directory before processing it, in
-      # case we don't have write permissions to the current working dir (which
-      # can happen when deployed).
-      #tempReport <- file.path(tempdir(), "community_summary.html")
-      tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
+  # Function to generate HTML content (community_download function)
+  # Modify the community_download function to accept a row_index parameter
+  community_download <- function(file, row_index = NULL) {
+    # Create a progress object
+    progress <- shiny::Progress$new()
+    progress$set(message = "Generating report", value = 0)
+    
+    # Ensure that the progress bar is closed when we exit this function
+    on.exit(progress$close())
+    
+    progress$set(value = 0.1, detail = "Setting up temporary files...")
+    tempReport <- setup_temp_files()
+    
+    progress$set(value = 0.2, detail = "Defining parameters...")
+    # Define parameters for Rmd rendering
+    rad <- data_processed()$results_overall$radius.miles
+    
+    progress$set(value = 0.3, detail = "Adjusting data...")
+    # Adjust the data based on whether a specific row is selected
+    if (!is.null(row_index)) {
+      output_df <- data_processed()$results_bysite[row_index, ]
+      popstr <- prettyNum(output_df$pop, big.mark = ',')
       
-      if (!('communityreport.css' %in% list.files(tempdir()))) {
-        file.copy(from = app_sys('report/community_report/communityreport.css'),
-                  to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
-      }
+      # Get the name of the selected location
+      location_name <- output_df$statename
       
-      if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
-        dir.create(file.path(tempdir(), 'www'))
-        file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
-                  to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
-      }
+      locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""),
+                            " of the selected location")
       
-      ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
-      file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),  # treats EJAM/inst/ as root
-                to = tempReport, overwrite = TRUE)
-      
-      # htmltools::save_html(full_html_reactive(),
-      #                      file = tempReport)
-      
-      isolate({  # need someone to confirm this is needed/helpful and not a problem, to isolate this.
-        ## pass params to customize .Rmd doc  # ###
-        # params <- list(html_content = full_html_reactive(),
-        #                map         = report_map(),
-        #                summary_plot = v1_summary_plot())
-        rad <- data_processed()$results_overall$radius.miles # input$radius can be changed by user and would alter the report text but should just show what was run not what slider currently says
-        popstr <- prettyNum(total_pop(), big.mark = ',')
-        
-        if (submitted_upload_method() == 'SHP') {
-          location_type <- " selected polygons"
-          radiusstr <- paste0(rad, " mile",
-                              ifelse(rad > 1, "s", ""), " of ")
-          
-        } else if (submitted_upload_method() == 'FIPS') {
-          location_type <- " selected shapes"
-          radiusstr <- ""
-        } else {
-          location_type <- " selected points"
-          radiusstr <- paste0(rad, " mile", ifelse(rad > 1, "s", ""), " of ")
-          
-        }
-        
-        locationstr <- paste0("Residents within ",
-                              radiusstr,
-                              "any of the ", NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T,]),location_type)
-        
-        params <- list(
-          output_df = data_processed()$results_overall,
-          analysis_title = input$analysis_title,
-          totalpop = popstr,
-          locationstr = locationstr,
-          include_ejindexes = (input$include_ejindexes == 'TRUE'),
-          in_shiny = FALSE,
-          filename = NULL,
-          map = report_map(),
-          summary_plot = v1_summary_plot()
-        )
-        
-      })
-      
-      rmarkdown::render(tempReport,
-                        output_format = 'html_document',
-                        output_file = file,
-                        params = params,
-                        envir = new.env(parent = globalenv()),
-                        intermediates_dir = tempdir()
+      progress$set(value = 0.4, detail = "Creating map...")
+      # Create a filtered version of report_map for single location
+single_location_map <- reactive({
+  req(data_processed())
+  validate(need(data_processed(), 'Please run an analysis to see results.'))
+  
+  filtered_data <- data_processed()$results_bysite[row_index, ]
+  
+  if (submitted_upload_method() == "SHP") {
+    # Handle shapefile case
+    shp_valid <- data_uploaded()[data_uploaded()$ejam_uniq_id == filtered_data$ejam_uniq_id, ]
+    d_up <- shp_valid
+    d_up_geo <- d_up[,c("ejam_uniq_id","geometry")]
+    d_merge = merge(d_up_geo, filtered_data, by = "ejam_uniq_id", all.x = FALSE, all.y = TRUE)
+    
+    popup_labels <- fixcolnames(namesnow = setdiff(names(d_merge),c('geometry', 'valid', 'invalid_msg')), oldtype = 'r', newtype = 'shortlabel')
+    
+    if (input$bt_rad_buff > 0) {
+      d_uploads <- sf::st_buffer(d_merge[d_merge$valid == T, ], dist = units::set_units(input$bt_rad_buff, "mi"))
+      map <- leaflet(d_uploads) %>% addTiles() %>%
+        addPolygons(data = d_uploads, color = '#000080',
+                    popup = popup_from_df(d_uploads %>% sf::st_drop_geometry() %>% dplyr::select(-valid, -invalid_msg), labels = popup_labels),
+                    popupOptions = popupOptions(maxHeight = 200))
+    } else {
+      data_spatial_convert <- d_merge[d_merge$valid == T, ] %>%
+        dplyr::select(-valid, -invalid_msg) %>%
+        sf::st_zm() %>% as('Spatial')
+      map <- leaflet(data_spatial_convert) %>% addTiles() %>%
+        addPolygons(color = '#000080',
+                    popup = popup_from_df(data_spatial_convert %>% sf::st_drop_geometry(),
+                                          labels = popup_labels),
+                    popupOptions = popupOptions(maxHeight = 200))
+    }
+    
+    # Get the bounding box of the shape
+    bbox <- sf::st_bbox(d_merge)
+    map %>% fitBounds(bbox[1], bbox[2], bbox[3], bbox[4]) %>%
+      setView(lng = mean(c(bbox[1], bbox[3])), 
+              lat = mean(c(bbox[2], bbox[4])), 
+              zoom = 14)  
+    
+  } else if (submitted_upload_method() != "FIPS") {
+    # Handle non-FIPS case
+    popup_labels <- fixcolnames(namesnow = names(filtered_data), oldtype = 'r', newtype = 'shortlabel')
+    popup_labels[is.na(popup_labels)] <- names(filtered_data)[is.na(popup_labels)]
+    
+    map <- leaflet(filtered_data) %>%
+      addTiles() %>%
+      addCircles(
+        radius = 1 * meters_per_mile,
+        color = '#000080', fillColor = '#000080',
+        fill = TRUE, weight = input$circleweight_in,
+        popup = popup_from_df(
+          filtered_data %>%
+            dplyr::mutate(dplyr::across(
+              dplyr::where(is.numeric), \(x) round(x, digits = 3))),
+          labels = popup_labels),
+        popupOptions = popupOptions(maxHeight = 200)
       )
+    
+    # Set view with a slightly more zoomed out level
+    map %>% setView(lng = filtered_data$lon, 
+                    lat = filtered_data$lat, 
+                    zoom = 14) 
+    
+  } else {
+    # FIPS case
+    leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+  }
+})
       
-      #file.copy(tempReport, file)
-      
+      map_to_use <- single_location_map()
+    } else {
+      output_df <- data_processed()$results_overall
+      popstr <- prettyNum(total_pop(), big.mark = ',')
+      locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""), 
+                            " of any of the ", NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T,]), 
+                            " selected ", ifelse(submitted_upload_method() == 'SHP', "polygons", 
+                                                 ifelse(submitted_upload_method() == 'FIPS', "shapes", "points")))
+      map_to_use <- report_map()
+    }
+    
+    params <- list(
+      output_df = output_df,
+      analysis_title = input$analysis_title,
+      totalpop = popstr,
+      locationstr = locationstr,
+      include_ejindexes = (input$include_ejindexes == 'TRUE'),
+      in_shiny = FALSE,
+      filename = NULL,
+      map = map_to_use,
+      summary_plot = v1_summary_plot()
+    )
+    
+    # Render Rmd to HTML
+    rmarkdown::render(tempReport,
+                      output_format = 'html_document',
+                      output_file = file,
+                      params = params,
+                      envir = new.env(parent = globalenv()),
+                      intermediates_dir = tempdir()
+    )
+  }
+  
+  # downloadHandler for community_download
+  output$community_download <- downloadHandler(
+    filename = function() {
+      create_filename(
+        file_desc = 'community report',
+        title = input$analysis_title,
+        buffer_dist = submitted_radius_val(),
+        site_method = submitted_upload_method(),
+        with_datetime = TRUE,
+        ext = ifelse(input$format1pager == 'pdf', '.pdf', '.html')
+      )
+    },
+    content = function(file) {
+      html_content <-  community_download(file)
+      file.rename(html_content, file)
     }
   )
+  
+  # downloadHandler for the modal download button
+  output$download_report <- downloadHandler(
+    filename = function() {
+      location_suffix <- if (!is.null(selected_location_name())) {
+        paste0(" - ", selected_location_name())
+      } else {
+        ""
+      }
+      create_filename(
+        file_desc = paste0('community report', location_suffix),
+        title = input$analysis_title,
+        buffer_dist = current_slider_val[[submitted_upload_method()]],
+        site_method = submitted_upload_method(),
+        with_datetime = TRUE,
+        ext = ifelse(input$format1pager == 'pdf', '.pdf', '.html')
+      )
+    },
+    content = function(file) {
+      req(temp_file_path())
+      file.copy(temp_file_path(), file)
+    }
+  )
+  
+
+  
+ 
+  
   
   #############################################################################  #
   # .  ## ##
@@ -2645,13 +2779,14 @@ app_server <- function(input, output, session) {
     # --------------------------------------------------- #
 
     cols_to_select <- c('ejam_uniq_id', 'invalid_msg',
-                        'pop', #'Community Report',
+                        'pop', 'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report',
                         names_d, names_d_subgroups,
                         names_e #,
                         # no names here corresponding to number above x threshold, state, region ??
     )
-    tableheadnames <- c('Site ID', 'Invalid Reason','Est. Population', #'Community Report',
+    tableheadnames <- c('Site ID', 'Invalid Reason','Est. Population', 'Community Report',
+
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report',
                         fixcolnames(c(names_d, names_d_subgroups, names_e), 'r', 'shortlabel')) # is this right?
     
@@ -2678,13 +2813,13 @@ app_server <- function(input, output, session) {
       dplyr::mutate(index = row_number()) %>%
       dplyr::rowwise() %>%
       dplyr::mutate(
-        pop = ifelse(valid == T, pop, NA)#,
+        pop = ifelse(valid == T, pop, NA),
         # `EJScreen Report` = ifelse(valid == T, `EJScreen Report`, NA),
         # `ECHO Report` = ifelse(valid == T, `ECHO Report`, NA),
         # `EJScreen Map` = ifelse(valid == T, `EJScreen Map`, NA),
-        # `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id = paste0('button_', index), label = "Generate",
-        #                                                    onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
-        # ), '')
+         `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id = paste0('button_', index), label = "Generate",
+                                                            onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
+         ), '')
       ) %>%
       
       dplyr::ungroup() %>%
@@ -2787,10 +2922,37 @@ app_server <- function(input, output, session) {
   ## SUMMARY REPORT ON 1 SITE (via Button on Table of Sites) ####
   
   cur_button <- reactiveVal(NULL)
-  # also see  ejam2report() which mirrors the code below but as a function outside shiny
+  temp_file_path <- reactiveVal(NULL)
+  selected_location_name <- reactiveVal(NULL)
+  
+  # Function to copy necessary files to temp directory
+  setup_temp_files <- function() {
+    tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
+    
+    # Copy Rmd file to temp directory
+    file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),
+              to = tempReport, overwrite = TRUE)
+    
+    # Copy CSS file
+    if (!file.exists(file.path(tempdir(), 'communityreport.css'))) {
+      file.copy(from = app_sys('report/community_report/communityreport.css'),
+                to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
+    }
+    
+    # Copy logo file
+    if (!file.exists(file.path(tempdir(), 'www', 'EPA_logo_white_2.png'))) {
+      dir.create(file.path(tempdir(), 'www'), showWarnings = FALSE, recursive = TRUE)
+      file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
+                to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
+    }
+    
+    return(tempReport)
+  }
+  
+  # Observer for the submit buttons
   observeEvent(
     lapply(
-      names(input)[grep("select_button[0-9]+",names(input))],
+      names(input)[grep("select_button[0-9]+", names(input))],
       function(name) {
         cur_button(input[[name]])
         input[[name]]
@@ -2798,102 +2960,35 @@ app_server <- function(input, output, session) {
         req(data_processed())
         req(cur_button())
         x <- as.numeric(gsub('button_','', cur_button()))
-        if ( data_processed()$results_bysite$valid[x] == T) {
-          #!(submitted_upload_method() %in% c('FIPS')) &
-          popstr <- prettyNum(round(data_processed()$results_bysite$pop[x]), big.mark = ',')
-          
-          if (submitted_upload_method() == 'SHP') {
-            locationstr <- paste0('Polygon ', data_up_shp()[x,]$OBJECTID_1)
-            if (data_processed()$results_bysite[x,]$radius.miles > 0) {
-              locationstr <- paste0(locationstr, '<br>with ', data_processed()$results_bysite[x,]$radius.miles, ' mile buffer')
-            }
-          } else if (submitted_upload_method() == 'FIPS') {
-            locationstr <- paste0('FIPS Code ', data_processed()$results_bysite[x,]$ejam_uniq_id)
-          } else {
-            locationstr <- paste0(data_processed()$results_bysite[x,]$radius.miles, ' Mile Ring Centered at ',
-                                  data_processed()$results_bysite[x,]$lat, ', ',
-                                  data_processed()$results_bysite[x,]$lon, '<br>', 'Area in Square Miles: ',
-                                  round(pi * data_processed()$results_bysite[x,]$radius.miles^2, 2)
-            )
-          }
-          
-          if (!('main.css' %in% list.files(tempdir()))) {
-            file.copy(from = app_sys('report/community_report/main.css'),
-                      to = file.path(tempdir(), 'main.css'), overwrite = TRUE)
-          }
-          if (!('communityreport.css' %in% list.files(tempdir()))) {
-            file.copy(from = app_sys('report/community_report/communityreport.css'),
-                      to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
-          }
-          
-          if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
-            dir.create(file.path(tempdir(), 'www'))
-            file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
-                      to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
-          }
-          temp_comm_report <- file.path(tempdir(), paste0("comm_report",x,".html"))
-          
-          tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
-          
-          ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
-          file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),  # treats EJAM/inst/ as root
-                    to = tempReport, overwrite = TRUE)
-          
-          build_community_report(
-            output_df = data_processed()$results_bysite[x,],
-            analysis_title = input$analysis_title,
-            totalpop = popstr,
-            locationstr = locationstr,
-            include_ejindexes = input$include_ejindexes,
-            in_shiny = F,
-            filename = temp_comm_report
-          )
-          browseURL(temp_comm_report)
-          
-          ## can also generate reports through knitting Rmd template
-          ## this makes it easier to add in maps and plots but is slower to appear
-          
-          # isolate({  # need someone to confirm this is needed/helpful and not a problem, to isolate this.
-          #   ## pass params to customize .Rmd doc  # ###
-          #   # params <- list(html_content = full_html_reactive(),
-          #   #                map         = report_map(),
-          #   #                summary_plot = v1_summary_plot())
-          #   rad <- data_processed()$results_bysite[x,]$radius.miles # input radius can be changed by user and would alter the report text but should just show what was run not what slider currently says
-          #   popstr <- prettyNum(round(data_processed()$results_bysite$pop[x]), big.mark = ',')
-          #   locationstr <- paste0(data_processed()$results_bysite[x,]$radius.miles, ' Mile Ring Centered at ',
-          #                         data_processed()$results_bysite[x,]$lat, ', ',
-          #                         data_processed()$results_bysite[x,]$lon, '<br>', 'Area in Square Miles: ',
-          #                         round(pi* rad^2,2)
-          #   )
-          #   params <- list(
-          #     output_df = data_processed()$results_bysite[x,],
-          #     analysis_title = input$analysis_title,
-          #     totalpop = popstr,
-          #     locationstr = locationstr,
-          #     include_ejindexes = T,
-          #     in_shiny = F,
-          #     filename = NULL,#temp_comm_report,
-          #     map = report_map(),
-          #     summary_plot = v1_summary_plot()
-          #   )
-          #
-          # })
-          
-          # rmarkdown::render(tempReport,
-          #                   output_format = 'html_document',
-          #                   output_file = temp_comm_report,
-          #                   params = params,
-          #                   envir = new.env(parent = globalenv()),
-          #                   intermediates_dir = tempdir()
-          # )
-          
-          #browseURL(temp_comm_report)
-          
-        } else {
-          showModal(modalDialog(title = 'Report not available',
-                                'Individual site reports not yet available.'))
-        }
+        
+        # Get the name of the selected location
+        location_name <- data_processed()$results_bysite[x, "statename"]
+        selected_location_name(location_name)
+        
+        # Create a temporary file name
+        temp_file <- tempfile(fileext = ifelse(input$format1pager == 'pdf', '.pdf', '.html'))
+        
+        # Store the temporary file path in the reactive value
+        temp_file_path(temp_file)
+        
+        # Call the community_download function with the current row index
+        community_download(file = temp_file, row_index = x)
+        
+        # Trigger the download
+        showModal(modalDialog(
+          title = "Download Ready",
+          "Your report is ready. Click the button below to download.",
+          footer = tagList(
+            downloadButton("download_report", "Download Report"),
+            modalButton("Close")
+          ),
+          easyClose = TRUE,
+          size = "m"
+        ))
+
       })
+  
+  
   
   ## EXCEL DOWNLOAD  ####
   
@@ -2904,7 +2999,7 @@ app_server <- function(input, output, session) {
       
       create_filename(file_desc = 'results table',
                       title = input$analysis_title,
-                      buffer_dist = current_slider_val[[submitted_upload_method()]],
+                      buffer_dist = submitted_radius_val(),
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
                       ext = '.xlsx')
@@ -2961,19 +3056,36 @@ app_server <- function(input, output, session) {
           }
           progress_xl$set(value = value, message = message_main, detail = message_detail)
         }
+        
+        #remove hyperlinks from excel output if shapefile is current_upload_method() - Temporary
+        if(current_upload_method() == "SHP"){
+          hyperlink_columns <- NULL
+        }else{
+          hyperlink_columns <- c("EJScreen Report", "EJScreen Map" ,'ECHO report')
+        }
+        
+        html_content <- isolate({
+          temp_file <- tempfile(fileext = '.html')
+          community_download(file = temp_file, row_index = NULL)
+        })
+        
         wb_out <- table_xls_format(
           # note they seem to be data.frames, not data.tables, at this point, unlike how ejamit() had been returning results.
           overall   = data_processed()$results_overall |> dplyr::select(names( data_processed()$results_overall)[keepcols]),
           eachsite  = data_processed()$results_bysite |> dplyr::select(names( data_processed()$results_bysite)[keepcols2]),# needs ..  # 1 row per site
           longnames = data_processed()$longnames[           keepcols2], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows.
           
+
+          
           # *** NOTE:  data_processed()$results_bybg_people  #considered not providing this to xlsx by default. It is huge and for expert users,
           # ***    but useful to create a plot of distance by group. Perhaps that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***
           
           mapadd = TRUE,
           report_map = report_map(),
+          community_reportadd = TRUE,
+          community_image = html_content,
           
-          hyperlink_colnames = c("EJScreen Report", "EJScreen Map" ,'ECHO report'),  # need to ensure these get formatted right to work as links in Excel
+          hyperlink_colnames = hyperlink_columns,  # need to ensure these get formatted right to work as links in Excel
           # heatmap_colnames = names(table_as_displayed)[pctile_colnums], # can use defaults
           # heatmap_cuts = c(80, 90, 95), # can use defaults
           # heatmap_colors = c('yellow', 'orange', 'red') # can use defaults
@@ -3292,6 +3404,9 @@ app_server <- function(input, output, session) {
   
   # other plot ideas
   # https://exts.ggplot2.tidyverse.org/gallery/
+  current_hist_ind <- reactive({
+    input$summ_hist_ind
+  })
   
   output$summ_hist_ind <- renderUI({
     
@@ -3300,36 +3415,47 @@ app_server <- function(input, output, session) {
     
     if ((input$include_ejindexes == "TRUE")) {
       
+      ## use same root names so dropdown does not reset with other settings changing
+      root_nms <-  c(names_d,
+                     names_d_subgroups,
+                     names_e, names_ej, names_ej_supp)
+      
       if (input$summ_hist_data == 'pctile') {
         nms <-  c(names_d_pctile,
                   names_d_subgroups_pctile,
                   names_e_pctile, names_ej_pctile,
                   names_ej_supp_pctile)
         
+        friendly_nms <- fixcolnames(nms, oldtype = 'r', newtype = 'shortlabel')
+        
       } else if (input$summ_hist_data == 'raw') {
-        nms <-  c(names_d,
-                  names_d_subgroups,
-                  names_e, names_ej, names_ej_supp)
+        friendly_nms <- fixcolnames(root_nms, oldtype = 'r', newtype = 'shortlabel')
       }
-      friendly_nms <- fixcolnames(nms, oldtype = 'r', newtype = 'shortlabel')
       
     } else {
+      
+      ## use same root names so dropdown does not reset with other settings changing
+      root_nms <- c(names_d,
+                    names_d_subgroups,
+                    names_e)
+      
       if (input$summ_hist_data == 'pctile') {
-        nms <-  c(names_d_pctile,
-                  names_d_subgroups_pctile,
-                  names_e_pctile)
+        nms <-  c(names_d_pctile, names_d_subgroups_pctile,names_e_pctile)
+        
+        friendly_nms <- fixcolnames(nms, oldtype = 'r', newtype = 'shortlabel')
+        
       } else if (input$summ_hist_data == 'raw') {
-        nms <-  c(names_d,
-                  names_d_subgroups,
-                  names_e)
+        nms <-  c(names_d, names_d_subgroups, names_e)
+        friendly_nms <- fixcolnames(root_nms, oldtype = 'r', newtype = 'shortlabel')
       }
-      friendly_nms <- fixcolnames(nms, oldtype = 'r', newtype = 'shortlabel')
+      
     }
     selectInput('summ_hist_ind', label = 'Choose indicator',
                 choices = setNames(
-                  object = nms,
+                  object = root_nms,
                   nm = friendly_nms
-                ) # end setNames
+                ), # end setNames
+                selected = current_hist_ind()
     ) # end selectInput
   })
   
@@ -3353,9 +3479,11 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-          hist_input <- as.data.frame(data_processed()$results_bysite[, input$summ_hist_ind])
+          hist_input <- as.data.frame(data_processed()$results_bysite[, current_hist_ind()])#input$summ_hist_ind])
+          
         } else {
-          hist_input <- data_processed()$results_bysite[, input$summ_hist_ind, with = F]
+          hist_input <- data_processed()$results_bysite[, current_hist_ind(), with=F]#input$summ_hist_ind, with = F]
+          
         }
         names(hist_input)[1] <- 'indicator'
         
@@ -3377,15 +3505,20 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-          hist_input <- as.data.frame(data_processed()$results_bysite[, input$summ_hist_ind])
+          
+          hist_input <- as.data.frame(data_processed()$results_bysite[, paste0('pctile.',current_hist_ind())])#input$summ_hist_ind])
+          
         } else {
-          hist_input <- data_processed()$results_bysite[, input$summ_hist_ind, with = F]
+          hist_input <- data_processed()$results_bysite[, paste0('pctile.',current_hist_ind()), with=F]#input$summ_hist_ind, with = F]
+          
         }
         names(hist_input)[1] <- 'indicator'
         
         ggplot(hist_input) +
           geom_histogram(aes(x = indicator), fill = '#005ea2',
-                         bins = input$summ_hist_bins) +
+                         #bins = input$summ_hist_bins,
+                         breaks = seq(0,100, length.out = input$summ_hist_bins+1)
+          ) +
           labs(
             x = '',
             y = 'Number of Sites',
@@ -3399,9 +3532,12 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',input$summ_hist_ind)])
+          
+          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',current_hist_ind())])
+          
         } else {
-          hist_input <- data_processed()$results_bysite[, c('pop',input$summ_hist_ind), with = F]
+          hist_input <- data_processed()$results_bysite[, c('pop',current_hist_ind()), with=F]
+          
         }
         names(hist_input)[2] <- 'indicator'
         
@@ -3423,16 +3559,21 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',input$summ_hist_ind)])
+          
+          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',paste0('pctile.',current_hist_ind()))])
+          
         } else {
-          hist_input <- data_processed()$results_bysite[, c('pop',input$summ_hist_ind), with = F]
+          hist_input <- data_processed()$results_bysite[, c('pop',paste0('pctile.',current_hist_ind())), with=F]
+          
         }
         names(hist_input)[2] <- 'indicator'
         
         ## plot population weighted histogram
         ggplot(hist_input) +
           geom_histogram(aes(x = indicator, y = after_stat(density), weight = pop), fill = '#005ea2',
-                         bins = input$summ_hist_bins) +
+                         #bins = input$summ_hist_bins,
+                         breaks = seq(0,100, length.out = input$summ_hist_bins+1)
+          ) +
           ## set y axis limits to (0, max value) but allow 5% higher on upper end
           scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +
           labs(
@@ -3472,13 +3613,14 @@ app_server <- function(input, output, session) {
   
   ## Create and download FULL static report
   output$rg_download <- downloadHandler(
-    filename =
+    filename = function(){
       create_filename(file_desc = 'full report',
                       title = input$analysis_title,
-                      buffer_dist = current_slider_val[[submitted_upload_method()]],
+                      buffer_dist = submitted_radius_val(),
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
-                      ext = '.doc'),
+                      ext = '.doc')
+      },
     
     content = function(file) {
       # Copy the report file to a temporary directory before processing it, in

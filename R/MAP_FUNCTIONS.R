@@ -270,6 +270,11 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
   # fips_ky <- fips_counties_from_statename("Kentucky")
   # x <- ejamit(fips = fips_ky, radius = 0)
   # mydf <- x$results_bysite
+
+  if(!(colorvarname %in% names(mydf))){
+    warning('Selected value for "colorvarname" not found. Please try a different indicator.')
+    return(NULL)
+  }
   
   mymapdata <- shapes_counties_from_countyfips(mydf$ejam_uniq_id)
   setDT(mydf)

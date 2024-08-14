@@ -242,6 +242,7 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   # assume that pctile and nice versions are not missing if the base version is here!
   dok <- which(names_d %in% names(out)) 
   eok <- which(names_e_pop %in% names(out))
+  pok <- which(names_ej_pctile_pop %in% names(out))
   names_d <- names_d[dok] 
   if (length(dok) == 0) {
     warning('none of names_d were found in out')
@@ -271,8 +272,10 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   }
   
   # make popups text for the EJ INDEXES (US AND STATE PCTILES, FOR NORMAL AND SUPPLEMENTARY EJ INDEXES) ####
-  # 
-  if (length(eok) != 0) {
+  if (length(pok) == 0) {
+    warning('none of names.ej.pctile.api found in out')
+    poptext.ej <- NULL
+  } else {
     poptext.ej <-  make.popup.ej.api(pctile = out[, names_ej_pctile_pop], state.pctile = out[, names_ej_state_pctile_pop], labels = names_ej_pctile_pop_USORSTATE)
   }
   

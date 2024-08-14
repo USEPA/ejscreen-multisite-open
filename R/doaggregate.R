@@ -1062,7 +1062,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # *** popwtd avg of sites state pctiles (not raw scores) will be used as the overall state pctiles.
   #  (Because each site has a different site, you cannot just convert overall raw scores to state pctiles).
   
-  
   #  ##################################################### #  #  ##################################################### #  
   warning('work in progress on state identification')
   if (missing( sites2states_or_latlon) || !("lat" %in% names(sites2states_or_latlon)) || !("lon" %in% names(sites2states_or_latlon))) {

@@ -64,12 +64,29 @@ ejam2barplot = function(ejamitout, varnames = c(names_d_ratio_to_avg , names_d_s
 #' Same as ejam2barplot() but ejam2barplot() handles a sitenumber parameter
 #' @export
 #'
-plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg),
-                                  main = "Demographics at the Analyzed Locations Compared to US Overall", ...) {
-
-  plot_barplot_ratios(unlist(out$results_overall[ , varnames, with = FALSE]), main = main, ...)
-  # plot_barplot_ratios(unlist(out$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
+plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),
+                                  main = "Demographics at the Analyzed Locations Compared to US Overall",
+                                  single_location = FALSE, row_index = NULL, ...) {
+  if (single_location && !is.null(row_index)) {
+    ## check if data.table (SHP is data.frame)
+    if(is.data.table(out$results_bysite)){
+      data_to_plot <- unlist(out$results_bysite[row_index, varnames, with = FALSE])  
+    } else {
+      data_to_plot <- unlist(out$results_bysite[row_index, varnames])
+    }
+    
+  } else {
+    ## check if data.table (SHP is data.frame)
+    if(is.data.table(out$results_overall)){
+      data_to_plot <- unlist(out$results_overall[, varnames, with = FALSE])
+    } else {
+      data_to_plot <- unlist(out$results_overall[, varnames])  
+    }
+    
   }
+  
+  plot_barplot_ratios(data_to_plot, main = main, ...)
+}
 ############################################################################################# #
 
 
