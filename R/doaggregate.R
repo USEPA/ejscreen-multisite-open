@@ -1088,7 +1088,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     if (simple_state_identification) {
       
       sites2states <- states_infer(sites2states_or_latlon)
-      sites2states[is.na(ST), ST := "NY"]  # placeholder until fixed
+      
+      sites2states$ST[is.na(sites2states$ST)] <- 'NY'
+      #sites2states[is.na(ST), ST := "NY"]  # placeholder until fixed
       ## trying to recode this, below, however, to do it that way ONLY at sites that covers 2+ states
       # since it is faster to get ST via bgid join to blockgroupstats for sites that cover only 1 state, as determined by their blockpoints nearby.
     
