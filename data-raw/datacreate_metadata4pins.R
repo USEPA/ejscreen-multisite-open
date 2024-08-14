@@ -1,7 +1,9 @@
 #################################################################### #
 
-# actually this stores title and description, not what pins pkg calls metadata
-# the actual pins metadata parameter will get filled in with the date info only while the object is being written to the pins board
+# Actually this specifies pins board info on 'title' and 'description' 
+# but NOT what pins pkg calls metadata.
+# The actual pins metadata parameter will note the ejscreen version 
+# when the object is being written to the pins board using `pin_write(metadata = )`
 
 metadata4pins <- list(
   

@@ -34,9 +34,6 @@
 #' @param towhat A string specifying new units to convert to. Default is 'mi' which is miles.
 #' @return Returns a number or vector of numbers then length of the input x, 
 #'   with each element corresponding to an input element converted to new units.
-#' @seealso \code{\link{get.distances.all}} which allows you to specify a search radius and 
-#'   get distances only within that radius, and related functions.
-#' @concept proximity
 #' @examples
 #' convert_units(1, 'mi', 'km')
 #' convert_units(c(1e6, 1), 'sqm', 'sqkm')

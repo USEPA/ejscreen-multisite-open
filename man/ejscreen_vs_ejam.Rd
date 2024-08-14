@@ -107,7 +107,10 @@ how ties are treated in percentile lookup tables, etc.), or
   
    # Reported key indicators - which ones do or don't match
    # when comparing EJSCREEN and EJAM results?
-   keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+   keyreportnames <- c('pop', names_these, 
+     paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
+     paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
+   )
    z$EJAM[z$EJAM$rname \%in\% keyreportnames &  z$same_shown, ]
    z[z$rname \%in\% keyreportnames & !z$same_shown & !is.na(z$EJSCREEN), ]
   

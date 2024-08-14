@@ -9,7 +9,8 @@ mapfast(
   radius = 3,
   column_names = "all",
   labels = column_names,
-  browse = FALSE
+  browse = FALSE,
+  color = "#03F"
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ like  label: column_name  (ignored if column_names is ej or all)}
 launch a default browser window to show the map
 and print the temp filepath and filename in the console.
 Normally the map would be shown in the default RStudio viewer pane.}
+
+\item{color}{color of circles, default is "#03F"}
 }
 \value{
 plots a leaflet map with popups with all the columns from mydf,

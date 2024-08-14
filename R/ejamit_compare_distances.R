@@ -358,14 +358,29 @@ ejamit_compare_distances2plot <- function(results_bydistance,
 }
 #################################################################### #
 
+
+#' Barplot comparing ejamit_compare_distances() results for more than one radius
+#' @param results_bydistance output of [ejamit_compare_distances()], table similar to
+#'   ejamit()$results_overall except it has one row per distance.
+#' @param myvars optional, see [ejamit_compare_distances()]
+#' @param ylab  optional, see [ejamit_compare_distances()]
+#' @param ylim  optional, see [ejamit_compare_distances()]
+#' @param n  optional, see [ejamit_compare_distances()]
+#' @param ... optional, passed to plot
+#' @return text vector length n, naming which indicators most strongly
+#'   increase as you get closer to the site(s)
+#'   
 #' @export
-#' @inherit ejamit_compare_distances2plot
+#' 
 ejam2barplot_distances <- function(results_bydistance, 
                                    myvars = names_d_subgroups_ratio_to_state_avg, 
                                    ylab = "Ratio of Avg. within X miles to Avg. Statewide or Nationwide",
                                    ylim = c(0, 5),
                                    n = 1, 
                                    ...) {
+  if (!is.data.frame(results_bydistance)) {
+    stop("results_bydistance must be a data.frame output of ejamit_compare_distances()")
+  }
   ejamit_compare_distances2plot(
     results_bydistance = results_bydistance, 
     myvars = myvars, 

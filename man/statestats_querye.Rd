@@ -78,8 +78,6 @@ blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),
 ##   see all total counts (not just US means), 
 ##   demographics including subgroups, 
 ##   but not environmental indicators.
-t(round(ustotals2(bg = blockgroupstats),2)) 
- #  ustotals2 is from EJAMbatch.summarizer package
 t(blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),
     .SDcols= c(names_e, names_d)])
 

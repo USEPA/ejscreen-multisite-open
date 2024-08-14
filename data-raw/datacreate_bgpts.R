@@ -5,7 +5,7 @@
 
 #########     THIS IS ONLY A DRAFT -- NEEDS CLEANUP BEFORE USED AGAIN
 
-
+library(data.table)
 warning("see notes in `./data-raw/datacreate_bg_cenpop2020.R`-- bgpts and bg_cenpop2020 are very, very similar, so may want to consolidate to use only one.")
 
 
@@ -86,7 +86,7 @@ bgpts[ , blockcount := bg_blockcounts$blockcount]
 # EJAM :::  metadata_add(), 
 # latest source version of this internal function is available after devtools::load_all()
 
-bgpts <- metadata_add(bgpts)
+bgpts <- EJAM:::metadata_add(bgpts)
 
 ############################################# # 
 

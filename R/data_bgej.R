@@ -1,5 +1,4 @@
 #' @name bgej
-#' @docType data
 #' @title bgej (DATA) EJScreen EJ Indexes for Census block groups
 #' @details
 #'   For documentation on the demographic and environmental data and indicators used by
@@ -16,10 +15,11 @@
 #'   
 #'   The column names are these:
 #'   
-#'     c("OBJECTID", "bgfips", "bgid", "ST", "pop", 
-#'     
+#'     c("bgfips", "bgid", "ST", "pop", 
 #'     names_ej, 
-#'     
-#'     names_ej_supp)
+#'     names_ej_supp, 
+#'     names_ej_state,
+#'     names_ej_supp_state
+#'     )
 #'   
 NULL

@@ -6,16 +6,14 @@ ejampackages <- names(
   )
 cat(paste0(" full list of possibly relevant packages: \n
   c('", paste0(ejampackages, collapse = "', '"), "')\n"))
-cat('\n')
-## the most essential ones now that EJAMejscreenapi will not be required by EJAM
+cat('\n') 
 
-ejampackages <- c("EJAM",
-                  "EJAMbatch.summarizer")
+ejampackages <- c("EJAM")
 
 cat(paste0(" critical EJAM-related packages being saved as 'ejampackages' are these: \n
   ejampackages <- c('", paste0(ejampackages, collapse = "', '"), "')\n"))
 cat('\n')
 
-metadata_add(ejampackages)
+ejampackages <- metadata_add(ejampackages)
 usethis::use_data(ejampackages, overwrite = TRUE)
 

@@ -6,7 +6,7 @@
 easy high-level function for getting a quick look at top few groups of sites}
 \usage{
 ejam2barplot_sitegroups(
-  out,
+  ejamitout,
   varname = "pctlowinc",
   names.arg = NULL,
   main = "Sites by Type",
@@ -18,7 +18,7 @@ ejam2barplot_sitegroups(
 )
 }
 \arguments{
-\item{out}{list that is output of ejamit_compare_groups_of_places(), where one element is
+\item{ejamitout}{list that is output of ejamit_compare_groups_of_places(), where one element is
 a table named results_bytype}
 
 \item{varname}{name of a column in results_bytype, bar height}

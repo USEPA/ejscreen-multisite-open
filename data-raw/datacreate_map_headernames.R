@@ -117,56 +117,56 @@ if (1 == 0) {
 
 stop('this is a script')
 ## requires EJAM package to refer to namez
-nnn = paste0("names_", names(namez))
-nnn = namez[grepl('friendly', nnn)]
-
-reconcile_friendly_names <- list()
-
-for (i in 1:length(nnn)) {
-  
-  checked =  paste0("names_", gsub("_friendly","", names(nnn)[i])  )
-  # cat("checking for varlist = ")
-  # cat(checked,'\n')
-  # cat("\n")
-  
-  
-  zz <- as.vector(unlist(nnn[i]))
-  if (grepl("white", zz[1], ignore.case = TRUE)) { zz = zz[c(2:8,1)]}
-  
-  thosevars <- map_headernames$names_friendly[map_headernames$varlist == checked]  # and note shortlabel column also
-  
-  if (i == 1) {
-    df = data.frame(
-      varlist = checked, 
-      in.ejscreenapi.map_headernames  = map_headernames$rname[map_headernames$varlist == checked],
-      in.ejam.namez = get(checked),
-      friendly.name.in.ejscreenapi.map_headernames = thosevars, 
-      friendly.name.in.ejam.namez = zz
-    )
-  } else {
-    dfmore = data.frame(
-      varlist = checked, 
-      in.ejscreenapi.map_headernames  =  map_headernames$rname[map_headernames$varlist == checked],
-      in.ejam.namez = get(checked),
-      friendly.name.in.ejscreenapi.map_headernames = thosevars, 
-      friendly.name.in.ejam.namez = zz
-    )
-    df = rbind(df, dfmore)
-  }
-  
-  # print(  cbind(
-  #   friendly.name.in.ejam.namez = zz, 
-  #   friendly.name.in.ejscreenapi.map_headernames = thosevars)
-  #   )
-  #  cat("\n\n")
-}
-reconcile_friendly_names <- df 
-
-vcheck = cbind(df[,2:3], identicalnaming = df[,2] == df[,3])
-vcheck[!vcheck$identicalnaming,]
-
-save(reconcile_friendly_names, file = "reconcile_friendly_names.rda")
-write.csv(reconcile_friendly_names, file = "reconcile_friendly_names.csv", row.names = F)
+# nnn = paste0("names_", names(namez))
+# nnn = namez[grepl('friendly', nnn)]
+# 
+# reconcile_friendly_names <- list()
+# 
+# for (i in 1:length(nnn)) {
+#   
+#   checked =  paste0("names_", gsub("_friendly","", names(nnn)[i])  )
+#   # cat("checking for varlist = ")
+#   # cat(checked,'\n')
+#   # cat("\n")
+#   
+#   
+#   zz <- as.vector(unlist(nnn[i]))
+#   if (grepl("white", zz[1], ignore.case = TRUE)) { zz = zz[c(2:8,1)]}
+#   
+#   thosevars <- map_headernames$names_friendly[map_headernames$varlist == checked]  # and note shortlabel column also
+#   
+#   if (i == 1) {
+#     df = data.frame(
+#       varlist = checked, 
+#       in.ejscreenapi.map_headernames  = map_headernames$rname[map_headernames$varlist == checked],
+#       in.ejam.namez = get(checked),
+#       friendly.name.in.ejscreenapi.map_headernames = thosevars, 
+#       friendly.name.in.ejam.namez = zz
+#     )
+#   } else {
+#     dfmore = data.frame(
+#       varlist = checked, 
+#       in.ejscreenapi.map_headernames  =  map_headernames$rname[map_headernames$varlist == checked],
+#       in.ejam.namez = get(checked),
+#       friendly.name.in.ejscreenapi.map_headernames = thosevars, 
+#       friendly.name.in.ejam.namez = zz
+#     )
+#     df = rbind(df, dfmore)
+#   }
+#   
+#   # print(  cbind(
+#   #   friendly.name.in.ejam.namez = zz, 
+#   #   friendly.name.in.ejscreenapi.map_headernames = thosevars)
+#   #   )
+#   #  cat("\n\n")
+# }
+# reconcile_friendly_names <- df 
+# 
+# vcheck = cbind(df[,2:3], identicalnaming = df[,2] == df[,3])
+# vcheck[!vcheck$identicalnaming,]
+# 
+# save(reconcile_friendly_names, file = "reconcile_friendly_names.rda")
+# write.csv(reconcile_friendly_names, file = "reconcile_friendly_names.csv", row.names = F)
 
 }
 

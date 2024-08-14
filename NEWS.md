@@ -1,11 +1,13 @@
 # EJAM 2.3.0-EJScreen2.3 (July 2024)
 
 -   New data and indicators incorporated, to match EJScreen version 2.3 (Environmental indicators `cancer` and `resp` were removed from list of 13 key variables in `names_e`, and `no2` and `drinking` were added). Changes throughout code and datasets to use new data, including metadata in `map_headernames`, variable names stored as `names_e`, `names_e_pctile`, etc., formulas for aggregating across blockgroups for a report via `doaggregate()`, etc.
+-   EJAM now is stand-alone in the sense that it now does not require the packages that had been called EJAMejscreenapi and EJAMbatch.summarizer.
+  -   All essential code from the old EJAMbatch.summarizer package are now in EJAM. `map_headernames` in particular is now in the EJAM package.
+  -   All essential code from the old EJAMbatch.summarizer package are now in EJAM.
 -   `ejamit(quiet=TRUE)` new parameter prints less to RStudio console
 -   Recreated all test datasets and files like `testoutput_ejamit_10pts_1miles` and removed `testpoints_conus5` dataset
 -   Refreshed all documentation of R package help files and vignettes (articles) website 
 -   Versioning system now stores version info at top and bottom of `DESCRIPTION` file, used by get_metadata_mapping(), metadata_mapping() etc.
--   `map_headernames` moved into EJAM package from EJAMejscreenapi package (for names of variables/ indicators and metadata about each)
 -   `names_d` and similar lists of names now are based on `map_headernames` which is the master list
 -   Many new unit tests for various functions
 

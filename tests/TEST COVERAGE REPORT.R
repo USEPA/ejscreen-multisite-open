@@ -197,7 +197,7 @@ tdat[is.na(tdat$test) & !is.na(tdat$R) & "data_" != substr(tdat$name, 1,5), ] |>
 # 98 table_xls_from_ejam                        R/table_xls_from_ejam.R                        NA        
 
 # 99 testpoints_n                               R/testpoints_n.R                               NA        
-# 100 trilaterate-DRAFT                          R/trilaterate-DRAFT.R                          NA      
+    
 
 # 101 URL_FUNCTIONS_part1                        R/URL_FUNCTIONS_part1.R                        NA        
 # 102 URL_FUNCTIONS_part2                        R/URL_FUNCTIONS_part2.R                        NA        

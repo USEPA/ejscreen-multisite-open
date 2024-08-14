@@ -2,7 +2,7 @@
 
 # Note: Do not set defaults for a module UNTIL INSIDE THE MODULE 
 #    EJAMejscreenapi module uses its own global.R file:
-#   source(system.file("global.R", package = "EJAMejscreenapi"))
+#   source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))
 
 ################### #
 # library(shiny)? ####
@@ -90,14 +90,11 @@ stepradius <- 0.05 # miles.  0.25 allows quarter miles. 0.10 allows tenths. 0.05
 
 # input$default_miles
 default_default_miles <- 1 # and can override this with run_app(radius=3.1), and also see effects of bookmarked advanced settings
-max_default_miles <- 50 * 1000 / meters_per_mile # 50 km
+max_default_miles <- 50 * 1000 / meters_per_mile # 50 km. EJAM::meters_per_mile is lazyloaded data constant.
 
 # input$max_miles
 default_max_miles  <- 10 #
-maxmax_miles <- 50 * 1000 / meters_per_mile # 50 km
-
-## global constant (EJAMejscreenapi has this data loaded by pkg?)
-meters_per_mile <- 1609.344
+maxmax_miles <- 50 * 1000 / meters_per_mile # 50 km.
 
 ######################################################## #
 ## EPA Programs (to limit NAICS/ facilities query) ####

@@ -58,7 +58,6 @@ if (testing_this_module) {
 
   #  (EJAM)
   # lib x ra ry(   shiny); lib x ra ry(   magrittr); lib x rary(   leaflet)  # maybe? must attach all of those manually for this to work unless EJAM attached already?
-  source(system.file("global.R", package = "EJAMejscreenapi"))
 
   #  (  EJAM) # for testpoints_10, e.g., BUT THAT WOULD REPLACE AN UPDATED MODULE BELOW IF NOT ALREADY REBUILT/RELOADED WITH UPDATE
 
@@ -104,7 +103,9 @@ if (testing_this_module) {
       default_points_shown_at_startup_react = reactive(testpoints_5[1:2,]),
       use_ejscreenit = use_ejscreenit_tf
     )
-
+# check this belongs here: ***
+    source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))
+    
     # output$testinfo1 <- renderPrint( ("info can go here "))
     # output$testinfo_radius <- renderPrint(paste0("Radius is ", x()$radius.miles, " miles"))
     # output$testinfo2 <- renderText(cat("x names:  ", paste0(names(x()), collapse = ", "), "\n"))

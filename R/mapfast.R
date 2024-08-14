@@ -30,6 +30,7 @@ mapfastej <- function(...) {
 #'   launch a default browser window to show the map
 #'   and print the temp filepath and filename in the console.
 #'   Normally the map would be shown in the default RStudio viewer pane.
+#' @param color color of circles, default is "#03F"
 #' @seealso [ejam2map()] [popup_from_any()] [mapfastej()]
 #' @return plots a leaflet map with popups with all the columns from mydf,
 #'   and returns html widget
@@ -39,7 +40,7 @@ mapfastej <- function(...) {
 #'
 #' @export
 #'
-mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names, browse = FALSE) {
+mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names, browse = FALSE, color = "#03F") {
 
   if (data.table::is.data.table(mydf)) {mydf <- as.data.frame(mydf)} # in case it was a data.table
   renamed <- mydf # use new names for lat and lon if necessary, but show original names in popup
@@ -64,11 +65,11 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     }
   }
 
-  radius.meters <- radius * meters_per_mile # data loaded by pkg EJAMejscreenapi
+  radius.meters <- radius * meters_per_mile # data loaded by pkg
   # units are meters for addCircles, and pixels for addCircleMarkers
 
   x <- leaflet::leaflet(data = renamed) |> leaflet::addTiles() |>
-    leaflet::addCircles(lng = ~lon, lat = ~lat, radius = radius.meters,
+    leaflet::addCircles(lng = ~lon, lat = ~lat, radius = radius.meters, color = color,
                         popupOptions = list(maxHeight = 400, maxWidth = 850),
                         popup = mypop) |>
     leaflet.extras2::addEasyprint( ) # button to print or print to pdf and save

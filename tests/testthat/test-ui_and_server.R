@@ -19,7 +19,8 @@
 
 # NOTE THIS WOULD READ THE INSTALLED NOT SOURCE PACKAGE VERSION WHICH MAY DIFFER
 source(system.file("global.R", package = "EJAM"))
-source(system.file("global.R", package = "EJAMejscreenapi"))
+## not sure if we want to / can read this due to conflicts:
+# source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))
 
 
 test_that("app ui", {

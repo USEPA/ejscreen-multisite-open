@@ -41,6 +41,13 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07, radius_donut
                              quadtree = NULL,
                              quiet=FALSE,
                              parallel=FALSE,
+                             use_unadjusted_distance = TRUE,
+                             # a new approach that just uses the distance between site and block when determining which blocks (residents) are within radius
+                             # relevant if a block is huge relative to the radius or a block contains a site
+                             # might match EJScreen better? 
+                             # and might be a bit faster, 
+                             # and might find different pop and block count nearby a site 
+                             # and might give smaller estimates of distance of site to avg person, etc.
                              ...
 ) {
   ################################################################################## #
@@ -98,6 +105,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07, radius_donut
     x <- getblocksnearbyviaQuadTree(sitepoints = sitepoints, radius = radius, maxradius = maxradius,
                                     radius_donut_lower_edge = radius_donut_lower_edge,
                                     avoidorphans = avoidorphans,
+                                    use_unadjusted_distance = use_unadjusted_distance,
                                     # indexgridsize = indexgridsize,
                                     quadtree = quadtree, quiet = quiet,
                                     ...)

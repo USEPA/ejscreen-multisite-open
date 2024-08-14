@@ -159,6 +159,15 @@ y <- ejam2report(out, sitenumber = 1, analysis_title = "EJAM Report on Site Numb
 
 ![Barplot comparing demographic indicators as ratios to US average](images/image-barplot_example.png){width="100%"}
 
+## Table of Results in RStudio console
+
+This gives you a quick, simple list of results for all the indicators:
+```{r ejam2table_tall, eval=FALSE}
+ejam2table_tall(out)
+ejam2table_tall(out, sitenumber = 1)
+```
+
+
 ## Barplot
 
 ```{r ejam2barplot, eval=FALSE, echo=TRUE}

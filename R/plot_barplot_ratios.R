@@ -1,7 +1,9 @@
 
 #' Barplot of ratios of demographic (or other) scores to averages - simpler syntax
 #' @aliases plot_barplot_ratios_ez
-#' @param out like from [ejamit()]
+#' @param ejamitout like from [ejamit()]
+#' @param sitenumber default is all sites from ejamitout$results_overall, and 
+#'   if an integer, it is the site number to show from ejamitout$results_bysite
 #' @param varnames vector of indicator names that are ratios to avg, like 
 #'   c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg)
 #'   but could be c(names_d_ratio_to_state_avg , names_d_subgroups_ratio_to_state_avg)
@@ -41,17 +43,25 @@
 #'
 #' @export
 #'
-ejam2barplot = function(out, varnames = c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg),
+ejam2barplot = function(ejamitout, varnames = c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg),
+                        sitenumber = NULL,
                         main = "Demographics at the Analyzed Locations Compared to US Overall", ...) {
+  
+  if (is.null(sitenumber)) {
+    ejamitout <- ejamitout$results_overall
+  } else {
+    ejamitout <- ejamitout$results_bysite[sitenumber, ]
+  }
   # ejam2barplot(out,varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg), main = "Demographics at Analyzed Locations Compared to Statewide")
-  plot_barplot_ratios_ez(out = out,
+  plot_barplot_ratios_ez(out = ejamitout,
                          varnames = varnames,
+                         sitenumber = NULL,
                          main =  main, 
                          ... = ...)
 }
 ############################################################################################# #
 
-#' Same as ejam2barplot()
+#' Same as ejam2barplot() but ejam2barplot() handles a sitenumber parameter
 #' @export
 #'
 plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg),
@@ -89,16 +99,15 @@ plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg , names
 #'   - v1_summary_plot <- reactive({ })     and output$view1_summary_plot <- renderPlot({v1_summary_plot()})
 #'      - in EJAM server for SHORT report if box type, and
 #'      - in EJAM server for LONG report passed as a parameter
-#'   - boxplots_ratios()   in EJAMejscreenapi
+#'   - boxplots_ratios()    
 #'      (NOT in EJAM server for Detailed Results interactive views)
-#'   - ejscreenapi_script() code also relevant? in EJAMejscreenapi
+#'   - ejscreenapi_script() code also relevant?  
 #'   - box/scatter examples in ggplot, <https://r-graph-gallery.com/89-box-and-scatter-plot-with-ggplot2.html>
 #'   - boxplots in base R, <https://www.r-bloggers.com/2023/09/how-to-reorder-boxplots-in-r-a-comprehensive-guide>
 #'
 #'   **For HISTOGRAMS, see:**
 #'
 #'   - output$summ_display_hist <- renderPlot   in EJAM server for interactive views
-#'   - the histograms code and discussion  in EJAMbatch.summarizer package
 #'
 #'
 #' @param ratio.to.us.d.overall named list of a few ratios to plot, but see [ejam2barplot()]

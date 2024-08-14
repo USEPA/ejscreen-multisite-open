@@ -4,7 +4,7 @@
 \alias{latlon_any_format}
 \title{Get lat/lon flexibly - from file, data.frame, data.table, or lat/lon vectors}
 \usage{
-latlon_any_format(anything, lon_if_used)
+latlon_any_format(anything, lon_if_used, interactiveprompt = TRUE)
 }
 \arguments{
 \item{anything}{If missing and interactive mode in RStudio, prompts user for file. Otherwise,
@@ -14,6 +14,9 @@ File or data.frame/data.table/matrix must have columns called lat and lon, or na
 be inferred to be that by latlon_infer()}
 
 \item{lon_if_used}{If anything parameter is a vector of longitudes, lon_if_used must be the latitudes. Ignored otherwise.}
+
+\item{interactiveprompt}{If TRUE (default) and in interactive mode not running shiny,
+will prompt user for file if "anything" is missing.}
 }
 \value{
 A data.frame that has at least columns lon and lat (and others if they were in x)
@@ -63,8 +66,10 @@ single wrapper function at some point.
  latlon_from_anything(pts)
  }
   
+
 }
 \seealso{
 \code{\link[=sitepoints_from_any]{sitepoints_from_any()}} which is like this but also adds ejam_uniq_id column,
 and see \code{\link[=read_csv_or_xl]{read_csv_or_xl()}} and \code{\link[=latlon_df_clean]{latlon_df_clean()}}
 }
+\keyword{internal}

@@ -2,19 +2,30 @@
 % Please edit documentation in R/states_infer.R
 \name{states_infer}
 \alias{states_infer}
-\title{states_infer - Get table of info on States (from latlon or FIPS)}
+\title{states_infer - Identify US State that each site is in (given ST, FIPS, or lat/lon)}
 \usage{
 states_infer(x)
 }
 \arguments{
-\item{x}{data.frame or data.table with either ST column or lat and lon columns, or FIPS,
-and optionally a column like  id or n}
+\item{x}{data.frame or data.table, with one row per site, and
+column(s) that are either "ST" (2-letter abbreviation of State),
+"lat" and "lon", or "fips" or "bgfips"
+and optionally a column like  "ejam_uniq_id" or "n"}
 }
 \value{
-data.frame with unique id, ST, etc.
+the input table as a data.frame, but with these
+new columns if ST was not already a column:
+ejam_uniq_id, ST, statename, FIPS.ST, REGION, n
 }
 \description{
-Get cleaned table of US State etc. by ejam_uniq_id, from lat/lon, or from FIPS
+Identify US State that each site is in (given ST, lat/lon, or FIPS)
+}
+\examples{
+  states_infer(testpoints_10)
+  states_infer(testoutput_ejamit_10pts_1miles$results_bysite[, .(ejam_uniq_id, ST, pop)])
+  states_infer(testoutput_ejamit_10pts_1miles$results_bysite[, .(ST, pop)])
+  states_infer(testoutput_ejamit_10pts_1miles$results_bysite[, .(ST, lat, lon, pop)])
+  
 }
 \seealso{
 \code{\link[=state_from_latlon]{state_from_latlon()}} \code{\link[=state_from_fips]{state_from_fips()}}

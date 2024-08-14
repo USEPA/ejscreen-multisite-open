@@ -7,6 +7,9 @@
 \description{
 namez (DATA) list of lists of indicator names (complete list in 1 object)
 }
+\details{
+Not yet implemented/used in EJAM as of 7/2024
+}
 \seealso{
-\code{\link[=varinfo]{varinfo()}}  EJAMejscreenapi dataset called map_headernames \link{names_d} \link{names_e}
+\code{\link[=varinfo]{varinfo()}}  \link{map_headernames} \link{names_d} \link{names_e}
 }

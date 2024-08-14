@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_barplot_ratios.R
 \name{plot_barplot_ratios_ez}
 \alias{plot_barplot_ratios_ez}
-\title{Same as ejam2barplot()}
+\title{Same as ejam2barplot() but ejam2barplot() handles a sitenumber parameter}
 \usage{
 plot_barplot_ratios_ez(
   out,
@@ -12,5 +12,5 @@ plot_barplot_ratios_ez(
 )
 }
 \description{
-Same as ejam2barplot()
+Same as ejam2barplot() but ejam2barplot() handles a sitenumber parameter
 }

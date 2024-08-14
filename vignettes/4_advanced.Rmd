@@ -469,7 +469,7 @@ pts <- testpoints_100[3,]
 y <- plot_distance_by_pctd(
   getblocksnearby(pts, radius = 10, quiet = T),
   score_colname = "pctnhba",
-  sitenum = 1)
+  sitenumber = 1)
 #browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 0.5))
 #browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 3))
 ```
@@ -481,7 +481,7 @@ this specific point
 pts <- data.table::data.table(lat = 45.75464, lon = -94.36791)
 
 y <- plot_distance_by_pctd(pts,
-                      sitenum = 1, score_colname = "pcthisp")
+                      sitenumber = 1, score_colname = "pcthisp")
 # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 10))
 # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 30))
 ```
@@ -492,7 +492,7 @@ y <- plot_distance_by_pctd(pts,
 pts <- testpoints_10
 s2b <- getblocksnearby(pts, radius = 10, quiet = T)
 for (i in 1:NROW(pts)) {
-  plot_distance_by_pctd(s2b, sitenum = i, score_colname = "pctlowinc")
+  plot_distance_by_pctd(s2b, sitenumber = i, score_colname = "pctlowinc")
   readline() # hit any key to step through the plots
 }
 ```

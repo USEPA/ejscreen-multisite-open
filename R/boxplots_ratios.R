@@ -34,14 +34,14 @@
 #'   # x <- testoutput_ejscreenit_50$table # or
 #'   x <- testoutput_ejscreenapi_plus_5
 #'   myradius <- x$radius.miles[1]
-#'   boxplots_ratios(ratios_to_avg(x)$ratios_d, wheretext = myradius)
-#'   #boxplots_ratios(ratios_to_avg(x)$ratios_e, wheretext = myradius)
+#'   boxplots_ratios(calc_ratios_to_avg(x)$ratios_d, wheretext = myradius)
+#'   #boxplots_ratios(calc_ratios_to_avg(x)$ratios_e, wheretext = myradius)
 #'
 #' @export
 #'
 boxplots_ratios <- function(x, selected_dvar_colname='Demog.Index', selected_dvar_nicename=selected_dvar_colname, towhat_nicename='US average',
                             wheretext="Near") {
-  if (is.list(x) & is.data.frame(x[[1]]) ) {x <- x$ratios_d } # for convenience, in case you said  boxplots_ratios(ratios_to_avg(out))
+  if (is.list(x) & is.data.frame(x[[1]]) ) {x <- x$ratios_d } # for convenience, in case you said  boxplots_ratios(calc_ratios_to_avg(out))
   if (!(selected_dvar_colname %in% names(x))) {
     message(paste0(selected_dvar_colname, ' not found in x - using the one with max ratio'))
 

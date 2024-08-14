@@ -97,7 +97,10 @@
 #'   
 #'    # Reported key indicators - which ones do or don't match
 #'    # when comparing EJSCREEN and EJAM results?
-#'    keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+#'    keyreportnames <- c('pop', names_these, 
+#'      paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
+#'      paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
+#'    )
 #'    z$EJAM[z$EJAM$rname %in% keyreportnames &  z$same_shown, ]
 #'    z[z$rname %in% keyreportnames & !z$same_shown & !is.na(z$EJSCREEN), ]
 #'   
@@ -216,10 +219,12 @@ ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 #'    
 #'    
 #'    
-#'    
 #'    # Reported key indicators - which ones do or don't match
 #'    # when comparing EJSCREEN and EJAM results?
-#'    keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+#'    keyreportnames <- c('pop', names_these, 
+#'      paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
+#'      paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
+#'    )  
 #'    rname <- colnames(z$EJAM)
 #'    z1[rname %in% keyreportnames &  z1$same_shown, ]
 #'    z1[rname %in% keyreportnames & !z1$same_shown & !is.na(z1$EJSCREEN), ]
@@ -235,9 +240,12 @@ ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 #'    
 #'    # site number 1
 #'    z1 <- sapply(z, function(x) (x[1,]))
-#'    # Reported key indicators - which ones do or don't match
+#'     # Reported key indicators - which ones do or don't match
 #'    # when comparing EJSCREEN and EJAM results?
-#'    keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+#'    keyreportnames <- c('pop', names_these, 
+#'      paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
+#'      paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
+#'    )
 #'    z1[z1$rname %in% keyreportnames &  z1$same_shown, ]
 #'    z1[z1$rname %in% keyreportnames & !z1$same_shown & !is.na(z1$EJSCREEN), ]
 #'    
@@ -846,7 +854,7 @@ if (1 == 0) {
   
   # WILL FIX: 
   
-  # ejscreenapi() outputs now differ from those names in testoutput_ejscreenapi_1pts_1miles - rebuild examples in EJAMejscreenapi pkg
+  # ejscreenapi() outputs now differ from those names in testoutput_ejscreenapi_1pts_1miles - rebuild examples for  ejscreenapi 
   setdiff2(names(x), names(testoutput_ejscreenapi_1pts_1miles))
   # ok in map_headernames
   # [1] "P_NHWHITE"      "P_NHBLACK"      "P_NHASIAN"      "P_NHAMERIND"    "P_NHHAWPAC"     "P_NHOTHER_RACE" "P_NHTWOMORE"    "TOTALPOP"      

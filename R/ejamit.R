@@ -274,7 +274,7 @@ ejamit <- function(sitepoints,
             radius <- askradius(default = radius) # also see  askYesNo()
             # radius <- as.numeric(rstudioapi::showPrompt("Radius", "Within how many miles of each point?", 3))
           }
-          sitepoints <- latlon_any_format(sitepoints) # read file and infer colnames with lat lon
+          sitepoints <- latlon_from_anything(sitepoints) # read file and infer colnames with lat lon
         } else {
           if (shiny::isRunning()) {
             warning("sitepoints (locations to analyze) is missing but required.")
@@ -435,7 +435,7 @@ ejamit <- function(sitepoints,
   
   # (doaggregate does not provide this)
   
-  out$results_summarized <- EJAMbatch.summarizer::batch.summarize(
+  out$results_summarized <- batch.summarize(
     sitestats = data.frame(out$results_bysite),
     # popstats =  data.frame(out$results_bysite), # now does not have to get passed twice
     quiet = quiet,

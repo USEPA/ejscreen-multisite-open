@@ -6,7 +6,7 @@
 easy high-level function for getting a quick look at top few sites}
 \usage{
 ejam2barplot_sites(
-  out,
+  ejamitout,
   varname = "pctlowinc",
   names.arg = NULL,
   main = "Comparison of Sites",
@@ -18,7 +18,7 @@ ejam2barplot_sites(
 )
 }
 \arguments{
-\item{out}{list like output of ejamit(), where one element is table of sites,
+\item{ejamitout}{list like output of ejamit(), where one element is table of sites,
 one row per site, column names at least varname (and "ejam_uniq_id" if names.arg not specified)}
 
 \item{varname}{name of a column in results_bysite, bar height}

@@ -4,10 +4,10 @@
 \alias{ejam2shapefile}
 \title{DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.}
 \usage{
-ejam2shapefile(out, fname = "bysite.shp", folder = ".", crs = 4269)
+ejam2shapefile(ejamitout, fname = "bysite.shp", folder = ".", crs = 4269)
 }
 \arguments{
-\item{out}{output of EJAM such as from \code{\link[=ejamit]{ejamit()}}}
+\item{ejamitout}{output of EJAM such as from \code{\link[=ejamit]{ejamit()}}}
 
 \item{fname}{a filename no path and must be .shp extension}
 

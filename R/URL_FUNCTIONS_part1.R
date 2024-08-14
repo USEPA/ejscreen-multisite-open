@@ -171,8 +171,8 @@ url_linkify <- function(url, text) {
 #'   
 #'   and (https://ejscreen.epa.gov/mapper/ejscreenapi1.html)
 #'   
-#' @param lon one or more longitudes
-#' @param lat one or more latitudes
+#' @param lat one or more latitudes (or a table with lat, lon columns, or filepath with that, or omit to interactively select file)
+#' @param lon one or more longitudes (or omitted -- see lat parameter details)
 #' @param radius miles radius
 #' @param as_html Whether to return as just the urls or as html hyperlinks to use in a DT::datatable() for example
 #' @param linktext used as text for hyperlinks, if supplied and as_html=TRUE
@@ -190,13 +190,12 @@ url_linkify <- function(url, text) {
 #' 
 #' @export
 #'
-url_ejscreen_report <- function(lon='', lat='', radius='', as_html=FALSE, linktext, mobile=FALSE,
+url_ejscreen_report <- function(lat='', lon='', radius='', as_html=FALSE, linktext, mobile=FALSE,
                                 areatype="", areaid = "", namestr = "", wkid = 4326, unit = 9035, f = "report") {
   
-  if (!any(areaid == "") & !any(is.null(areaid))) {
+  if (!any(areaid == "") && !any(is.null(areaid))) {
     
     fips <- areaid
-    
     fipstype_copy <- function(fips) {
       fips <- fips_lead_zero(fips = fips) # could use EJAM ::: fips_lead_zero
       ftype <- rep(NA, length(fips))
@@ -211,7 +210,6 @@ url_ejscreen_report <- function(lon='', lat='', radius='', as_html=FALSE, linkte
       }
       return(ftype)
     }
-    
     areatype <- fipstype_copy(fips)
     if (!(all(areatype %in% c("blockgroup", "tract", "city", "county")))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' for the EJScreen API")}
     if (!(length(areatype) %in% c(1, length(areaid)))) {warning("must provide either 1 areatype value for all or exactly one per areaid")}
@@ -223,17 +221,23 @@ url_ejscreen_report <- function(lon='', lat='', radius='', as_html=FALSE, linkte
     
   } else {
     
+    # Flexibly allow for user to provide latlon as 1 table or as 2 vectors or 1 filename or 1 interactively selected file
+    
+    latlon_table <- latlon_from_anything(lat, lon)[ , c("lat","lon")] # or could use sitepoints_from_any() that is similar
+    lat <- latlon_table$lat
+    lon <- latlon_table$lon
+    
     # error checking lat lon radius
     
     latlon_radius_validate_lengths <- function(lat, lon, radius) {
-      if (!is.numeric(radius) | !is.numeric(lat) | !is.numeric(lon)) {warning("lat or lon or radius is not numeric")}
+      if (!is.numeric(radius) || !is.numeric(lat) || !is.numeric(lon)) {warning("lat or lon or radius is not numeric")}
       # but that is OK in url_ejscreen_report context where areaid can be used instead and lat default is ""
-      if (length(radius) == 0 | length(lat) == 0 | length(lon) == 0) {warning("lat or lon or radius missing entirely (length of a vector is zero")}
-      if (is.null(radius)     | is.null(lat)     | is.null(lon))     {warning("lat or lon or radius is NULL")}
-      if (anyNA(radius)       | anyNA(lat)       | anyNA(lon))       {warning("lat or lon or radius contain NA value(s)")}
+      if (length(radius) == 0 || length(lat) == 0 || length(lon) == 0) {warning("lat or lon or radius missing entirely (length of a vector is zero")}
+      if (is.null(radius)     || is.null(lat)     || is.null(lon))     {warning("lat or lon or radius is NULL")}
+      if (anyNA(radius)       || anyNA(lat)       || anyNA(lon))       {warning("lat or lon or radius contain NA value(s)")}
       if (length(lat)  != length(lon)) {warning("did not find exactly one lat for each lon value (lengths of vectors differ)")}
       if (!(length(radius) %in% c(1, length(lat), length(lon)))) {warning("must provide either 1 radius value for all sites or exactly one per site")}
-      if (!( "" %in% lat | "" %in% lon ) & (  any(is.na(radius)) | "" %in% radius)) {warning('radius is missing but needed when lat/lon specified')} # ??
+      if (!( "" %in% lat | "" %in% lon ) & (any(is.na(radius)) | "" %in% radius)) {warning('radius is missing but needed when lat/lon specified')} # ??
     }
     latlon_radius_validate_lengths(lat = lat, lon = lon, radius = radius)
   }

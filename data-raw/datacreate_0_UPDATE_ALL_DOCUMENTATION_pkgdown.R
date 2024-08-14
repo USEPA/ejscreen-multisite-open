@@ -209,15 +209,10 @@ stop()
 # only use binary=TRUE if package has C that needs to be compiled. otherwise source package is better.
 ## to (reinstall and) rebuild source package that makes it easier for users to install from github like this
 # remotes::install_github(c(
-#   'USEPA/EJAMejscreenapi',
-#   'USEPA/EJAMbatch.summarizer',
 #   'USEPA/EJAM'
 # ), build_vignettes = FALSE) 
 #
 # build(".")  # to build single file source package that could be shared with those who want to install without needing PAT. 
-# installation from github via remotes::
-# 
-# build("../EJAMejscreenapi")
-#  build("../EJAMbatch.summarizer")
+# installation from github via remotes
 
 ################################################################## #

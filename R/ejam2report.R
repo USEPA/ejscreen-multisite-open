@@ -6,7 +6,7 @@
 #' 
 #' @details This relies on [build_community_report()] as used in web app
 #'   for viewing report on 1 site from a list of sites.
-#' @param ejamout output as from [ejamit()], list with a data.table called `results_bysite`
+#' @param ejamitout output as from [ejamit()], list with a data.table called `results_bysite`
 #'   if sitenumber parameter is used, or a data.table called `results_overall` otherwise
 #' @param sitenumber If a number is provided, the report is about 
 #'   `ejamout$results_bysite[sitenumber, ]` and if no number is provided (param is NULL)
@@ -33,7 +33,8 @@
 #' 
 #' @export
 #' 
-ejam2report <- function(ejamout = testoutput_ejamit_10pts_1miles, sitenumber = NULL,  
+ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles, 
+                        sitenumber = NULL,  
                         analysis_title = "EJAM Report", 
                         submitted_upload_method = c("latlon", "SHP", "FIPS")[1],
                         data_up_shp = NA,
@@ -42,9 +43,9 @@ ejam2report <- function(ejamout = testoutput_ejamit_10pts_1miles, sitenumber = N
   
   if (!interactive()) {launch_browser <- FALSE}
   if (is.null(sitenumber)) {
-    ejamout1 <- ejamout$results_overall
+    ejamout1 <- ejamitout$results_overall
   } else {
-    ejamout1 <- ejamout$results_bysite[sitenumber, ]
+    ejamout1 <- ejamitout$results_bysite[sitenumber, ]
   }
   include_ejindexes <- any(names_ej_pctile %in% colnames(ejamout1))
   
@@ -161,3 +162,4 @@ ejam2report <- function(ejamout = testoutput_ejamit_10pts_1miles, sitenumber = N
     return(NA)
   }
 }
+########################################################################################### #

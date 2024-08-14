@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EJAM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,8 +33,6 @@
     <a class="dropdown-item" href="../articles/2_quickstart.html">Quick Start Guide</a>
     <a class="dropdown-item" href="../articles/3_analyzing.html">Basics of Using EJAM for Analysis in RStudio</a>
     <a class="dropdown-item" href="../articles/4_advanced.html">Advanced Features</a>
-    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">Using the EJScreen API via EJAM</a>
-    <a class="dropdown-item" href="../articles/6_future_plans.html">Future Plans and Ideas for EJAM</a>
   </div>
 </li>
 <li class="active nav-item">
@@ -61,6 +59,21 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.3.0" id="ejam-230-ejscreen23-july-2024">EJAM 2.3.0-EJScreen2.3 (July 2024)<a class="anchor" aria-label="anchor" href="#ejam-230-ejscreen23-july-2024"></a></h2>
+<ul><li>New data and indicators incorporated, to match EJScreen version 2.3 (Environmental indicators <code>cancer</code> and <code>resp</code> were removed from list of 13 key variables in <code>names_e</code>, and <code>no2</code> and <code>drinking</code> were added). Changes throughout code and datasets to use new data, including metadata in <code>map_headernames</code>, variable names stored as <code>names_e</code>, <code>names_e_pctile</code>, etc., formulas for aggregating across blockgroups for a report via <code><a href="../reference/doaggregate.html">doaggregate()</a></code>, etc.</li>
+<li>EJAM now is stand-alone in the sense that it now does not require the packages that had been called EJAMejscreenapi and EJAMbatch.summarizer.</li>
+<li>All essential code from the old EJAMbatch.summarizer package are now in EJAM. <code>map_headernames</code> in particular is now in the EJAM package.</li>
+<li>All essential code from the old EJAMbatch.summarizer package are now in EJAM.</li>
+<li>
+<code>ejamit(quiet=TRUE)</code> new parameter prints less to RStudio console</li>
+<li>Recreated all test datasets and files like <code>testoutput_ejamit_10pts_1miles</code> and removed <code>testpoints_conus5</code> dataset</li>
+<li>Refreshed all documentation of R package help files and vignettes (articles) website</li>
+<li>Versioning system now stores version info at top and bottom of <code>DESCRIPTION</code> file, used by get_metadata_mapping(), metadata_mapping() etc.</li>
+<li>
+<code>names_d</code> and similar lists of names now are based on <code>map_headernames</code> which is the master list</li>
+<li>Many new unit tests for various functions</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.2.4" id="ejam-224-internal-beta-web-app-and-r-package-preparing-for-internal-deployment-june-2024">EJAM 2.2.4 internal beta web app and R package, preparing for internal deployment (June 2024)<a class="anchor" aria-label="anchor" href="#ejam-224-internal-beta-web-app-and-r-package-preparing-for-internal-deployment-june-2024"></a></h2>
 <div class="section level4">
 <h4 id="changed-2-2-4">Changed<a class="anchor" aria-label="anchor" href="#changed-2-2-4"></a></h4>
@@ -73,12 +86,12 @@
 <h4 id="r-package-additions-and-improvements-for-r-users-2-2-4">R package additions and improvements for R users<a class="anchor" aria-label="anchor" href="#r-package-additions-and-improvements-for-r-users-2-2-4"></a></h4>
 <ul><li>Improved <a href="https://usepa.github.io/EJAM/reference/ejam2barplot.html"><code>ejam2barplot()</code></a> shows easy plot of a few indicators overall.</li>
 <li>New <a href="https://usepa.github.io/EJAM/reference/ejam2barplot_sites.html"><code>ejam2barplot_sites()</code></a> shows plot comparing top sites, for 1 indicator.</li>
-<li>New <a href="https://usepa.github.io/EJAM/reference/names2fips.html"><code>names2fips()</code></a> converts State abbreviation, State name, or County name to FIPS code.</li>
+<li>New <a href="https://usepa.github.io/EJAM/reference/name2fips.html"><code>name2fips()</code></a> converts State abbreviation, State name, or County name to FIPS code.</li>
 <li>New <code><a href="../reference/ejam2shapefile.html">ejam2shapefile()</a></code> drafted as a quick way to save results of ejamit() for import to other GIS tools</li>
-<li>New <code><a href="../reference/ejam2barplot_sitegroups.html">ejam2barplot_sitegroups()</a></code> shows output of <code>ejamit_compare_types_of_place()</code>
+<li>New <code><a href="../reference/ejam2barplot_sitegroups.html">ejam2barplot_sitegroups()</a></code> shows output of <code><a href="../reference/ejamit_compare_types_of_places.html">ejamit_compare_types_of_places()</a></code>
 </li>
 <li>
-<a href="https://usepa.github.io/EJAM/reference/ejamit_compare_types_of_place.html"><code>ejamit_compare_types_of_place()</code></a> and <a href="https://usepa.github.io/EJAM/reference/ejamit_compare_distances.html"><code>ejamit_compare_distances()</code></a> are flexible now in how sitepoints is defined: they let you specify sitepoints as an interactively selected file (if the sitepoints parameter is not provided) or a filepath or a data.frame object.</li>
+<a href="https://usepa.github.io/EJAM/reference/ejamit_compare_types_of_places.html"><code>ejamit_compare_types_of_places()</code></a> and <a href="https://usepa.github.io/EJAM/reference/ejamit_compare_distances.html"><code>ejamit_compare_distances()</code></a> are flexible now in how sitepoints is defined: they let you specify sitepoints as an interactively selected file (if the sitepoints parameter is not provided) or a filepath or a data.frame object.</li>
 <li>Additions on how to select radius or radii, including uncertainty considerations in low-density areas, in <a href="https://usepa.github.io/EJAM/articles/4_advanced.html">Advanced article (vignette)</a>.</li>
 <li>New <code><a href="../reference/is.island.html">is.island()</a></code> function</li>
 <li>
@@ -147,7 +160,7 @@
 <li>urban/rual location</li>
 <li>parent company</li>
 <li>etc.</li>
-</ul><p>One can also include one or more reference groups within the single list of sites analyzed, to simplify comparison of one or more groups of sites to one or more reference groups of places. This allows one to compare residents within 3 miles of certain facilities, for example, to a random sample of comparably-sized locations (once the user has first generated that list of random locations to use as a reference group appended to the list of sites for analysis). * New functionality is still being further developed so formats may change.</p>
+</ul><p>One can also include one or more reference groups within the single list of sites analyzed, to simplify comparison of one or more groups of sites to one or more reference groups of places. This allows one to compare residents within 3 miles of certain facilities, for example, to a random sample of comparably-sized locations (once the user has first generated that list of random locations to use as a reference group appended to the list of sites for analysis). <em>New functionality is still being further developed so formats may change.</em></p>
 </div>
 </div>
 <div class="section level3">
@@ -184,15 +197,15 @@
 <li>
 <code><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">sf::st_layers()</a></code> is now used by functions using shapefiles</li>
 <li>New testdata files (examples of input files to try uploading, and examples of output or intermediate data results) are expanded and improved. See the <a href="https://usepa.github.io/EJAM/articles/4_advanced.html#test-data-available-for-ejam">“Advanced” article section about what files and objects are installed with the package</a>.</li>
-</ul><!-- --><div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>     folders available at <span class="fu">system.file</span>(<span class="st">"testdata"</span>, <span class="at">package =</span> <span class="st">"EJAM"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>,] <span class="st">"EJAM/testdata/address"</span>                                       </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>[<span class="dv">2</span>,] <span class="st">"EJAM/testdata/examples_of_output"</span>                            </span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>[<span class="dv">3</span>,] <span class="st">"EJAM/testdata/fips"</span>                                          </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>[<span class="dv">4</span>,] <span class="st">"EJAM/testdata/latlon"</span>                                        </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>[<span class="dv">5</span>,] <span class="st">"EJAM/testdata/program_type"</span>                                  </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>[<span class="dv">6</span>,] <span class="st">"EJAM/testdata/programid"</span>                                     </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>[<span class="dv">7</span>,] <span class="st">"EJAM/testdata/registryid"</span>                                    </span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>[<span class="dv">8</span>,] <span class="st">"EJAM/testdata/shapes"</span></span></code></pre></div>
+</ul><pre><code>         folders available at system.file("testdata", package = "EJAM")
+    [1,] "EJAM/testdata/address"                                       
+    [2,] "EJAM/testdata/examples_of_output"                            
+    [3,] "EJAM/testdata/fips"                                          
+    [4,] "EJAM/testdata/latlon"                                        
+    [5,] "EJAM/testdata/program_type"                                  
+    [6,] "EJAM/testdata/programid"                                     
+    [7,] "EJAM/testdata/registryid"                                    
+    [8,] "EJAM/testdata/shapes"</code></pre>
 <ul><li>testoutput_ datasets updated to reflect updated formats and indicators provided by ejamit() and ejscreenit(), and invalid latlon points removed from testpoints_10 and testpoints_1000</li>
 <li>dataload_from_ functions improved</li>
 </ul></div>
@@ -209,7 +222,7 @@
 <code><a href="../reference/naics_from_code.html">naics_from_code()</a></code> and <code><a href="../reference/sic_from_code.html">sic_from_code()</a></code> bug fixes</li>
 <li>names of language-related indicators mostly fixed</li>
 <li>other bug fixes</li>
-</ul></div>
+</ul><hr></div>
 </div>
 </div>
     <div class="section level2">
@@ -246,7 +259,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>EJAM Version 2.2.2 beta</p>
+  <p>EJAM Version 2.3.0 beta</p>
 </div>
 
     </footer></div>

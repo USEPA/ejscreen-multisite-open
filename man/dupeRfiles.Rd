@@ -15,9 +15,12 @@ dupeRfiles(folder1 = "../EJAM/R", folder2 = "./R")
 See what same-named .R files are in 2 sourcecode folders
 }
 \details{
-useful for shiny app that is not a package,
-as ejamlite and EJAMejscreenapi had copies of some EJAM files.
+See \code{\link[=dupeRfiles]{dupeRfiles()}} for files supporting a shiny app that is not a package, e.g.
 
-See \code{\link[=dupenames]{dupenames()}} for when they are all packages.
+See \code{\link[=dupenames]{dupenames()}} for objects that are in R packages.
+
+See \code{\link[=functions_in_pkg]{functions_in_pkg()}}
+
+See \code{\link[=datapack]{datapack()}}
 }
 \keyword{internal}

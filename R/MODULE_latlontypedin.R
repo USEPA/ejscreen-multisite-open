@@ -177,7 +177,7 @@ if (try_this_module_here) {
 # MODULE_UI_latlontypedin("pts_entry_table1")
 
 ## copied to the server
-# testpoints_template <- EJAMejscreenapi :: testpoints_5[1:2, ]
+# testpoints_template <-  testpoints_5[1:2, ]
 # reactive_data1 <-  reactiveVal(testpoints_template)
 # MODULE_SERVER_latlontypedin(id = "pts_entry_table1", reactdat = reactive_data1)
 

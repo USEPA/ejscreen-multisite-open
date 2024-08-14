@@ -6,18 +6,22 @@
 \title{Barplot of ratios of demographic (or other) scores to averages - simpler syntax}
 \usage{
 ejam2barplot(
-  out,
+  ejamitout,
   varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),
+  sitenumber = NULL,
   main = "Demographics at the Analyzed Locations Compared to US Overall",
   ...
 )
 }
 \arguments{
-\item{out}{like from \code{\link[=ejamit]{ejamit()}}}
+\item{ejamitout}{like from \code{\link[=ejamit]{ejamit()}}}
 
 \item{varnames}{vector of indicator names that are ratios to avg, like
 c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg)
 but could be c(names_d_ratio_to_state_avg , names_d_subgroups_ratio_to_state_avg)}
+
+\item{sitenumber}{default is all sites from ejamitout$results_overall, and
+if an integer, it is the site number to show from ejamitout$results_bysite}
 
 \item{main}{title of plot - must change to note it vs. State if not comparing to US avg.}
 

@@ -18,7 +18,7 @@
 #'   If NULL (not provided as a parameter to the function),
 #'   will prompt for a file to upload and use, if interactive() is TRUE, or else
 #'   the function will just show an example using a random point.
-#' @param sitenum If used, one number that is the unique ID
+#' @param sitenumber If used, one number that is the unique ID
 #'   (the row number of original list of points) to look at in s2b.
 #'   This should be the same as the value of s2b$ejam_uniq_id for
 #'   the site to be analyzed.
@@ -53,21 +53,21 @@
 #'  # 10 to 30 miles away from this specific point
 #'  pts = data.table(lat = 45.75464, lon = -94.36791)
 #'  plot_distance_by_pctd(pts,
-#'    sitenum = 1, score_colname = "pcthisp")
+#'    sitenumber = 1, score_colname = "pcthisp")
 #'  # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 10))
 #'  # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 30))
 #'  
 #'  
 #' @export
 #'
-plot_distance_by_pctd <- function(s2b = NULL, sitenum = 1, #  NULL, 
+plot_distance_by_pctd <- function(s2b = NULL, sitenumber = 1, #  NULL, 
                                   score_colname = names_these[3], 
                                   scorewts_colname = "pop",
                                   score_label = fixcolnames(score_colname, "r", "shortlabel"),
                                   radius = 30
 ) {
   
-  if (missing(sitenum)) {warning("aggregate of multiple sites not yet implemented - using site #1")}
+  if (missing(sitenumber)) {warning("aggregate of multiple sites not yet implemented - using site #1")}
   
   if (!(score_colname %in% names(blockgroupstats))) {stop(cat(score_colname, "was not found in colnames(blockgroupstats) \n"))}
   if (!(scorewts_colname %in% names(blockgroupstats))) {stop(cat(scorewts_colname, "was not found in colnames(blockgroupstats) \n"))}
@@ -80,7 +80,7 @@ plot_distance_by_pctd <- function(s2b = NULL, sitenum = 1, #  NULL,
       pts = suppressWarnings(testpoints_n(1))
       cat(paste0("site: ", pts$lat, ", ", pts$lon, "\n"))
       s2b <- getblocksnearby(pts, radius = radius, quiet = T)
-      sitenum <- 1
+      sitenumber <- 1
     }
   }
   if (!("blockid" %in% names(s2b))) {
@@ -94,7 +94,7 @@ plot_distance_by_pctd <- function(s2b = NULL, sitenum = 1, #  NULL,
         pts = suppressWarnings(testpoints_n(1))
         cat(paste0("site: ", pts$lat, ", ", pts$lon, "\n"))
         s2b <- getblocksnearby(pts, radius = radius, quiet = T)
-        sitenum <- 1
+        sitenumber <- 1
       }
     } else {
       warning("s2b must be results of getblocksnearby() or else a table of points with lat,lon columns and 1 row per point")
@@ -102,12 +102,12 @@ plot_distance_by_pctd <- function(s2b = NULL, sitenum = 1, #  NULL,
       pts = suppressWarnings(testpoints_n(1))
       cat(paste0("site: ", pts$lat, ", ", pts$lon, "\n"))
       s2b <- getblocksnearby(pts, radius = radius, quiet = T)
-      sitenum <- 1
+      sitenumber <- 1
     }
   }
-  if (is.null(sitenum)) {
+  if (is.null(sitenumber)) {
     stop("aggregate of multiple sites not yet implemented")
-    sitenum <- 0
+    sitenumber <- 0
     s2b$ejam_uniq_id <- 0
     # this should fool it into treating all the sites as one site 
     # except note it will not be in only 1 state, so account for that later...
@@ -115,10 +115,10 @@ plot_distance_by_pctd <- function(s2b = NULL, sitenum = 1, #  NULL,
   
   allvarnames <- unique(c("bgid", score_colname, scorewts_colname))
   
-  # confirm that sitenum %in% s2b$ejam_uniq_id in case sitenum provided is bad or missing
-  if (!("ejam_uniq_id" %in% colnames(s2b)) || !(sitenum %in% s2b$ejam_uniq_id)) {stop("sitenum of ", sitenum, " not found among s2b$ejam_uniq_id values")}
+  # confirm that sitenumber %in% s2b$ejam_uniq_id in case sitenumber provided is bad or missing
+  if (!("ejam_uniq_id" %in% colnames(s2b)) || !(sitenumber %in% s2b$ejam_uniq_id)) {stop("sitenumber of ", sitenumber, " not found among s2b$ejam_uniq_id values")}
   # limit analysis to this one site and limited radius to view and drop unpopulated blocks
-  s2b <- data.table::copy(s2b[ejam_uniq_id == sitenum & blockwt > 0 & distance <= radius, ])
+  s2b <- data.table::copy(s2b[ejam_uniq_id == sitenumber & blockwt > 0 & distance <= radius, ])
   # get the relevant EJScreen demog or envt indicator scores, by block group
   s2b <- merge(s2b, blockgroupstats[pop > 0, c(..allvarnames)], all.x = TRUE, all.y = FALSE, by = "bgid")
   # sort by increasing distance
@@ -150,16 +150,16 @@ plot_distance_by_pctd <- function(s2b = NULL, sitenum = 1, #  NULL,
   ## In doaggregate() we handle that by creating a simulated state that is the 
   # wtd mean of states in the analysis, weighted by share of analyzed pop that is in each state. 
   
-  if (sitenum == 0) {
+  if (sitenumber == 0) {
     SITENUMBERTEXT <- "any one or more of the analyzed sites"
     
-    # myST <- state_from_blockid(as.vector(unlist(s2b[ejam_uniq_id == sitenum, blockid[1]])))
+    # myST <- state_from_blockid(as.vector(unlist(s2b[ejam_uniq_id == sitenumber, blockid[1]])))
     # STATEMEAN = statestats[statestats$PCTILE == "mean" & statestats$REGION == myST, dpctvar]
     # STATE80 =   statestats[statestats$PCTILE == "80"   & statestats$REGION == myST, dpctvar]
     
   } else {
-    SITENUMBERTEXT <- paste0("site number ", sitenum)
-    myST <- state_from_blockid(as.vector(unlist(s2b[ejam_uniq_id == sitenum, blockid[1]]))) # EJAM:::
+    SITENUMBERTEXT <- paste0("site number ", sitenumber)
+    myST <- state_from_blockid(as.vector(unlist(s2b[ejam_uniq_id == sitenumber, blockid[1]]))) # EJAM:::
     STATEMEAN = statestats[statestats$PCTILE == "mean" & statestats$REGION == myST, score_colname]
     STATE80 =   statestats[statestats$PCTILE == "80"   & statestats$REGION == myST, score_colname]
   }

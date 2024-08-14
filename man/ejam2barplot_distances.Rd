@@ -2,8 +2,7 @@
 % Please edit documentation in R/ejamit_compare_distances.R
 \name{ejam2barplot_distances}
 \alias{ejam2barplot_distances}
-\title{plot indicators as a function of distance from point(s)
-plot results of ejamit_compare_distances()}
+\title{Barplot comparing ejamit_compare_distances() results for more than one radius}
 \usage{
 ejam2barplot_distances(
   results_bydistance,
@@ -33,6 +32,5 @@ text vector length n, naming which indicators most strongly
 increase as you get closer to the site(s)
 }
 \description{
-plot indicators as a function of distance from point(s)
-plot results of ejamit_compare_distances()
+Barplot comparing ejamit_compare_distances() results for more than one radius
 }

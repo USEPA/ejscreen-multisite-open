@@ -60,11 +60,11 @@ returns a workbook object for use by openxlsx::saveWorkbook(wb_out, pathname)
 or returns just the full path/file name of where it was saved if save_now = TRUE
 }
 \description{
-Uses table_xls_format() to format and save results
+Almost identical to \code{\link[=ejam2excel]{ejam2excel()}}
 }
 \examples{
 \dontrun{
   table_xls_from_ejam(testoutput_ejamit_10pts_1miles)
   }
- @seealso [table_xls_format()]
 }
+\keyword{internal}

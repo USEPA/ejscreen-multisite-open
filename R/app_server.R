@@ -419,7 +419,7 @@ app_server <- function(input, output, session) {
   
   # # Use a default initial template of lat lon values table ready for user to type into
   # # and then the module updates that reactive_data1 object as the user types
-  # latlon_template <- data.table(lat = 0, lon = 0, sitenumber = 1, sitename = "")  # default_points_shown_at_startup[1:2, ] # EJAMejscreenapi :: testpoints_5[1:2, ] # could  be put in global.R
+  # latlon_template <- data.table(lat = 0, lon = 0, sitenumber = 1, sitename = "")  # default_points_shown_at_startup[1:2, ] #  testpoints_5[1:2, ] # could  be put in global.R
   # reactive_data1 <-  reactiveVal(latlon_template)
   # ## or... try something like this:   Try to pass to module as param the last uploaded pts() ?
   # observe(
@@ -1337,7 +1337,7 @@ app_server <- function(input, output, session) {
   #
   #   # which sites have residents that might also be near others sites?
   #   # circles overlap if 2 facilities are twice the radius apart  # in miles
-  #   EJAMejscreenapi :: near_eachother(
+  #       distance_near_eachother(
   #     lon = data_uploaded()$lon,
   #     lat = data_uploaded()$lat,
   #     distance = 2 * input$bt_rad_buff
@@ -2030,7 +2030,7 @@ app_server <- function(input, output, session) {
     # 3) **batch.summarize()** on already processed data ####
     
     if (submitted_upload_method() == 'SHP') {
-      outsum <- EJAMbatch.summarizer::batch.summarize(
+      outsum <- batch.summarize(
         sitestats = data.frame(data_processed()$results_bysite %>%
                                  sf::st_drop_geometry()),
         
@@ -2044,7 +2044,7 @@ app_server <- function(input, output, session) {
         threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
     } else {
-      outsum <- EJAMbatch.summarizer::batch.summarize(
+      outsum <- batch.summarize(
         sitestats = data.frame(data_processed()$results_bysite),
         
         # popstats =  data.frame(data_processed()$results_bysite), # batch.summarize no longer needs it passed
@@ -2256,13 +2256,6 @@ app_server <- function(input, output, session) {
       
       if (submitted_upload_method() != "FIPS") {
         
-        # this bit of code defining popup_labels was there sep 10 but deleted Oct 14, probably inadvertently, and being put back in oct 23.
-        # popup_labels <- c(data_processed()$longnames, 'State Name')
-        # popup_labels[popup_labels == ""] <- map_headernames$names_friendly[match(
-        #   names(data_processed()$results_bysite)[popup_labels == ""],
-        #   map_headernames$rname)]
-        #
-        # popup_labels <- map_headernames$names_friendly[match(names(data_processed()$results_bysite),map_headernames$rname)] # fixcolnames() is easier to read
         popup_labels <- fixcolnames(namesnow = names(data_processed()$results_bysite), oldtype = 'r', newtype = 'shortlabel')
         popup_labels[is.na(popup_labels)] <- names(data_processed()$results_bysite)[is.na(popup_labels)]
         ## similar to previous map but remove controls and only add circles, not circleMarkers
@@ -2431,10 +2424,7 @@ app_server <- function(input, output, session) {
         ..names_d_subgroups_ratio_to_avg
       )]
       ## assign column names (could use left_join like elsewhere)
-      names(ratio.to.us.d.bysite) <-  c(
-        names_d_friendly,
-        names_d_subgroups_friendly
-      ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)] # names_d_fixed and long_names_d no longer exist. use names_d_friendly, etc.
+      names(ratio.to.us.d.bysite) <-  fixcolnames(c(names_d, names_d_subgroups), 'r', 'short') # is this right?
       ## pivot data from wide to long - now one row per indicator
       ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>%
         tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>%
@@ -2460,7 +2450,7 @@ app_server <- function(input, output, session) {
       
       # to use for dot showing the mean ratio of each indicator *** NOT USED?
       meanratios <- data.frame(
-        indicator = c(names_d_friendly, names_d_subgroups_friendly),
+        indicator = fixcolnames(c(names_d, names_d_subgroups), 'r', 'short'),      # is this right?
         value = unlist(ratio.to.us.d()[c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg)])
       )
       ## paste subtitle for boxplot
@@ -2635,21 +2625,7 @@ app_server <- function(input, output, session) {
   # .  ## ##
   # ______ DETAILED RESULTS ______ ####
   
-  
   #############################################################################  #
-  #. ## ##
-  # ______ SUMMARY IN TALL FORMAT?  ## ##
-  
-  ################################################################ #
-  # just a nicer looking tall version of overall results
-  # output$overall_results_tall <- renderDT({
-  #   table_tall_from_overall(results_overall = data_processed()$results_overall, longnames =  data_processed()$longnames)
-  # })
-  # output$overall_results_tall <- renderDT({
-  #   tallout <- cbind(overall = round(unlist(data_processed()$results_overall), 3))
-  #   rownames(tallout) <- fixnames_to_type(rownames(tallout), "rname", "longname")
-  #   tallout
-  # })
   
   shinyInput <- function(FUN, len, id, ...) {
     inputs <- character(len)
@@ -2658,7 +2634,6 @@ app_server <- function(input, output, session) {
     }
     inputs
   }
-  
   #############################################################################  #
   #. ## ##
   ## *DATATABLE of sites = output$view3_table from data_processed()  ####
@@ -2668,8 +2643,7 @@ app_server <- function(input, output, session) {
     if (input$testing) {cat('view3_table - preparing (most columns of the) site by site table for DT view \n')
     }
     # --------------------------------------------------- #
-    # cols_to_select <- names(data_processed)
-    # friendly_names <- longnames???
+
     cols_to_select <- c('ejam_uniq_id', 'invalid_msg',
                         'pop', #'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report',
@@ -2677,29 +2651,22 @@ app_server <- function(input, output, session) {
                         names_e #,
                         # no names here corresponding to number above x threshold, state, region ??
     )
-    friendly_names <- c('Site ID', 'Invalid Reason','Est. Population', #'Community Report',
+    tableheadnames <- c('Site ID', 'Invalid Reason','Est. Population', #'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report',
-                        names_d_friendly, names_d_subgroups_friendly,
-                        names_e_friendly)
+                        fixcolnames(c(names_d, names_d_subgroups, names_e), 'r', 'shortlabel')) # is this right?
     
     ejcols          <- c(names_ej,          names_ej_state,          names_ej_supp,          names_ej_supp_state)
-    ejcols_friendly <- c(names_ej_friendly, names_ej_state_friendly, names_ej_supp_friendly, names_ej_supp_state_friendly)
+    ejcols_friendly <- fixcolnames(ejcols, 'r', 'shortlabel')
     which_ejcols_here <- which(ejcols %in% names(data_processed()$results_bysite)  )
     cols_to_select <- c(cols_to_select, ejcols[         which_ejcols_here] )
-    friendly_names <- c(friendly_names, ejcols_friendly[which_ejcols_here])
+    tableheadnames <- c(tableheadnames, ejcols_friendly[which_ejcols_here])
     
-    friendly_names <- c(friendly_names,
+    tableheadnames <- c(tableheadnames,
                         names(data_summarized()$cols), 
                         # 'Max of selected indicators',  ###
                         # '# of indicators above threshold',   # will be made more flexible
                         'State', 'EPA Region')
     # --------------------------------------------------- #
-    
-    #
-    #
-    #
-    #
-    #
     
     # use data_processed()
     dt <- data_processed()$results_bysite %>%
@@ -2733,7 +2700,7 @@ app_server <- function(input, output, session) {
     #          ejam_uniq_id = as.character(ejam_uniq_id)) %>%
     #   dplyr::select(dplyr::all_of(cols_to_select), ST)
     
-    # use data_summarized() that is from EJAMbatch.summarizer::batch.summarize()
+    # use data_summarized() that is from batch.summarize()
     batch.sum.cols = data_summarized()$cols
     batch.sum.cols[is.na(batch.sum.cols$pop), ] <- NA
     
@@ -2757,7 +2724,7 @@ app_server <- function(input, output, session) {
       ) %>%
       dplyr::select(-ST ) # , -Max.of.variables)    # should be made more flexible so column need not be Max.of.variables
     
-    colnames(dt_final) <- friendly_names
+    colnames(dt_final) <- tableheadnames
     
     dt_final <- dt_final %>%
       dplyr::relocate(c('Invalid Reason', State, 'EPA Region'),
@@ -2818,6 +2785,7 @@ app_server <- function(input, output, session) {
   })
   #############################################################################  #
   ## SUMMARY REPORT ON 1 SITE (via Button on Table of Sites) ####
+  
   cur_button <- reactiveVal(NULL)
   # also see  ejam2report() which mirrors the code below but as a function outside shiny
   observeEvent(
@@ -2883,7 +2851,7 @@ app_server <- function(input, output, session) {
           browseURL(temp_comm_report)
           
           ## can also generate reports through knitting Rmd template
-          ## this is easier to add in maps and plots but is slower to appear
+          ## this makes it easier to add in maps and plots but is slower to appear
           
           # isolate({  # need someone to confirm this is needed/helpful and not a problem, to isolate this.
           #   ## pass params to customize .Rmd doc  # ###
@@ -2925,7 +2893,6 @@ app_server <- function(input, output, session) {
           showModal(modalDialog(title = 'Report not available',
                                 'Individual site reports not yet available.'))
         }
-        #showModal(modalDialog("Thanks for pushing the button"))
       })
   
   ## EXCEL DOWNLOAD  ####
@@ -2970,6 +2937,7 @@ app_server <- function(input, output, session) {
       }
       
       if ("ready to do this as a function" == "remove this when ready to switch") {
+        
         # having to drop cols via keepcols here is a pain in the neck. is it really useful anyway
         x <- data_processed() # this copy must slow it down a bit, and waste memory, but can we just pass data_processed() reactive as a parameter without func expecting that or it being altered in this envt?
         x$results_overall <- x$results_overall[  , ..keepcols] # needs ..

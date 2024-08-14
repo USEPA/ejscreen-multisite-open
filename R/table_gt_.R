@@ -505,7 +505,7 @@ table_gt_format_step2 <- function(df, type = c("demog", "envt")[1], my_cell_colo
 #' Based on just indicator names and a value for each, it tries to fill in the rest of a summary table's data.
 #'   and formats this as a data.frame ready for the next step
 #' @param varnames_r vector of variable names like names_d
-#' @param varnames_shown vector like names_d_friendly
+#' @param varnames_shown vector like fixcolnames(names_d,'r','short')
 #' @param value indicator values for a place or overall
 #' @param state_avg indicator values average in State
 #' @param state_pctile indicator values as State percentiles

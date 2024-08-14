@@ -1,5 +1,4 @@
 #' @name frs_by_mact
-#' @docType data
 #' @title frs_by_mact (DATA) MACT NESHAP subpart(s) that each EPA-regulated site is subject to
 #' @description 
 #'    This is a data.table with one row per site -- MACT subpart pair, 
