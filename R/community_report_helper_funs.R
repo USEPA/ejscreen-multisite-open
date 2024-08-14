@@ -11,13 +11,13 @@
 #'
 #' @keywords internal
 #'
-fill_tbl_row <- function(output_df, var_value, var_name) {
-  txt <- "<tr>"
 
+
+
+fill_tbl_row <- function(output_df, var_value, var_name) {
+  
   id_col <- "selected-variables"
-  txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
-                id_col,'\">',
-                var_name,'</td>')
+  
   
   hdr_names <- c('value','state-average',
                  'percentile-in-state','usa average','percentile-in-usa')
@@ -25,21 +25,24 @@ fill_tbl_row <- function(output_df, var_value, var_name) {
   var_values <- paste0(c('', 'state.avg.', 'state.pctile.', 'avg.', 'pctile.'),
                        var_value)
   
-  for (j in seq_along(var_values)) {
-    cur_var <- var_values[j]
-    if ('data.table' %in% class(output_df)) {
-      cur_val <- output_df[, ..cur_var]
-    } else {
-      cur_val <- output_df[, cur_var]
-    }
-    txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
-                  hdr_names[j],'\">',
-                  cur_val,'</td>')
-    
+  cur_vals <- if ('data.table' %in% class(output_df)){
+    sapply(var_values, function(v) output_df[, ..v])
+  }else{
+    sapply(var_values, function(v) output_df[,v])
   }
-  txt <- paste0(txt, '\n','</tr>')
+  
+  
+  txt <- paste0(
+    "<tr>",
+    '\n','<td headers=\"data-indicators-table-',
+    id_col,'\">',
+    var_name,'</td>',
+    paste0('\n','<td headers=\"data-indicators-table-', hdr_names, '\">', cur_vals, '</td>',
+           collapse=""),'\n</tr>')
+  
   return(txt)
 }
+
 ################################################################### #
 
 
@@ -55,34 +58,32 @@ fill_tbl_row <- function(output_df, var_value, var_name) {
 #' @keywords internal
 #'
 fill_tbl_row_ej <- function(output_df, var_value, var_name) {
-  txt <- '<tr>'
+  
   
   id_col <- 'selected-variables'
-  txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
-                id_col,'\">',
-                var_name,'</td>')
+  
   
   hdr_names <- c('value',
                  'percentile-in-state','percentile-in-usa')
   
   var_values <- paste0(c('','state.pctile.','pctile.'), var_value)
   
-  for (j in seq_along(var_values)) {
-    cur_var <- var_values[j]
-    if (!(cur_var) %in% names(output_df)) {
-      warning(paste0(cur_var, ' not found in dataset!'))
-    }
-    if ('data.table' %in% class(output_df)) {
-      cur_val <- output_df[, ..cur_var] #round(output_df[,..cur_var],2)
-    } else {
-      cur_val <- output_df[, cur_var]#round(output_df[,cur_var],2)
-    }
-    txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
-                  hdr_names[j],'\">',
-                  cur_val,'</td>')
-    
+  cur_vals <- if ('data.table' %in% class(output_df)){
+    sapply(var_values, function(v) ifelse(v %in% names(output_df), output_df[,..v], NA))
+  } else{
+    sapply(var_values, function(v) ifelse(v %in% names(output_df), output_df[, v], NA))
   }
-  txt <- paste0(txt, '\n','</tr>')
+  
+  
+  
+  txt <- paste0(
+    "<tr>",
+    '\n','<td headers=\"data-indicators-table-',
+    id_col,'\">',
+    var_name,'</td>',
+    paste0('\n','<td headers=\"data-indicators-table-', hdr_names, '\">', cur_vals, '</td>',
+           collapse=""),'\n</tr>')
+  
   return(txt)
 }
 ################################################################### #
