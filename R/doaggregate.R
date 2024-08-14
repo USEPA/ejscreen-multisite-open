@@ -245,26 +245,24 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
                 original = names_d_subgroups)
   # also see code below that starts with   names_these <-
   
-  if (is.null(countcols)) {
-    
+  if (is.null(countcols)) {    
     countcols <- unique( intersect(map_headernames$rname[calctype(map_headernames$rname) %in%  "sum of counts"], names(blockgroupstats)))
-    
-    # countcols <- unique(c(
-    #   names_d_other_count,
-    #   names_d_count,
-    #   subs_count
-    # ))
-    # if (extra_demog) {
-    #   countcols <-  unique(c(countcols, c(
-    #     names_d_language_count, 
-    #    # names_d_extra_count
-    #     "over17", "under18", 
-    #     "male", "female",
-    #     "ownedunits", "occupiedunits",
-    #     "disab_universe", "disability", 
-    #     "poor"
-    #   )))
-    # }
+
+    countcols <- unique(c(
+      names_d_other_count,
+      names_d_count,
+      subs_count
+
+    ))
+    if  (extra_demog) {
+      countcols <-  c(countcols, c(
+        
+        namesbyvarlist('names_d_language_count', 'rname')$rname, #  see also [varin_map_headernames()] [varinfo()] [names_whichlist_multi_key()]
+        namesbyvarlist('names_d_languageli_count', 'rname')$rname,
+        "over17", "under18",  "male", "female", "ownedunits", "occupiedunits",
+          "disab_universe", "disability", "poor"
+        ))
+    }
   }
   if (is.null(calculatedcols)) {
     # should this be empty and let all be via "wtdmeancols" or "countcols" ? for now.
@@ -1438,17 +1436,26 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     
     ############################### #
     # >>> FIX RATIO CALC FOR THIS SPECIAL CASE: ####
+   
+
+    
+    ############################### #
     
     ratios_to_state_avg_bysite$ratio.to.state.avg.Demog.Index.Supp <- 
       results_bysite$Demog.Index.Supp.State / 
       results_bysite$state.avg.Demog.Index.Supp 
     
-    ratios_to_state_avg_overall$ratio.to.state.avg.Demog.Index <- 
+    ratios_to_state_avg_overall$ratio.to.state.avg.Demog.Index.Supp <- 
+      results_overall$Demog.Index.Supp.State / 
+      results_overall$state.avg.Demog.Index.Supp 
+    
+    ratios_to_state_avg_bysite$ratio.to.state.avg.Demog.Index <-
+      results_bysite$Demog.Index.State /
+      results_bysite$state.avg.Demog.Index
+    
+    ratios_to_state_avg_overall$ratio.to.state.avg.Demog.Index <-
       results_overall$Demog.Index.State /
       results_overall$state.avg.Demog.Index
-    
-    ############################### #
-    
     results_bysite  <- cbind(results_bysite,  ratios_to_avg_bysite,  ratios_to_state_avg_bysite)   # collapse:: has a faster way than cbind here!
     results_overall <- cbind(results_overall, ratios_to_avg_overall, ratios_to_state_avg_overall)
   }
