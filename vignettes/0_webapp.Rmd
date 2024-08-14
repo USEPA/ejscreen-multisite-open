@@ -47,7 +47,7 @@ run_app()
 
 Note this is different than running a simple shiny app that is not also a package via the golem package. You should use the EJAM package function `run_app()` not `shiny::runApp()`.
 
-Note that the web app (e.g., launched locally) handles loading datasets and indexing blocks, assuming you have access to the server that stores those datasets as a pins board, so you would not have to download datasets manually or do indexing manually if launching the EJAM app locally. You can also download the datasets and store them locally. You do need the packages installed that EJAM relies on, as listed in the DESCRIPTION file, including the ones not on CRAN, notably EJAMejscreenapi and EJAMbatch.summarizer.
+Note that the web app (e.g., launched locally) handles loading datasets and indexing blocks, assuming you have access to the server that stores those datasets as a pins board, so you would not have to download datasets manually or do indexing manually if launching the EJAM app locally. You can also download the datasets and store them locally. You do need the packages installed that EJAM relies on, as listed in the DESCRIPTION file.
 
 <!--
 EJAM has a series of high-level functions that an analyst can use in RStudio - EJAM can be installed and then used in RStudio as explained in the articles on Installing the EJAM R package and the Quick Start Guide.

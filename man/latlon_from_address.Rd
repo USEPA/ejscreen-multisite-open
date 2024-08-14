@@ -46,9 +46,8 @@ slow? about 100 per minute?
   # out <- ejamit(x, radius = 3)
   # fname = system.file("testdata/address/street_address_9.xlsx", package="EJAM")
 
-#x1 <- EJAMejscreenapi::read_csv_or_xl(fname)
-#x2 <- latlon_any_format(fname)
-#x3 <- latlon_from_anything(fname)
+#x1 <- read_csv_or_xl(fname)
+#x2 <- latlon_from_anything(fname)
 #names(x1)
 #names(x2)
 

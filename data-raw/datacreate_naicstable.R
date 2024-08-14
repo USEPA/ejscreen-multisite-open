@@ -1,5 +1,4 @@
 ## code to prepare `naicstable` dataset goes here
-# usethis::use_data_raw("naicstable") 
 
 # library(data.table)
 # EJAM::NAICS is where NAICS was
@@ -16,7 +15,9 @@ naicstable[ , n6 := substr(code,1,6)]
 
 # data.table::setcolorder(naicstable, neworder = c(""))
 naicstable <- naicstable[ , .(code, n2, n3, n4, n5, n6, name, num_name)]
-attr(naicstable, "updated") <- "3/2023"
+
+attr(naicstable, "date_saved_in_package") <- as.character(Sys.Date())
+
 usethis::use_data(naicstable, overwrite = TRUE)
 
 

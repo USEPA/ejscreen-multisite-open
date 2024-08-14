@@ -7,9 +7,8 @@
 datawrite_to_local(
   varnames = c("blockwts", "blockpoints", "blockid2fips", "quaddata", "bgej",
     "bgid2fips", "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact"),
-  ext = c(".arrow", ".rda")[1],
-  folder_local_source = "~/../Downloads",
-  fun = c("arrow::write_ipc_file", "save")[1],
+  fnames = paste0(varnames, ".arrow"),
+  localfolder = "~/../Downloads",
   justchecking = F,
   overwrite = FALSE
 )
@@ -17,12 +16,10 @@ datawrite_to_local(
 \arguments{
 \item{varnames}{vector of object names}
 
-\item{ext}{file .extension appropriate to the format, ".rda" or ".arrow"}
+\item{fnames}{optional vector of file names including extension ".rda" or ".arrow", but without path.
+Default is .arrow}
 
-\item{folder_local_source}{path to local folder without slash at end}
-
-\item{fun}{function to use, but as a character string, like "arrow::write_ipc_file"
-but fun is ignored if ext=".rda" since it then just uses save()}
+\item{localfolder}{path to local folder without slash at end}
 
 \item{justchecking}{set this to FALSE to actually save instead of
 just seeing in console info or the commands to be used, to test/check this}
@@ -37,9 +34,10 @@ Utility to write large object(s) like EJAM datasets to local disk for convenienc
 formatted as .arrow or .rda
 }
 \examples{
-  # datawrite_to_local(ext = ".arrow", folder_local_source = ".", justchecking = F, overwrite = T) 
+  x = 1
+  datawrite_to_local("x", localfolder = ".", justchecking = T) 
   
 }
 \seealso{
-\code{\link[=datawrite_to_aws]{datawrite_to_aws()}}  \code{\link[=datawrite_to_local]{datawrite_to_local()}} \code{\link[=dataload_from_local]{dataload_from_local()}} \code{\link[=dataload_from_aws]{dataload_from_aws()}}
+\code{\link[=dataload_from_local]{dataload_from_local()}}
 }

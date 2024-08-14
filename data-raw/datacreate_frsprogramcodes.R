@@ -1,9 +1,5 @@
 ## code to prepare `frsprogramcodes` dataset goes here
 
-# may need to confirm these are still unchanged.
-
-# and may need to update the counts !!!
-
 # Key Media programs ECHO uses to limit queries, and code found in frs dataset for that program:
 #   
 # 1 NPDES (ICIS-NPDES) = NPDES
@@ -18,40 +14,53 @@
 # 10 Emissions Inventory System = EIS
 # 11 Toxic Substances Control Act = TSCA
 
+# Consider adding these:
+# ? AIRS/AFS	Air Facility System	National	 101,085 	0	0	add to short list	air		The Air Facility System (Afs) Contains Compliance And Permit Data For Stationary Sources Of Air Pollution Regulated By The Epa, State, And Local Air Pollution Agencies.
+# ACRES	Assessment, Cleanup And Redevelopment Exchange System	National	 35,541 	0	0	add to short list	land	
+# The Assessment, Cleanup And Redevelopment Exchange System (Acres) Stores Information Reported By Epa Brownfields Grant Recipients On Brownfields Properties Assessed Or Cleaned Up With Grant Funding, As Well As Information On Targeted Brownfields Assessments (Tba) Performed By Epa Regions.
+# BR	Biennial Reporters	National	 5,776 	1	0	add to short list	tsdf/rcra		All Generators And Treatment, Storage, And Disposal (Tsd) Facilities Who Handle Hazardous Waste Are Required To Report To The Epa Administrator At Least Once Every Two Years. The Data Collected Is Used To Create The National Biennial Resource Conservation And Recovery Act (Rcra) Hazardous Waste Report. This Data Is Processed Within The Rcra Information (Rcrainfo) Database
+
 frsprogramcodes <- data.frame(
   description = c(
-    "National Pollutant Discharge Elimination System (NPDES) (ICIS-NPDES)",
-    "The Integrated Compliance Information System (ICIS) for Air (ICIS-Air)",
-    "The Resource Conservation and Recovery Act (RCRA) Information System",
+    "National Pollutant Discharge Elimination System (ICIS-NPDES)",
+    "Integrated Compliance Information System for Air (ICIS-Air)",
+    "Resource Conservation and Recovery Act (RCRA) Information System",
     "Risk Management Plan (RMP) facilities",
     "The Safe Drinking Water Information System (SDWIS)",
     "The Superfund Enterprise Management System",
     "Clean Air Markets Division Business System",
-   "Toxics Release Inventory Program",
+   "Toxics Release Inventory Program (TRI)",
    "Greenhouse Gas Reporting Program",
-   "Emissions Inventory System",
-   "Toxic Substances Control Act"
+   "Emissions Inventory System (EIS)",
+   "Toxic Substances Control Act (TSCA)",
+   
+   "Assessment, Cleanup and Redevelopment Exchange System (ACRES) for Brownfields",
+   "Biennial Reporters (BR) Hazardous Waste Treatment, Storage, Disposal Facilities"
   ),
   code = c(
-    "NPDES", "AIR", "RCRAINFO", "RMP", "SFDW", "SEMS", "CAMDBS", "TRIS", "E-GGRT", "EIS", "TSCA"
+    "NPDES", "AIR", "RCRAINFO", "RMP", "SFDW", "SEMS", "CAMDBS", "TRIS", "E-GGRT", "EIS", "TSCA", 
+    "ACRES", "BR"
   )
 )
 
-
+frsprogramcodes <- metadata_add(frsprogramcodes) # here? or it might have obsolete metadata?
 
 usethis::use_data(frsprogramcodes, overwrite = TRUE)
 
 
-# frs_by_programid[program %in% frsprogramcodes$code, .N, by=program]
-#     program      N
-# 1:     TRIS  32500
-# 2:      AIR 134190
-# 3:     SFDW  44844
-# 4:      EIS 121468
-# 5:   E-GGRT   6388
-# 6:   CAMDBS    748
-# 7:     TSCA  12755
-# 8: RCRAINFO 518360
-# 9:     SEMS  11044
-# 10:    NPDES 382353
+#  setorder(frs_by_programid[program %in% frsprogramcodes$code, .N, by=program], -N)[]
 
+#      program      N
+#       <char>  <int>
+#  1: RCRAINFO 517725
+#  2:    NPDES 394581
+#  3:      AIR 134115
+#  4:      EIS 119792
+#  5:     SFDW  43309
+#  6:    ACRES  35541
+#  7:     TRIS  33178
+#  8:     TSCA  12619
+#  9:     SEMS  10986
+# 10:   E-GGRT   6257
+# 11:       BR   5776
+# 12:   CAMDBS    724

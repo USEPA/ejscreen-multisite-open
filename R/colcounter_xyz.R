@@ -28,7 +28,7 @@
 #' cbind(at80=tablefixed(x80, NCOL(pdata)), at95=tablefixed(x95, NCOL(pdata)))
 #'   }
 #'
-#' @keywords internal
+#' @export
 #'
 colcounter <- function(x, threshold, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE) {
   # Function to count SCORES ABOVE BENCHMARK(S) at each place, returns list as long as NROW(x).

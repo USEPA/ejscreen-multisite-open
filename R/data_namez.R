@@ -1,5 +1,8 @@
 #' @name namez
 #' @docType data
 #' @title namez (DATA) list of lists of indicator names (complete list in 1 object)
-#' @seealso [varinfo()]  EJAMejscreenapi dataset called map_headernames [names_d] [names_e]
+#' @details
+#' Not yet implemented/used in EJAM as of 7/2024
+#' 
+#' @seealso [varinfo()]  [map_headernames] [names_d] [names_e]
 NULL

@@ -189,34 +189,4 @@ plot_distance_by_pctd <- function(s2b = NULL, sitenum = 1, #  NULL,
            "blue", "blue"
     ))
   return(s2b)
-  
-  
-  ################################################################################################################ #
-  
-  ## if writing more flexible general code, see doaggregate etc. for using 3 kinds of calculated variables.
-  ## Specify Which vars are SUM OF COUNTS, vs WTD AVG, vs via FORMULA (usually ratio of sums of counts) ####
-  ## That info is sort of stored already in map_headernames$calculation_type
-  ##
-  # calctype <- function(varnames) {
-  #   map_headernames$calculation_type[match(varnames, map_headernames$rname)]
-  # }
-  #
-  # thesevars <- c(names_d_other_count, names_d_count, names_d_subgroups_count, names_d)
-  #
-  # countcols      <- thesevars[calctype(thesevars) == "sum of counts"  ]
-  # popmeancols    <- thesevars[calctype(thesevars) == "popwtd mean"    ]
-  # calculatedcols <- thesevars[calctype(thesevars) == "percent formula"]
-  #
-  # countcols_inbgstat       <- intersect(countcols,      names(blockgroupstats))
-  # popmeancols_inbgstats    <- intersect(popmeancols,    names(blockgroupstats))
-  # calculatedcols_inbgstats <- intersect(calculatedcols, names(blockgroupstats))
-  
-  
-  # countvarname <- c(names_d_subgroups_count) #  "hisp"         "nhba"         "nhaa"         "nhaiana"      "nhnhpia"      "nhotheralone" "nhmulti"      "nhwa"
-  ### or for percentages that do not always use pop as denominator, etc:
-  # countvarname <- c(names_d_count, names_d_other_count)
-  # [1] "lowinc"         "lingiso"        "unemployed"     "lths"           "under5"         "over64"         "mins"           "pop"            "nonmins"        "povknownratio"  "age25up"
-  # [12] "hhlds"          "unemployedbase" "pre1960"        "builtunits"
-  ###### #
-  
 }

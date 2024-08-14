@@ -5,16 +5,9 @@
 # - points dataset objects (like testpoints_10 saved as and installed from source file "EJAM/data/testpoints_10.rda")
 # - other dataset objects (like testoutput_ejamit_1000pts_1miles)
 # - documentation files for all those (like source file saved as "EJAM/R/data_testpoints_10.R", readable via ?testpoints_10 in RStudio)
-
-# library(EJAM)
-
-metadatanow = list(ejscreen_version = "2.2", acs_version = "2017-2021", 
-                   census_version = 2020, 
-                   date_saved_in_package = as.character(Sys.Date()))
-
-## which gets used below like this for example:
-# x <- EJAM:::metadata_add(x, metadata = metadatanow)
-
+if (!exists("metadata_add")) {
+  metadata_add = EJAM:::metadata_add 
+}
 ######################################################## ######################################################### #
 
 ## See the test datasets and the sample files installed with each package:
@@ -141,7 +134,7 @@ if (needconus5) {
   rm(CONUS5)
   ## save as DATASET ###   #
   text_to_do <- paste0(
-    "", "testpoints_conus5", " = EJAM:::metadata_add(", "testpoints_conus5", ", metadata = metadatanow)"
+    "", "testpoints_conus5", " = metadata_add(", "testpoints_conus5", ", metadata = metadatanow)"
     # "attr(testpoints_conus5, 'date_saved_in_package') <- as.character( Sys.Date())"
   )
   eval(parse(text = text_to_do))
@@ -199,8 +192,8 @@ for (n in nvalues) {
     if (n == 100) {
       testpoints_100_dt <- data.table(testpoints_100)
       if (resaving_testpoints_rda) {
-        # attr(testpoints_100_dt, "date_saved_in_package") <- as.character( Sys.Date())
-        testpoints_100_dt = EJAM:::metadata_add(testpoints_100_dt, metadata = metadatanow)
+        # attr(testpoints_100_dt, "date_saved_in_package") <- Sys.Date()
+        testpoints_100_dt = metadata_add(testpoints_100_dt)
         usethis::use_data(testpoints_100_dt , overwrite = TRUE)
       }
     }
@@ -209,9 +202,9 @@ for (n in nvalues) {
   ## save as DATASET ####
   if (resaving_testpoints_rda) {
     text_to_do <- paste0(
-      "", testpoints_name, " = EJAM:::metadata_add(", testpoints_name, ", metadata = metadatanow)"
-      # "attr(",  testpoints_name  ,", 'date_saved_in_package') <- as.character( Sys.Date())"
-    )
+      "", testpoints_name, " = metadata_add(", testpoints_name, ")"
+      # "attr(",  testpoints_name  ,", 'date_saved_in_package') <- Sys.Date()"
+      )
     eval(parse(text = text_to_do))  
     
     text_to_do <- paste0("usethis::use_data(", testpoints_name, ", overwrite=TRUE)")
@@ -232,6 +225,7 @@ NULL
       writeChar(gsub("testpoints_100", "testpoints_100_dt", filecontents), con = paste0("./R/data_", "testpoints_100_dt", ".R"))
     }
   }
+
   ## save as EXCEL  ####
   if (resaving_testpoints_excel) {
     # testpoints_data$EJScreenMap = url_ejscreenmap(lat = testpoints_data$lat, lon = testpoints_data$lon, as_html = FALSE) # NOT CLICKABLE IN EXCEL THIS WAY BUT OK
@@ -269,16 +263,16 @@ NULL
         ## save as DATA ####
         #
         text_to_do <- paste0(
-          "", out_varname_getblocks, " = EJAM:::metadata_add(", out_varname_getblocks, ", metadata = metadatanow)"
-          # "attr(",  out_varname_getblocks  ,", 'date_saved_in_package') <- as.character( Sys.Date())"
+          "", out_varname_getblocks, " = metadata_add(", out_varname_getblocks, ")"
+          # "attr(",  out_varname_getblocks  ,", 'date_saved_in_package') <- Sys.Date()"
         )
         eval(parse(text = text_to_do))  
         text_to_do = paste0("usethis::use_data(", out_varname_getblocks, ", overwrite=TRUE)")
         eval(parse(text = text_to_do))                                             ############# #
         
         text_to_do <- paste0(
-          "", out_varname_getblocks_alias, " = EJAM:::metadata_add(", out_varname_getblocks_alias, ", metadata = metadatanow)"
-          # "attr(",  out_varname_getblocks_alias  ,", 'date_saved_in_package') <- as.character( Sys.Date())"
+          "", out_varname_getblocks_alias, " = metadata_add(", out_varname_getblocks_alias, ")"
+          # "attr(",  out_varname_getblocks_alias  ,", 'date_saved_in_package') <- Sys.Date()"
         )
         eval(parse(text = text_to_do))  
         text_to_do = paste0("usethis::use_data(", out_varname_getblocks_alias, ", overwrite=TRUE)")
@@ -346,8 +340,8 @@ NULL
     ## save as DATASET ####
     if (resaving_doaggregate_rda) {
       text_to_do <- paste0(
-        "", out_varname_doagg, " = EJAM:::metadata_add(", out_varname_doagg, ", metadata = metadatanow)"
-        # "attr(",  out_varname_doagg  ,", 'date_saved_in_package') <- as.character( Sys.Date())"
+        "", out_varname_doagg, " = metadata_add(", out_varname_doagg, ")"
+        # "attr(",  out_varname_doagg  ,", 'date_saved_in_package') <- Sys.Date()"
       )
       eval(parse(text = text_to_do))  
       text_to_do = paste0("usethis::use_data(", out_varname_doagg, ", overwrite=TRUE)")
@@ -426,8 +420,8 @@ NULL
     if (resaving_ejamit_rda) {
       ## save as DATA IN PACKAGE ####
       text_to_do <- paste0(
-        "", out_varname_ejamit, " = EJAM:::metadata_add(", out_varname_ejamit, ", metadata = metadatanow)"
-        # "attr(",  out_varname_ejamit  ,", 'date_saved_in_package') <- as.character( Sys.Date())"
+        "", out_varname_ejamit, " = metadata_add(", out_varname_ejamit, ")"
+        # "attr(",  out_varname_ejamit  ,", 'date_saved_in_package') <- Sys.Date()"
       )
       eval(parse(text = text_to_do))  
       text_to_do = paste0("usethis::use_data(", out_varname_ejamit, ", overwrite=TRUE)")
@@ -476,13 +470,13 @@ if (redoing_ejscreenit_10_for_ejam_to_have) {
   # using the API that EJScreen provides, for comparison, to have available as data saved in EJAM pkg:
   testpoints_name <- "testpoints_10"
   myrad = 1
-  testoutput_ejscreenit_10pts_1miles <- EJAMejscreenapi::ejscreenit(testpoints_10, radius = 1, calculate_ratios = TRUE,
+  testoutput_ejscreenit_10pts_1miles <- ejscreenit(testpoints_10, radius = 1, calculate_ratios = TRUE,
                                                                     nosave = TRUE, nosee = TRUE,
                                                                     interactiveprompt = FALSE)
   
   text_to_do <- paste0(
-    "", "testoutput_ejscreenit_10pts_1miles", " = EJAM:::metadata_add(", "testoutput_ejscreenit_10pts_1miles", ", metadata = metadatanow)"
-    # "attr(testoutput_ejscreenit_10pts_1miles, 'date_saved_in_package') <- as.character( Sys.Date())"
+    "", "testoutput_ejscreenit_10pts_1miles", " = metadata_add(", "testoutput_ejscreenit_10pts_1miles", ")"
+    # "attr(testoutput_ejscreenit_10pts_1miles, 'date_saved_in_package') <- Sys.Date()"
   )
   eval(parse(text = text_to_do))  
   usethis::use_data(testoutput_ejscreenit_10pts_1miles, overwrite = TRUE)
@@ -495,7 +489,7 @@ if (redoing_ejscreenit_10_for_ejam_to_have) {
 #' @title test output of ejscreenit(), using the EJScreen API
 #' @details This is the output of
 #'
-#'  EJAMejscreenapi::ejscreenit(
+#'  ejscreenit(
 #'
 #'    testpoints_10, radius = 1,
 #'

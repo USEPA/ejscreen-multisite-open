@@ -11,7 +11,8 @@ fixcolnames_infer(
     c("street", "street address", "address1", "address 1"), city = c("city", "cityname",
     "city name"), state = c("state", "mystate", "statename", "ST"), zip = c("zip",
     "zipcode", "zip code")),
-  ignore.case = TRUE
+  ignore.case = TRUE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -21,6 +22,10 @@ fixcolnames_infer(
 names are standard colnames like "street"
 and each named element in list is a vector of aliases
 for that standard name}
+
+\item{ignore.case}{whether to ignore case in matching to aliases}
+
+\item{verbose}{set to TRUE for testing/ to check what this function does}
 }
 \value{
 vector like currentnames but some renamed to a

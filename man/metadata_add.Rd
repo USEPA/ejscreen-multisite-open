@@ -2,40 +2,33 @@
 % Please edit documentation in R/utils_metadata_add.R
 \name{metadata_add}
 \alias{metadata_add}
-\title{helper function for package to set attributes of a dataset}
+\title{helper function for package to set metadata attributes of a dataset}
 \usage{
-metadata_add(x, metadata)
+metadata_add(x)
 }
 \arguments{
-\item{x}{dataset (or any object) whose metadata you want to update or create}
-
-\item{metadata}{must be a named list, so that the function can do this for each i:
-\code{attr(x, which=names(metadata)[i]) <- metadata[[i]]}}
+\item{x}{dataset (or any object) whose metadata (stored as attributes) you want to update or create
+EJAM, EJScreen, and other dataset versions and release dates are tracked in DESCRIPTION}
 }
 \value{
 returns x but with new or altered attributes
 }
 \description{
-This can be used annually to update some datasets in a package.
+Together with the metadata_mapping script, this can be used
+annually to update the metadata for datasets in a package.
 It just makes it easier to set a few metadata attributes similarly
 for a number of data elements, for example,
 to add new or update existing attributes.
 }
+\details{
+This utility would be used in scripts in EJAM/data-raw/ to
+add metadata to objects like x before use_data(x, overwrite=T)
+}
 \examples{
+  metadata_check()
   x <- data.frame(a=1:10,b=1001:1010)
-  metadata <- list(
-  ejscreen_version =  '2.2',
-  acs_version =          '2017-2021',
-  census_version = 2020,
-  ejscreen_releasedate = '2023-06-23',
-  acs_releasedate =      '2022-12-08',
-  ejscreen_pkg_data = NA
-  )
-  x <- metadata_add(x, metadata)
+  x <- metadata_add(x)
   attributes(x)
-  x <- metadata_add(x, list(status='final'))
-  attr(x,'status')
-  
 
 }
 \seealso{

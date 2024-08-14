@@ -1,3 +1,20 @@
+
+# Functions here 
+
+# setdiff_yx
+# setdiff2
+# unshared
+#
+# dupeRfiles
+# dupenames
+# all_equal_functions
+# functions_that_use()
+# functions_in_pkg
+# dependencies_of_ejam
+
+##################################################################### #
+
+
 #' UTILITY - see what is in y not x
 #' 
 #' utility just like setdiff except for y,x instead of x,y
@@ -6,7 +23,7 @@
 #' 
 setdiff_yx = function(x,y) setdiff(y,x)
 ##################################################################### #
-
+# setdiff() extensions ####
 
 #' UTILITY - see what is only in x or y but not both - just like setdiff except for y,x and also x,y
 #' 
@@ -27,18 +44,22 @@ setdiff2 <- function(x,y) {setdiff(union(x,y),intersect(x,y))}
 #' 
 unshared <- function(x,y) {setdiff(union(x,y),intersect(x,y))}
 ##################################################################### #
-
+# conflicting sourcefile names ####
 
 #' UTILITY - check conflicting sourcefile names
 #' 
 #' @description See what same-named .R files are in 2 sourcecode folders
-#' @details useful for shiny app that is not a package, 
-#'   as ejamlite and EJAMejscreenapi had copies of some EJAM files.
+#' @details 
+#'   See [dupeRfiles()] for files supporting a shiny app that is not a package, e.g.
 #'   
-#'   See [dupenames()] for when they are all packages.
+#'   See [dupenames()] for objects that are in R packages.
+#'   
+#'   See [functions_in_pkg()]
+#'   
+#'   See [datapack()]
+#'   
 #' @param folder1 path to other folder with R source files
 #' @param folder2 path to a folder with R source files, defaults to "./R"
-#' 
 #' @keywords internal
 #' 
 dupeRfiles <- function(folder1 = '../EJAM/R', folder2 = './R') {
@@ -66,20 +87,28 @@ dupeRfiles <- function(folder1 = '../EJAM/R', folder2 = './R') {
   return(out)
 }
 ##################################################################### #
-
+# conflicting exported functions or data ####
 
 #' UTILITY - check conflicting exported function or data names
 #' 
 #' @description See what same-named objects (functions or data) are exported by some (installed) packages
 #' @details utility to find same-named exported objects (functions or datasets) within source code 
 #'   of 2+ packages, and see what is on search path, for dev renaming / moving functions/ packages
+#'   
+#'   See [dupeRfiles()] for files supporting a shiny app that is not a package, e.g.
+#'   
+#'   See [dupenames()] for objects that are in R packages.
+#'   
+#'   See [functions_in_pkg()]
+#'   
+#'   See [datapack()]
+#'   
 #' @param pkg one or more package names as vector of strings. 
 #'   If "all" it checks all installed pkgs, but takes very very long potentially.
 #' @param sortbypkg If TRUE, just returns same thing but sorted by package name
 #' @param compare.functions If TRUE, sends to console inf about whether body and formals
 #'   of the functions are identical between functions of same name from different packages.
 #'   Only checks the first 2 copies, not any additional ones (where 3+ pkgs use same name)
-#' @seealso [all_equal_functions()]
 #' @return data.frame with columns Package, Object name (or NA if no dupes)
 #' 
 #' @keywords internal
@@ -161,14 +190,14 @@ dupenames <- function(pkg = EJAM::ejampackages, sortbypkg=FALSE, compare.functio
   return(ddd)
 }
 ##################################################################### #
-
+## (used by dupenames ####
 
 #' UTILITY - check different versions of function with same name in 2 packages
 #' 
 #' used by dupenames() to check different versions of function with same name in 2 packages
 #' @param fun quoted name of function, like "latlon_infer"
 #' @param package1 quoted name of package, like "EJAM"
-#' @param package2 quoted name of package, like "EJAMejscreenapi"
+#' @param package2 quoted name of other package, like "EJAMejscreenapi"
 #'
 #' @return TRUE or FALSE
 #' @seealso [dupenames()] [all.equal.function()]
@@ -193,7 +222,7 @@ all_equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   ### or 
   # dupenames(c("proxistat", "EJAMejscreenapi"), compare.functions = T)
   # Error in all_equal_functions(fun = var, package1 = ddd$package[ddd$variable ==  : 
-  #                                                                  get.distances.all not found in proxistat
+  #                                                                   distances.all not found in proxistat
   #                                                                Called from: all_equal_functions(fun = var, package1 = ddd$package[ddd$variable == 
   
   if (!(is.character(fun) & is.character(package1) & is.character(package2))) {
@@ -229,4 +258,269 @@ all_equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   x <- (TRUE == all.equal(body(f1), body(f2))) & (TRUE == all.equal(formals(f1), formals(f2)))
   return(x)
 }
+##################################################################################### #
+# find text in functions or source files ####
+
+#' utility for developing package - searches for text in each function exported by pkg (or each .R source file in pkg/R)
+#' 
+#' @details Searches the body and parameter defaults of exported functions.  
+#' @param text something like "EJAM::" or "stop\\(" or "library\\(" or "***"
+#' @param pkg name of package or path to source package root folder - this 
+#'   
+#'   checks only the exported functions of an installed package, 
+#'   if pkg = some installed package as character string like "EJAM"
+#'   
+#'   checks each .R source FILE NOT each actual function, 
+#'   if pkg = root folder of source package with subfolder called R with .R source files
+#'   
+#' @param ignore_comments logical, 
+#'   ignore_comments is ignored and treated as if it were TRUE when pkg = some installed package
+#'   
+#'   ignore_comments is used only if pkg = a folder that contains .R files
+#'   
+#'    Note it will fail to ignore comments in .R files that are at the end of the line of actual code like  print(1) # that prints 1
+#'
+#' @return vector of names of functions or paths to .R files
+#' 
+#' @keywords internal
+#' 
+functions_that_use <- function(text = "stop\\(", pkg = "EJAM", ignore_comments = TRUE) {
+  
+  
+  if (grepl("\\(", text) & !grepl("\\\\\\(", text)) {warning('to look for uses of stop(), for example, use two slashes before the open parens, etc. as when using grepl()')}
+  
+  stops <- NULL
+  if (inherits(try(find.package(pkg), silent = TRUE), "try-error")) {
+    # not an installed pkg. 
+    if (dir.exists(file.path(pkg, "R"))) {
+      # it should be a folder that is root of source package with subfolder called R with .R files so search in those
+      
+      for (this in list.files(file.path(pkg, 'R'), pattern = '.R', full.names = TRUE)) {
+        text_lines_of_function_body <- readLines(this)
+        # each row is an element of the vector here
+        if (ignore_comments) {
+          dropcommentedlines <- function(mytext) {gsub("^[ ]*#.*$", "", mytext)} # presumes each line is an element of mytext vector
+          text_lines_of_function_body <- dropcommentedlines(text_lines_of_function_body)
+        }
+        text_of_function_body <- paste0(text_lines_of_function_body, collapse = '\n')
+        if (grepl(text, text_of_function_body)) {
+          stops <- c(stops, this)}
+      }
+      
+    } else {
+      if (shiny::isRunning()) {
+        warning('pkg must be the name of an installed package or a path to root of source package with R subfolder that has .R files')
+        return(NULL)
+      } else {
+        stop('pkg must be the name of an installed package or a path to root of source package with R subfolder that has .R files')
+      }
+    }
+  } else {
+    # it is an installed package
+    if (ignore_comments == FALSE) {warning('always ignores commented lines when checking exported functions of an installed package')}
+    for (this in getNamespaceExports(pkg)) {
+      
+      text_lines_of_function_body <- as.character(functionBody(get(this)))
+      # or is that the same as just  as.character(body(this))  ??
+      # each row is an element of the vector now
+      
+      # also check the function parameter default values
+      text_lines_of_function_body <- c(text_lines_of_function_body, paste0(formals(this), collapse = " "))
+      
+      if (ignore_comments) {
+        dropcommentedlines <- function(mytext) {gsub("^[ ]*#.*$", "", mytext)} # presumes each line is an element of mytext vector
+        # however that will fail to ignore comments that are at the end of the line of actual code like  print(1) # that prints 1
+        text_lines_of_function_body <- dropcommentedlines(text_lines_of_function_body)
+      }
+      text_of_function_body <- paste0(text_lines_of_function_body, collapse = '\n')
+      if (grepl(text, text_of_function_body)) {
+        stops <- c(stops, this)}
+    }
+  }
+  return(sort(stops))
+}
 ##################################################################### #
+# see pkg data + functions, exported & internal ####
+
+#' utility to see which objects in a loaded/attached package are exported functions, internal (unexported) objects, or datasets
+#' @details
+#'   See [dupeRfiles()] for files supporting a shiny app that is not a package, e.g.
+#'   
+#'   See [dupenames()] for objects that are in R packages.
+#'   
+#'   See [functions_in_pkg()]
+#'   
+#'   See [datapack()]
+#'   
+#' @param pkg name of package as character like "EJAM"
+#' @param alphasort_table default is FALSE, to show internal first as a group, then exported funcs, then datasets
+#' @param internal_included default TRUE includes internal (unexported) objects in the list
+#' @param exportedfuncs_included default TRUE includes exported functions (non-datasets, actually) in the list
+#' @param data_included default TRUE includes datasets in the list, as would be seen via data(package=pkg)
+#' @param vectoronly set to TRUE to just get a character vector of object names instead of the data.frame table output
+#' @seealso [ls()] [getNamespace()] [getNamespaceExports()] [loadedNamespaces()]
+#' 
+#' @return data.table with colnames object, exported, data  where exported and data are 1 or 0 for T/F,
+#'   unless vectoronly = TRUE in which case it returns a character vector
+#' @examples  functions_in_pkg("datasets") # functions_in_pkg("EJAMejscreenapi")
+#' 
+#' @keywords internal
+#'
+functions_in_pkg <- function(pkg, alphasort_table=FALSE, internal_included=TRUE, exportedfuncs_included=TRUE, data_included=TRUE, vectoronly=FALSE) {
+  
+  # helper functions inside this function ####
+  
+  dataonly <- function(pkg) {EJAM:::datapack(pkg = pkg, simple = TRUE)$Item}
+  
+  exported_plus_internal_withdata <- function(pkg) {sort(union(dataonly(pkg), ls(getNamespace(pkg), all.names = TRUE)))} # all.names filters those starting with "."
+  exported_only_withdata          <- function(pkg) {ls(paste0("package:", pkg))} 
+  # same as ls(envir = as.environment(x = paste0("package:", pkg)))
+  # same as  getNamespaceExports() except sorted 
+  
+  exported_plus_internal_nodata <- function(pkg) {sort(setdiff(
+    exported_plus_internal_withdata(pkg = pkg), 
+    dataonly(pkg = pkg)))}
+  exported_only_nodata <- function(pkg) {sort(setdiff(
+    exported_only_withdata(pkg = pkg), 
+    dataonly(pkg = pkg)))}
+  
+  internal_only_withdata <- function(pkg) {sort(setdiff(
+    exported_plus_internal_withdata(pkg = pkg), 
+    exported_only_nodata(pkg = pkg)))}
+  internal_only_nodata <- function(pkg) {sort(setdiff(
+    internal_only_withdata(pkg = pkg), 
+    dataonly(pkg = pkg)))}
+  
+  # # double-checks
+  # 
+  # setequal(      exported_plus_internal_withdata("EJAMejscreenapi"), 
+  #          union(exported_plus_internal_nodata(  "EJAMejscreenapi"), dataonly("EJAMejscreenapi")))
+  # 
+  # setequal(      exported_only_withdata(         "EJAMejscreenapi"), 
+  #          union(exported_only_nodata(           "EJAMejscreenapi"), dataonly("EJAMejscreenapi")))
+  # 
+  # setequal(      internal_only_withdata(         "EJAMejscreenapi"), 
+  #          union(internal_only_nodata(           "EJAMejscreenapi"), dataonly("EJAMejscreenapi")))
+  
+  # table format output 
+  
+  omni <- exported_plus_internal_withdata(pkg)
+  y <- data.frame(
+    object = omni,
+    exported = ifelse(omni %in% exported_only_withdata(pkg), 1, 0),
+    data = ifelse(omni %in% dataonly(pkg), 1, 0)
+  )
+  if (!data_included) {
+    y <- y[y$data == 0, ]
+  }
+  if (!internal_included) {
+    y <- y[!(y$exported == 0), ]
+  }
+  if (!exportedfuncs_included) {
+    y <- y[!(y$exported == 1 & y$data == 0), ]
+  }
+  
+  if (!vectoronly) {
+    if (alphasort_table) {
+      # already done by default
+    } else {
+      y <- y[order(y$exported, y$data, y$object), ]
+    }
+    return(y)
+  }
+  
+  # vector format output  
+  
+  if (vectoronly) {
+    # cat('\n\n')
+    # cat(pkg)
+    # cat('\n\n')
+    # print(y)
+    # cat('\n\n')
+    
+    return(y$object) 
+    
+    ################# #
+    # if (internal_included & data_included) {
+    #   x <- exported_plus_internal_withdata(pkg)
+    # }
+    # if (internal_included & !data_included) {
+    #   x <- exported_plus_internal_nodata(pkg)
+    # }
+    # if (!internal_included & data_included) {
+    #   x <- exported_only_withdata(pkg)
+    # }
+    # if (!internal_included & !data_included) {
+    #   x <- exported_only_nodata(pkg)
+    # }
+    #   return(x)
+    ################# #
+    
+  }
+}
+################# #    ################# #    ################# #    ################# #    ################# #
+
+
+# recursive dependencies of a package ####
+
+#' utility for developing package - recursive dependencies of a package
+#' Reminder of ways to check this is printed to console.
+#' @param localpkg "EJAM"
+#' @param depth see deepdep package function deepdep() 
+#' @param ignores_grep see deepdep package function deepdep() 
+#' @return NULL
+#' 
+#' @keywords internal
+#' 
+dependencies_of_ejam <- function(localpkg = "EJAM", depth = 6, ignores_grep = "0912873410239478") {
+  
+  cat(" 
+      sort(packrat:::recursivePackageDependencies('EJAM', lib.loc = .libPaths(), ignores = NULL))
+      would do something similar.
+      \n")  
+  
+  cat("
+      dependencies_of_ejam(ignores_grep = 'EJAM' )
+      would ignore other EJAM-prefixed package names.
+      \n")
+  cat("
+  If you have the deepdep package installed (not loaded by EJAM), try this: 
+  sort(
+    unique( 
+      grep(
+        ignores_grep, 
+        deepdep::deepdep(
+          localpkg, 
+          local = TRUE, 
+          downloads = FALSE, 
+          depth = depth
+        )$name, 
+        value = TRUE, 
+        invert = TRUE)
+    )
+  )  
+  
+      ")
+  
+  # report all dependencies and downstream ones etc.
+  # 
+  # x <- dependencies_of_ejam()
+  # y <- sort(packrat:::recursivePackageDependencies('EJAM', lib.loc = .libPaths(), ignores = NULL))
+  # setdiff(y, x)
+  # ## [1] "snow"
+  # 
+  #          OBSOLETE NOW THAT EJAM NO LONGER REQUIRES EJAMejscreenapi OR EJAMbatch.summarizer
+  
+  # only_due_to_EJAMejscreenapi      = setdiff(
+  #   dependencies_of_ejam("EJAMejscreenapi"), 
+  #   dependencies_of_ejam("EJAM", ignores_grep = "EJAMejscreenapi"))
+  # only_due_to_EJAMbatch.summarizer = setdiff(
+  #   dependencies_of_ejam("EJAMbatch.summarizer"), 
+  #   dependencies_of_ejam("EJAM", ignores_grep = "EJAMbatch.summarizer"))
+  # length(only_due_to_EJAMejscreenapi)
+  # length(only_due_to_EJAMbatch.summarizer)
+  
+  return(NULL)
+}
+##################################################################################### #
+

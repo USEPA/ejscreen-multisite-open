@@ -12,8 +12,8 @@
 #' @param plot_distance_by_group logical, whether to try to add a plot of mean distance by group. 
 #'   This requires that bybg be provided as a parameter input to this function. 
 #' @param summary_plot optional plot object passed from EJAM shiny app to save in 'Plot' sheet of Excel table
-#' @param community_image
-#' @param community_reportadd
+#' @param community_image html object of community report passed from EJAM shiny app. Defaults to NULL.
+#' @param community_reportadd optional logical. If TRUE, adds a tab with an image of the full community report.
 #' @param summary_plot optional plot object passed from EJAM shiny app to save in 'Plot' sheet of Excel table
 #' @param plotlatest optional logical. If TRUE, the most recently displayed plot (prior to this function being called) will be inserted into a tab called plot2
 #' @param plotfilename the full path including name of .png file to insert
@@ -329,6 +329,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       z <- mapfast(eachsite, radius = radius_or_buffer_in_miles, column_names = 'ej')
       htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
     }
+    Sys.setenv(OPENSSL_CONF="/dev/null")
     webshot::webshot(mypath, file = file.path(mytempdir, "map1.png"), cliprect = "viewport")
     if (testing) cat(file.path(mytempdir, "map1.png"), '\n')
     openxlsx::insertImage(wb, sheet = 'map', file = file.path(mytempdir, 'map1.png'),
@@ -743,9 +744,10 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     # How many decimals (or ideally significant digits but not possible here) to report?  This could be done via rounding values before put in excel,
     #  OR probably better, sending exact values to Excel but using Excel formatting to display them correctly.
     # 
-    # sigfigs_table <-  map_headernames[ "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsbgname",	"csvname2.2")]
-    digitstable <- map_headernames[ "" != (map_headernames$decimals) | "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsbgname",	"csvname2.2")]
-    decimals_cols <- names(eachsite)[names(eachsite) %in% digitstable$rname[digitstable$decimals != "" & !is.na(digitstable$decimals)]]
+
+    # sigfigs_table <-  map_headernames[ "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsname",	"csvname")]
+    digitstable <- map_headernames[ "" != (map_headernames$decimals) | "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsname",	"csvname", "apiname")]
+    decimals_cols <- names(eachsite)[names(eachsite) %in% digitstable$rname[digitstable$decimals != ""]]
     decimals_colnum <- match(decimals_cols, names(eachsite)) # and overall has same exact names and sort order of names
     decimals_tosee <- digitstable$decimals[match(decimals_cols, digitstable$rname)]
     dec2format <- function(decimalscount) ifelse(decimalscount == 0, "#,###,###", paste0("#,###,##0.", paste0(rep("0", decimalscount), collapse = '')))

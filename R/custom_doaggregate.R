@@ -1,4 +1,8 @@
 
+
+# see notes about weighted means below
+
+
 ############################################### # 
 
 
@@ -45,6 +49,37 @@ calc_bgwts_overall <- function(sites2blocks) {
 }
 ############################################### # 
 
+#' utility - what type of formula is used to aggregate this variable?
+#'
+#' @param varnames vector like names_d
+#'
+#' @return vector same length as varnames, like c("sum of counts", "wtdmean")
+#' @examples calctype(names_these)
+#' 
+#' @export
+#' @keywords internal
+#'
+calctype <- function(varnames) {
+  varinfo(varnames, "calculation_type")[, "calculation_type"]
+  # map_headernames$calculation_type[match(varnames, map_headernames$rname)]
+}
+############################################### # 
+
+#' utility - what variable is the weight used to aggregate this variable as a weighted mean?
+#'
+#' @param varnames vector like names_d
+#'
+#' @return vector same length as varnames, like c("pop", "povknownratio", "hhlds")
+#' @examples calcweight(names_these)
+#' 
+#' @export
+#' @keywords internal
+#' 
+calcweight <- function(varnames) {
+  varinfo(varnames, "denominator")[, "denominator"]
+  # map_headernames$denominator[match(varnames, map_headernames$rname)]
+}
+############################################### # 
 
 # custom_doaggregate_from_sites2blocks
 
@@ -179,8 +214,51 @@ custom_doaggregate <- function(sites2blocks,
   
   #################### #
   ## wtd means
- 
+ ####   see drafted  calc_wtdmeans()
   # wtcols -- easier to just assume it is pop, but will need other denominators 
+  
+  ################################################################################################################ #
+  
+  #  NOTES ABOUT CALCULATION TYPE ESPEC FOR WEIGHTED MEANS
+  #
+  #
+  # see pdf documenting denominator (weights) for each indicator aggregated via weighted average.
+  
+  ## if writing more flexible general code, see doaggregate etc. for using 3 kinds of calculated variables.
+  ## Specify Which vars are SUM OF COUNTS, vs WTD AVG, vs via FORMULA (usually ratio of sums of counts) ####
+  ## That info is sort of stored already in map_headernames
+  ## BUT redundant...
+  # map_headernames$calculation_type  e.g., "wtdmean"
+  # map_headernames$is.wtdmean  - TRUE/FALSE
+  # map_headernames$denominator - e.g., "pop" or "hhlds" etc.
+  
+    # map_headernames$is.wtdmean == TRUE
+  # map_headernames$denominator
+  # map_headernames[map_headernames$calculation_type == "wtdmean",     c('varlist', "rname") ]
+  # map_headernames[map_headernames$calculation_type == "percent formula", c('varlist', "rname") ]
+  # map_headernames$rname[grepl("denom", map_headernames$names_friendly, ignore.case = TRUE)] # [1] "unemployedbase" "builtunits"
+  
+
+  
+  # thesevars <- c(names_d_other_count, names_d_count, names_d_subgroups_count, names_d)
+  #
+  # countcols      <- thesevars[calctype(thesevars) == "sum of counts"  ]
+  # popmeancols    <- thesevars[calctype(thesevars) == "wtdmean" & calctype(thesevars) == "wtdmean"    ]
+  # wtdmeancols    <- thesevars[calctype(thesevars) == "wtdmean"    ]
+  # calculatedcols <- thesevars[calctype(thesevars) == "percent formula"]
+  #
+  # countcols_inbgstat       <- intersect(countcols,      names(blockgroupstats))
+  # popmeancols_inbgstats    <- intersect(popmeancols,    names(blockgroupstats))
+  # calculatedcols_inbgstats <- intersect(calculatedcols, names(blockgroupstats))
+  
+  
+  # countvarname <- c(names_d_subgroups_count) #  "hisp"         "nhba"         "nhaa"         "nhaiana"      "nhnhpia"      "nhotheralone" "nhmulti"      "nhwa"
+  ### or for percentages that do not always use pop as denominator, etc:
+  # countvarname <- c(names_d_count, names_d_other_count)
+  # [1] "lowinc"         "lingiso"        "unemployed"     "lths"           "under5"         "over64"         "mins"           "pop"            "nonmins"        "povknownratio"  "age25up"
+  # [12] "hhlds"          "unemployedbase" "pre1960"        "builtunits"
+  ###### #
+  ################################################################################################################ #
   
   popmeancols_inbgstats = popmeancols[popmeancols %in% names(bybg_overall)]
   
