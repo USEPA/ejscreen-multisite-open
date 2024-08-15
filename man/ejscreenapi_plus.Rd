@@ -19,7 +19,8 @@ ejscreenapi_plus(
   mapping_for_names = NULL,
   usewhichnames = "r",
   calculate_ratios = TRUE,
-  verbose = FALSE
+  verbose = FALSE,
+  getstatefromplacename = TRUE
 )
 }
 \arguments{
@@ -58,6 +59,10 @@ Not documented here, as format may change.}
 \item{calculate_ratios}{whether to add columns with ratio of raw score to the US or State average}
 
 \item{verbose}{whether to print to console / viewer / plot}
+
+\item{getstatefromplacename}{set to FALSE if you need the exact output of API and
+TRUE if you want to try to extract ST abbrev and statename from the placename field,
+which is more likely to be correct than the stateAbbr and stateName fields in the API output.}
 }
 \value{
 Returns a data.frame of results, one row per buffer (site), one column per indicator,

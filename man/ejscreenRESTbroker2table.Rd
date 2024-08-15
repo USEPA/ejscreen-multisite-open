@@ -4,10 +4,14 @@
 \alias{ejscreenRESTbroker2table}
 \title{Low-level utility to convert result of EJScreen API query into table format}
 \usage{
-ejscreenRESTbroker2table(brokeroutput)
+ejscreenRESTbroker2table(brokeroutput, getstatefromplacename = TRUE)
 }
 \arguments{
 \item{brokeroutput}{the results of \code{\link[=ejscreenRESTbroker]{ejscreenRESTbroker()}}}
+
+\item{getstatefromplacename}{set to FALSE if you need the exact output of API and
+TRUE if you want to try to extract ST abbrev and statename from the placename field,
+which is more likely to be correct than the stateAbbr and stateName fields in the API output.}
 }
 \value{
 a data.frame of 1 row (a site) and many columns (indicators)

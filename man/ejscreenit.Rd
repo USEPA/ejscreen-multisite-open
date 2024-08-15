@@ -22,6 +22,7 @@ ejscreenit(
   calculate_ratios = TRUE,
   nicenames = TRUE,
   folder = ".",
+  getstateinfofromplacename = TRUE,
   ...
 )
 }
@@ -72,6 +73,10 @@ e.g.,  "Particulate Matter (PM 2.5 in ug/m3)" not "pm"}
 Default is working directory.}
 
 \item{...}{passed to \code{\link[=ejscreenapi_plus]{ejscreenapi_plus()}}}
+
+\item{getstatefromplacename}{set to FALSE if you need the exact output of API and
+TRUE if you want to try to extract ST abbrev and statename from the placename field,
+which is more likely to be correct than the stateAbbr and stateName fields in the API output.}
 }
 \value{
 Returns a list with map, boxplot, table
