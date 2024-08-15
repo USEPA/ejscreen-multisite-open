@@ -20,6 +20,7 @@
 #'   - area or place = Average Place: random point on a map (internal point of avg blockgroup weighted by its square meters size)
 #'   
 #' @param dt logical, whether to return a data.table (DEFAULT) instead of normal data.frame
+#' @param validonly return only points with valid lat/lon coordinates. Defaults to TRUE.
 #'
 #' @return data.frame or data.table with columns lat, lon in decimal degrees, and 
 #'   any other columns that are in the table used (based on weighting)
@@ -40,7 +41,7 @@
 #' }
 #' }
 #'  
-testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'), dt=TRUE, ST_needed=NULL) {
+testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'), dt=TRUE, ST_needed=NULL, validonly = TRUE) {
   
   if (NROW(n)  == 1) {
     if (n == 1e6) {warning('a million used to sound like a lot')}
@@ -93,14 +94,41 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
       # rowinstate2 <- c(rowinstate, rowtried2[state_from_latlon(lat = frs$lat[rowtried2], lon = frs$lon[rowtried2]) %in% ST_needed])
       # 
       # rownum <- sample.int( frs[rowinstate,.N], size = n, replace = FALSE)
-      if (!dt) {x = data.table::copy(frs[rowinstate,] ); setDF(x); x$sitenumber <- seq_len(nrow(x)); return(x )}
+      if (!dt) {
+        x = data.table::copy(frs[rowinstate,] )
+        setDF(x)
+        x$sitenumber <- seq_len(nrow(x))
+        if(validonly){
+          message('Returning only sites with valid lat/lons')
+          return(x[latlon_is.valid(x$lat, x$lon),])
+        } else {
+          return(x)
+        }
+        }
       x <- frs[rowinstate,]; x$sitenumber <- seq_len(nrow(x))
-      return(x)
+      if(validonly){
+        message('Returning only sites with valid lat/lons')
+        return(x[latlon_is.valid(x$lat, x$lon),])
+      } else {
+        return(x)
+      }
     }
     rownum <- sample.int(frs[,.N], size = n, replace = FALSE)
-    if (!dt) {x = data.table::copy(frs[rownum, ]); setDF(x);  x$sitenumber <- seq_len(nrow(x)); return(x)}
+    if (!dt) {x = data.table::copy(frs[rownum, ]); setDF(x);  x$sitenumber <- seq_len(nrow(x))
+    if(validonly){
+      message('Returning only sites with valid lat/lons')
+      return(x[latlon_is.valid(x$lat, x$lon),])
+    } else {
+      return(x)
+    }
+    }
     x <- frs[rownum,]; x$sitenumber <- seq_len(nrow(x))
-    return(x)
+    if(validonly){
+      message('Returning only sites with valid lat/lons')
+      return(x[latlon_is.valid(x$lat, x$lon),])
+    } else {
+      return(x)
+    }
   }
   
   # RANDOM BLOCKGROUPS
@@ -109,13 +137,43 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
       stfips <- EJAM::stateinfo$FIPS.ST[match(ST_needed, EJAM::stateinfo$ST)]
       bg_filtered_by_state <- data.table::copy(EJAM::bgpts[substr(bgfips,1,2) %in% stfips, ])
       rownum <- sample.int(bg_filtered_by_state[,.N], size = n, replace = FALSE)
-      if (!dt) {setDF(bg_filtered_by_state); return(bg_filtered_by_state[rownum, ])}
-      return(bg_filtered_by_state[rownum, ] )
+      if (!dt) {
+        setDF(bg_filtered_by_state)
+        #return(bg_filtered_by_state[rownum, ])
+        if(validonly){
+          message('Returning only sites with valid lat/lons')
+          return(bg_filtered_by_state[rownum, ][latlon_is.valid(x$lat, x$lon),])
+        } else {
+          return(bg_filtered_by_state[rownum, ] )
+        }
+        }
+      
+      if(validonly){
+        message('Returning only sites with valid lat/lons')
+        return(bg_filtered_by_state[rownum, ][latlon_is.valid(x$lat, x$lon),])
+      } else {
+        return(bg_filtered_by_state[rownum, ] )
+      }
     } else {
       rownum <- sample.int(EJAM::bgpts[,.N], size = n, replace = FALSE)
-      if (!dt) {x = data.table::copy(bgpts[rownum, ]); setDF(x); x$sitenumber <- seq_len(nrow(x)); return(x)}
+      if (!dt) {
+        x = data.table::copy(bgpts[rownum, ])
+        setDF(x)
+        x$sitenumber <- seq_len(nrow(x))
+        if(validonly){
+          message('Returning only sites with valid lat/lons')
+          return(x[latlon_is.valid(x$lat, x$lon),])
+        } else {
+          return(x)
+        }
+      }
       x <- bgpts[rownum, ]; x$sitenumber <- seq_len(nrow(x)) 
-      return(x)
+      if(validonly){
+        message('Returning only sites with valid lat/lons')
+        return(x[latlon_is.valid(x$lat, x$lon),])
+      } else {
+        return(x)
+      }
     }
   }
   
@@ -125,13 +183,41 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
     if (!is.null(ST_needed)) {
       staterownums <- which(state_from_blockid(blockpoints$blockid) %in% ST_needed  )
       rownum <- sample.int(length(staterownums), size = n, replace = FALSE)
-      if (!dt) {x = data.table::copy(blockpoints[staterownums,][rownum,]); setDF(x); return(x)}
-      return(blockpoints[staterownums,][rownum,] )
+      if (!dt) {x = data.table::copy(blockpoints[staterownums,][rownum,])
+      setDF(x)
+      if(validonly){
+        message('Returning only sites with valid lat/lons')
+        return(x[latlon_is.valid(x$lat, x$lon),])
+      } else {
+        return(x)
+      }
+      }
+      
+      if(validonly){
+        message('Returning only sites with valid lat/lons')
+        return(blockpoints[staterownums,][rownum,][latlon_is.valid(blockpoints[staterownums,][rownum,]$lat, blockpoints[staterownums,][rownum,]$lon),])
+      } else {
+        return(blockpoints[staterownums,][rownum,] )
+      }
     } else {
       rownum <- sample.int( blockpoints[,.N], size = n, replace = FALSE)
-      if (!dt) {x = data.table::copy(blockpoints[rownum,]); setDF(x); x$sitenumber <- seq_len(nrow(x)); return(x)}
+      if (!dt) {x = data.table::copy(blockpoints[rownum,]); setDF(x)
+      x$sitenumber <- seq_len(nrow(x))
+      if(validonly){
+        message('Returning only sites with valid lat/lons')
+        return(x[latlon_is.valid(x$lat, x$lon),])
+      } else {
+        return(x)
+      }
+     
+      }
       x <- blockpoints[rownum, ] ; x$sitenumber <- seq_len(nrow(x))
-      return(x)
+      if(validonly){
+        message('Returning only sites with valid lat/lons')
+        return(x[latlon_is.valid(x$lat, x$lon),])
+      } else {
+        return(x)
+      }
     }
   }
   
@@ -147,21 +233,43 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
         bg_filtered_by_state <- bgpts[bg_filtered_by_state[rownum, ], .(lat, lon,  bgfips, bgid, ST, pop, area)]
         setDF(bg_filtered_by_state)
         bg_filtered_by_state$sitenumber <- seq_len(nrow(bg_filtered_by_state))
-        return(bg_filtered_by_state)
+        
+        if(validonly){
+          message('Returning only sites with valid lat/lons')
+          return(bg_filtered_by_state[latlon_is.valid(bg_filtered_by_state$lat, bg_filtered_by_state$lon),])
+        } else {
+          return(bg_filtered_by_state)
+        }
       }
       x <- bgpts[bg_filtered_by_state[rownum,] ,  .(lat, lon,  bgfips, bgid, ST, pop, area), on = "bgid"]
       x$sitenumber <- seq_len(nrow(x))
-      return(x)
+      if(validonly){
+        message('Returning only sites with valid lat/lons')
+        return(x[latlon_is.valid(x$lat, x$lon),])
+      } else {
+        return(x)
+      }
       
     } else {
       rownum <- sample.int(blockgroupstats[,.N], size = n, replace = FALSE, prob = blockgroupstats$area)
       if (!dt) {
         x = data.table::copy(bgpts[blockgroupstats[rownum, ], .(lat, lon, bgfips, bgid, ST, pop, area), on = "bgid"])
-        setDF(x); x$sitenumber <- seq_len(nrow(x)); return(x)
+        setDF(x); x$sitenumber <- seq_len(nrow(x))
+        if(validonly){
+          message('Returning only sites with valid lat/lons')
+          return(x[latlon_is.valid(x$lat, x$lon),])
+        } else {
+          return(x)
+        }
       }
       x <-           bgpts[blockgroupstats[rownum,],  .(lat, lon, bgfips, bgid, ST, pop, area), on = "bgid"]
       x$sitenumber <- seq_len(nrow(x))
-      return(x)
+      if(validonly){
+        message('Returning only sites with valid lat/lons')
+        return(x[latlon_is.valid(x$lat, x$lon),])
+      } else {
+        return(x)
+      }
     }
   }
   
@@ -171,19 +279,43 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
       staterownums <- which(state_from_blockid(blockpoints$blockid) %in% ST_needed  )
       
       rownum <- sample.int(length(staterownums), size = n, replace = FALSE, prob = blockwts$blockwt[staterownums])
-      if (!dt) {x = data.table::copy(blockpoints[staterownums,][rownum,]); setDF(x); x$sitenumber <- seq_len(nrow(x)); return(x)}
+      if (!dt) {x = data.table::copy(blockpoints[staterownums,][rownum,]); setDF(x); x$sitenumber <- seq_len(nrow(x))
+      if(validonly){
+        message('Returning only sites with valid lat/lons')
+        return(x[latlon_is.valid(x$lat, x$lon),])
+      } else {
+        return(x)
+      }
+      }
       x <- blockpoints[blockwts[staterownums,][rownum,] , ,on = "blockid"]
       x$sitenumber <- seq_len(nrow(x))
-      return(x)
+      if(validonly){
+        message('Returning only sites with valid lat/lons')
+        return(x[latlon_is.valid(x$lat, x$lon),])
+      } else {
+        return(x)
+      }
       # warning("Ignoring ST_needed ! ")
     }
     rownum <- sample.int( blockwts[,.N], size = n, replace = FALSE, prob = blockwts$blockwt)
-    if (!dt) {x = data.table::copy(blockpoints[blockwts[rownum,], on = "blockid"]); setDF(x); x$sitenumber <- seq_len(nrow(x)); return(x)}
+    if (!dt) {x = data.table::copy(blockpoints[blockwts[rownum,], on = "blockid"]); setDF(x); x$sitenumber <- seq_len(nrow(x))
+    if(validonly){
+      message('Returning only sites with valid lat/lons')
+      return(x[latlon_is.valid(x$lat, x$lon),])
+    } else {
+      return(x)
+    }
+    }
     # all(blockpoints[,blockid] == blockwts[,blockid])
     # [1] TRUE
     x <- blockpoints[blockwts[rownum, ],]
     x$sitenumber <- seq_len(nrow(x))
-    return(x)
+    if(validonly){
+      message('Returning only sites with valid lat/lons')
+      return(x[latlon_is.valid(x$lat, x$lon),])
+    } else {
+      return(x)
+    }
   }
   
 }

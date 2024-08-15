@@ -23,9 +23,10 @@
 #' @param react.v1_summary_plot optional - a plot object
 #' @param radius_or_buffer_description optional text phrase describing places analyzed
 #' @param hyperlink_colnames optional names of columns with URLs
+#' @param site_method optional site method parameter used to create a more specific title with create_filename
 #' @param ... optional additional parameters passed to [table_xls_format()], such as 
 #'   heatmap_colnames, heatmap_cuts, heatmap_colors, etc.
-#'
+#'   
 #' @export
 #'
 ejam2excel <- function(ejamitout,
@@ -43,6 +44,7 @@ ejam2excel <- function(ejamitout,
                        radius_or_buffer_description = 'Miles radius of circular buffer (or distance used if buffering around polygons)',
                        # radius_or_buffer_description =   "Distance from each site (radius of each circular buffer around a point)",
                        hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"),
+                       site_method = "",
                        ...
 ) {
 
@@ -61,6 +63,7 @@ ejam2excel <- function(ejamitout,
     buffer_desc = buffer_desc,
     radius_or_buffer_description = radius_or_buffer_description,
     hyperlink_colnames = hyperlink_colnames,
+    site_method = site_method,
     ...
   )
 }

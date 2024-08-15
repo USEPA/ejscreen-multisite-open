@@ -397,10 +397,8 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
     shift_hbd <- 0
   }
   
-  # img_html <- paste0('<img src="',app_sys('report/community_report/EPA_logo_white_2.png'),
-  #                    '" alt="EPA logo" width="110" height="35" style="position: absolute; left: 950px; top: ',shift_hbd+90,'px">')
-  #
-  img_html <- paste0('<img src=\"', app_sys('app/www/EPA_logo_white_2.png'),
+  
+  img_html <- paste0('<img src=\"', 'www/EPA_logo_white_2.png',
                      '\" alt=\"EPA logo\" width=\"110\" height=\"35\">')
   
   paste0('

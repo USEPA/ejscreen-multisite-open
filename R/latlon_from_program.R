@@ -40,7 +40,7 @@
 #'
 latlon_from_program <- function(query) {
   
-  if (missing(query)) {return(NULL)}
+  if (missing(query)) {return(NULL)} else if (all(is.na(query)) | is.null(query)){return(NULL)}
   
   if (!exists("frs_by_programid")) dataload_from_pins("frs_by_programid")
   if (!exists("frs")) dataload_from_pins("frs")

@@ -17,7 +17,7 @@ epa_program_counts$pgm_text_dropdown <- paste0(epa_program_counts$program, ' (',
 # create a named vector where $program is the vector elements and $pgm_text_dropdown is the names:
 epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
 
-# save in EJAM/data/ folder for use as a dataset loaded with the EJAM package:
+# Finally, save it in the EJAM/data/ folder for use as a dataset loaded with the EJAM package:
 
 epa_programs <- metadata_add(epa_programs)
 usethis::use_data(epa_programs, overwrite = TRUE)

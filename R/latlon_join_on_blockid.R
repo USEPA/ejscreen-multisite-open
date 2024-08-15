@@ -14,6 +14,14 @@
 #'
 latlon_join_on_blockid = function(s2b) {
   
+  if(missing(s2b)){
+    warning('No value provided for argument "s2b".')
+    return(NULL)
+  }
+  else if(all(is.na(s2b)) | is.null(s2b)){
+      warning('NULL or NA "s2b" passed as inputs.')
+      return(NULL)
+  }
   if (all(c('lat','lon') %in% names(s2b))) {message('already has lat,lon'); return(s2b)}
   return(
     # merge(s2b, blockpoints , on = "blockid")
