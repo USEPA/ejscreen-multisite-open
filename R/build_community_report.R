@@ -56,8 +56,7 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
   }
   
   names_present <- varinfo(var = names(output_df_rounded), info = 'varlist')
-  print(unique(names_present$varlist))
-  
+
   
   pctsign <- colnames(output_df_rounded) %in% setdiff(c(names_d, names_d_avg, names_d_state_avg), names_demog_index)
   output_df_rounded[, pctsign] <- paste0(output_df_rounded[, pctsign], "%")
