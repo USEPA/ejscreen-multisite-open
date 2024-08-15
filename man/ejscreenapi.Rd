@@ -18,7 +18,8 @@ ejscreenapi(
   ipurl = "ejscreen.epa.gov",
   updateProgress = NULL,
   drop_redundant_indicators = TRUE,
-  nicenames = FALSE
+  nicenames = FALSE,
+  getstatefromplacename = TRUE
 )
 }
 \arguments{
@@ -55,6 +56,10 @@ just under 2 different names, like RAW_D_LIFEEXP and RAW_HI_LIFEEXPPCT which are
 \item{nicenames}{Set it to TRUE if you want to have it rename headers as long friendly plain English not R variable names
 but note downstream functions mostly expect rname format
 that uses \code{\link[=ejscreenapi1]{ejscreenapi1()}} and \code{\link[=ejscreenRESTbroker]{ejscreenRESTbroker()}}  and \code{\link[=ejscreenRESTbroker2table]{ejscreenRESTbroker2table()}}}
+
+\item{getstatefromplacename}{set to FALSE if you need the exact output of API and
+TRUE if you want to try to extract ST abbrev and statename from the placename field,
+which is more likely to be correct than the stateAbbr and stateName fields in the API output.}
 }
 \description{
 Get a data.table of EJScreen report results for one or multiple circular buffers.

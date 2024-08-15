@@ -486,7 +486,7 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
       ##  ratio to US avg -------------
       
       # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT THE SORT ORDER IS OF THE VARIABLES !
-      usratios <- ratios_to_avg(table_as_displayed, evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS) # this was not designed to analyze state percentiles ?
+      usratios <- calc_ratios_to_avg(table_as_displayed, evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS) # this was not designed to analyze state percentiles ?
       eratios <- round(usratios$ratios_e, 4)
       dratios <- round(usratios$ratios_d, 4)    # lacks subgroups and supplementary ? 
       
@@ -498,7 +498,7 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
       
       ##  ratio to STATE avg --------------
       
-      st_ratios <- ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
+      st_ratios <- calc_ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
       eratios <- round(st_ratios$ratios_e, 4)
       dratios <- round(st_ratios$ratios_d, 4)    # lacks subgroups and supplementary ? 
       names(eratios) <- map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
@@ -892,10 +892,10 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
     req(results_table())
     out <- results_table()
     names(out) <- fixnames(names(out), oldtype = 'api', newtype = 'r', mapping_for_names = map_headernames)
-    us.ratios    <- ratios_to_avg(out)
-    #state.ratios <- ratios_to_avg(out = out, zone.prefix = 'state')
+    us.ratios    <- calc_ratios_to_avg(out)
+    #state.ratios <- calc_ratios_to_avg(out = out, zone.prefix = 'state')
     ## boxplots_ratios(us.ratios$ratios_d)
-    outplot <- boxplots_ratios(us.ratios$ratios_d, 'pctlowinc', '% low income', wheretext=paste0("Within ", out$radius.miles[1]," miles of"))
+    outplot <- boxplots_ratios(us.ratios$ratios_d, 'pctlowinc', '% low income', wheretext = paste0("Within ", out$radius.miles[1]," miles of"))
     outplot
     # plot(us.ratios)
   } )
