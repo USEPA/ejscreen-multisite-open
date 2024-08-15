@@ -2953,65 +2953,7 @@ app_server <- function(input, output, session) {
         req(data_processed())
         req(cur_button())
         x <- as.numeric(gsub('button_','', cur_button()))
-        <<<<<<< HEAD
-        if ( data_processed()$results_bysite$valid[x] == T) {
-          #!(submitted_upload_method() %in% c('FIPS')) &
-          popstr <- prettyNum(round(data_processed()$results_bysite$pop[x]), big.mark = ',')
-          
-          if (submitted_upload_method() == 'SHP') {
-            locationstr <- paste0('Polygon ', data_up_shp()[x,]$OBJECTID_1)
-            if (data_processed()$results_bysite[x,]$radius.miles > 0) {
-              locationstr <- paste0(locationstr, '<br>with ', data_processed()$results_bysite[x,]$radius.miles, ' mile buffer')
-            }
-          } else if (submitted_upload_method() == 'FIPS') {
-            locationstr <- paste0('FIPS Code ', data_processed()$results_bysite[x,]$ejam_uniq_id)
-          } else {
-            locationstr <- paste0(data_processed()$results_bysite[x,]$radius.miles, ' Mile Ring Centered at ',
-                                  data_processed()$results_bysite[x,]$lat, ', ',
-                                  data_processed()$results_bysite[x,]$lon, '<br>', 'Area in Square Miles: ',
-                                  round(pi * data_processed()$results_bysite[x,]$radius.miles^2, 2)
-            )
-          }
-          
-          if (!('main.css' %in% list.files(tempdir()))) {
-            file.copy(from = app_sys('report/community_report/main.css'),
-                      to = file.path(tempdir(), 'main.css'), overwrite = TRUE)
-          }
-          if (!('communityreport.css' %in% list.files(tempdir()))) {
-            file.copy(from = app_sys('report/community_report/communityreport.css'),
-                      to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
-          }
-          
-          if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
-            dir.create(file.path(tempdir(), 'www'))
-            file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
-                      to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
-          }
-          temp_comm_report <- file.path(tempdir(), paste0("comm_report",x,".html"))
-          
-          tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
-          
-          ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
-          file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),  # treats EJAM/inst/ as root
-                    to = tempReport, overwrite = TRUE)
-          
-          build_community_report(
-            output_df = data_processed()$results_bysite[x,],
-            analysis_title = input$analysis_title,
-            totalpop = popstr,
-            locationstr = locationstr,
-            include_ejindexes = input$include_ejindexes,
-            in_shiny = F,
-            filename = temp_comm_report
-          )
-          browseURL(temp_comm_report)
-          
-        } else {
-          showModal(modalDialog(title = 'Report not available',
-                                'Individual site reports not yet available.'))
-        }
-        =======
-          
+       
           # Get the name of the selected location
           location_name <- data_processed()$results_bysite[x, "statename"]
         selected_location_name(location_name)
@@ -3036,10 +2978,8 @@ app_server <- function(input, output, session) {
           easyClose = TRUE,
           size = "m"
         ))
-        >>>>>>> main
       })
-  
-  
+  #############################################################################  #
   
   ## EXCEL DOWNLOAD  ####
   
