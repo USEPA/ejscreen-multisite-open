@@ -290,6 +290,9 @@ source_maybe('datacreate_blockwts.R', DOIT = FALSE) # script that can include me
 #  such as in Connecticut for v2.2 change to v2.3 !
 #  and then datawrite_to_pins() if those datasets were updated.
 
+
+ EJAM::datawrite_to_local(c("bgid2fips", "blockid2fips", "blockpoints", "blockwts", 'quaddata'))
+
 if (!exists("blockid2fips")) {dataload_from_pins("blockid2fips", justchecking = F)}
 length(unique(substr(blockid2fips$blockfips,1,2)))
 if (!exists("bgid2fips")) {dataload_from_pins("bgid2fips")}
@@ -342,11 +345,11 @@ cat( "Is it loaded/attached already? "); cat("bgpts" %in% ls(), '\n');
 cat("Is it a dataset in installed EJAM pkg? "); junk <- capture.output({XYZ <- datapack("EJAM")$Item}); cat("bgpts" %in% XYZ, '\n'); 
 cat('Is it loadable and/or attached already, per "exists()" ? ', exists("bgpts"), '\n'); rm(junk, XYZ)
 # dataload_from_pins("bgpts", justchecking = TRUE)# bgpts is in EJAM/data/  not on pins board.
-
 #  attributes2(bgpts)
 
 source_maybe("datacreate_bgpts.R", DOIT = FALSE, folder = rawdir) 
 nacounts(bgpts)
+# it gets saved with package as data
 
 ### datacreate_bg_cenpop2020.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_bg_cenpop2020.R")       IS IT USED AT ALL BY EJAM THOUGH??
@@ -707,31 +710,31 @@ source_maybe("datacreate_meters_per_mile.R")
 
 ################## #
 # pindates() & pinned() helper functions were NOT WORKING YET - date format is messed up
-
-pindates  <- function(varnames =  c(
-  'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-  'bgej', 'bgid2fips',
-  'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"
-)) {
-  junk <- capture.output({
-    x <- dataload_from_pins(justchecking = TRUE, silent = TRUE, 
-                            varnames = varnames)
-  })
-  x <- x[, c("name", "created", "ejscreen_version")]
-  if (!missing(varnames))  {
-    # only show info for the specific ones queried, not all pinned
-    xshell <- data.frame(name = varnames, 
-                         # still need to fix date  format... 
-                         created = 0, ejscreen_version = NA)
-    for (i in seq_along(varnames)) {
-      if (varnames[i] %in% x$name) {
-        xshell[i, ] <- x[x$name == varnames[i], ]
-      }
-    }
-    x <- xshell
-  }
-  return(x) 
-}
+# 
+# pindates  <- function(varnames =  c(
+#   'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
+#   'bgej', 'bgid2fips',
+#   'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"
+# )) {
+#   junk <- capture.output({
+#     x <- dataload_from_pins(justchecking = TRUE, silent = TRUE, 
+#                             varnames = varnames)
+#   })
+#   x <- x[, c("name", "created", "ejscreen_version")]
+#   if (!missing(varnames))  {
+#     # only show info for the specific ones queried, not all pinned
+#     xshell <- data.frame(name = varnames, 
+#                          # still need to fix date  format... 
+#                          created = 0, ejscreen_version = NA)
+#     for (i in seq_along(varnames)) {
+#       if (varnames[i] %in% x$name) {
+#         xshell[i, ] <- x[x$name == varnames[i], ]
+#       }
+#     }
+#     x <- xshell
+#   }
+#   return(x) 
+# }
 ################## #   NOT WORKING YET 
 # pinned <- function(varnames = c(
 #   'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
@@ -777,8 +780,23 @@ cat("\n\n")
 ## then saving to pins
 # EJAM:::datawrite_to_pins(varnames = c("frs", "frs_by_mact", "frs_by_sic", "frs_by_naics", "frs_by_programid"))
 
+these = c("blockwts", "blockpoints", "blockid2fips", "quaddata",  
+          "bgid2fips"
+)
+          # , "bgej")
 
-datawrite_to_pins() # it will ask interactively to confirm which ones among defaults to save to pins
+datawrite_to_pins(varnames = these) # it will ask interactively to confirm which ones among defaults to save to pins
+
+
+x = dataload_from_pins(justchecking = TRUE, silent = TRUE, 
+                       varnames = c(
+                         "blockwts", "blockpoints", "blockid2fips", "quaddata", # "localtree",
+                         "bgej", "bgid2fips",
+                         "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact"
+                       )
+)
+cat("These datasets are currently seen on the pins board: \n")
+x[,c("name", "created", "ejscreen_version")]
 
 ######################################### #
 ######################################### #
