@@ -82,9 +82,9 @@ if (TRUE) {
   
   needconus5 <- FALSE
   creatingnew_testpoints_data   <- FALSE  #done. TO REPLACE THE ACTUAL TEST POINTS (can be false and still do other steps below)
-  resaving_testpoints_rda       <- TRUE
-  resaving_testpoints_excel     <- TRUE
-  resaving_testpoints_helpdocs  <- TRUE
+  resaving_testpoints_rda       <- FALSE
+  resaving_testpoints_excel     <- FALSE
+  resaving_testpoints_helpdocs  <- FALSE
   
   recreating_getblocksnearby    <- TRUE  # eg if block data changed, or if recreating_doaggregate_output = TRUE below
   resaving_getblocksnearby_rda  <- TRUE
@@ -94,14 +94,14 @@ if (TRUE) {
   if (recreating_doaggregate_output) {recreating_getblocksnearby <- TRUE} # needed
   resaving_doaggregate_rda      <- TRUE
   resaving_doaggregate_helpdocs <- TRUE # just in case
-  resaving_doaggregate_excel    <- TRUE
+  resaving_doaggregate_excel    <- TRUE # 
   
   recreating_ejamit_output      <- TRUE # eg if format or list of indicators changes
   resaving_ejamit_rda           <- TRUE
   resaving_ejamit_helpdocs      <- TRUE
   resaving_ejamit_excel         <- TRUE
   
-  redoing_ejscreenit_10_for_ejam_to_have  <- TRUE
+  redoing_ejscreenit_10_for_ejam_to_have  <- FALSE
   # and  there are these:  5, 50, 500  ##
   
   if (basename(getwd()) != "EJAM") {stop('do this from EJAM source package folder')}
@@ -444,17 +444,17 @@ NULL
       writeChar(filecontents, con = paste0("./R/data_", out_varname_ejamit, ".R"))       ############# #
     }
     
-    if (resaving_ejamit_excel) {
-      
-      ## save as EXCEL ####
-      #
-      junk = table_xls_from_ejam(out_data_ejamit,
-                                 in.analysis_title = "Example of outputs of ejamit() being formatted and saved using table_xls_from_ejam()",
-                                 radius_or_buffer_in_miles = myrad,
-                                 buffer_desc = paste0("Within ", myrad, " miles"),
-                                 fname = paste0("./inst/testdata/examples_of_output/", out_varname_ejamit, ".xlsx")
-      )
-    }
+    # if (resaving_ejamit_excel) {
+    #   
+    #   ## save as EXCEL ####
+    #   #
+    #   junk = EJAM:::table_xls_from_ejam(out_data_ejamit, interactive_console = FALSE, launchexcel = FALSE, overwrite = TRUE,
+    #                              in.analysis_title = "Example of outputs of ejamit() being formatted and saved using table_xls_from_ejam()",
+    #                              radius_or_buffer_in_miles = myrad,
+    #                              buffer_desc = paste0("Within ", myrad, " miles"),
+    #                              fname = paste0("./inst/testdata/examples_of_output/", out_varname_ejamit, ".xlsx")
+    #   )
+    # }
   }
   
   ################################## #   ################################## #   ################################## #
