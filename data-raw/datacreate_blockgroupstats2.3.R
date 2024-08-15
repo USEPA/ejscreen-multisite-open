@@ -8,8 +8,8 @@ if (!exists("td")) {td <- tempdir() }
 
 ############################################################################################ #
 
-# EJScreen v 2.3 ftp site files as of 7/5/2024
-baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/"
+# EJScreen v 2.3 ftp site files as of 7/5/2024 had problems and team posted new versions circa 8/12/24 here:
+baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.32_August_UseMe/"
 # browseURL(baseurl)
 needgdb = FALSE
 # require(arrow)
@@ -199,21 +199,27 @@ if (SAVELOCAL) {
 }
 ########################################################### #
 ########################################################### #
+
+# load(file.path(localfolder, "blockgroupstats_new_as_on_ftp.rda"))
+# load(file.path(localfolder, "blockgroupstats_new_state_as_on_ftp.rda"))
+
 ########################################################### #
 
 # map_headernames check: ####
-
-# cbind(sort(names(blockgroupstats_new)[fixcolnames(names(blockgroupstats_new),'csv','r') == names(blockgroupstats_new)]))
-# 
+  nacounts(blockgroupstats_new)
+  cbind(sort(names(blockgroupstats_new)[fixcolnames(names(blockgroupstats_new),'csv','r') == names(blockgroupstats_new)]))
+#         bins (colors on map)
 # [1,] "B_D2_DWATER"    
 # [2,] "B_D2_NO2"       
 # [3,] "B_D5_DWATER"    
 # [4,] "B_D5_NO2"       
 # [5,] "B_DISABILITYPCT"
 # [6,] "B_DWATER"       
-# [7,] "B_NO2"          
+# [7,] "B_NO2" 
+  # etc etc
 # [8,] "REGION"         
 # [9,] "Shape_Length"   
+  #           text for popups in ejscreen app
 # [10,] "T_D2_DWATER"    
 # [11,] "T_D2_NO2"       
 # [12,] "T_D5_DWATER"    
@@ -221,7 +227,7 @@ if (SAVELOCAL) {
 # [14,] "T_DISABILITYPCT"
 # [15,] "T_DWATER"       
 # [16,] "T_NO2"      
-
+#   etc etc
 ########################################################### #
 
 ## rename colnames ####
@@ -239,9 +245,12 @@ names(statestats_new)  <- fixcolnames(names(statestats_new), oldtype = "csv", ne
 # grep("^pctile|state.pctile|^bin", names(EJAM::blockgroupstats), value = TRUE) # those are not in blockgroupstats, not needed
 cols2drop <- grep("^pctile|state.pctile|^bin", names(blockgroupstats_new), value = TRUE)
 # extra ones not renamed by fixcolnames() since did not bother to put all Text and Bin columns names in map_headernames
-cols2drop <- c(cols2drop, c("B_D2_DWATER", "B_D2_NO2", "B_D5_DWATER", "B_D5_NO2",  "B_DISABILITYPCT", "B_DWATER", "B_NO2", 
-                            "T_D2_DWATER", "T_D2_NO2",  "T_D5_DWATER", "T_D5_NO2", "T_DISABILITYPCT", "T_DWATER", "T_NO2")
-)  
+cols2drop <- c(cols2drop,
+               grep("^T_|^B_", names(blockgroupstats_new), value = TRUE)
+                     
+               # c("B_D2_DWATER", "B_D2_NO2", "B_D5_DWATER", "B_D5_NO2",  "B_DISABILITYPCT", "B_DWATER", "B_NO2", 
+               #              "T_D2_DWATER", "T_D2_NO2",  "T_D5_DWATER", "T_D5_NO2", "T_DISABILITYPCT", "T_DWATER", "T_NO2")
+)
 cat("\n Dropping these columns: \n\n")
 print(cbind(cols2drop))
 
@@ -250,109 +259,150 @@ blockgroupstats_new_state <- blockgroupstats_new_state[, !(names(blockgroupstats
 
 usastats_new              <- usastats_new[,              !(names(usastats_new)              %in% cols2drop)]
 statestats_new            <- statestats_new[,            !(names(statestats_new)            %in% cols2drop)]
-
-# dim(blockgroupstats_new); dim(EJAM::blockgroupstats)
-# 
+ 
 # dim(usastats_new);   dim(EJAM::usastats)
 # dim(statestats_new); dim(EJAM::statestats)
 
-# > dim(blockgroupstats_new); dim(EJAM::blockgroupstats)
-# [1] 243022     81
-# [1] 243021    112
-# > dim(usastats_new);   dim(EJAM::usastats)
-# [1] 103  52
-# [1] 102  77
-# > dim(statestats_new); dim(EJAM::statestats)
+  dim(blockgroupstats_new); dim(EJAM::blockgroupstats)
+# [1] 243022     81 as of 8/13/24
+# [1] 243022     81  1st attempt at v2.3 
+# [1] 243021    112  v2.2
+  dim(usastats_new);   dim(EJAM::usastats)
+# [1] 103  52  as of 8/13/24
+# [1] 102 rows in v2.2
+ dim(statestats_new); dim(EJAM::statestats)
 # [1] 5356   52
-# [1] 5304   77
+# [1] 5304 rows in v2.2
 
-# setdiff(          names(blockgroupstats_new), names(EJAM::blockgroupstats))
+  setdiff(          names(blockgroupstats_new), names(EJAM::blockgroupstats))
 # EJAM:::setdiff_yx(names(blockgroupstats_new), names(EJAM::blockgroupstats))
 
 # names(blockgroupstats_new)
 # names(usastats_new)
 
 ############################################################## #
-# rename fips column ? ####
-names(blockgroupstats_new)       <- gsub("id", "OBJECTID", names(blockgroupstats_new))
-names(blockgroupstats_new_state) <- gsub("id", "OBJECTID", names(blockgroupstats_new_state))
 
-############################################################## #
-## add bgfips and bgid columns ####
+  ## save island areas ####
+## but drop them from blockgroupstats_new and blockgroupstats_new_state
 
+  names(blockgroupstats_new)       <- gsub("id", "OBJECTID", names(blockgroupstats_new))
+  names(blockgroupstats_new_state) <- gsub("id", "OBJECTID", names(blockgroupstats_new_state))
+  
+bg_islandareas <- blockgroupstats_new[                      !fips_valid(blockgroupstats_new$OBJECTID),
+                                       nacounts(
+                                         blockgroupstats_new[!fips_valid(blockgroupstats_new$OBJECTID), ], showall = T)$other > 0]
+save(bg_islandareas, file = file.path(localfolder, "bg_islandareas.rda"))
+
+ #  ISLAND AREAS ARE IN blockgroupstats_new but HAVE NO DATA! (except FIPS, ST, etc.)
+#  and are not at all in bgpts, block tables, etc.
+ # fips2state_abbrev(unique(substr(blockid2fips$blockfips,1,2)))  -- only DC,PR,states
+ # fips2state_abbrev(unique(substr(blockgroupstats_new$OBJECTID ,1,2))) -- also had AS, GU, MP, VI
+#  No EJScreen reports or maps are available in the Island Areas.
+# (we have data and reports in all States and PR and DC, but not GU AS VI MP).
+## Therefore we should just drop the Island Areas from blockgroupstats_new etc. tables in EJAM for now.
+## 
+# > length(unique(blockgroupstats_new$OBJECTID))
+# [1] 243022
+# > NROW(blockgroupstats_new )
+# [1] 243022
+# nacounts(blockgroupstats_new$OBJECTID)
+# nacounts(blockgroupstats_new[,1:20]) # so far OBJECTID and ST are not NA here at all
+## but current fips_valid() fails to recognize as valid 686 of the fips currently
+## because it relied on bgpts which was based on the weights table 
 # table(EJAM:::fips_valid(blockgroupstats_new$OBJECTID))
+# FALSE   TRUE 
+#   686 242336
+#
+### THAT IS BECAUSE ISLAND AREAS HAVE FIPS OF NONSTANDARD NUMBER OF DIGITS:
+# > table(nchar(blockgroupstats_new$OBJECTID))
+#   7     10     12 
+# 270    416 242336   The 686 cases are FIPS of 7 or 10 digits.
+# > unique(blockgroupstats_new$ST[nchar(blockgroupstats_new$OBJECTID) == 10])
+# [1] "VI"
+# > unique(blockgroupstats_new$ST[nchar(blockgroupstats_new$OBJECTID) == 7])
+# [1] "AS" "GU" "MP"
+
+# head(nacounts(blockgroupstats_new[blockgroupstats_new$ST %in% 'VI', ], showall = T))
+## nas other
+## OBJECTID     0   416
+## statename    0   416
+## ST           0   416
+## countyname   0   416
+## REGION       0   416
+## pop        416     0
+# head(nacounts(blockgroupstats_new[blockgroupstats_new$ST %in% 'AS', ], showall = T))
+# head(nacounts(blockgroupstats_new[blockgroupstats_new$ST %in% 'GU', ], showall = T))
+# head(nacounts(blockgroupstats_new[blockgroupstats_new$ST %in% 'MP', ], showall = T))
+# head(nacounts(blockgroupstats_new[blockgroupstats_new$ST %in%   'DE', ], showall = T))
+
+################################################### # 
+
+## Drop island areas  from blockgroupstats_new and blockgroupstats_new_state ####
+##   AS, GU, MP, VI are in the new blockgroupstats table but bgid will be set to NA for those if they 
+## are not found in bgpts. 
+
+# table(blockgroupstats_new$ST)
+blockgroupstats_new       <- blockgroupstats_new[!(blockgroupstats_new$ST %in% c('AS', 'GU', 'MP', 'VI')), ]
+blockgroupstats_new_state <- blockgroupstats_new_state[!(blockgroupstats_new_state$ST %in% c('AS', 'GU', 'MP', 'VI')), ]
+blockgroupstats_new_state <- blockgroupstats_new_state[!is.na(blockgroupstats_new_state$ST),]
+
+# AS OF 8/14/24 THERE ARE STILL 19 Connecticut blockgroups FIPS in bgfips (derived from the block weights file provided directly by the EJScreen team)
+#  that are NOT in blockgroupstats (derived from the geodatabase on the FTP site)
+# ***
+
+dim(blockgroupstats_new)
+dim(blockgroupstats_new_state)
+dim(bgpts)
+
+################################################# # 
+
+# Create bgfips and bgid columns ####
+
 blockgroupstats_new$bgfips       <- fips_lead_zero(blockgroupstats_new$OBJECTID)
 blockgroupstats_new_state$bgfips <- fips_lead_zero(blockgroupstats_new$OBJECTID)
 
-# table(EJAM:::fips_valid(blockgroupstats_new$bgfips))
-# Warning message:
-#   In fips_lead_zero(blockgroupstats_new$OBJECTID) :
-#   270 fips had invalid number of characters (digits) or were NA values
-# > table(EJAM:::fips_valid(blockgroupstats_new$OBJECTID))
-# 
-# FALSE   TRUE 
-# 3403 239619 
-# > blockgroupstats_new$bgfips <- fips_lead_zero(blockgroupstats_new$OBJECTID)
-# Warning message:
-#   In fips_lead_zero(blockgroupstats_new$OBJECTID) :
-#   270 fips had invalid number of characters (digits) or were NA values
-# > table(EJAM:::fips_valid(blockgroupstats_new$bgfips))
-# 
-# FALSE   TRUE 
-# 3403 239619 
+#  table(EJAM:::fips_valid(blockgroupstats_new$bgfips))
 
 blockgroupstats_new$OBJECTID <- NULL
 blockgroupstats_new_state$OBJECTID <- NULL
 
-#### THIS REQUIRES USING THE UPDATED/LATEST VERSION OF bgpts and bgid2fips ! 
-#### e.g., from v2.2 to v2.3, FIPS changed in Connecticut,
-#### since THE NEW blockgroupstats_new$bgfips will not match the old bgpts$bgfips and bgid2fips$bgfips !!
 
+# table(fips2state_abbrev(  bgpts[bgfips %in% (setdiff(bgpts$bgfips, blockgroupstats_new$bgfips)), substr(bgfips,1,2)]))
+# *** 19 bg in CT are somehow missing in the new blockgroupstats_new table but were in the supposedly correct bgpts$bgfips...
+# that was made from the weights table v2.3? 
+
+# mapfast(bgpts[bgfips %in% (setdiff(bgpts$bgfips, blockgroupstats_new$bgfips)),])
+
+################################################# # 
+
+#### THIS REQUIRES USING THE UPDATING THE bgpts data table first!                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          PDATED/LATEST VERSION OF bgpts and bgid2fips ! 
+#### e.g., from v2.2 to v2.3, FIPS changed in Connecticut!
+  # e.g., the v2.3 blockgroupstats$bgfips had 2,717 new bgfips that failed to match any old v2.2 bgpts$bgfips.
+
+# dataload_from_local('bgid2fips')
 # > attributes(bgid2fips)$ejscreen_version
 # [1] "2.1"
 # > attributes(bgpts)$ejscreen_version
 # NULL
+dataload_from_pins('bgid2fips')
 if (!all(blockgroupstats_new$bgfips %in% bgpts$bgfips))     {stop("not all new bgfips can be found in the version of bgpts available/attached")}
 if (!all(blockgroupstats_new$bgfips %in% bgid2fips$bgfips)) {stop("not all new bgfips can be found in the version of bgid2fips available/attached")}
 
+# table( blockgroupstats_new[blockgroupstats_new$bgfips %in% (setdiff_yx(bgpts$bgfips, blockgroupstats_new$bgfips)), "ST"])
+#  These used to be there but are gone now: 
+# AS  GU  MP  VI 
+# 77  58 135 416   # 686 total Island Area  bgfips were in _new but NOT in the   bgpts$bgfips...
+
+
+
+
 blockgroupstats_new$bgid       <- bgpts$bgid[match(blockgroupstats_new$bgfips,       bgpts$bgfips)]
 blockgroupstats_new_state$bgid <- bgpts$bgid[match(blockgroupstats_new_state$bgfips, bgpts$bgfips)]
-# > table(is.na(blockgroupstats$bgfips))
-# 
-# FALSE 
-# 243021 
-# > table(is.na(blockgroupstats$bgid))
-# 
-#  FALSE   TRUE    ***   
-# 242335    686 
+ # table(is.na(blockgroupstats_new$bgfips))
 
-# ?? why some bad fips? ####
-#or na or missing...
-
-
-# to be done...
-
-
-
-########################################################### #
-
-### Get or create these columns? ####
-# 
-warning("may be missing state.count.ej.80up, state.count.ej.80up.supp")
-# 
-#  already has these:
-# "count.ej.80up"      "count.ej.80up.supp"
-
-
-
-
-
-# to be done...
-
-
-
-
-
+nacounts(blockgroupstats_new)
+ 
+ 
 ################################################################################ #
 ########################################################### #
 ################################################################################ #
@@ -446,6 +496,8 @@ if (SAVELOCAL) {
 }
 ########################### #
 
+## blockgroupstats_new_state is no longer needed but
+## blockgroupstats_new is still needed for the next script
 
 ## bgej is left in globalenv by this script -
 # later can Save bgej to pins board as .arrow file
@@ -457,8 +509,7 @@ print(ls())
 ########################################################### ############################################################ #
 
 # ARCHIVE as IMAGE?  
-#
-# save.image(file = file.path(localfolder, "save.image work on NEW blockgroupstats usastats statestats.rda"))
+save.image(file = file.path(localfolder, "save.image work on NEW blockgroupstats usastats statestats.rda"))
 
 ################################################################################ #
 

@@ -74,14 +74,14 @@ load_all()
 #     paste0(paste0(
 #       "\t documentOpen('", rawdir, "/", fnames, "')"), collapse = "\n"))
 if (0 == 1) {  # collapsable list
-          ####   THESE ARE SORTED INTO GROUPS THAT GO TOGETHER : 
+  ####   THESE ARE SORTED INTO GROUPS THAT GO TOGETHER : 
   x <- c("datacreate_0_UPDATE_ALL_DATASETS.R", "datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R",
-    "datacreate_map_headernames.R", "datacreate_names_of_indicators.R", "datacreate_names_pct_as_fraction.R", "datacreate_metadata4pins.R", "datacreate_blockgroupstats2.3.R", "datacreate_blockgroupstats2.3_add_d_acs22columns.R", "datacreate_usastats2.3.R", "datacreate_usastats2.3_add_dsubgroups.R", "datacreate_avg.in.us.R", "datacreate_high_pctiles_tied_with_min.R", "datacreate_formulas.R", "datacreate_test_address.R", "datacreate_testpoints_testoutputs.R", 
-    "datacreate_default_points_shown_at_startup.R", "datacreate_testpoints_5_50_500.R", "datacreate_ejscreenRESTbroker2table_na_filler.R", "datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R",
-    "datacreate_blockwts.R", "datacreate_bg_cenpop2020.R", "datacreate_bgpts.R", "datacreate_states_shapefile.R", "datacreate_stateinfo.R", "datacreate_stateinfo2.R", "datacreate_islandareas.R", "datacreate_censusplaces.R", 
-    "datacreate_frs_.R", "datacreate_frs_by_mact.R", "datacreate_frs_by_sic.R", "datacreate_frsprogramcodes.R", "datacreate_epa_programs.R", "datacreate_testids_program_sys_id.R", "datacreate_testids_registry_id.R", "datacreate_naics_counts.R", "datacreate_naicstable.R", "datacreate_SIC.R", "datacreate_sic_counts.R", "datacreate_sictable.R", 
-    "datacreate_lat_alias.R", "datacreate_ejampackages.R", "datacreate_meters_per_mile.R"
-    )
+         "datacreate_blockwts.R", "datacreate_bg_cenpop2020.R", "datacreate_bgpts.R", "datacreate_states_shapefile.R", "datacreate_stateinfo.R", "datacreate_stateinfo2.R", "datacreate_islandareas.R", "datacreate_censusplaces.R", 
+         "datacreate_map_headernames.R", "datacreate_names_of_indicators.R", "datacreate_names_pct_as_fraction.R", "datacreate_metadata4pins.R", "datacreate_blockgroupstats2.3.R", "datacreate_blockgroupstats2.3_add_d_acs22columns.R", "datacreate_usastats2.3.R", "datacreate_usastats2.3_add_dsubgroups.R", "datacreate_avg.in.us.R", "datacreate_high_pctiles_tied_with_min.R", "datacreate_formulas.R", "datacreate_test_address.R", "datacreate_testpoints_testoutputs.R", 
+         "datacreate_default_points_shown_at_startup.R", "datacreate_testpoints_5_50_500.R", "datacreate_ejscreenRESTbroker2table_na_filler.R", "datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R",
+         "datacreate_frs_.R", "datacreate_frs_by_mact.R", "datacreate_frs_by_sic.R", "datacreate_frsprogramcodes.R", "datacreate_epa_programs.R", "datacreate_testids_program_sys_id.R", "datacreate_testids_registry_id.R", "datacreate_naics_counts.R", "datacreate_naicstable.R", "datacreate_SIC.R", "datacreate_sic_counts.R", "datacreate_sictable.R", 
+         "datacreate_lat_alias.R", "datacreate_ejampackages.R", "datacreate_meters_per_mile.R"
+  )
   setdiff(x, dir(rawdir, pattern = 'datacreate_') )   # confirm the organized list x is completely reflecting current actual files
   setdiff( dir(rawdir, pattern = 'datacreate_'), x )
   cat("\n \n\n", "To open & edit one of the datacreate_ files,
@@ -92,6 +92,15 @@ if (0 == 1) {  # collapsable list
   rm(x)
   # [1,] "datacreate_0_UPDATE_ALL_DATASETS.R"                       
   # [2,] "datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R"  
+  
+  # [20,] "datacreate_blockwts.R"                                    
+  # [21,] "datacreate_bg_cenpop2020.R"                               
+  # [22,] "datacreate_bgpts.R"                                       
+  # [23,] "datacreate_states_shapefile.R"                            
+  # [24,] "datacreate_stateinfo.R"                                   
+  # [25,] "datacreate_stateinfo2.R"                                  
+  # [26,] "datacreate_islandareas.R"                                 
+  # [27,] "datacreate_censusplaces.R"          
   
   # [3,] "datacreate_map_headernames.R"                             
   # [4,] "datacreate_names_of_indicators.R"                         
@@ -112,15 +121,6 @@ if (0 == 1) {  # collapsable list
   # [18,] "datacreate_ejscreenRESTbroker2table_na_filler.R"          
   # [19,] "datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R"
   
-  # [20,] "datacreate_blockwts.R"                                    
-  # [21,] "datacreate_bg_cenpop2020.R"                               
-  # [22,] "datacreate_bgpts.R"                                       
-  # [23,] "datacreate_states_shapefile.R"                            
-  # [24,] "datacreate_stateinfo.R"                                   
-  # [25,] "datacreate_stateinfo2.R"                                  
-  # [26,] "datacreate_islandareas.R"                                 
-  # [27,] "datacreate_censusplaces.R"          
-  
   # [28,] "datacreate_frs_.R"                                        
   # [29,] "datacreate_frs_by_mact.R"                                 
   # [30,] "datacreate_frs_by_sic.R"                                  
@@ -137,40 +137,14 @@ if (0 == 1) {  # collapsable list
   # [40,] "datacreate_lat_alias.R"                                   
   # [41,] "datacreate_ejampackages.R"                                
   # [42,] "datacreate_meters_per_mile.R"                                                      
-
   
-####################################### # 
+  
+  ####################################### # 
   # overall
   documentOpen('./data-raw/datacreate_0_UPDATE_ALL_DATASETS.R')
   documentOpen('./data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R')
-
-    # with annual ejscreen data updates
-  # 
-  ##  new indicators, variable names
-  documentOpen('./data-raw/datacreate_map_headernames.R')       # ok
-  documentOpen('./data-raw/datacreate_names_of_indicators.R')   # ok
-  documentOpen('./data-raw/datacreate_names_pct_as_fraction.R') # ok
-  ##  ejscreen demog and envt data on every blockgroup
-  ##  + pctile and avg lookup tables
-  documentOpen("./data-raw/datacreate_metadata4pins.R") # ok
-  documentOpen('./data-raw/datacreate_blockgroupstats2.3.R') # and bgej      # ok
-  documentOpen('./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R')   # ok
-
-  documentOpen('./data-raw/datacreate_usastats2.3.R')                 # ok
-  documentOpen('./data-raw/datacreate_usastats2.3_add_dsubgroups.R')  # ok
-  documentOpen('./data-raw/datacreate_avg.in.us.R')                   # ok
-  documentOpen('./data-raw/datacreate_high_pctiles_tied_with_min.R')  # ok
-  ##  calculations and examples of outputs
-  documentOpen('./data-raw/datacreate_formulas.R')                    # was in progress; maybe not used yet
-  documentOpen('./data-raw/datacreate_test_address.R')       # ok
-  documentOpen('./data-raw/datacreate_testpoints_testoutputs.R')      # confirm new datasets/functions/indicators work here
-  # from the original  EJAMejscreenapi  package
-  documentOpen('./data-raw/datacreate_default_points_shown_at_startup.R')            
-  documentOpen('./data-raw/datacreate_testpoints_5_50_500.R')            
-  documentOpen('./data-raw/datacreate_ejscreenRESTbroker2table_na_filler.R')         
-  documentOpen('./data-raw/datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R')
   
-  # when census fips codes or boundaries change (& ejscreen updates accordingly)
+  # with annual census fips codes or boundaries changes (when EJScreen incorporates those)
   #
   # To create and save the datasets from within the EJAM source package root folder,
   # 
@@ -188,6 +162,32 @@ if (0 == 1) {  # collapsable list
   #   other geo
   documentOpen('./data-raw/datacreate_islandareas.R')        # ok
   documentOpen('./data-raw/datacreate_censusplaces.R')       # not used yet
+  
+  # with annual ejscreen data updates
+  # 
+  ##  new indicators, variable names
+  documentOpen('./data-raw/datacreate_map_headernames.R')       # ok
+  documentOpen('./data-raw/datacreate_names_of_indicators.R')   # ok
+  documentOpen('./data-raw/datacreate_names_pct_as_fraction.R') # ok
+  ##  ejscreen demog and envt data on every blockgroup
+  ##  + pctile and avg lookup tables
+  documentOpen("./data-raw/datacreate_metadata4pins.R") # ok
+  documentOpen('./data-raw/datacreate_blockgroupstats2.3.R') # and bgej      # ok
+  documentOpen('./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R')   # ok
+  
+  documentOpen('./data-raw/datacreate_usastats2.3.R')                 # ok
+  documentOpen('./data-raw/datacreate_usastats2.3_add_dsubgroups.R')  # ok
+  documentOpen('./data-raw/datacreate_avg.in.us.R')                   # ok
+  documentOpen('./data-raw/datacreate_high_pctiles_tied_with_min.R')  # ok
+  ##  calculations and examples of outputs
+  documentOpen('./data-raw/datacreate_formulas.R')                    # was in progress; maybe not used yet
+  documentOpen('./data-raw/datacreate_test_address.R')       # ok
+  documentOpen('./data-raw/datacreate_testpoints_testoutputs.R')      # confirm new datasets/functions/indicators work here
+  # from the original  EJAMejscreenapi  package
+  documentOpen('./data-raw/datacreate_default_points_shown_at_startup.R')            
+  documentOpen('./data-raw/datacreate_testpoints_5_50_500.R')            
+  documentOpen('./data-raw/datacreate_ejscreenRESTbroker2table_na_filler.R')         
+  documentOpen('./data-raw/datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R')
   
   # when frs info is updated
   
@@ -272,6 +272,122 @@ if (!is.null(x)) {
 ######################################### ########################################## #
 ######################################### ########################################## #
 # ~------------------------------------------- ####
+
+# *** ANNUAL CHANGES IN FIPS CODES or Census Boundaries (if EJScreen incorporates those) ####
+
+######################################### #
+## blocks  ####
+# documentOpen('./data-raw/datacreate_blockwts.R')           # needs Island Areas added
+
+######################################### #
+### datacreate_blockwts.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_blockwts.R")
+### this requires package called ejanalysis/census2020download, which is not on CRAN!
+source_maybe('datacreate_blockwts.R', DOIT = FALSE) # script that can include metadata_add() and use_data()
+#    and be sure to obtain correct version either from census or directly from ejscreen team
+# Creates mylistoftables, a list that includes tables blockwts, blockpoints, bgid2fips, etc.,
+#   gets updated when FIPS codes or boundaries change for blocks or blockgroups
+#  such as in Connecticut for v2.2 change to v2.3 !
+#  and then datawrite_to_pins() if those datasets were updated.
+
+if (!exists("blockid2fips")) {dataload_from_pins("blockid2fips", justchecking = F)}
+length(unique(substr(blockid2fips$blockfips,1,2)))
+if (!exists("bgid2fips")) {dataload_from_pins("bgid2fips")}
+nacounts(bgid2fips, showall = T)
+
+################ #
+## check blockid values in all these datasets
+
+nacounts(blockwts, showall = T)
+nacounts(blockpoints, showall = T)
+nacounts(quaddata, showall = T)
+nacounts(blockid2fips, showall = T)
+
+stopifnot(
+  all(
+    setequal(blockid2fips$blockid, blockpoints$blockid), 
+    setequal(blockid2fips$blockid, quaddata$blockid),
+    setequal(blockid2fips$blockid, blockwts$blockid)
+  ),
+  all(
+    !anyDuplicated(blockid2fips$blockid),
+    !anyDuplicated(blockwts$blockid),
+    !anyDuplicated(blockpoints$blockid),
+    !anyDuplicated(quaddata$blockid)
+  ),
+  all(
+    !anyNA(blockid2fips),
+    !anyNA(blockwts),
+    !anyNA(blockpoints),
+    !anyNA(quaddata)
+  )
+)
+# blockid2fips : blockid, blockfips 
+# blockpoints :  blockid,             lat, lon 
+# blockwts :     blockid, bgid, blockwt, block_radius_miles 
+# quaddata :      blockid   and      BLOCK_X, BLOCK_Z, BLOCK_Y
+
+# ONE COULD LOAD FROM LOCAL OR PINS THE EXISTING VERSIONS OF THESE DATASETS IF available INSTEAD OF UPDATING THEM
+
+######################################### #
+## blockgroups ####
+# documentOpen('./data-raw/datacreate_bgpts.R')              # USED BY datacreate_blockgroupstats2.3.R !! otherwise redundant w bg_cenpop2020
+# documentOpen('./data-raw/datacreate_bg_cenpop2020.R')      # confirm if changed since 2020
+
+######################################### #
+### datacreate_bgpts.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_bgpts.R")
+
+cat( "Is it loaded/attached already? "); cat("bgpts" %in% ls(), '\n'); 
+cat("Is it a dataset in installed EJAM pkg? "); junk <- capture.output({XYZ <- datapack("EJAM")$Item}); cat("bgpts" %in% XYZ, '\n'); 
+cat('Is it loadable and/or attached already, per "exists()" ? ', exists("bgpts"), '\n'); rm(junk, XYZ)
+# dataload_from_pins("bgpts", justchecking = TRUE)# bgpts is in EJAM/data/  not on pins board.
+
+#  attributes2(bgpts)
+
+source_maybe("datacreate_bgpts.R", DOIT = FALSE, folder = rawdir) 
+nacounts(bgpts)
+
+### datacreate_bg_cenpop2020.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_bg_cenpop2020.R")       IS IT USED AT ALL BY EJAM THOUGH??
+source_maybe("datacreate_bg_cenpop2020.R", DOIT = FALSE, folder = rawdir)
+
+
+######################################### #
+## states ####
+# documentOpen('./data-raw/datacreate_states_shapefile.R')   # check if want 2020 or 2022+ file
+# documentOpen('./data-raw/datacreate_stateinfo.R')          # ok (missing Island Areas)
+# documentOpen('./data-raw/datacreate_stateinfo2.R')         # ok (has Island Areas)
+
+### datacreate_states_shapefile.R ####
+# documentOpen('./data-raw/datacreate_states_shapefile.R')   # check if want 2020 or 2022+ file
+source_maybe("datacreate_states_shapefile.R", DOIT = FALSE, folder = rawdir)
+######################################### #
+### datacreate_stateinfo.R ####
+### datacreate_stateinfo2.R ####
+# documentOpen('./data-raw/datacreate_stateinfo.R')          # ok (missing Island Areas)
+# documentOpen('./data-raw/datacreate_stateinfo2.R')         # ok (has Island Areas)
+## ok to update metadata whenever - these should never really change but want to note version 2.3 etc.
+source_maybe('datacreate_stateinfo.R', DOIT = FALSE, folder = rawdir)
+source_maybe('datacreate_stateinfo2.R', DOIT = FALSE, folder = rawdir)
+######################################### #
+
+## other geo ####
+# documentOpen('./data-raw/datacreate_islandareas.R')        # ok
+# documentOpen('./data-raw/datacreate_censusplaces.R')       # not used yet
+
+### datacreate_islandareas.R ####
+# documentOpen('./data-raw/datacreate_islandareas.R')        # ok
+source_maybe("datacreate_islandareas.R", DOIT = FALSE, folder = rawdir)
+######################################### #
+### datacreate_censusplaces.R ####
+# documentOpen('./data-raw/datacreate_censusplaces.R')       # not used yet
+source_maybe("datacreate_censusplaces.R", DOIT = FALSE, folder = rawdir)
+
+######################################### ########################################## #
+
+
+# ~------------------------------------------- ####
 # *** ANNUAL UPDATES OF EJScreen ####
 
 ## Indicator/variable names etc. ####
@@ -316,6 +432,14 @@ devtools::load_all()
 ### datacreate_blockgroupstats2.3 (also starts making usastats,statestats!!) ####
 ### ACS22 via datacreate_blockgroupstats2.3_add_d_acs22columns ####
 # rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.3.R")
+if (askquestions && interactive()) {
+  y = askYesNo("Did you already update bgpts via new block weights and fips dataset? (required before updating blockgroupstats)")
+  if (is.na(y) || !y) {
+    rm(y)
+    stop("Need to update bgpts via new block weights and fips dataset before updating blockgroupstats")
+  }
+}
+
 source_maybe("datacreate_blockgroupstats2.3.R") # (also starts making usastats,statestats!!)
 # created bgej
 # created blockgroupstats_new as interim object
@@ -324,6 +448,65 @@ source_maybe("datacreate_blockgroupstats2.3.R") # (also starts making usastats,s
 # rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R")  # reads ACS22 extra file of demographics not on ftp site
 source_maybe("datacreate_blockgroupstats2.3_add_d_acs22columns.R")  # reads ACS22 extra file of demographics not on ftp site
 # created blockgroupstats (now with demog subgroups from ACS22 extra file of demographics not on ftp site)
+
+################ ################# ################# ################# #
+################ ################# ################# ################# ################# #
+## check bgid values in all these datasets
+# blockgroupstats :  bgfips, bgid, statename, ST, etc.
+# bgej :                     bgid,   bgfips,  ST, etc.
+# bgid2fips :                bgid,   bgfips
+# bgpts                      bgid, + bgfips, etc.
+# bg_cenpop2020              bgid (not bgfips) ST, etc.
+
+# + blockwts :      blockid, bgid, etc.
+
+# data.table(blockgroupstats)[is.na(bgfips), table(ST)]
+# ST
+# AS  GU  MP 
+# 77  58 135 
+# data.table(blockgroupstats)[is.na(bgid), table(ST)]
+# ST
+# AS   CT   GU   MP   VI 
+# 77 2717   58  135  416 
+
+# nacounts(blockgroupstats[, .(bgfips,bgid,pop)])
+# exists("bgid2fips")
+
+
+stopifnot(
+  all(
+    !anyDuplicated(blockgroupstats$bgid),
+    # !anyDuplicated(bgej$bgid),
+    !anyDuplicated(quaddata$bgid),
+    !anyDuplicated(bgid2fips$bgid),
+    !anyDuplicated(bgpts),
+    !anyDuplicated(blockwts)
+  ))
+
+stopifnot(
+  all(
+    !anyNA(blockgroupstats$bgid),
+    !anyNA(bgej$bgid),
+    !anyNA(quaddata$bgid),
+    !anyNA(bgid2fips$bgid),
+    !anyNA(bgpts),
+    !anyNA(blockwts)
+  )
+)
+
+stopifnot(
+  all(
+    setequal(blockgroupstats$bgid, bgej$bgid),   # ok
+    setequal(blockgroupstats$bgid, quaddata$bgid),  # false due to CT 19 as of 8/14/24
+    setequal(blockgroupstats$bgid, bgid2fips$bgid), # false
+    setequal(blockgroupstats$bgid, bgpts$bgid), # false
+    setequal(blockgroupstats$bgid, bg_cenpop2020$bgid), # false
+    setequal(blockgroupstats$bgid, blockwts$bgid) # false
+  )
+)
+
+################ ################# ################# ################# #
+################ ################# ################# ################# #
 
 ######################################### #
 if (askquestions && interactive()) {
@@ -344,6 +527,9 @@ source_maybe("datacreate_usastats2.3.R")
 ### datacreate_usastats2.3_add_dsubgroups.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_usastats2.3_add_dsubgroups.R")
 source_maybe("datacreate_usastats2.3_add_dsubgroups.R")
+print(nacounts(usastats))
+print(nacounts(statestats))
+
 ######################################### #
 ### datacreate_avg.in.us.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_avg.in.us.R")
@@ -357,7 +543,7 @@ source_maybe("datacreate_high_pctiles_tied_with_min.R")
 # rstudioapi::documentOpen("./data-raw/datacreate_formulas.R")
 source_maybe("datacreate_formulas.R")
 ######################################### #
- 
+
 ## Test data & examples of outputs ####
 ######################################### #
 ### datacreate_test_address.R #### 
@@ -409,78 +595,17 @@ source_maybe('datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R')
 ######################################### ########################################## #
 
 
+document()
 
-load_all()
+devtools::install(quick = TRUE)
+
 # 
 # install()
 
-
-######################################### #
-######################################### #
-# ~------------------------------------------- ####
-# *** FIPS CODE UPDATES or Census Boundary changes (once EJScreen incorporates those) ####
-
-######################################### #
-## blocks  ####
-# documentOpen('./data-raw/datacreate_blockwts.R')           # needs Island Areas added
-
-######################################### #
-### datacreate_blockwts.R ####
-# rstudioapi::documentOpen("./data-raw/datacreate_blockwts.R")
-### this requires package called ejanalysis/census2020download, which is not on CRAN!
-source_maybe('datacreate_blockwts.R', DOIT = FALSE) # script that can include metadata_add() and use_data()
-#    and be sure to obtain correct version either from census or directly from ejscreen team
-# Creates mylistoftables, a list that includes tables blockwts, blockpoints, etc.,
-#   gets updated when FIPS codes or boundaries change for blocks or blockgroups
-#  such as in Connecticut for v2.2 change to v2.3 !
-
-#  & possibly to add data that had been missing, for Island Areas AS, GU, MP, VI ***
-
-######################################### #
-## blockgroups ####
-# documentOpen('./data-raw/datacreate_bg_cenpop2020.R')      # confirm if changed since 2020
-# documentOpen('./data-raw/datacreate_bgpts.R')              # redundant w bg_cenpop2020, pick one to use
-
-### datacreate_bg_cenpop2020.R ####
-# rstudioapi::documentOpen("./data-raw/datacreate_bg_cenpop2020.R")       IS IT USED AT ALL BY EJAM THOUGH??
-source_maybe("datacreate_bg_cenpop2020.R", DOIT = FALSE, folder = rawdir)
-######################################### #
-### datacreate_bgpts.R ####
-# rstudioapi::documentOpen("./data-raw/datacreate_bgpts.R")
-source_maybe("datacreate_bgpts.R", DOIT = FALSE, folder = rawdir)
-######################################### #
-## states ####
-# documentOpen('./data-raw/datacreate_states_shapefile.R')   # check if want 2020 or 2022+ file
-# documentOpen('./data-raw/datacreate_stateinfo.R')          # ok (missing Island Areas)
-# documentOpen('./data-raw/datacreate_stateinfo2.R')         # ok (has Island Areas)
-
-### datacreate_states_shapefile.R ####
-# documentOpen('./data-raw/datacreate_states_shapefile.R')   # check if want 2020 or 2022+ file
-source_maybe("datacreate_states_shapefile.R", DOIT = FALSE, folder = rawdir)
-######################################### #
-### datacreate_stateinfo.R ####
-### datacreate_stateinfo2.R ####
-# documentOpen('./data-raw/datacreate_stateinfo.R')          # ok (missing Island Areas)
-# documentOpen('./data-raw/datacreate_stateinfo2.R')         # ok (has Island Areas)
-## ok to update metadata whenever - these should never really change but want to note version 2.3 etc.
-source_maybe('datacreate_stateinfo.R', DOIT = FALSE, folder = rawdir)
-source_maybe('datacreate_stateinfo2.R', DOIT = FALSE, folder = rawdir)
-######################################### #
-
-## other geo ####
-# documentOpen('./data-raw/datacreate_islandareas.R')        # ok
-# documentOpen('./data-raw/datacreate_censusplaces.R')       # not used yet
-
-### datacreate_islandareas.R ####
-# documentOpen('./data-raw/datacreate_islandareas.R')        # ok
-source_maybe("datacreate_islandareas.R", DOIT = FALSE, folder = rawdir)
-######################################### #
-### datacreate_censusplaces.R ####
-# documentOpen('./data-raw/datacreate_censusplaces.R')       # not used yet
-source_maybe("datacreate_censusplaces.R", DOIT = FALSE, folder = rawdir)
-
-
 ######################################### ########################################## #
+
+######################################### #
+######################################### #
 # ~------------------------------------------- ####
 # *** FRS UPDATES (incl. NAICS/SIC) ####
 
@@ -650,7 +775,7 @@ cat("\n\n")
 ## Example if manually obtained and saved these locally, then reading them into memory:
 # dataload_from_local(folder_local_source = "~/../Downloads/EJAMbigfiles", varnames = c("frs", "frs_by_mact", "frs_by_sic", "frs_by_naics", "frs_by_programid")  )
 ## then saving to pins
-  # EJAM:::datawrite_to_pins(varnames = c("frs", "frs_by_mact", "frs_by_sic", "frs_by_naics", "frs_by_programid"))
+# EJAM:::datawrite_to_pins(varnames = c("frs", "frs_by_mact", "frs_by_sic", "frs_by_naics", "frs_by_programid"))
 
 
 datawrite_to_pins() # it will ask interactively to confirm which ones among defaults to save to pins

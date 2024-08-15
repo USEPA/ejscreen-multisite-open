@@ -181,21 +181,31 @@ names(acs22) <- fixcolnames(names(acs22), 'acsname', 'r')
 
 # DROP MOST COLUMNS ####
 
-acs22$bgfips <- acs22$STCNTRBG
+ # dim(acs22)
+# [1] 242336    676
+
+# acs22$bgfips <- acs22$STCNTRBG
+ names(acs22) <- gsub("id", 'bgfips', names(acs22))
 acs22 <- data.table(bgfips = acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
 
-# dim(acs22)
-# [1] 242336    676
+# still need but not found: *** must get from  separate file(s)
+# 
+# names_d_language
+# names_health
+# names_criticalservice
+# names_climate
+# names_flag
+
 # > acs22 = data.table(acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
-# > dim(acs22)
-# [1] 242336     73
+ dim(acs22)
+# [1] 242336     88
 
 # get rid of redundant columns before merge with bg stats
 setDF(acs22)
 acs22 <- acs22[, c("bgfips", names(acs22)[!(names(acs22) %in% names(blockgroupstats_new))])]
 setDT(acs22)
-# > dim(acs22)
-# [1] 242336     66
+ dim(acs22)
+# [1] 242336     67
 ############################################################################ # 
 
 # ARCHIVE small acs22.arrow ####
@@ -292,9 +302,9 @@ print("dimensions of blockgroupstats before merging in ACS info:")
 print(dim(blockgroupstats_new))
 
 # > dim(acs22)
-# [1] 242336     59
+# [1] 242336     67
 # > dim(blockgroupstats_new)
-# [1] 243022     56
+# [1] 242336     56
 
 # if in data.table formats, uses data.table::merge() 
 # to merge or join blockgroupstats_new and acs22, key on bgid 
@@ -304,7 +314,7 @@ blockgroupstats <- merge(blockgroupstats_new, acs22,
 
 print("dimensions of blockgroupstats AFTER merging in ACS info:")
 print( dim(blockgroupstats) )
-# [1] 243022    114
+# [1] 242336        122
 
 # > blockgroupstats is now in globalenv() ####
 
