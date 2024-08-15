@@ -19,6 +19,9 @@
 build_community_report <- function(output_df, analysis_title, totalpop, locationstr, 
                                    include_ejindexes=FALSE, in_shiny = FALSE, filename = NULL){
   
+  print("HISP")
+  print(output_df$pcthisp)
+  
   ## check that analysis was run with EJ columns; if not, don't add them
   if (include_ejindexes) {
     ejcols <- c(names_ej,names_ej_state, names_ej_supp,names_ej_supp_state)
@@ -33,7 +36,8 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
   
   varlist <- union(unique(map_headernames$varlist), names_demog_index)
   
-  r100x <- colnames(output_df_rounded) %in% setdiff(c(names_d, names_d_avg, names_d_state_avg), names_demog_index) # units were 0-1 not 0-100
+  r100x <- fixcolnames(names(output_df), oldtype = "r", newtype = "percentage") == "1"
+  #r100x <- colnames(output_df_rounded) %in% setdiff(c(names_d, names_d_avg, names_d_state_avg), names_demog_index) # units were 0-1 not 0-100
   #r100x <- setdiff(r100x, names_demog_index)
   output_df_rounded[, r100x] <- 100 * (output_df_rounded[, r100x])
   expandedVarlist <- c()
@@ -47,7 +51,15 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
 
   for (colname in colnames(output_df_rounded)){
     if (colname %in% expandedVarlist){
-  
+      if (colname == "pcthisp"){
+        print("HISP TO HERE")
+        print(output_df_rounded$pcthisp)
+        print(output_df_rounded[[colname]])
+      }
+      if(colname == "pctmale"){
+        print("MALE GETS TO HERE")
+      }
+      
       roundingPrecision <- table_rounding_info(var = colname)
       output_df_rounded[[colname]] <- round(output_df_rounded[[colname]], roundingPrecision)
     }
@@ -78,6 +90,7 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
                         #fill_tbl_full_ej_supp(output_df_rounded),
                         collapse = '') 
   }
+
   
   full_page <- paste0(
     full_page,

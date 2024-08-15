@@ -256,10 +256,17 @@ fill_tbl_row_subgroups <- function(output_df, Rname, longname) {
   
   for (j in seq_along(Rnames)) {
     cur_var <- Rnames[j]
+    
     if ('data.table' %in% class(output_df)) {
-      cur_val <- round(100*output_df[, ..cur_var], 1)#round(output_df[,..cur_var],2)
+      # print(cur_var)
+      # print(output_df[, ..cur_var])
+      cur_val <- output_df[, ..cur_var]#round(output_df[,..cur_var],2)
+      
+      
     } else {
-      cur_val <- round(100*output_df[, cur_var],1) #round(output_df[,cur_var],2)
+      # print(cur_var)
+      # print(output_df[cur_var])
+      cur_val <- output_df[, cur_var] #round(output_df[,cur_var],2)
     }
     txt <-  paste0(txt, '\n','<td headers=\"data-indicators-table-',
                    hdr_names[j],'\">',
@@ -323,6 +330,7 @@ fill_tbl_full_subgroups <- function(output_df) {
                            Rname = Rnames_d_race[x],
                            longname = longnames_d_race[x])
   })
+ 
   full_html <- paste(full_html,
                      paste(tbl_rows_d_race , collapse = '\n'),
                      
