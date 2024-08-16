@@ -13,46 +13,67 @@ test_that("{shinytest2} recording: EJAM", {
   app$set_inputs(ss_select_naics = "1111", wait_ = FALSE)#, timeout_ = 10000)
   
   print("About to get results")
-  # app$wait_for_idle(timeout = 20000)
-  app$click("bt_get_results")#, wait_ = TRUE, timeout_ = 20000)
+  app$wait_for_idle(timeout = 20000)
+  app$click("bt_get_results", wait_ = TRUE, timeout_ = 20000)
   print("done pulling results")
-  write.csv(app$get_logs(), "/media/gdrive/silvermanA/EJAM-test/shinytest2_log.csv")
+  # write.csv(app$get_logs(), "/media/gdrive/silvermanA/EJAM-test/shinytest2_log.csv")
   
+  print("taking a screenshot")
   app$expect_values()
-  print("screenshot time")
-  message("screenshot time")
   app$expect_screenshot()
   
-  message("going to Site Selection tab")
+  print("going to Site Selection tab")
   app$set_inputs(all_tabs = "Site Selection")
   app$set_inputs(bt_rad_buff = 1.5)
   
-  message("set analysis title to Summary of EJ Analysis2")
+  print("set analysis title to Summary of EJ Analysis2")
   app$set_inputs(analysis_title = "Summary of EJ Analysis2")
   
-  message("repull results")
-  app$click("bt_get_results")
+  print("repulling results")
+  app$click("bt_get_results", wait_ = TRUE, timeout_ = 20000)
+  
+  print("another screenshot after repulling")
   app$expect_values()
   app$expect_screenshot()
-  app$expect_download("community_download")
+  
+  print("about to do community download")
+  app$wait_for_idle(timeout = 20000)
+  app$click("community_download", wait_ = TRUE, timeout_ = 20000)
+  app$expect_download()
+  
+  print("going to details tab")
   app$set_inputs(results_tabs = "Details")
-  app$expect_download("download_results_table")
+  
+  print("downloading results table from details tab")
+  app$click("download_results_table")
+  app$expect_download()
+  
+  print("screenshotting that")
   app$expect_values()
   app$expect_screenshot()
   # DETAILS > PLOT AVERAGE SCORES
+  print("going to plot_average details subtab")
   app$set_inputs(details_subtabs = "plot_average")
   app$expect_values()
   app$expect_screenshot()
+  
+  print("Demographic summ_bar-ind")
   app$set_inputs(summ_bar_ind = "Demographic")
   app$expect_values()
   app$expect_screenshot()
+  
+  print("EJ summ_bar-ind")
   app$set_inputs(summ_bar_ind = "EJ")
   app$expect_values()
   app$expect_screenshot()
+  
+  print("EJ supplemental")
   app$set_inputs(summ_bar_ind = "EJ Supplemental")
   app$expect_values()
   app$expect_screenshot()
+  
   # DETAILS > PLOT RANGE OF SCORES
+  print("going to plot_range details subtab")
   app$set_inputs(details_subtabs = "plot_range")
   app$expect_values()
   app$expect_screenshot()
