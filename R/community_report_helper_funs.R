@@ -241,6 +241,14 @@ fill_tbl_full_ej <- function(output_df) {
 #'@param longname, nicer name of indicator to use in table row; can include HTML sub/superscripts
 #'
 #' @keywords internal
+
+#' Write a demographic subgroup indicator to an html table row
+#'
+#'@param output_df, single row of results table from doaggregate - either results_overall or one row of bysite
+#'@param Rname, variable name of indicator to pull from results, such as 'pm', 'pctlowinc', 'Demog.Index'
+#'@param longname, nicer name of indicator to use in table row; can include HTML sub/superscripts
+#'
+#' @keywords internal
 #'
 fill_tbl_row_subgroups <- function(output_df, Rname, longname) {
   txt <- '<tr>'
@@ -250,29 +258,21 @@ fill_tbl_row_subgroups <- function(output_df, Rname, longname) {
                 id_col,'\">',
                 longname,'</td>')
   
-  hdr_names <- c('value')
+  hdr_names <- 'value'
   
   Rnames <- paste0(c(''), Rname)
   
-  for (j in seq_along(Rnames)) {
-    cur_var <- Rnames[j]
-    
-    if ('data.table' %in% class(output_df)) {
-      # print(cur_var)
-      # print(output_df[, ..cur_var])
-      cur_val <- output_df[, ..cur_var]#round(output_df[,..cur_var],2)
-      
-      
-    } else {
-      # print(cur_var)
-      # print(output_df[cur_var])
-      cur_val <- output_df[, cur_var] #round(output_df[,cur_var],2)
-    }
-    txt <-  paste0(txt, '\n','<td headers=\"data-indicators-table-',
-                   hdr_names[j],'\">',
-                   cur_val,'%','</td>')
-    
+  cur_val <- if ('data.table' %in% class(output_df)){
+    output_df[, ..Rnames]
+  } else{
+    output_df[, Rnames]
   }
+  
+  txt <-  paste0(txt, '\n', paste0('<td headers=\"data-indicators-table-',
+                                   hdr_names,'\">',
+                                   cur_val,'%','</td>'))
+  
+  
   txt <- paste0(txt, '\n','</tr>')
   return(txt)
 }
