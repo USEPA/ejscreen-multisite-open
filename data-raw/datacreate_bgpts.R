@@ -22,31 +22,44 @@ bgpts_blocks[ , bgid    := blockwts$bgid]
 bgpts_blocks[ , blockwt := blockwts$blockwt]
 
 # Find popwtd centroid lat lon in each block group ####
+## but note weight is zero sometimes.
+# > sum(bgpts_blocks$blockwt == 0)
+# [1] 2368443
 
-bgpts <- bgpts_blocks[ , lapply(.SD, FUN = function(x) {stats::weighted.mean(x, w = blockwt, na.rm = TRUE)}), 
-                       .SDcols = c('lat', 'lon'),
-                       by = 'bgid']
-
+bgpts <- bgpts_blocks[ , lapply(.SD, FUN = function(x) {
+  stats::weighted.mean(x, w = blockwt, na.rm = TRUE)
+}),  .SDcols = c('lat', 'lon'),  by = 'bgid']
+emptybgids = bgpts$bgid[is.na(bgpts$lat)]
+bgpts[bgid %in% emptybgids, ]  <- bgpts_blocks[bgid %in% emptybgids, lapply(.SD, mean),
+                                               .SDcols = c('lat', 'lon'),  by = 'bgid']
 rm(bgpts_blocks)
 
 ## add bgfips column, so it has bgfips, bgid, lat, lon
-# all.equal(bgpts$bgid, bgid2fips$bgid)
+stopifnot( all.equal(bgpts$bgid, bgid2fips$bgid) )
 bgpts[ , bgfips := bgid2fips$bgfips]
 
-# setnames(bgpts, 'bgfips', 'FIPS')  # ?
-
 ############################################# # 
-## PR, but not "AS" "GU" "MP" "VI", found in census2020 block table *** ####
-##          so how do we get latlon for bg in as/gu/mp/vi ?  ?####
-#
-#   uniqueN( blockid2fips[,substr(blockfips,1,2)])
-## [1] 52
-# length(unique(EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV)) # which is in the package EJAMejscreendata
-## [1] 56
-#   dim(bgejam)
-## [1] 242,940    155
-#   dim(bg22)
-## [1] 242,335    157
+#  THE  v2.3 block table from EJScreen team with weights already had PR at least,
+
+## bgid2fips has only 50 states plus DC and PR, but not AS GU MP VI, which is fine:
+length(fips2state_abbrev(rownames(table(substr(bgid2fips$bgfips,1,2)))))
+## AS GU MP VI were in blockgroupstats but NOT in bgpts! will drop from blockgroupstats. 
+# unique(blockgroupstats[, .(statename, island = is.island(ST), bgcount = .N), by = "ST"])
+## ST abbrev is in blockgroupstats and will not be stored in bgpts or bgid2fips etc.
+# blockid2fips[, ST := fips2state_abbrev(substr(blockfips,1,2))][,.N,by = "ST"]
+# bgid2fips[, ST := fips2state_abbrev(substr(bgfips,1,2))][,.N,by = "ST"]
+
+# stcounts = table(fips2state_abbrev(substr(bgpts$bgfips,1,2)))
+# names(stcounts)
+## [1] "AK" "AL" "AR" "AZ" "CA" "CO" "CT"   "DC"   "DE" "FL" "GA" "HI" "IA" "ID" "IL" "IN" "KS" "KY" "LA"
+## [20] "MA" "MD" "ME" "MI" "MN" "MO" "MS" "MT" "NC" "ND" "NE" "NH" "NJ" "NM" "NV" "NY" "OH" "OK" "OR"
+## [39] "PA"   "PR"   "RI" "SC" "SD" "TN" "TX" "UT" "VA" "VT" "WA" "WI" "WV" "WY"
+# setdiff(names(stcounts), state.abb)
+## [1] "DC" "PR"
+# 
+## if using downloaded file though,
+## PR, but not "AS" "GU" "MP" "VI", were found in downloaded census2020 block table ***
+
 ############################################# # 
 
 ## view those block group points on a map (plot only a subset which is enough)
@@ -61,25 +74,25 @@ bgpts[ , bgfips := bgid2fips$bgfips]
 # rm(mystate, xx)
 
 ############################################# # 
-## How blockcounts were done:
+## How blockcounts can be done:
 
 ## need  data.table pkg loaded
 
-bg_blockcounts <- blockwts[ , .(blockcount = uniqueN(.SD)), by = bgid]
-bgpts[ , blockcount := bg_blockcounts$blockcount]
+bg_blockcounts2 <- blockwts[ , .(blockcount = .N), by = bgid]
+bgpts[ , blockcount := bg_blockcounts2$blockcount]
 
-# sum(bg_blockcounts$blockcount == 1)
+  # sum(bg_blockcounts2$blockcount == 1)
 ## [1] 1874 blockgroups have only 1 block
-#sum(bg_blockcounts$blockcount == 1000) # the max is 1000 blocks in a bg
+# sum(bg_blockcounts2$blockcount == 1000) # the max is 1000 blocks in a bg
 # # [1] 22
-# round(100 * table(bg_blockcounts[blockcount < 20, blockcount]) / nrow(bg_blockcounts), 1)
+  # round(100 * table(bg_blockcounts2[blockcount < 20, blockcount]) / nrow(bg_blockcounts2), 1)
 ## about 1 to 3 % of all bg contain 10 blocks, 5 blocks, 2 blocks, etc:
 ##   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19
 ## 0.8 1.2 1.3 1.4 1.5 2.1 2.2 2.4 2.6 2.8 2.8 3.0 3.0 2.9 3.0 2.9 2.8 2.7 2.5
-# all.equal(bgpts$bgid, bg_blockcounts$bgid)
-
+ all.equal(bgpts$bgid, bg_blockcounts2$bgid)
+rm(bg_blockcounts2)
 # dim(bgpts)
-# 242335  x    5
+# 242355    5
 ############################################# # 
 
 # add metadata ------------------- 

@@ -17,7 +17,7 @@ get expanded version of sites2blocks data.table, with new lat,lon columns
 }
 \examples{
  s2b = copy(testoutput_getblocksnearby_10pts_1miles)
- latlon_join_on_blockid(s2b) # done by trilaterate also
+ latlon_join_on_blockid(s2b) 
 
 }
 \keyword{internal}

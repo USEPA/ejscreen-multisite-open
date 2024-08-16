@@ -35,7 +35,7 @@
 #' @keywords internal
 #' @export
 #'   
-ratios_to_avg <- function(out, 
+calc_ratios_to_avg <- function(out, 
                           evarnames = map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_e"], #EJAM ::names_e, 
                           dvarnames = map_headernames$newnames_ejscreenapi[map_headernames$varlist %in% c("names_d", "names_d_subgroups" )], #EJAM ::names_d and names_d_subgroups
                           zone.prefix='', # can just specify "state." if the 

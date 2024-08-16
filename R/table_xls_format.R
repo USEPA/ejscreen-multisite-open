@@ -568,6 +568,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     updateProgress(message_main = boldtext, value = 0.7)
   }
   
+  is.percentage_overall  <- 1 == fixcolnames(headers_overall, oldtype = "r", newtype = "percentage")
+  percentage_colnums_overall <- which(is.percentage_overall)
+  is.percentage_eachsite  <- 1 == fixcolnames(headers_eachsite, oldtype = "r", newtype = "percentage")
+  percentage_colnums_eachsite <- which(is.percentage_eachsite)
+  
   # ROW 1 STYLE ####
   
   headstyle_basic <- openxlsx::createStyle(
@@ -708,24 +713,6 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   }
   
   
-  # conditionalFormatting(wb, "colourScale",
-  #                       cols = 1:ncol(df), rows = 1:(1 + NROW(df)),
-  #                       style = createStyle(bgFill = "yellow"),
-  #                       rule = c(80,89.999),
-  #                       type = "between"
-  # ) 
-  # conditionalFormatting(wb, "colourScale",
-  #                       cols = 1:ncol(df), rows = 1:(1 + NROW(df)),
-  #                       style = createStyle(bgFill = "orange"),
-  #                       rule = c(90,94.999),
-  #                       type = "between"
-  # )
-  # conditionalFormatting(wb, "colourScale",
-  #                       cols = 1:ncol(df), rows = 1:(1 + NROW(df)),
-  #                       style = createStyle(bgFill = "red"),
-  #                       rule = c(95,100),
-  #                       type = "between"
-  # )
   ###########################################  ###########################################  ########################################## #
   
   
@@ -742,11 +729,6 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     # openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = raw_colnums_overall,  style=raw_var_style, stack = TRUE)
     # openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:((1 + NROW(eachsite)), cols = raw_colnums_eachsite, style=raw_var_style, stack = TRUE, gridExpand = TRUE)
     
-    ## define PERCENTAGE columns
-    is.percentage_overall  <- 1 == fixcolnames(headers_overall, oldtype = "r", newtype = "percentage")
-    percentage_colnums_overall <- which(is.percentage_overall)
-    is.percentage_eachsite  <- 1 == fixcolnames(names(eachsite), oldtype = "r", newtype = "percentage")
-    percentage_colnums_eachsite <- which(is.percentage_eachsite)
     
     # GET INFO FROM map_headernames THAT SPECIFIES NUMBER OF DECIMAL PLACES FOR MOST OR ALL INDICATORS !!
     #
@@ -824,27 +806,9 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       boldtext <- 'Saving file'
       updateProgress(message_main = boldtext, value = 1)
     }
-  }
+
   
   
-  # conditionalFormatting(wb, "colourScale",
-  #                       cols = 1:ncol(df), rows = 1:(1 + NROW(df)),
-  #                       style = createStyle(bgFill = "yellow"),
-  #                       rule = c(80,89.999),
-  #                       type = "between"
-  # ) 
-  # conditionalFormatting(wb, "colourScale",
-  #                       cols = 1:ncol(df), rows = 1:(1 + NROW(df)),
-  #                       style = createStyle(bgFill = "orange"),
-  #                       rule = c(90,94.999),
-  #                       type = "between"
-  # )
-  # conditionalFormatting(wb, "colourScale",
-  #                       cols = 1:ncol(df), rows = 1:(1 + NROW(df)),
-  #                       style = createStyle(bgFill = "red"),
-  #                       rule = c(95,100),
-  #                       type = "between"
-  # )
   ###########################################  ###########################################  ########################################## #
   
   
@@ -854,36 +818,36 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   
   ### Number format default for raw indicator columns - should get replaced though by table_round() or table_rounding_info() in most or all cases  ####
   
-  raw_colnums_overall   <- which(vartypes_overall  == 'raw data for indicator')
-  raw_colnums_eachsite  <- which(vartypes_eachsite == 'raw data for indicator')
-  raw_var_style <- openxlsx::createStyle(numFmt = '#,##0.00')
-  # openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = raw_colnums_overall,  style=raw_var_style, stack = TRUE)
-  # openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:((1 + NROW(eachsite)), cols = raw_colnums_eachsite, style=raw_var_style, stack = TRUE, gridExpand = TRUE)
-  
-  # GET INFO FROM map_headernames THAT SPECIFIES NUMBER OF DECIMAL PLACES FOR MOST OR ALL INDICATORS !!
-  #
-  # How many decimals (or ideally significant digits but not possible here) to report?  This could be done via rounding values before put in excel,
-  #  OR probably better, sending exact values to Excel but using Excel formatting to display them correctly.
-  # 
-  # sigfigs_table <-  map_headernames[ "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsname",	"csvname")]
-  digitstable <- map_headernames[ "" != (map_headernames$decimals) | "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsname",	"csvname", "apiname")]
-  decimals_cols <- names(eachsite)[names(eachsite) %in% digitstable$rname[digitstable$decimals != ""]]
-  decimals_colnum <- match(decimals_cols, names(eachsite)) # and overall has same exact names and sort order of names
-  decimals_tosee <- digitstable$decimals[match(decimals_cols, digitstable$rname)]
-  dec2format <- function(decimalscount) ifelse(decimalscount == 0, "0", paste0("0.", paste0(rep("0", decimalscount), collapse = '')))
-  # dec2formats <- Vectorize(dec2format)
-  ## only loop over unique values
-  for (i in unique(decimals_tosee)) {
-    style_cur <- openxlsx::createStyle(numFmt = dec2format(i))
-    openxlsx::addStyle(wb, 'Overall',   cols = decimals_colnum[decimals_tosee == 'i'], rows = 2                    ,  style = style_cur, stack = TRUE)
-    openxlsx::addStyle(wb, 'Each Site', cols = decimals_colnum[decimals_tosee == 'i'], rows = 2:(1 + NROW(eachsite)), style = style_cur, stack = TRUE, gridExpand = TRUE)
-  }
-  # for (i in 1:length(decimals_cols)) {
-  #   style_cur <- openxlsx::createStyle(numFmt = dec2format(decimals_tosee[i]))
-  #   openxlsx::addStyle(wb, 'Overall',   cols = decimals_colnum[i], rows = 2                    ,  style = style_cur, stack = TRUE)
-  #   openxlsx::addStyle(wb, 'Each Site', cols = decimals_colnum[i], rows = 2:(1 + NROW(eachsite)), style = style_cur, stack = TRUE, gridExpand = TRUE)
-  # }
-  
+#  # raw_colnums_overall   <- which(vartypes_overall  == 'raw data for indicator')
+# #  raw_colnums_eachsite  <- which(vartypes_eachsite == 'raw data for indicator')
+#   # raw_var_style <- openxlsx::createStyle(numFmt = '#,##0.00')
+#   # openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = raw_colnums_overall,  style=raw_var_style, stack = TRUE)
+#   # openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:((1 + NROW(eachsite)), cols = raw_colnums_eachsite, style=raw_var_style, stack = TRUE, gridExpand = TRUE)
+#   
+#   # GET INFO FROM map_headernames THAT SPECIFIES NUMBER OF DECIMAL PLACES FOR MOST OR ALL INDICATORS !!
+#   #
+#   # How many decimals (or ideally significant digits but not possible here) to report?  This could be done via rounding values before put in excel,
+#   #  OR probably better, sending exact values to Excel but using Excel formatting to display them correctly.
+#   # 
+#   # sigfigs_table <-  map_headernames[ "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsname",	"csvname")]
+#   digitstable <- map_headernames[ "" != (map_headernames$decimals) | "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsname",	"csvname", "apiname")]
+#   decimals_cols <- names(eachsite)[names(eachsite) %in% digitstable$rname[digitstable$decimals != ""]]
+#   decimals_colnum <- match(decimals_cols, names(eachsite)) # and overall has same exact names and sort order of names
+#   decimals_tosee <- digitstable$decimals[match(decimals_cols, digitstable$rname)]
+#   dec2format <- function(decimalscount) ifelse(decimalscount == 0, "0", paste0("0.", paste0(rep("0", decimalscount), collapse = '')))
+#   # dec2formats <- Vectorize(dec2format)
+#   ## only loop over unique values
+#   for (i in unique(decimals_tosee)) {
+#     style_cur <- openxlsx::createStyle(numFmt = dec2format(i))
+#     openxlsx::addStyle(wb, 'Overall',   cols = decimals_colnum[decimals_tosee == 'i'], rows = 2                    ,  style = style_cur, stack = TRUE)
+#     openxlsx::addStyle(wb, 'Each Site', cols = decimals_colnum[decimals_tosee == 'i'], rows = 2:(1 + NROW(eachsite)), style = style_cur, stack = TRUE, gridExpand = TRUE)
+#   }
+#   # for (i in 1:length(decimals_cols)) {
+#   #   style_cur <- openxlsx::createStyle(numFmt = dec2format(decimals_tosee[i]))
+#   #   openxlsx::addStyle(wb, 'Overall',   cols = decimals_colnum[i], rows = 2                    ,  style = style_cur, stack = TRUE)
+#   #   openxlsx::addStyle(wb, 'Each Site', cols = decimals_colnum[i], rows = 2:(1 + NROW(eachsite)), style = style_cur, stack = TRUE, gridExpand = TRUE)
+#   # }
+#   
   ### distances should only have about 2 decimal places ####
   
   distance_colnums <- which(grepl("distance_", names(eachsite)))
@@ -969,28 +933,21 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   if (!is.null(saveas)) {
     thatfolder = dirname(saveas)
     
-    # Launch in Excel before saving file ####
-    if (launchexcel) {
-      openxlsx::openXL(wb)
-    }
-    # SAVEAS local file ####
-    if (!is.null(saveas)) {
-      thatfolder = dirname(saveas)
-      
-      if (file.exists(thatfolder)) {
-        fname = basename(saveas)
-        xext = gsub(".*\\.(x.*)","\\1", fname)
-        if (xext %in% c("xls", "xlsx")) {
-          attempt = try(openxlsx::saveWorkbook(wb, file = saveas, overwrite = TRUE))
-          cat('Saving as ', saveas, '\n')
-        } else {
-          warning(saveas, ' does not appear to be a path and filename ending in .xls or .xlsx')
-        }
-        
+    if (file.exists(thatfolder)) {
+      fname = basename(saveas)
+      xext = gsub(".*\\.(x.*)","\\1", fname)
+      if (xext %in% c("xls", "xlsx")) {
+        attempt = try(openxlsx::saveWorkbook(wb, file = saveas, overwrite = TRUE))
+        cat('Saving as ', saveas, '\n')
+      } else {
+        warning(saveas, ' does not appear to be a path and filename ending in .xls or .xlsx')
+      }
     } else {
       warning(thatfolder, ' folder does not appear to exist')
-    }}
-
+    }
+  }
+  
+ 
   # done ###################### 
   
   return(wb)

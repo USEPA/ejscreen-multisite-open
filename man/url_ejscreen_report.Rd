@@ -5,8 +5,8 @@
 \title{Get URLs of EJScreen reports}
 \usage{
 url_ejscreen_report(
-  lon = "",
   lat = "",
+  lon = "",
   radius = "",
   as_html = FALSE,
   linktext,
@@ -20,9 +20,9 @@ url_ejscreen_report(
 )
 }
 \arguments{
-\item{lon}{one or more longitudes}
+\item{lat}{one or more latitudes (or a table with lat, lon columns, or filepath with that, or omit to interactively select file)}
 
-\item{lat}{one or more latitudes}
+\item{lon}{one or more longitudes (or omitted -- see lat parameter details)}
 
 \item{radius}{miles radius}
 

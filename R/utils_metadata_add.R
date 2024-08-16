@@ -1,3 +1,19 @@
+
+#' utility to see all attributes other than row.names
+#'
+#' @param x R object
+#'
+#' @return attributes of x, excluding row.names
+#' @export
+#' @keywords internal
+#'
+attributes2 = function(x) {
+  att = attributes(x)
+  return(att[names(att) != "row.names"])
+  }
+#################################################### #
+
+
 #' helper function for package to set metadata attributes of a dataset
 #' 
 #' @description Together with the metadata_mapping script, this can be used 
