@@ -12,8 +12,8 @@
 #' @param plot_distance_by_group logical, whether to try to add a plot of mean distance by group. 
 #'   This requires that bybg be provided as a parameter input to this function. 
 #' @param summary_plot optional plot object passed from EJAM shiny app to save in 'Plot' sheet of Excel table
-#' @param community_image
-#' @param community_reportadd
+#' @param community_image image of community report provided by shiny app to include in spreadsheet
+#' @param community_reportadd logical provided by shiny app to specify whether to include community report image
 #' @param summary_plot optional plot object passed from EJAM shiny app to save in 'Plot' sheet of Excel table
 #' @param plotlatest optional logical. If TRUE, the most recently displayed plot (prior to this function being called) will be inserted into a tab called plot2
 #' @param plotfilename the full path including name of .png file to insert

@@ -59,7 +59,7 @@ Creates saved copies of datasets for the R package, overwriting old ones, using
 Main function that updates several FRS datasets for use in EJAM
 }
 \details{
-**This takes several minutes** to download and clean data files,
+This takes several minutes to download and clean data files,
 
 and is used by someone maintaining the EJAM package, to obtain updated 
 Facility Registry Service (FRS) data on EPA-regulated sites.
@@ -67,7 +67,7 @@ Facility Registry Service (FRS) data on EPA-regulated sites.
 To update the datasets in the R package from local source code, 
   use frs_update_datasets(), in conjunction with the EJAM package.
   
- **This function is only for a package maintainer/updater or to update a local copy.**
+ This function is only for a package maintainer/updater or to update a local copy.
 
   For example to read back in a saved file, 
   
