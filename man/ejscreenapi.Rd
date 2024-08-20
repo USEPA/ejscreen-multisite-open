@@ -19,6 +19,7 @@ ejscreenapi(
   updateProgress = NULL,
   drop_redundant_indicators = TRUE,
   nicenames = FALSE,
+  verbose = TRUE,
   getstatefromplacename = TRUE
 )
 }
@@ -56,6 +57,8 @@ just under 2 different names, like RAW_D_LIFEEXP and RAW_HI_LIFEEXPPCT which are
 \item{nicenames}{Set it to TRUE if you want to have it rename headers as long friendly plain English not R variable names
 but note downstream functions mostly expect rname format
 that uses \code{\link[=ejscreenapi1]{ejscreenapi1()}} and \code{\link[=ejscreenRESTbroker]{ejscreenRESTbroker()}}  and \code{\link[=ejscreenRESTbroker2table]{ejscreenRESTbroker2table()}}}
+
+\item{verbose}{whether to print to console / viewer / plot}
 
 \item{getstatefromplacename}{set to FALSE if you need the exact output of API and
 TRUE if you want to try to extract ST abbrev and statename from the placename field,

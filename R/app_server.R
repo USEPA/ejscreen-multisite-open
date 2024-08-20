@@ -329,29 +329,29 @@ app_server <- function(input, output, session) {
       # older way
       
       infile_ext <- tools::file_ext(infiles)
-
+      
       if ((!all(c('shp','shx','dbf','prj') %in% infile_ext)) & (all(!(c('zip') %in% infile_ext)))) {
         disable_buttons[['SHP']] <- TRUE
         shiny::validate('Not all required file extensions found.')
       }
       if (length(infile_ext) == 1 & any(grepl("zip",infile_ext))) {
         
-          #read in zip file
-          shp <- shapefile_from_zip(infiles)
-          
-          
-          #Standard shapefile upload with temp directory upload
-          }else{
-              dir <- unique(dirname(infiles)) # get folder (a temp one created by shiny for the uploaded file)
-              outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path\name from temp dir plus original filename of file selected by user to upload
-              name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # ??? get filename minus extension, of 1 file selected by user to upload
-              purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
-              
-              shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
-              
-              
-            }
-
+        #read in zip file
+        shp <- shapefile_from_zip(infiles)
+        
+        
+        #Standard shapefile upload with temp directory upload
+      }else{
+        dir <- unique(dirname(infiles)) # get folder (a temp one created by shiny for the uploaded file)
+        outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path\name from temp dir plus original filename of file selected by user to upload
+        name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # ??? get filename minus extension, of 1 file selected by user to upload
+        purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
+        
+        shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+        
+        
+      }
+      
       #if NULL is return from shapefile_xyz, present message in app
       if (is.null(shp)) {
         disable_buttons[['SHP']] <- TRUE
@@ -1484,7 +1484,7 @@ app_server <- function(input, output, session) {
   
   ## record radius at time of analysis
   submitted_radius_val <- reactiveVal(NULL)
-                                         
+
   # set/update based on advanced tab set by global.R and then might be changed by a user
   observeEvent(
     input$default_miles,
@@ -2412,27 +2412,28 @@ app_server <- function(input, output, session) {
           row_index = selected_row
         )
       } else {
-             if (input$Custom_title_for_bar_plot_of_indicators == ''){
+
+        if (input$Custom_title_for_bar_plot_of_indicators == ''){
+          
+          #Default way
+          plot_barplot_ratios_ez(
+            out= data_processed(),
+            varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), 
+          )
+          
+        }else{
+          #If there is a new title in advanced settings
+          plot_barplot_ratios_ez(
+            out= data_processed(),
+            varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), 
+            main = input$Custom_title_for_bar_plot_of_indicators
+          )
+        }
         
-        #Default way
-        plot_barplot_ratios_ez(
-          out= data_processed(),
-          varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), 
-        )
-        
-      }else{
-        #If there is a new title in advanced settings
-        plot_barplot_ratios_ez(
-          out= data_processed(),
-          varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), 
-          main = input$Custom_title_for_bar_plot_of_indicators
-        )
-      }
-      
       }
     }
-else if (input$plotkind_1pager == 'ridgeline') {
-      
+    else if (input$plotkind_1pager == 'ridgeline') {
+
       ## ratios by site  (demog each site / demog avg in US)
       ratio.to.us.d.bysite <- data_processed()$results_bysite[ ,  c(
         ..names_d_ratio_to_avg,
@@ -2537,7 +2538,7 @@ else if (input$plotkind_1pager == 'ridgeline') {
         ## alternate color scheme
         # viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
         
-      ggplot2::theme_bw() +
+        ggplot2::theme_bw() +
         ggplot2::theme(
           ## set font size of text
           text = ggplot2::element_text(size = 14),
@@ -2563,22 +2564,25 @@ else if (input$plotkind_1pager == 'ridgeline') {
   })
   
   observeEvent(input$results_tabs, {
-
+    
     if (!is.null(cur_button())) {
-    cur_button(NULL)
+      cur_button(NULL)
       # Trigger a re-render of the summary plot
       output$view1_summary_plot <- renderPlot({
         v1_summary_plot()
       })
     }
-    })
 
+  })
+  
   
   #############################################################################  #
   
-  # Function to generate HTML content (community_download function)
-  # Modify the community_download function to accept a row_index parameter
+  # Function to generate HTML content ***
+  # Modified community_download function to accept a row_index parameter
+  
   community_download <- function(file, row_index = NULL) {
+    
     # Create a progress object
     progress <- shiny::Progress$new()
     progress$set(message = "Generating report", value = 0)
@@ -2607,74 +2611,75 @@ else if (input$plotkind_1pager == 'ridgeline') {
       
       progress$set(value = 0.4, detail = "Creating map...")
       # Create a filtered version of report_map for single location
-single_location_map <- reactive({
-  req(data_processed())
-  validate(need(data_processed(), 'Please run an analysis to see results.'))
-  
-  filtered_data <- data_processed()$results_bysite[row_index, ]
-  
-  if (submitted_upload_method() == "SHP") {
-    # Handle shapefile case
-    shp_valid <- data_uploaded()[data_uploaded()$ejam_uniq_id == filtered_data$ejam_uniq_id, ]
-    d_up <- shp_valid
-    d_up_geo <- d_up[,c("ejam_uniq_id","geometry")]
-    d_merge = merge(d_up_geo, filtered_data, by = "ejam_uniq_id", all.x = FALSE, all.y = TRUE)
-    
-    popup_labels <- fixcolnames(namesnow = setdiff(names(d_merge),c('geometry', 'valid', 'invalid_msg')), oldtype = 'r', newtype = 'shortlabel')
-    
-    if (input$bt_rad_buff > 0) {
-      d_uploads <- sf::st_buffer(d_merge[d_merge$valid == T, ], dist = units::set_units(input$bt_rad_buff, "mi"))
-      map <- leaflet(d_uploads) %>% addTiles() %>%
-        addPolygons(data = d_uploads, color = '#000080',
-                    popup = popup_from_df(d_uploads %>% sf::st_drop_geometry() %>% dplyr::select(-valid, -invalid_msg), labels = popup_labels),
-                    popupOptions = popupOptions(maxHeight = 200))
-    } else {
-      data_spatial_convert <- d_merge[d_merge$valid == T, ] %>%
-        dplyr::select(-valid, -invalid_msg) %>%
-        sf::st_zm() %>% as('Spatial')
-      map <- leaflet(data_spatial_convert) %>% addTiles() %>%
-        addPolygons(color = '#000080',
-                    popup = popup_from_df(data_spatial_convert %>% sf::st_drop_geometry(),
-                                          labels = popup_labels),
-                    popupOptions = popupOptions(maxHeight = 200))
-    }
-    
-    # Get the bounding box of the shape
-    bbox <- sf::st_bbox(d_merge)
-    map %>% fitBounds(bbox[1], bbox[2], bbox[3], bbox[4]) %>%
-      setView(lng = mean(c(bbox[1], bbox[3])), 
-              lat = mean(c(bbox[2], bbox[4])), 
-              zoom = 14)  
-    
-  } else if (submitted_upload_method() != "FIPS") {
-    # Handle non-FIPS case
-    popup_labels <- fixcolnames(namesnow = names(filtered_data), oldtype = 'r', newtype = 'shortlabel')
-    popup_labels[is.na(popup_labels)] <- names(filtered_data)[is.na(popup_labels)]
-    
-    map <- leaflet(filtered_data) %>%
-      addTiles() %>%
-      addCircles(
-        radius = 1 * meters_per_mile,
-        color = '#000080', fillColor = '#000080',
-        fill = TRUE, weight = input$circleweight_in,
-        popup = popup_from_df(
-          filtered_data %>%
-            dplyr::mutate(dplyr::across(
-              dplyr::where(is.numeric), \(x) round(x, digits = 3))),
-          labels = popup_labels),
-        popupOptions = popupOptions(maxHeight = 200)
-      )
-    
-    # Set view with a slightly more zoomed out level
-    map %>% setView(lng = filtered_data$lon, 
-                    lat = filtered_data$lat, 
-                    zoom = 14) 
-    
-  } else {
-    # FIPS case
-    leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
-  }
-})
+
+      single_location_map <- reactive({
+        req(data_processed())
+        validate(need(data_processed(), 'Please run an analysis to see results.'))
+        
+        filtered_data <- data_processed()$results_bysite[row_index, ]
+        
+        if (submitted_upload_method() == "SHP") {
+          # Handle shapefile case
+          shp_valid <- data_uploaded()[data_uploaded()$ejam_uniq_id == filtered_data$ejam_uniq_id, ]
+          d_up <- shp_valid
+          d_up_geo <- d_up[,c("ejam_uniq_id","geometry")]
+          d_merge = merge(d_up_geo, filtered_data, by = "ejam_uniq_id", all.x = FALSE, all.y = TRUE)
+          
+          popup_labels <- fixcolnames(namesnow = setdiff(names(d_merge),c('geometry', 'valid', 'invalid_msg')), oldtype = 'r', newtype = 'shortlabel')
+          
+          if (input$bt_rad_buff > 0) {
+            d_uploads <- sf::st_buffer(d_merge[d_merge$valid == T, ], dist = units::set_units(input$bt_rad_buff, "mi"))
+            map <- leaflet(d_uploads) %>% addTiles() %>%
+              addPolygons(data = d_uploads, color = '#000080',
+                          popup = popup_from_df(d_uploads %>% sf::st_drop_geometry() %>% dplyr::select(-valid, -invalid_msg), labels = popup_labels),
+                          popupOptions = popupOptions(maxHeight = 200))
+          } else {
+            data_spatial_convert <- d_merge[d_merge$valid == T, ] %>%
+              dplyr::select(-valid, -invalid_msg) %>%
+              sf::st_zm() %>% as('Spatial')
+            map <- leaflet(data_spatial_convert) %>% addTiles() %>%
+              addPolygons(color = '#000080',
+                          popup = popup_from_df(data_spatial_convert %>% sf::st_drop_geometry(),
+                                                labels = popup_labels),
+                          popupOptions = popupOptions(maxHeight = 200))
+          }
+          
+          # Get the bounding box of the shape
+          bbox <- sf::st_bbox(d_merge)
+          map %>% fitBounds(bbox[1], bbox[2], bbox[3], bbox[4]) %>%
+            setView(lng = mean(c(bbox[1], bbox[3])), 
+                    lat = mean(c(bbox[2], bbox[4])), 
+                    zoom = 14)  
+          
+        } else if (submitted_upload_method() != "FIPS") {
+          # Handle non-FIPS case
+          popup_labels <- fixcolnames(namesnow = names(filtered_data), oldtype = 'r', newtype = 'shortlabel')
+          popup_labels[is.na(popup_labels)] <- names(filtered_data)[is.na(popup_labels)]
+          
+          map <- leaflet(filtered_data) %>%
+            addTiles() %>%
+            addCircles(
+              radius = 1 * meters_per_mile,
+              color = '#000080', fillColor = '#000080',
+              fill = TRUE, weight = input$circleweight_in,
+              popup = popup_from_df(
+                filtered_data %>%
+                  dplyr::mutate(dplyr::across(
+                    dplyr::where(is.numeric), \(x) round(x, digits = 3))),
+                labels = popup_labels),
+              popupOptions = popupOptions(maxHeight = 200)
+            )
+          
+          # Set view with a slightly more zoomed out level
+          map %>% setView(lng = filtered_data$lon, 
+                          lat = filtered_data$lat, 
+                          zoom = 14) 
+          
+        } else {
+          # FIPS case
+          leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+        }
+      })
       
       map_to_use <- single_location_map()
     } else {
@@ -2708,6 +2713,7 @@ single_location_map <- reactive({
                       intermediates_dir = tempdir()
     )
   }
+  #############################################################################  #
   
   # downloadHandler for community_download
   output$community_download <- downloadHandler(
@@ -2716,6 +2722,29 @@ single_location_map <- reactive({
         file_desc = 'community report',
         title = input$analysis_title,
         buffer_dist = submitted_radius_val(),
+        site_method = submitted_upload_method(),
+        with_datetime = TRUE,
+        ext = ifelse(input$format1pager == 'pdf', '.pdf', '.html')
+      )
+    },
+    content = function(file) {
+      html_content <-  community_download(file)
+      file.rename(html_content, file)
+    }
+  )
+  
+  # downloadHandler for the modal download button
+  output$download_report <- downloadHandler(
+    filename = function() {
+      location_suffix <- if (!is.null(selected_location_name())) {
+        paste0(" - ", selected_location_name())
+      } else {
+        ""
+      }
+      create_filename(
+        file_desc = paste0('community report', location_suffix),
+        title = input$analysis_title,
+        buffer_dist = current_slider_val[[submitted_upload_method()]],
         site_method = submitted_upload_method(),
         with_datetime = TRUE,
         ext = ifelse(input$format1pager == 'pdf', '.pdf', '.html')
@@ -2777,7 +2806,7 @@ single_location_map <- reactive({
     if (input$testing) {cat('view3_table - preparing (most columns of the) site by site table for DT view \n')
     }
     # --------------------------------------------------- #
-
+    
     cols_to_select <- c('ejam_uniq_id', 'invalid_msg',
                         'pop', 'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report',
@@ -2785,17 +2814,15 @@ single_location_map <- reactive({
                         names_e #,
                         # no names here corresponding to number above x threshold, state, region ??
     )
-    tableheadnames <- c('Site ID', 'Invalid Reason','Est. Population', 'Community Report',
 
+    tableheadnames <- c('Site ID', 'Invalid Reason','Est. Population', 'Community Report',  # should confirm that Community Report belongs here
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report',
                         fixcolnames(c(names_d, names_d_subgroups, names_e), 'r', 'shortlabel')) # is this right?
-    
     ejcols          <- c(names_ej,          names_ej_state,          names_ej_supp,          names_ej_supp_state)
     ejcols_friendly <- fixcolnames(ejcols, 'r', 'shortlabel')
     which_ejcols_here <- which(ejcols %in% names(data_processed()$results_bysite)  )
     cols_to_select <- c(cols_to_select, ejcols[         which_ejcols_here] )
     tableheadnames <- c(tableheadnames, ejcols_friendly[which_ejcols_here])
-    
     tableheadnames <- c(tableheadnames,
                         names(data_summarized()$cols), 
                         # 'Max of selected indicators',  ###
@@ -2817,9 +2844,9 @@ single_location_map <- reactive({
         # `EJScreen Report` = ifelse(valid == T, `EJScreen Report`, NA),
         # `ECHO Report` = ifelse(valid == T, `ECHO Report`, NA),
         # `EJScreen Map` = ifelse(valid == T, `EJScreen Map`, NA),
-         `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id = paste0('button_', index), label = "Generate",
-                                                            onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
-         ), '')
+        `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id = paste0('button_', index), label = "Generate",
+                                                           onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
+        ), '')
       ) %>%
       
       dplyr::ungroup() %>%
@@ -2925,30 +2952,29 @@ single_location_map <- reactive({
   temp_file_path <- reactiveVal(NULL)
   selected_location_name <- reactiveVal(NULL)
   
+  ##############################################  #
   # Function to copy necessary files to temp directory
   setup_temp_files <- function() {
     tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
-    
     # Copy Rmd file to temp directory
     file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),
               to = tempReport, overwrite = TRUE)
-    
     # Copy CSS file
     if (!file.exists(file.path(tempdir(), 'communityreport.css'))) {
       file.copy(from = app_sys('report/community_report/communityreport.css'),
                 to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
     }
-    
+
     # Copy logo file
     if (!file.exists(file.path(tempdir(), 'www', 'EPA_logo_white_2.png'))) {
       dir.create(file.path(tempdir(), 'www'), showWarnings = FALSE, recursive = TRUE)
       file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
                 to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
     }
-    
     return(tempReport)
   }
-  
+  ##############################################  #
+
   # Observer for the submit buttons
   observeEvent(
     lapply(
@@ -2960,9 +2986,10 @@ single_location_map <- reactive({
         req(data_processed())
         req(cur_button())
         x <- as.numeric(gsub('button_','', cur_button()))
-        
+
         # Get the name of the selected location
         location_name <- data_processed()$results_bysite[x, "statename"]
+
         selected_location_name(location_name)
         
         # Create a temporary file name
@@ -2971,7 +2998,8 @@ single_location_map <- reactive({
         # Store the temporary file path in the reactive value
         temp_file_path(temp_file)
         
-        # Call the community_download function with the current row index
+
+        # Call the community_download() function with the current row index
         community_download(file = temp_file, row_index = x)
         
         # Trigger the download
@@ -2987,6 +3015,7 @@ single_location_map <- reactive({
         ))
 
       })
+  #############################################################################  #
   
   
   
@@ -3075,7 +3104,6 @@ single_location_map <- reactive({
           eachsite  = data_processed()$results_bysite |> dplyr::select(names( data_processed()$results_bysite)[keepcols2]),# needs ..  # 1 row per site
           longnames = data_processed()$longnames[           keepcols2], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows.
           
-
           
           # *** NOTE:  data_processed()$results_bybg_people  #considered not providing this to xlsx by default. It is huge and for expert users,
           # ***    but useful to create a plot of distance by group. Perhaps that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***
@@ -3620,8 +3648,9 @@ single_location_map <- reactive({
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
                       ext = '.doc')
-      },
-    
+
+    },
+
     content = function(file) {
       # Copy the report file to a temporary directory before processing it, in
       # case we don't have write permissions to the current working dir (which

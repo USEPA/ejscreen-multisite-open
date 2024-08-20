@@ -66,11 +66,11 @@ This requires that bybg be provided as a parameter input to this function.}
 
 \item{mapadd}{logical optional - try to include a map of the points}
 
-\item{community_reportadd}{optional logical. If TRUE, adds a tab with an image of the full community report.}
+\item{community_reportadd}{logical provided by shiny app to specify whether to include community report image}
 
 \item{report_map}{leaflet map object passed from Shiny app to display in 'Map' sheet}
 
-\item{community_image}{html object of community report passed from EJAM shiny app. Defaults to NULL.}
+\item{community_image}{image of community report provided by shiny app to include in spreadsheet}
 
 \item{ok2plot}{can set to FALSE to prevent plots from being attempted, while debugging}
 

@@ -48,14 +48,18 @@ ejam2barplot = function(ejamitout, varnames = c(names_d_ratio_to_avg , names_d_s
                         main = "Demographics at the Analyzed Locations Compared to US Overall", ...) {
   
   if (is.null(sitenumber)) {
-    ejamitout <- ejamitout$results_overall
+    # ejamitout <- ejamitout$results_overall
+    single_location <- FALSE
+    row_index <- NULL
   } else {
-    ejamitout <- ejamitout$results_bysite[sitenumber, ]
+    # ejamitout <- ejamitout$results_bysite # [sitenumber, ] gets done by plot_barplot_ratios_ez()
+    single_location <- TRUE
+    row_index <- sitenumber
   }
   # ejam2barplot(out,varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg), main = "Demographics at Analyzed Locations Compared to Statewide")
   plot_barplot_ratios_ez(out = ejamitout,
                          varnames = varnames,
-                         sitenumber = NULL,
+                         single_location = single_location, row_index = row_index,
                          main =  main, 
                          ... = ...)
 }
@@ -69,7 +73,7 @@ plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg, names_
                                   single_location = FALSE, row_index = NULL, ...) {
   if (single_location && !is.null(row_index)) {
     ## check if data.table (SHP is data.frame)
-    if(is.data.table(out$results_bysite)){
+    if (is.data.table(out$results_bysite)) {
       data_to_plot <- unlist(out$results_bysite[row_index, varnames, with = FALSE])  
     } else {
       data_to_plot <- unlist(out$results_bysite[row_index, varnames])
@@ -77,7 +81,7 @@ plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg, names_
     
   } else {
     ## check if data.table (SHP is data.frame)
-    if(is.data.table(out$results_overall)){
+    if (is.data.table(out$results_overall)) {
       data_to_plot <- unlist(out$results_overall[, varnames, with = FALSE])
     } else {
       data_to_plot <- unlist(out$results_overall[, varnames])  
@@ -91,41 +95,6 @@ plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg, names_
 
 
 #' Barplot of ratios of demographic (or other) scores to averages (or other references)
-#'
-#' @details
-#'
-#'   **SOME GENERAL NOTES, DURING EJAM DEVELOPMENT**
-#'
-#'   For plots in general, see:
-#'
-#'   - <https://echarts4r.john-coene.com/articles/themes.html>
-#'   - <https://exts.ggplot2.tidyverse.org/gallery>
-#'
-#'
-#'   **For BARPLOTS, see/ merge/consolidate:**
-#'
-#'   - output$view1_summary_plot <- renderPlot({v1_summary_plot()}) and v1_summary_plot <- reactive({ })
-#'     in EJAM server for Short Report if  bar type
-#'   - output$summ_display_bar <- renderPlot({  }) contains its own plot code not a reactive
-#'     in EJAM server for tab showing barplots in Detailed Results
-#'   - plot_barplot_ratios() drafted function in EJAM
-#'
-#'
-#'   **For BOXPLOTS, see:**
-#'
-#'   - v1_summary_plot <- reactive({ })     and output$view1_summary_plot <- renderPlot({v1_summary_plot()})
-#'      - in EJAM server for SHORT report if box type, and
-#'      - in EJAM server for LONG report passed as a parameter
-#'   - boxplots_ratios()    
-#'      (NOT in EJAM server for Detailed Results interactive views)
-#'   - ejscreenapi_script() code also relevant?  
-#'   - box/scatter examples in ggplot, <https://r-graph-gallery.com/89-box-and-scatter-plot-with-ggplot2.html>
-#'   - boxplots in base R, <https://www.r-bloggers.com/2023/09/how-to-reorder-boxplots-in-r-a-comprehensive-guide>
-#'
-#'   **For HISTOGRAMS, see:**
-#'
-#'   - output$summ_display_hist <- renderPlot   in EJAM server for interactive views
-#'
 #'
 #' @param ratio.to.us.d.overall named list of a few ratios to plot, but see [ejam2barplot()]
 #'   for an easier way to specify which indicator to show.
@@ -146,8 +115,43 @@ plot_barplot_ratios <- function(ratio.to.us.d.overall,
                                 mycolorsavailable=c("gray", "yellow", "orange", "red"),
                                 main = "Demographics at the Analyzed Locations Compared to US Overall") {
   
+  ########################################################## #
+# NOTES
+    # 
+    # 
+    # **SOME GENERAL NOTES, DURING EJAM DEVELOPMENT**
+    # 
+    # For plots in general, see:
+    # 
+    # - <https://echarts4r.john-coene.com/articles/themes.html>
+    # - <https://exts.ggplot2.tidyverse.org/gallery>
+    # 
+    # 
+    # **For BARPLOTS, see/ merge/consolidate:**
+    # 
+    # - output$view1_summary_plot <- renderPlot({v1_summary_plot()}) and v1_summary_plot <- reactive({ })
+    #   in EJAM server for Short Report if  bar type
+    # - output$summ_display_bar <- renderPlot({  }) contains its own plot code not a reactive
+    #   in EJAM server for tab showing barplots in Detailed Results
+    # - plot_barplot_ratios() drafted function in EJAM
+    # 
+    # 
+    # **For BOXPLOTS, see:**
+    # 
+    # - v1_summary_plot <- reactive({ })     and output$view1_summary_plot <- renderPlot({v1_summary_plot()})
+    #    - in EJAM server for SHORT report if box type, and
+    #    - in EJAM server for LONG report passed as a parameter
+    # - boxplots_ratios()
+    #    (NOT in EJAM server for Detailed Results interactive views)
+    # - ejscreenapi_script() code also relevant?
+    # - box/scatter examples in ggplot, <https://r-graph-gallery.com/89-box-and-scatter-plot-with-ggplot2.html>
+    # - boxplots in base R, <https://www.r-bloggers.com/2023/09/how-to-reorder-boxplots-in-r-a-comprehensive-guide>
+    # 
+    # **For HISTOGRAMS, see:**
+    # 
+    # - output$summ_display_hist <- renderPlot   in EJAM server for interactive views
+  ########################################################## #
   
-
   # ratio.to.us.d.overall <-   unlist(  out$results_overall[ , c(..names_d_ratio_to_avg, ..names_d_subgroups_ratio_to_avg )]  )
     # ratio.to.us.d.overall <- ratio.to.us.d()  # reactive already available
   # if (isTRUE(all.equal(names(ratio.to.us.d.overall), c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg)))) {

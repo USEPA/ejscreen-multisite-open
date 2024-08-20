@@ -95,7 +95,7 @@ table_validated_ejamit_row <- function(ejamit_results_1row = NULL) {
     if (!setequal(names(ejamit_results_1row), colnames(testoutput_ejamit_10pts_1miles$results_overall))) {
       # are just the ratios columns missing, because calculate_ratios = FALSE ?
       if (length(setdiff(setdiff(colnames(testoutput_ejamit_10pts_1miles$results_overall), names(ejamit_results_1row)  ),
-                         c(names_ratio_to_avg_these, names_ratio_to_state_avg_these))) > 0) {
+                         c(names_these_ratio_to_avg, names_these_ratio_to_state_avg))) > 0) {
       warning('names(ejamit_results_1row) differs from colnames(testoutput_ejamit_10pts_1miles$results_overall) - THIS MAY CAUSE UNPREDICTABLE PROBLEMS')
       } else {
         message('names do not match the full set of typical names, but it seems to be because ratios were not calculated')

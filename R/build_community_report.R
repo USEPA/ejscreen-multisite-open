@@ -35,6 +35,7 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
   r100x <- colnames(output_df_rounded) %in% setdiff(c(names_d, names_d_avg, names_d_state_avg), names_demog_index) # units were 0-1 not 0-100
   #r100x <- setdiff(r100x, names_demog_index)
    output_df_rounded[, r100x] <- 100 * (output_df_rounded[, r100x])
+
   if (include_ejindexes) {
     r2 <- colnames(output_df_rounded) %in% c(names_e, names_e_avg, names_e_state_avg, 
                                              names_ej, names_ej_supp, names_demog_index)

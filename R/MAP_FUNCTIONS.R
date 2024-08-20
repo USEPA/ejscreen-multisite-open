@@ -266,12 +266,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
                                static_not_leaflet = FALSE, main = "Selected Counties", ...) {
   
   # *** CANNOT HANDLE colorvarname = ANYTHING ELSE BESIDES THOSE SCALED 0 TO 100, SO FAR
-  
-  # fips_ky <- fips_counties_from_statename("Kentucky")
-  # x <- ejamit(fips = fips_ky, radius = 0)
-  # mydf <- x$results_bysite
-
-  if(!(colorvarname %in% names(mydf))){
+  if (!(colorvarname %in% names(mydf))) {
     warning('Selected value for "colorvarname" not found. Please try a different indicator.')
     return(NULL)
   }
@@ -303,14 +298,12 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
     poplabels <- fixcolnames(names(popindicators), 'r', 'shortlabel') # friendly labels for indicators
     popup2 <- popup_from_any(popindicators, labels = poplabels)
     
-    
     mymap <- map_shapes_leaflet(mymapdata, popup = popup2, color = shading)
     mymap <- mymap %>% leaflet::addLegend(
       colors = c("yellow", "orange", "red"),
       labels = c(80, 90, 100),
       title = fixcolnames(colorvarname, 'rname', 'shortlabel'))
   }
-  
   return(mymap)
 }
 ########################### # ########################### # ########################### # ########################### #
