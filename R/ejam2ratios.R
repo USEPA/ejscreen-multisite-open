@@ -27,12 +27,12 @@ ejam2ratios <- function(ejamitout,
   } else {
     df = ejamitout$results_overall
   }
-  if (!all(c(names_ratio_to_avg_these) %in% names(df))) {stop("some of the ratios were not found as column names in the table")}
+  if (!all(c(names_these_ratio_to_avg) %in% names(df))) {stop("some of the ratios were not found as column names in the table")}
   
   x <- round(
     data.frame(
-    Ratio_to_US_avg    = unlist(df[, ..names_ratio_to_avg_these]),
-    Ratio_to_State_avg = unlist(df[, ..names_ratio_to_state_avg_these])
+    Ratio_to_US_avg    = unlist(df[, ..names_these_ratio_to_avg]),
+    Ratio_to_State_avg = unlist(df[, ..names_these_ratio_to_state_avg])
     ), 1
     )
 
