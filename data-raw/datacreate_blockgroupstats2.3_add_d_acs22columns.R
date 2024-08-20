@@ -4,6 +4,12 @@
 
 if (!exists("askquestions")) {askquestions <- FALSE}
 
+if (!exists("localfolder")) {
+  localfolder <- "~/../Downloads/EJAMbigfiles"
+  if (interactive()) {localfolder <- rstudioapi::selectDirectory("Confirm where to archive .arrow and other files locally", path = localfolder) }
+}
+if (!dir.exists(localfolder)) {stop(paste0("need valid localfolder - ", localfolder, " was not found"))}
+
 # 1. GOT "ACS2022_Transfer.gdb.zip" FROM EJSCREEN TEAM ####
 
 # EJScreen team (VZ) provided the data file 6/5/2024
@@ -22,8 +28,8 @@ if (file.exists("~/../EJ 2021/EJSCREEN 2024/acs2022header.csv")) {
   if (file.exists("./data-raw/datafile_acs22longnames.rda")) {
     load("./data-raw/datafile_acs22longnames.rda")
   } else {
-  acs22longnames = NA
-}}
+    acs22longnames = NA
+  }}
 # ~--------------------------- ####
 
 ################################################## ################################################### #
@@ -181,11 +187,11 @@ names(acs22) <- fixcolnames(names(acs22), 'acsname', 'r')
 
 # DROP MOST COLUMNS ####
 
- # dim(acs22)
+# dim(acs22)
 # [1] 242336    676
 
 # acs22$bgfips <- acs22$STCNTRBG
- names(acs22) <- gsub("id", 'bgfips', names(acs22))
+names(acs22) <- gsub("id", 'bgfips', names(acs22))
 acs22 <- data.table(bgfips = acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
 
 # still need but not found: *** must get from  separate file(s)
@@ -197,15 +203,42 @@ acs22 <- data.table(bgfips = acs22$bgfips, acs22[, names(acs22) %in% map_headern
 # names_flag
 
 # > acs22 = data.table(acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
- dim(acs22)
+dim(acs22)
 # [1] 242336     88
 
 # get rid of redundant columns before merge with bg stats
 setDF(acs22)
 acs22 <- acs22[, c("bgfips", names(acs22)[!(names(acs22) %in% names(blockgroupstats_new))])]
 setDT(acs22)
- dim(acs22)
+dim(acs22)
 # [1] 242336     67
+############################################################################ # 
+
+# restore saved copy to go back and fix scaling that hadn't been done yet
+if (!exists("acs22")) {
+  acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22.arrow"))
+}
+# fix scaling of percentages to all be 0-1 not 0-100
+
+x100 = c(names_d_subgroups, names_d_subgroups_alone,
+         'pctunder18' , 'pctover17', 'pctmale', 'pctfemale', 'pctpoor',
+         'pctlan_nonenglish' ,     
+         'pctlan_spanish'   ,       
+         'pctlan_ie'       ,      
+         'pctlan_api'    ,          
+         'pctlan_other'    ,       
+         'pctspanish_li'   ,      
+         'pctie_li'  ,      
+         'pctapi_li'  ,        
+         'pctother_li'   ,      
+         'pctownedunits'  ,
+         'pctnobroadband'  )
+x100 = intersect(x100, names(acs22))
+
+acs22[, (x100) := lapply(.SD, function(x) x/100), .SDcols = x100] 
+
+t(tail(acs22))
+
 ############################################################################ # 
 
 # ARCHIVE small acs22.arrow ####
@@ -354,3 +387,30 @@ capture.output({
 #################################################################################### #
 
 
+### fixing scaling after blockgroupstats had already been created:
+if (1 == 0 ) {
+
+x100 = c(names_d_subgroups, names_d_subgroups_alone,
+         'pctunder18' , 'pctover17', 'pctmale', 'pctfemale', 'pctpoor',
+         'pctlan_nonenglish' ,     
+         'pctlan_spanish'   ,       
+         'pctlan_ie'       ,      
+         'pctlan_api'    ,          
+         'pctlan_other'    ,       
+         'pctspanish_li'   ,      
+         'pctie_li'  ,      
+         'pctapi_li'  ,        
+         'pctother_li'   ,      
+         'pctownedunits'  ,
+         'pctnobroadband'  )
+
+x100 = intersect(x100, names(blockgroupstats))
+
+blockgroupstats[, (x100) := lapply(.SD, function(x) x/100), .SDcols = x100] 
+
+# check it
+cbind(sort(sapply(blockgroupstats, max)))
+
+blockgroupstats    <- metadata_add(blockgroupstats)
+usethis::use_data(blockgroupstats, overwrite = T)
+}

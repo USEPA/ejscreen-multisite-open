@@ -71,6 +71,7 @@
 #' @param nicenames Set it to TRUE if you want to have it rename headers as long friendly plain English not R variable names
 #'   but note downstream functions mostly expect rname format
 #'    that uses [ejscreenapi1()] and [ejscreenRESTbroker()]  and [ejscreenRESTbroker2table()]
+#' @param verbose whether to print to console / viewer / plot
 #' @param getstatefromplacename set to FALSE if you need the exact output of API and
 #'   TRUE if you want to try to extract ST abbrev and statename from the placename field,
 #'   which is more likely to be correct than the stateAbbr and stateName fields in the API output.
@@ -97,7 +98,9 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
                         format_report_or_json='pjson', on_server_so_dont_save_files=FALSE, 
                         ipurl='ejscreen.epa.gov', updateProgress=NULL, drop_redundant_indicators=TRUE, 
                         nicenames=FALSE,
-                        getstatefromplacename = TRUE) {
+                        verbose=TRUE,
+                        getstatefromplacename = TRUE
+) {
   
   if (any(!is.null(fips))) {
     radius <- 0
@@ -146,18 +149,20 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
   
   pts <- data.frame(lon = lon, lat = lat)
   n <- NROW(pts)
-  cat("\nAnalyzing", n, 'sites, for residents living within a radius of', radius, unit, 'from each site.\n\n', file = stderr())
-  
+  if (verbose) {
+    cat("\nAnalyzing", n, 'sites, for residents living within a radius of', radius, unit, 'from each site.\n\n', file = stderr())
+  }
   # be ready to save progress so far if it crashes during a very time consuming long run #### 
   # if (save_when_report & !on_server_so_dont_save_files){
-    tdir = tempdir()
+  tdir = tempdir()
   # }
   finished_without_crashing <- FALSE
   on.exit({if (!finished_without_crashing) {
     if (!on_server_so_dont_save_files) {
       save(outlist, file = file.path(tdir, 'saved_this_before_crash.rdata'))
-      cat("see ", file.path(tdir, 'saved_this_before_crash.rdata'), "\n")
-      }
+      if (verbose) {
+        cat("see ", file.path(tdir, 'saved_this_before_crash.rdata'), "\n")
+      }}
   } })
   
   # emptyresults will let us return empty row if no valid result near a point ####
@@ -260,8 +265,11 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
     hrsleft <- remaining / hourly
     exact_minutes_to_go <- hrsleft * 60
     minutes_to_go <- round(exact_minutes_to_go, 0)
-    if (i == 10) {cat('    Estimated', minutes_to_go, 'minutes remaining at the rate so far.\n', file = stderr())}
-    
+    if (i == 10) {
+      if (verbose) {
+        cat('    Estimated', minutes_to_go, 'minutes remaining at the rate so far.\n', file = stderr())
+      }
+    }
     # CAN SAVE INTERIM RESULTS IF NEEDED, in case it fails after a large number were done.
     
     if (i %% report_every_n == 0 | (i > report_every_n & i == n)) {
@@ -274,17 +282,19 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
         save(x, file = file.path(tdir, paste('temp_ejscreenapibatch_outlist_chunk', chunknum, '.rdata', sep = '')))
       }
       # Report speed so far in loop####
-      estimated_endtime <- Sys.time() +  (minutes_to_go * 60)   
-      cat('\n', file = stderr())
-      cat(paste0(  i, " of ", n, " done so far\n\n"))
-      cat(as.character(format((benchmark.start), format =   "%r")), "is the time this batch started.\n", file = stderr())
-      cat(as.character(format(Sys.time(),        format =   "%r")),  "is the time now.\n", file = stderr())
-      cat(as.character(format(estimated_endtime, format =   "%r")), "is the time this batch is projected to be finished.\n", file = stderr())
-      cat('\n', minutes_to_go, 'minutes estimated remaining \n\n', file = stderr())
-      
-      if (noresults_count > 0)  {cat('Results were unavailable for ', noresults_count, ' out of these ', n, ' sites so far. \n\n', file = stderr())}
+      if (verbose) {
+        estimated_endtime <- Sys.time() +  (minutes_to_go * 60)   
+        cat('\n', file = stderr())
+        cat(paste0(  i, " of ", n, " done so far\n\n"))
+        cat(as.character(format((benchmark.start), format =   "%r")), "is the time this batch started.\n", file = stderr())
+        cat(as.character(format(Sys.time(),        format =   "%r")),  "is the time now.\n", file = stderr())
+        cat(as.character(format(estimated_endtime, format =   "%r")), "is the time this batch is projected to be finished.\n", file = stderr())
+        cat('\n', minutes_to_go, 'minutes estimated remaining \n\n', file = stderr())
+      }
+      if (noresults_count > 0)  {
+        cat('Results were unavailable for ', noresults_count, ' out of these ', n, ' sites so far. \n\n', file = stderr())
+      }
     }
-    # cat('\n', file = stderr()) # 
     if (is.function(updateProgress)) {
       if (exact_minutes_to_go > 2) {
         timeleft <- paste0(minutes_to_go, " minutes")
@@ -299,32 +309,33 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
   #################################################  #################################################
   # LOOP OVER POINTS ENDS (outlist is ready) ###############  #################################################
   #################################################  #################################################
-
+  
   # Save to local file the interim results if still need to  ####
   if (n < report_every_n & save_when_report & (!on_server_so_dont_save_files) ) {
     # we did not save any chunks, so save whole, in case rbind fails
     save(outlist, file = file.path(tdir, 'temp_ejscreenapibatch_outlist_full.rdata'))
-    cat("see ", file.path(tdir, 'temp_ejscreenapibatch_outlist_full.rdata'), "\n")
-  }
+    if (verbose) {
+      cat("see ", file.path(tdir, 'temp_ejscreenapibatch_outlist_full.rdata'), "\n")
+    }}
   
   # *** Compile results in a data.table *** (like a data.frame) ####
   results <- data.table::rbindlist(outlist, fill = T, idcol = 'id')
   ## may want to change it from 'id' to 'ejscreen_uniq_id' similar to 'ejam_uniq_id' ***
   # results <- do.call(rbind, outlist) # would be the way to do this if data.frame not data.table
   if (drop_redundant_indicators) {
-  # Remove redundant columns ###
-  # (API provided several indicators twice using different names,
-  #  once in data$main and once in data$demographics) and maybe in data$extras
-  # Find colnames in results that are an api_synonym but not an apiname, whose data is also present in the form of corresponding apiname
-  # [1] "RAW_D_PEOPCOLOR"  "RAW_D_INCOME"     "RAW_D_LESSHS"     "RAW_D_LING"       "RAW_D_UNDER5"     "RAW_D_OVER64"    
-  # [7] "RAW_D_UNEMPLOYED" "RAW_D_LIFEEXP"    "S_D_LIFEEXP"      "N_D_LIFEEXP"      "N_D_LIFEEXP_PER"  "geometry.x"      
-  # [13] "geometry.y"
-  synhere <- names(results)[!(names(results) %in% map_headernames$apiname) & (names(results) %in% map_headernames$api_synonym)]
-  cnames_redundant <- synhere[fixcolnames(synhere, 'api_synonym', 'api') %in% names(results)]
-  if (length(cnames_redundant) > 0) {
-    colnumkeep <- which(!(names(results) %in% cnames_redundant))
-    results <- results[ , colnumkeep, with = FALSE]
-  }
+    # Remove redundant columns ###
+    # (API provided several indicators twice using different names,
+    #  once in data$main and once in data$demographics) and maybe in data$extras
+    # Find colnames in results that are an api_synonym but not an apiname, whose data is also present in the form of corresponding apiname
+    # [1] "RAW_D_PEOPCOLOR"  "RAW_D_INCOME"     "RAW_D_LESSHS"     "RAW_D_LING"       "RAW_D_UNDER5"     "RAW_D_OVER64"    
+    # [7] "RAW_D_UNEMPLOYED" "RAW_D_LIFEEXP"    "S_D_LIFEEXP"      "N_D_LIFEEXP"      "N_D_LIFEEXP_PER"  "geometry.x"      
+    # [13] "geometry.y"
+    synhere <- names(results)[!(names(results) %in% map_headernames$apiname) & (names(results) %in% map_headernames$api_synonym)]
+    cnames_redundant <- synhere[fixcolnames(synhere, 'api_synonym', 'api') %in% names(results)]
+    if (length(cnames_redundant) > 0) {
+      colnumkeep <- which(!(names(results) %in% cnames_redundant))
+      results <- results[ , colnumkeep, with = FALSE]
+    }
   }
   # # Fix percent signs and N/A ####
   # ## Percentage signs in some indicators may cause problems in calculations or sorting so remove those
@@ -340,13 +351,17 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
   ################################################################## #
   
   # Done. Report to console how long it took. ####
-  cat('Finished  \n', file = stderr())
+  if (verbose) {
+    cat('Finished  \n', file = stderr())
+  }
   # speedreport(benchmark.start, Sys.time(), n)
   finished_without_crashing <- TRUE
   
   if (noresults_count > 0) {
     warnmessage <- paste0('Results were unavailable for ', noresults_count,' out of these ', n, ' sites.')
-    cat(warnmessage,  "\n", file = stderr())
+    if (verbose) {
+      cat(warnmessage,  "\n", file = stderr())
+    }
     warning(warnmessage)
   }
   # print(noresults_count); print(NROW(results))

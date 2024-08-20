@@ -812,7 +812,14 @@ rmost(
   )
 )
 cat("Running load_all() but you may want to rebuild/install now \n")
-cat("You may want to source 'datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R' now \n")
 devtools::load_all()
+
+
+######################################### #
+# ~------------------------------------------- ####
+# ~ ####
+# DOCUMENTATION WEBSITE UPDATE #### 
+cat("\n\n You may want to use 'datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R' now \n\n")
+#  rstudioapi::documentOpen("./data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R")
 
 ########################################## ######################################### # 

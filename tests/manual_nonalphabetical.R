@@ -1,13 +1,8 @@
 # !diagnostics off
 ##   disables diagnostics within this document
-
-
 # test_local()   would test the local source pkg
-
 # test_package() would test an installed package
-
 # test_check()   would test an installed package in the way that is used by R CMD check or check()
-
 
 ## Setting testing_in_logical_order to TRUE 
 ## and source-ing this whole file (or step by step)
@@ -16,43 +11,30 @@
 
 testing_in_logical_order <- TRUE
 # testing_in_logical_order <- FALSE
-
-
-# which test is run first? alphabetical is default but
-# a line in DESCRIPTION can control order the package tests happen
-# see https://testthat.r-lib.org/articles/parallel.html
-
-
-########################################## # 
 ########################################## # 
 
 
 if (testing_in_logical_order) {
   
   library(testthat)
+  # 
+  # if (interactive()) {
+  #   useloadall <- askYesNo(msg = "Do you want to load and test the current source code files version of EJAM (via devtools::load_all() etc.,
+  #                       rather than testing the installed version)?", default = TRUE)
+  #   if (useloadall) {
+  #     devtools::load_all()
+  #   } else {
+  #     suppressPackageStartupMessages({
+  #       library(EJAM)  # need or not?
+  #     })
+  #   }
+  # } else {
+  #   suppressPackageStartupMessages({
+  #     library(EJAM)  # need or not?
+  #   })
+  # }
   
-  if (interactive()) {
-    useloadall = askYesNo("Do you want to load and test the current source code files version of EJAM (via devtools::load_all() etc.,
-                        rather than testing the installed version)?", default = TRUE)
-    if (useloadall) {
-      devtools::load_all()
-    } else {
-      suppressPackageStartupMessages({
-        library(EJAM)  # need or not?
-      })
-    }
-  } else {
-    suppressPackageStartupMessages({
-      library(EJAM)  # need or not?
-    })
-  }
-  
-  dataload_from_pins("all")
-  if (file.exists("./tests/testthat/setup.R")) {
-    source("./tests/testthat/setup.R") #   asks if need load_all or library
-  } else {
-    cat("Need to source the setup.R file first \n")    
-  }
+
   
   
   ########################################## # 
@@ -115,9 +97,20 @@ if (testing_in_logical_order) {
       
       "test-MAP_FUNCTIONS.R",
       
+      
       "test-fixcolnames.R",
+      "test-fixnames.R",
+      "test-fixnames_to_type.R",
       "test-fixcolnames_infer.R",
       "test-varinfo.R",
+      "test-utils_metadata_add.R",
+
+      "test-ejscreenapi.R",
+      "test-ejscreenapi_plus.R",
+      "test-ejscreenapi1.R",
+      "test-ejscreenit.R",
+      "test-ejscreenRESTbroker-functions.R",
+      
       
       "test-mod_save_report.R",
       "test-mod_view_results.R",
@@ -126,14 +119,7 @@ if (testing_in_logical_order) {
       "test-golem_utils_server.R"      #  not used
     )
   }
-  ########################################## # 
-  ## CHECK IF ALL ARE LISTED
-  setdiff(tnames1, tnames2)
-  setdiff(tnames2, tnames1)
-  if (!setequal(tnames1, tnames2)) {
-    cat("need to add new files to list above and below\n")
-    stop("add new files to list above and below")
-  }
+  
   ########################################## # 
   {
     # PUT TEST FILES INTO LOGICAL GROUPS ####
@@ -193,11 +179,14 @@ if (testing_in_logical_order) {
     
     test_fixcolnames <- c(
       "test-fixcolnames.R",
-      "test-fixcolnames_infer.R"
+      "test-fixnames.R",
+      "test-fixnames_to_type.R",
+      "test-fixcolnames_infer.R",
+      "test-varinfo.R",
+      "test-utils_metadata_add.R"
     )
     
     test_doag <- c(
-      "test-varinfo.R",  
       "test-pctile_from_raw_lookup.R",  
       "test-doaggregate.R"     
     )
@@ -207,6 +196,15 @@ if (testing_in_logical_order) {
       "test-ejamit_compare_distances.R",
       "test-ejamit_compare_groups_of_places.R"
     )
+    
+    test_ejscreenapi <- c(
+      "test-ejscreenapi.R",
+      "test-ejscreenapi_plus.R",
+      "test-ejscreenapi1.R",
+      "test-ejscreenit.R",
+      "test-ejscreenRESTbroker-functions.R"
+    )
+    
     test_mod <- c(
       "test-mod_save_report.R",    
       "test-mod_specify_sites.R",  
@@ -218,54 +216,91 @@ if (testing_in_logical_order) {
       "test-ui_and_server.R"   
     )
   }
-
- # {
-   ########################################## # 
-    groupnames = c(
-      "test_fips",
-      "test_naics",
-      "test_frs",
-      "test_latlon",
-      "test_maps",
-      "test_shape",
-      "test_getblocks",
-      "test_fixcolnames",
-      "test_doag",
-      "test_ejamit",
-      "test_mod",
-      "test_app"
-    )
+  
+  # {
+  ########################################## # 
+  groupnames = c(
+    "test_fips",
+    "test_naics",
+    "test_frs",
+    "test_latlon",
+    "test_maps",
+    "test_shape",
+    "test_getblocks",
+    "test_fixcolnames",
+    "test_doag",
+    "test_ejamit",
+    "test_ejscreenapi",
+    "test_mod",
+    "test_app"
+  )
   # }
   testlist <- sapply(groupnames  , FUN = get)
   ########################################## # 
   
   # CHECK THEY ARE ALL HERE AND IN GROUPS
   
-  test_all <- as.vector(unlist(testlist))
-  cat("\n\n   All test files found in folder are listed here and in a group = ",
-      all.equal(sort(test_all), sort(tnames1)), "\n\n")
-  if (!setequal(tnames1, test_all)) {
-    if (any(duplicated(test_all))) {
-      cat("some are listed in >1 group\n")
-      warning("some are listed in >1 group")
-    }
-    cat("some are not listed in any group\n")
-    stop("some are not listed in any group")
+  if (length(setdiff(tnames1, tnames2)) > 0) {
+  cat("These are in test folder as files but not in list above: \n\n")
+  print(setdiff(tnames1, tnames2))
+  cat("\n")
   }
+  
+  if (length(setdiff(tnames2, tnames1)) > 0) {
+  cat("These are in list above but not in test folder as files: \n\n")
+  print(setdiff(tnames2, tnames1))
+  cat("\n")
+  }
+  
+  if (!setequal(tnames1, tnames2)) {
+    stop("add new files to list of files")
+  }
+  
+  test_all <- as.vector(unlist(testlist))
+  
+  if (!all(TRUE == all.equal(sort(test_all), sort(tnames1)))) {
+    cat("\n\n   test files found in folder does not match tnames1 list  \n")
+        print(all.equal(sort(test_all), sort(tnames1))) 
+        cat("\n\n")
+  }
+  
+  if (length(setdiff(tnames1, test_all)) > 0) {
+    cat("These are in test folder as files but not in list of groups above: \n\n")
+    print(setdiff(tnames1, test_all))
+    cat("\n")
+    stop("fix list of files")
+  }
+ 
+  if (length(setdiff(test_all, tnames1)) > 0) {
+    cat("These are in list of groups above but not in test folder as files: \n\n")
+    print(setdiff(test_all, tnames1))
+    cat("\n")
+    stop("fix list of test files")
+  }
+  
   if (any(duplicated(test_all))) {
     cat("some are listed >1 group\n")
     stop("some are listed >1 group")
   }
+  
+  cat("\n\n")
   ########################################## # 
   
-  #################################################### #
   
   library(testthat)
   library(data.table) # used in functions here
   library(magrittr)
   library(dplyr)
-  ########################### #
+  ########################### #  
   
+  dataload_from_pins("all")
+  if (file.exists("./tests/testthat/setup.R")) {
+    source("./tests/testthat/setup.R") #   asks if need load_all or library
+  } else {
+    cat("Need to source the setup.R file first \n")    
+  }
+  #################################################### #
+
   # FUNCTIONS TO COMPILE MINIMAL REPORTS ON GROUPS OF test FILES ####
   
   test1group <- function(fnames = test_all, 
@@ -300,7 +335,7 @@ if (testing_in_logical_order) {
       x <- x[, c('file',  'test', 
                  'tests', 'passed', 'failed',  'err',
                  'warning', 'flag', 'skipped', 'error_cant_test'
-                   )]
+      )]
       
       x$test <- substr(x$test, 1, 50) # some are long
       xtable[[i]] <- data.table::data.table(x)
@@ -341,7 +376,8 @@ if (testing_in_logical_order) {
 ########################### #  ########################################## #
 ########################### #  ########################################## #
 
-if (testing_in_logical_order) {
+
+if (testing_in_logical_order ) {
   
   
   ## to TEST JUST ONE FILE OR ONE GROUP:
@@ -404,8 +440,10 @@ if (testing_in_logical_order) {
 ########################### #  ########################################## #
 ########################### #  ########################################## #
 
+# do this part manually: 
 
-if (testing_in_logical_order) {
+
+if (testing_in_logical_order & 1 == 0) {
   
   # LOOK AT RESULTS SUMMARIES ####
   
@@ -419,11 +457,11 @@ if (testing_in_logical_order) {
               / sum(x$tests), 1))
   print(Sys.Date())
   
-   # 7/1/24
+  # 7/1/24
   
   # err         warning           tests          passed          failed         warning            flag         skipped error_cant_test 
   # 14              11             892             867              12              11              25               2               7 
-
+  
   # err         warning           tests          passed          failed         warning            flag         skipped error_cant_test 
   # 1.6             1.2           100.0            97.2             1.3             1.2             2.8             0.2             0.8 
   
@@ -453,8 +491,8 @@ if (testing_in_logical_order) {
   #  4:      test_doag                     test-doaggregate.R still same exact results_bysite as previously save     0      0      0     0       0     0       0               1
   #  5:      test_doag                     test-doaggregate.R still same exact results_bybg_people as previously     0      0      0     0       0     0       0               1
   #  6:      test_doag                     test-doaggregate.R     still same exact longnames as previously saved     0      0      0     0       0     0       0               1
-
-    #  7:       test_frs                test-regid_from_naics.R    no crash (but fails to warn)  for invalid NAICS     4      2      2     2       0     2       0               0
+  
+  #  7:       test_frs                test-regid_from_naics.R    no crash (but fails to warn)  for invalid NAICS     4      2      2     2       0     2       0               0
   #  8:       test_frs                    test-frs_is_valid.R colname not REGISTRY_ID but seems to be ok alias,      1      0      1     1       0     1       0               0
   #  9:       test_frs                test-regid_from_naics.R no crash (but fails to warn) if not present in dat     2      1      1     1       0     1       0               0
   # 10:       test_frs                test-regid_from_naics.R                             lookup works correctly     1      1      0     0       0     0       0               1

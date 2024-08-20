@@ -37,13 +37,19 @@
 #' @keywords internal
 #'
 fix_pctcols_x100 <- function(df, cnames = NULL) {
-
+  
   ## which percentage indicators are stored as 0-1.00 not 0-100 ?
-  ## This will correct for different scaling in blockgroupstats and ejamit()$results_bysite
-
+  ## This will correct for different scaling in blockgroupstats and ejamit()$results_bysite, etc.
+  
   # inefficient to pass the whole df here but should work
-
-  if (is.null(cnames)) {cnames <- names_pct_as_fraction_ejscreenit} # EJAM package data includes names_pct_as_fraction_blockgroupstats,
+  
+  if (is.null(cnames)) {
+    cnames <- unique(c(
+      names_pct_as_fraction_blockgroupstats, 
+      names_pct_as_fraction_ejamit,
+      names_pct_as_fraction_ejscreenit
+    ))
+  } # EJAM package data includes names_pct_as_fraction_blockgroupstats,
   tofix <- names(df)[names(df) %in% cnames]
   if (is.data.table(df)) {
     # df[ , (tofix) := lapply(.SD, function(z) z * 100), .SDcols = tofix] #painful syntax and updates the data.table in the calling envt by reference which may be unexpected
