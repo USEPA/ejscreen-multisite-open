@@ -31,7 +31,7 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
   output_df_rounded <-   as.data.frame( output_df) 
   
   #  basic rounding and units
-  r100x <- colnames(output_df_rounded) %in% c(names_d, names_d_avg, names_d_state_avg) # units were 0-1 not 0-100
+  r100x <- colnames(output_df_rounded) %in% c(names_d, names_d_avg, names_d_state_avg) # units were 0-1 not 0-100 ### this should be handled via fix_pctcols_x100() and map_headernames info 
   output_df_rounded[, r100x] <- 100 * (output_df_rounded[, r100x])
   if (include_ejindexes) {
     r2 <- colnames(output_df_rounded) %in% c(names_e, names_e_avg, names_e_state_avg, 

@@ -208,12 +208,15 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
   usastats$OBJECTID <- NULL
   statestats$OBJECTID <- NULL
   
-# fix scaling of percentages of new groups:
+  
+  if (max(usastats[, unique(c(names_d_subgroups_alone, names_d_subgroups_nh))]) > 1) {
+    # fix scaling of percentages of new groups:
     usastats[, unique(c(names_d_subgroups_alone, names_d_subgroups_nh))] <-   usastats[, unique(c( names_d_subgroups_alone, 
                                                                                                    names_d_subgroups_nh))]  / 100
-  statestats[, unique(c(names_d_subgroups_alone,  names_d_subgroups_nh))] <- statestats[, unique(c( names_d_subgroups_alone, 
-                                                                                                    names_d_subgroups_nh))]  / 100
-  rm(bg)
+    statestats[, unique(c(names_d_subgroups_alone,  names_d_subgroups_nh))] <- statestats[, unique(c( names_d_subgroups_alone, 
+                                                                                                      names_d_subgroups_nh))]  / 100
+    rm(bg)
+  }
   
   # save.image(file = 'work on usastats and statestats 2024-07.rda')
   

@@ -32,7 +32,7 @@ because rounding info says 0 digits when the intent is to show 0 digits after th
   table_round(c(12.123456, 9, NA ), 'pm')
 
  x <- testoutput_ejamit_10pts_1miles$results_bysite[
-   1:2, c('lat','lon', 'pop', names_these, names_ratio_to_avg_these, names_e_pctile), 
+   1:2, c('lat','lon', 'pop', names_these, names_these_ratio_to_avg, names_e_pctile), 
    with = FALSE
  ]
 
