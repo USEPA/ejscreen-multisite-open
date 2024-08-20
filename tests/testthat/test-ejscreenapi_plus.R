@@ -21,10 +21,12 @@ test2lon <- c(-118.241073, -76.641674)
 test_that("ejscreenapi_plus() works at all", {
   expect_no_error(
     suppressWarnings({
-      ejscreenapi_plus( testpoints_5[1:2, ], radius = 0.5, 
-                        save_when_report = F, on_server_so_dont_save_files = T, 
-                        calculate_ratios = F,
-                        verbose = FALSE) 
+      junk = capture.output({
+        ejscreenapi_plus( testpoints_5[1:2, ], radius = 0.5, 
+                          save_when_report = F, on_server_so_dont_save_files = T, 
+                          calculate_ratios = F,
+                          verbose = FALSE)  
+      })
     })
   )
 })

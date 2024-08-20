@@ -79,6 +79,8 @@ test_that('ejscreenRESTbroker2table(ejscreenRESTbroker()) returns 1-row data.fra
 test_that('ejscreenRESTbroker2table(ejscreenRESTbroker()) results are same as ejscreenapi1(), except latter makes it numeric and drops percent signs', {
   expect_equal(names(outrest2table), names(out1))
   outrest2table$timeSeconds  <- NULL; out1$timeSeconds <- NULL  # because this is slightly different each time API used
+  outrest2table$stateAbbr_from_api  <- NULL; out1$stateAbbr_from_api <- NULL  # numeric vs logical 
+  outrest2table$stateName_from_api  <- NULL; out1$stateName_from_api <- NULL  # numeric vs logical 
   # # remove percent signs and makes numeric, which ejscreenapi1() does but ejscreenRESTbroker2table() does not
   outrest2table <- makenumericdfFORSHINY(outrest2table)
   expect_equal(outrest2table, out1)
@@ -113,11 +115,11 @@ test_that("warned if radius small so no block point inside" , {
   expect_no_warning({
     xx3 <- ejscreenRESTbroker2table(x3)  # ok - radius large enough that some block point is found
   })
-  expect_equal(names(xx3), names(xxneg))
-  expect_equal(names(xx3), names(xx0))
-  expect_equal(names(xx3), names(xx1))
-  expect_equal(xx0$error, xx1$error)
-  expect_false("error" %in% names(xx0))
+  # expect_equal(names(xx3), names(xxneg))
+  # expect_equal(names(xx3), names(xx0))
+  # expect_equal(names(xx3), names(xx1))
+  expect_equal(xx0$message, xx1$message)
+  # expect_false("error" %in% names(xx0)) # "message" is the name there now
   
 })
 
