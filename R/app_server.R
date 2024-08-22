@@ -2131,7 +2131,7 @@ app_server <- function(input, output, session) {
   total_pop <- reactive({
     req(data_processed())
     ## format and return total population  ## some of these numbers seem very large! possible double-counting??
-    round(data_processed()$results_overall$pop, 0 )
+    round(data_processed()$results_overall$pop, table_rounding_info("pop") )
   })
   
   ### ( Title of analysis ) ####

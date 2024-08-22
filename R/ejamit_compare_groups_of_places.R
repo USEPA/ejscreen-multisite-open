@@ -258,13 +258,13 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
     data.frame(
       sitetype  = out$types,
       sitecount = out$sitecount_bytype,
-      pop = round(out$results_bytype$pop, 0),
+      pop = round(out$results_bytype$pop, table_rounding_info("pop")),
       round(out$results_bytype[, 
                                names_d_ratio_to_state_avg,
                                ## or else
                                # c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg), 
                                
-                               with = FALSE], 1)
+                               with = FALSE],  table_rounding_info(names_d_ratio_to_state_avg))
     )
   )
   cat("Use  ejam2excel(out)  to view results, and see the types of sites compared, one row each, in the Overall tab\n")
