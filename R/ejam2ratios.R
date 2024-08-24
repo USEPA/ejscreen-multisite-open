@@ -29,11 +29,9 @@ ejam2ratios <- function(ejamitout,
   }
   if (!all(c(names_these_ratio_to_avg) %in% names(df))) {stop("some of the ratios were not found as column names in the table")}
   
-  x <- round(
-    data.frame(
-    Ratio_to_US_avg    = unlist(df[, ..names_these_ratio_to_avg]),
-    Ratio_to_State_avg = unlist(df[, ..names_these_ratio_to_state_avg])
-    ), 1
+  x <-data.frame(
+    Ratio_to_US_avg    = round(unlist(df[, ..names_these_ratio_to_avg]), table_rounding_info(names_these_ratio_to_avg)),
+    Ratio_to_State_avg = round(unlist(df[, ..names_these_ratio_to_state_avg]), table_rounding_info(names_these_ratio_to_state_avg))
     )
 
   rownames(x) <- fixcolnames(names_these, "r", "shortlabel")

@@ -54,7 +54,7 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
   x <- as.numeric(sitenumber)
   if (ejamout1$valid == T) {
     #!(submitted_upload_method %in% c('FIPS')) &
-    popstr <- prettyNum(round(ejamout1$pop), big.mark = ',')
+    popstr <- prettyNum(round(ejamout1$pop, table_rounding_info("pop")), big.mark = ',')
     
     if (submitted_upload_method == 'SHP') {
       locationstr <- paste0('Polygon ', data_up_shp[x,]$OBJECTID_1)
@@ -67,7 +67,7 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
       locationstr <- paste0(ejamout1$radius.miles, ' Mile Ring Centered at ',
                             ejamout1$lat, ', ',
                             ejamout1$lon, '<br>', 'Area in Square Miles: ',
-                            round(pi * ejamout1$radius.miles^2, 2)
+                            round(pi * ejamout1$radius.miles^2, table_rounding_info("radius.miles"))
       )
     }
     

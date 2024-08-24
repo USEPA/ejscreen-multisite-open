@@ -54,7 +54,7 @@ boxplots_ratios <- function(x, selected_dvar_colname='Demog.Index', selected_dva
   names(x)              <- fixnames_to_type(names(x),                oldtype = "rname", newtype = "shortlabel")
   selected_dvar_colname <- fixnames_to_type((selected_dvar_colname), oldtype = "rname", newtype = "shortlabel")
 
-  DemogRatio75th <- round(stats::quantile(x[ , selected_dvar_colname], 0.75, na.rm = TRUE), 2)
+  DemogRatio75th <- round(stats::quantile(x[ , selected_dvar_colname], 0.75, na.rm = TRUE), 2) #NEED TO LOOK AT
   #DemogRatio50th <- round(stats::quantile(x[ , selected_dvar_colname], 0.50, na.rm = TRUE), 2)
   mymaintext <- paste0("Ratios to ", towhat_nicename, ", as distributed across these sites")
   if (length(wheretext) != 1) {warning('wheretext must be length 1. replacing with At'); wheretext <- "At"}
@@ -64,7 +64,7 @@ boxplots_ratios <- function(x, selected_dvar_colname='Demog.Index', selected_dva
   mysubtext <- paste0(
     wheretext,
     ' at least one site, ', selected_dvar_nicename, ' is ',
-    round(max(x[ , selected_dvar_colname], na.rm = TRUE), 1), 'x the ', towhat_nicename, '\n',
+    round(max(x[ , selected_dvar_colname], na.rm = TRUE), table_rounding_info(selected_dvar_colname)), 'x the ', towhat_nicename, '\n', #NEED TO LOOK AT
     # 'Near most of these ', NROW(x),' sites, ', selected_dvar_nicename,
     # ' is at least ', DemogRatio50th, 'x the ', towhat_nicename, '\n',
     'and at 1 in 4 it is at least ', DemogRatio75th, 'x the ', towhat_nicename
