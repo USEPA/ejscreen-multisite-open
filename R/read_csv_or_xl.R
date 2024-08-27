@@ -43,10 +43,18 @@ read_csv_or_xl <- function(fname=NULL, show_col_types=FALSE, rowsize_warn= 30 * 
   
   if (grepl('\\.csv$', fname, ignore.case = TRUE)) {
     filecontents <- try(as.data.frame(readr::read_csv(file = fname, show_col_types = show_col_types)))
+    if(inherits(filecontents, "try-error")){
+      message("Erorr reading CSV file, returning NULL")
+      return(NULL)
+    }
     # error handling could go here - to ensure it is a solid block of data, only 1 header row, no extra rows or cols 
   }
   if (grepl('\\.xls$|\\.xlsx$', fname, ignore.case = TRUE)) {
     filecontents <- try(as.data.frame(readxl::read_excel(path = fname, sheet = 1)))
+    if(inherits(filecontents, "try-error")){
+      message("Erorr reading excel file, returning NULL")
+      return(NULL)
+    }
     # error handling could go here- to ensure it is a solid block of data, only 1 header row, no extra rows or cols or merged cells
   } 
   if (NROW(filecontents) > rowsize_warn) {warning("There appear to be ", NROW(filecontents), " rows in this dataset!")}
