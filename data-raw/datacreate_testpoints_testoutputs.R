@@ -24,8 +24,8 @@ if (!exists("metadata_add")) {
 
 ## To see a list of installed data objects:
 ##
-   # x = data(package = "EJAM")
-   # as.data.frame(x$results[grepl("^test",  (x$results[, "Item"])), c('Item', "Title")])
+# x = data(package = "EJAM")
+# as.data.frame(x$results[grepl("^test",  (x$results[, "Item"])), c('Item', "Title")])
 #                                         Item                                                              Title
 # 1                        test_address_parts1                                                                   
 # 2                         test_address_table                                                                   
@@ -54,8 +54,8 @@ if (!exists("metadata_add")) {
 
 ## To see data() objects that used to be installed by the other package (not created in this script):
 ##
-  # x = data(package = "EJAMejscreenapi") # if still relevant
-  # as.data.frame(x$results[grepl("^test",  (x$results[, "Item"])), c('Item', "Title")])
+# x = data(package = "EJAMejscreenapi") # if still relevant
+# as.data.frame(x$results[grepl("^test",  (x$results[, "Item"])), c('Item', "Title")])
 #                                         Item                                                                                   Title
 # 1                     testids_program_sys_id                           test data, string vector of EPA FRS Program System ID numbers
 # 2                        testids_registry_id                                        test data, vector of EPA FRS Registry ID numbers
@@ -72,7 +72,7 @@ if (!exists("metadata_add")) {
 # 13                            testpoints_500                                test points data.frame with columns sitenumber, lat, lon
 
 ######################################################## ######################################################### #
-  
+
 
 # Specify which data to recreate using this script ####
 
@@ -85,6 +85,7 @@ if (TRUE) {
   resaving_testpoints_rda       <- FALSE
   resaving_testpoints_excel     <- FALSE
   resaving_testpoints_helpdocs  <- FALSE
+  resaving_testpoints_bad       <- FALSE
   
   recreating_getblocksnearby    <- TRUE  # eg if block data changed, or if recreating_doaggregate_output = TRUE below
   resaving_getblocksnearby_rda  <- TRUE
@@ -111,7 +112,48 @@ if (TRUE) {
 
 # Create and save datasets  ####
 # _ ####
-
+if (resaving_testpoints_bad) {
+  
+  testpoints_bad <- data.frame(
+    note = c('stateborder1',
+             'stateborder2',
+             'stateborder3',
+             'rural', 
+             'urban', 
+             'ocean',
+             'na'
+    ),
+    
+    rbind(data.frame(lat = 40.644590, lon = -75.199434), 
+          data.frame(lat = 40.640419, lon = -75.192781), 
+          data.frame(lat = 40.645704, lon = -75.196623), 
+          data.frame(lat = 41.538910, lon = -77.889950), 
+          data.frame(lat = 40.744996, lon = -73.984264),   
+          data.frame(lat = 39, lon = -71.761991),
+          data.frame(lat = NA, lon = NA))
+  )
+  
+  text_to_do <- paste0(
+    "", "testpoints_bad", " = metadata_add(", "testpoints_bad", ")"
+  )
+  eval(parse(text = text_to_do))
+  usethis::use_data(testpoints_bad, overwrite = TRUE)     ############# #
+  ## save as DOCUMENTATION 
+  filecontents <- "
+#' @name testpoints_bad
+#' @docType data
+#' @title test points data.frame with columns note, lat, lon
+#' @details examples of test points for testing functions that need lat lon,
+#'   with some invalid or tricky cases like rural (no blocks nearby), outside US,
+#'   on edge of two states, NA values, etc.
+NULL"
+  # prefix documentation file names with "data_"
+  writeChar(filecontents, con = paste0("./R/data_", "testpoints_bad", ".R"))       ############# #
+  ## save as  EXCEL   ###   #
+  writexl::write_xlsx(list(testpoints = testpoints_bad),
+                      path = paste0("./inst/testdata/latlon/", "testpoints_bad", ".xlsx"))    ############# #
+  
+}
 ###################################################### #
 # >_____testpoints_conus5 ______________ ####
 # was using as convenient dataset that spans full range of lat/lon values in continental USA
@@ -204,7 +246,7 @@ for (n in nvalues) {
     text_to_do <- paste0(
       "", testpoints_name, " = metadata_add(", testpoints_name, ")"
       # "attr(",  testpoints_name  ,", 'date_saved_in_package') <- Sys.Date()"
-      )
+    )
     eval(parse(text = text_to_do))  
     
     text_to_do <- paste0("usethis::use_data(", testpoints_name, ", overwrite=TRUE)")
@@ -225,7 +267,7 @@ NULL
       writeChar(gsub("testpoints_100", "testpoints_100_dt", filecontents), con = paste0("./R/data_", "testpoints_100_dt", ".R"))
     }
   }
-
+  
   ## save as EXCEL  ####
   if (resaving_testpoints_excel) {
     # testpoints_data$EJScreenMap = url_ejscreenmap(lat = testpoints_data$lat, lon = testpoints_data$lon, as_html = FALSE) # NOT CLICKABLE IN EXCEL THIS WAY BUT OK
@@ -471,8 +513,8 @@ if (redoing_ejscreenit_10_for_ejam_to_have) {
   testpoints_name <- "testpoints_10"
   myrad = 1
   testoutput_ejscreenit_10pts_1miles <- ejscreenit(testpoints_10, radius = 1, calculate_ratios = TRUE,
-                                                                    nosave = TRUE, nosee = TRUE,
-                                                                    interactiveprompt = FALSE)
+                                                   nosave = TRUE, nosee = TRUE,
+                                                   interactiveprompt = FALSE)
   
   text_to_do <- paste0(
     "", "testoutput_ejscreenit_10pts_1miles", " = metadata_add(", "testoutput_ejscreenit_10pts_1miles", ")"

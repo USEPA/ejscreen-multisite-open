@@ -223,7 +223,7 @@ url_ejscreen_report <- function(lat='', lon='', radius='', as_html=FALSE, linkte
     
     # Flexibly allow for user to provide latlon as 1 table or as 2 vectors or 1 filename or 1 interactively selected file
     
-    latlon_table <- latlon_from_anything(lat, lon)[ , c("lat","lon")] # or could use sitepoints_from_any() that is similar
+    latlon_table <- sitepoints_from_anything(lat, lon)[ , c("lat","lon")] # or could use sitepoints_from_any() that is similar
     lat <- latlon_table$lat
     lon <- latlon_table$lon
     

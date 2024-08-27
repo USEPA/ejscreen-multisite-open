@@ -312,11 +312,10 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, radius_donut_low
   
   ########################################################################### ## 
   if (!quiet) {
-    cat('Stats via getblocks_diagnostics(), but BEFORE ADJUSTING UP FOR VERY SHORT DISTANCES: \n')
+    cat('Stats via getblocks_diagnostics(), but NOT ADJUSTING UP FOR VERY SHORT DISTANCES: \n')
     cat("min distance before adjustment: ", min(sites2blocks$distance, na.rm = TRUE), "\n")
     cat("max distance before adjustment: ", max(sites2blocks$distance, na.rm = TRUE), "\n\n")
     #getblocks_diagnostics(sites2blocks) # returns NA if no blocks nearby
-    cat("\n\nAdjusting upwards the very short distances now...\n ")
   }
 
   # ADJUST THE VERY SHORT DISTANCES, if use_unadjusted_distance = FALSE  ####
@@ -337,6 +336,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, radius_donut_low
     sites2blocks <-  blockwts[sites2blocks, .(ejam_uniq_id, blockid, distance, blockwt, bgid, block_radius_miles), on = 'blockid'] 
   }
   if (!use_unadjusted_distance) {
+    if (!quiet) {  cat("\n\nAdjusting upwards the very short distances now...\n ")}
   # 2 ways considered here for how exactly to make the adjustment: 
   sites2blocks[distance < block_radius_miles, distance := 0.9 * block_radius_miles]  # assumes distance is in miles
   # or a more continuous but slower (and nonEJScreen way?) adjustment for when dist is between 0.9 and 1.0 times block_radius_miles: 
@@ -350,7 +350,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, radius_donut_low
     sites2blocks <- sites2blocks[distance <= truedistance, ] # had been inside the loop.
     
   }
-  if (!quiet) {
+  if (!quiet && !use_unadjusted_distance) {
     cat('Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: \n')
     cat("min distance AFTER adjustment: ", min(sites2blocks$distance, na.rm = TRUE), "\n")
     cat("max distance AFTER adjustment: ", max(sites2blocks$distance, na.rm = TRUE), "\n\n")

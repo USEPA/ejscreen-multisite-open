@@ -9,7 +9,7 @@ description_file <- desc::description$new("DESCRIPTION")
 default_metadata <- list(
   
   ###note this field in DESCRIPTION file cant have text.
-  #   "2.3.0" ok, but not "2.3.0-ejscreen2.3"
+  #   "2.32.0" ok, but not "2.32.0-ejscreen2.32"
   ejam_package_version          = description_file$get("Version"),
   
   ejscreen_version      = description_file$get("EJScreenVersion"),
@@ -21,9 +21,9 @@ default_metadata <- list(
 
 # > dput(default_metadata)
 # list(
-#   ejam_package_version = c(Version = "2.3.0"), 
-#   ejscreen_version     = c(EJScreenVersion = "2.3"),
-#   ejscreen_releasedate = c(EJScreenReleaseDate = "July 2024"),
+#   ejam_package_version = c(Version = "2.32.0"), 
+#   ejscreen_version     = c(EJScreenVersion = "2.32"),
+#   ejscreen_releasedate = c(EJScreenReleaseDate = "2024-08-12"),
 #   acs_releasedate      = c(ACSReleaseDate = "2023-12-07"), 
 #   acs_version          = c(ACSVersion = "2018-2022"),
 #   census_version       = c(CensusVersion = "2020")
@@ -40,11 +40,11 @@ metadata_mapping <- list(
     census_version = description_file$get("CensusVersion")
   ),
   
-  # datacreate_blockgroupstats2.3.R
-  # rstudioapi::documentOpen("./R/datacreate_blockgroupstats2.3.R")
+  # datacreate_blockgroupstats2.32.R
+  # rstudioapi::documentOpen("./R/datacreate_blockgroupstats2.32.R")
   blockgroupstats =	default_metadata,
   
-  # datacreate_usastats2.3.R  and others
+  # datacreate_usastats2.32.R  and others
   avg.in.us       =	default_metadata,
   statestats      = default_metadata,
   usastats        = default_metadata,

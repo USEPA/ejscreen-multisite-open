@@ -90,7 +90,7 @@ dataload_from_local <- function(varnames = c(c('blockwts', 'blockpoints', 'block
 
       if (justchecking) {
         if (!silent) {cat(varnames_i, spacing_i,
-            'is NOT in memory\n')}
+            'NOT already in memory. ')}
       }
       if (file.exists(localpaths[i] )) {
         ##################### #

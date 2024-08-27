@@ -104,8 +104,8 @@ supplementing their own tools, websites, or mobile apps.
 ## Updates
 
 Data updates are synchronized with EJScreen data updates and main version numbers,
-so EJScreen 2.3 (the version released in mid-2024) and EJAM 2.3 use the same data.
-Version 2.3 has ACS 2018-2022 block group demographics and Census 2020 block weights.
+so EJScreen 2.32 (the updated version released in August 2024) and EJAM 2.32 use the same data.
+Version 2.32 has ACS 2018-2022 block group demographics and Census 2020 block weights.
 
 ## Speed
 

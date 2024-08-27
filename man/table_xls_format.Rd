@@ -44,14 +44,14 @@ table_xls_format(
 )
 }
 \arguments{
-\item{overall}{table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row),
+\item{overall}{table to save in one tab, from ejamit()$results_overall, EJAM analysis of indicators overall (one row),
 but if entire output of ejamit() is passed as if it were overall, function figures out eachsite, etc.}
 
-\item{eachsite}{table to save in one tab, from ejamit()$overall, EJAM analysis site by site (one row per site)}
+\item{eachsite}{table to save in one tab, from ejamit()$results_bysite, EJAM analysis site by site (one row per site)}
 
 \item{longnames}{vector of indicator names to display in Excel table}
 
-\item{formatted}{optional table to save in one tab, from ejamit()$overall, EJAM analysis overall in different format}
+\item{formatted}{optional table to save in one tab, from ejamit()$results_overall, EJAM analysis overall in different format}
 
 \item{bybg}{Optional large table of details of each block group that is only needed to analyze distances by group.}
 

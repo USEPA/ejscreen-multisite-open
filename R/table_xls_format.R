@@ -3,11 +3,11 @@
 #' Used by table_xls_from_ejam()
 #' 
 #' @details  Already took and put here most or all of code from table_xls_format() or table_xls_format_api() 
-#' @param overall  table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row),
+#' @param overall  table to save in one tab, from ejamit()$results_overall, EJAM analysis of indicators overall (one row),
 #'   but if entire output of ejamit() is passed as if it were overall, function figures out eachsite, etc.
-#' @param eachsite table to save in one tab, from ejamit()$overall, EJAM analysis site by site (one row per site)
+#' @param eachsite table to save in one tab, from ejamit()$results_bysite, EJAM analysis site by site (one row per site)
 #' @param longnames vector of indicator names to display in Excel table
-#' @param formatted optional table to save in one tab, from ejamit()$overall, EJAM analysis overall in different format
+#' @param formatted optional table to save in one tab, from ejamit()$results_overall, EJAM analysis overall in different format
 #' @param bybg Optional large table of details of each block group that is only needed to analyze distances by group. 
 #' @param plot_distance_by_group logical, whether to try to add a plot of mean distance by group. 
 #'   This requires that bybg be provided as a parameter input to this function. 

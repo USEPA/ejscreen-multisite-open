@@ -19,7 +19,7 @@
 #'   or object.size(quaddata)
 #'   
 #'  NOTE: blockid2fips is HUGE in memory, and is used only in 
-#'  state_from_blocktable() and state_from_blockid(), which are not always needed by the app
+#'  state_from_blockid_table() and state_from_blockid(), which are not always needed by the app
 #'   blockid2fips is roughly 600 MB in RAM because it stores 8 million block FIPS as text.
 #' 
 #'   Files may include the following:

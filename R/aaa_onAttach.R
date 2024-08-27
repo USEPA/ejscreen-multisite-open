@@ -6,9 +6,11 @@
 #' @details This uses [dataload_from_pins()] and [indexblocks()]
 #' 
 #' This function `.onAttach()` gets run when the package EJAM is attached, 
-#' which happens when library(EJAM) or require(EJAM) is used.
+#' which happens when library(EJAM) or require(EJAM) is used. 
+#' And if [devtools::load_all()] is used, which might mean it loads un-updated local copies or pins copies 
+#' rather than the updated source copies in EJAM/data/ but presumably load_all() then replaces those by reading all from /data/ 
 #' 
-#' This code would not get run if a server ran app.R as a regular shiny app
+#' This code would not get run if a server ran app.R as a regular shiny app (because of _disable_autoload.R ?)
 #' and just used dataload or source to read the /R/*.R source files
 #' rather than loading and attaching the EJAM package. see app.R   ***
 #' Note this duplicates some code in global.R, 
@@ -25,7 +27,7 @@
 
   asap_aws   <- TRUE  # download large datasets now?           Set to FALSE while Testing/Building often
   asap_index <- TRUE  # build index those now?                 Set to FALSE while Testing/Building often 
-  asap_bg    <- TRUE  # load now vs lazyload blockgroup data?  Set to FALSE while Testing/Building often
+  asap_bg    <- FALSE  # load now vs lazyload blockgroup data?  Set to FALSE while Testing/Building often
   
   # startup msg shown at library(EJAM) or when reinstalling from source ####
   packageStartupMessage("Now running .onAttach(), as part of attaching the EJAM package.")
@@ -87,7 +89,7 @@
     }
     
     #################### # 
-    #   blockid2fips is used only in state_from_blocktable() and state_from_blockid(), which are not necessarily used, 
+    #   blockid2fips is used only in state_from_blockid_table() and state_from_blockid(), which are not necessarily used, 
     #   so not loaded unless/until needed
     # Alternative to pins board was DMAP data commons / AWS, where .rda format had been used: 
     # EJAM:::dataload_from_aws(justchecking = TRUE)
@@ -112,7 +114,12 @@
     }
   }
   
-  # load blockgroupstats etc. from package ####
+  # load blockgroupstats etc. from package? ####
+  ## This only makes sense if they cannot be lazyloaded (impossible since .onAttach() is running?),
+  ##  or if you want to preload them to avoid a user waiting for them to load when they are needed,
+  ##  but lazyloading blockgroupstats and statestats and usastats should be pretty fast and forcing data() 
+  ##  to happen here is a bit slow if you have to reload the pkg many times like when iterating, building documentation etc.
+  ##  And it slightly delays the shiny app launch.
   
   if (asap_bg) {
     
@@ -133,8 +140,9 @@
   }
   
   packageStartupMessage('For help using the EJAM package in RStudio, try one of these:
-                        browseURL("https://usepa.github.io/EJAM/index.html")
-                        ?EJAM
-                        
+                          browseURL("https://usepa.github.io/EJAM/index.html")
+                          ?EJAM
+                        To launch shiny app locally:
+                          run_app()
                         ')
 }

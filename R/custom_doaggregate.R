@@ -54,9 +54,12 @@ calc_bgwts_overall <- function(sites2blocks) {
 #' @param varnames vector like names_d
 #'
 #' @return vector same length as varnames, like c("sum of counts", "wtdmean")
-#' @examples calctype(
-#' )
-#' 
+#' @examples 
+#'  calctype("pop")
+#'  calctype(names_d)
+#'  x = names(testoutput_ejamit_10pts_1miles$results_overall)
+#'  cbind(x, calctype(x))
+#'  
 #' @export
 #' @keywords internal
 #'

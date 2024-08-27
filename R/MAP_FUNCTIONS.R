@@ -215,25 +215,25 @@ map_counties_in_state <- function(ST = "DE", colorcolumn = c("NAME", "POP_SQMI",
       # continuous ramp of map colors
       vpal <- leaflet::colorNumeric("viridis", domain = NULL)
       x = map_shapes_leaflet(cshapes,
-                         color = ~vpal(colorscore))
+                             color = ~vpal(colorscore))
     } else {
       # bins of map color
       vpal <- leaflet::colorFactor('viridis' , domain = NULL)
       x = map_shapes_leaflet(cshapes, 
-                         color = ~vpal(factor(colorscore))  ) }
+                             color = ~vpal(factor(colorscore))  ) }
   }
   if (type == "mapview") {
     if (length(unique(colorscore))  > 10 && !is.numeric(colorscore)) {
       x = map_shapes_mapview(cshapes,
                              zcol = colorcolumn, legend = FALSE,
-                               col.regions = mapviewGetOption("raster.palette"))
+                             col.regions = mapviewGetOption("raster.palette"))
       # col.regions = colorscore
       
     } else {
-    x = map_shapes_mapview(cshapes,
-                           zcol = colorcolumn, legend = TRUE
-                           , col.regions = mapviewGetOption("raster.palette"))
-                       #col.regions = colorscore)
+      x = map_shapes_mapview(cshapes,
+                             zcol = colorcolumn, legend = TRUE
+                             , col.regions = mapviewGetOption("raster.palette"))
+      #col.regions = colorscore)
     }
   }
   # print(x)
@@ -374,12 +374,30 @@ map_shapes_plot <- function(shapes, main = "Selected Census Units", ...) {
 #' @param popup  passed to leaflet::addPolygons()
 #'
 #' @return html widget from leaflet::leaflet()
-#'
+#' @examples
+#' out = testoutput_ejamit_10pts_1miles
+#' out$results_bysite = out$results_bysite[1:2,]
+#' map_shapes_leaflet(
+#'   ejam2shapefile(out, save=F),
+#'   popup = popup_from_ejscreen(out$results_bysite)
+#' )
+#' 
 #' @export
 #'
-map_shapes_leaflet <- function(shapes, color = "green", popup = shapes$NAME) {
+map_shapes_leaflet <- function(shapes, color = "green", popup = NULL) {
   
-  mymap <- leaflet(shapes) %>% addPolygons(color = color, popup = popup) %>% addTiles()
+  if (is.null(popup)) {
+    # if all but 3 colnames are in both, looks like results of ejamit(), so use that type of popup formatting
+    if (length(setdiff2(names(shapes), names(testoutput_ejamit_10pts_1miles$results_overall))) < 3) {
+      popup = popup_from_ejscreen(sf::st_drop_geometry(shapes))
+    } else {
+      popup <- popup_from_any(sf::st_drop_geometry(shapes))
+    }
+  }
+  
+  mymap <- leaflet(shapes) %>% 
+    addPolygons(color = color, popup = popup) %>% 
+    addTiles()
   return(mymap)
 }
 ########################### # ########################### # ########################### # ########################### #
@@ -396,7 +414,9 @@ map_shapes_leaflet <- function(shapes, color = "green", popup = shapes$NAME) {
 #' @export
 #'
 map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = shapes$NAME)  {
-  
+  # *** need to confirm this default for popup is right -
+  # compare to the one now in map_shapes_leaflet()
+  # in RStudio console, can do  map_shapes_leaflet(shapes)
   mymap <- mymap %>%
     addPolygons(data = shapes, color = color,  popup = popup) %>%
     addTiles()
@@ -414,12 +434,19 @@ map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = sha
 #' @return like output of mapview function [mapview::mapview()],
 #'   if mapview package is installed,
 #'   when used with an input that is a spatial object as via [sf::read_sf()]
-#' @examples \dontrun{
+#' @examples
+#'  \dontrun{
 #'   map_shapes_mapview(
 #'     shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #'   )
 #' }
 #'
+#' out = ejamit(testpoints_10[1,], radius = 20)
+#' map_shapes_mapview(
+#'   ejam2shapefile(out, save=F),
+#'   popup = popup_from_ejscreen(out$results_bysite)
+#' )
+#' 
 #' @export
 #'
 map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenStreetMap", ...) {

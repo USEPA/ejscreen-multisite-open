@@ -1,3 +1,8 @@
+
+# EJAM 2.32.0-EJScreen2.32 (August 2024)
+
+-   New data incorporated, to match EJScreen version 2.32 ozone data corrections EJScreen released August 2024 as version 2.32
+
 # EJAM 2.3.0-EJScreen2.3 (July 2024)
 
 -   New data and indicators incorporated, to match EJScreen version 2.3 (Environmental indicators `cancer` and `resp` were removed from list of 13 key variables in `names_e`, and `no2` and `drinking` were added). Changes throughout code and datasets to use new data, including metadata in `map_headernames`, variable names stored as `names_e`, `names_e_pctile`, etc., formulas for aggregating across blockgroups for a report via `doaggregate()`, etc.
