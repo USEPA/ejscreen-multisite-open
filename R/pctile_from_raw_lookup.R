@@ -224,7 +224,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     # 3.) Percentile indices are applied to the bin values vector in step 1 to assign the appropriate percentile value to vector selection
     unique_vlookup <- c(unique(myvector_lookup),Inf) #add Inf to coerce N-1 to N
     nondupe_interval <- findInterval(myvector_selection, unique_vlookup, all.inside = TRUE)
-    nondupvec <- which(!duplicated(myvector_lookup),fromLast=TRUE)
+    nondupvec <- which(!duplicated(myvector_lookup,fromLast=TRUE))
     whichinterval[zone == z] <- nondupvec[nondupe_interval]
 
     # WARN if raw score < PCTILE 0, in lookup ! ####
