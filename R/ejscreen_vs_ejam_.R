@@ -612,7 +612,7 @@ ejscreen_vs_ejam_1var = function(vs, varname = names_these[4], # "pctlingiso"
                                           "diff", "absdiff", 
                                           "pctdiff", "abspctdiff")[c(1,2,5)]) {
   
-  sapply(vs100[info], function(x) x[,varname])
+   data.frame(sapply(vs100[info], function(x) x[,varname]))
   }
 ######################################################################### # 
 
