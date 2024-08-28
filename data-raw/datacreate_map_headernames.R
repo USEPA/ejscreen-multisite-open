@@ -5,7 +5,7 @@ if (!exists("rawdir")) {rawdir <- './data-raw'}
 #variablenames(e.g.,long,clearerones)
 #toanother(e.g.,shortereasierforanalysisorprogramminginR,etc.)
 
-datacreate_map_headernames <- function(rawdir = "./data-raw", fname = 'map_headernames_2.3.xlsx') {
+datacreate_map_headernames <- function(rawdir = "./data-raw", fname = 'map_headernames_2.32.xlsx') {
   
   fpath <- file.path(rawdir, fname)
   if (!file.exists(fpath)) {stop("did not find (but this requires) ", fpath)}
@@ -25,7 +25,7 @@ datacreate_map_headernames <- function(rawdir = "./data-raw", fname = 'map_heade
 }
 ################################################################################# #
 
-#  UPDATE map_headernames_2.3.xlsx MANUALLY, 
+#  UPDATE map_headernames_2.32.xlsx MANUALLY, 
 #  then read .xlsx and save as dataset for package
 if (askquestions && interactive()) {
   y <- askYesNo("Want to open .xlsx to edit it now?")

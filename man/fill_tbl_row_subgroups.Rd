@@ -16,4 +16,14 @@ fill_tbl_row_subgroups(output_df, Rname, longname)
 \description{
 Write a demographic subgroup indicator to an html table row
 }
+\keyword{Write}
+\keyword{a}
+\keyword{an}
+\keyword{demographic}
+\keyword{html}
+\keyword{indicator}
 \keyword{internal}
+\keyword{row}
+\keyword{subgroup}
+\keyword{table}
+\keyword{to}

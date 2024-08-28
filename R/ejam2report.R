@@ -97,7 +97,18 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
       temp_comm_report_or_null <- NULL
     } else {
     temp_comm_report_or_null <- temp_comm_report
-}
+    }
+    
+    ## as used in community_report_template.Rmd it is this:
+    # build_community_report(
+    #   output_df = params$output_df,
+    #   analysis_title = params$analysis_title,
+    #   totalpop = params$totalpop,
+    #   locationstr = params$locationstr,
+    #   include_ejindexes = params$include_ejindexes,
+    #   in_shiny = params$in_shiny,
+    #   filename = params$filename
+    # )
     
     x <- build_community_report(
       output_df = ejamout1,
@@ -105,7 +116,7 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
       totalpop = popstr,
       locationstr = locationstr,
       include_ejindexes = include_ejindexes,
-      in_shiny = F,
+      in_shiny = FALSE,
       filename = temp_comm_report_or_null # passing NULL should make it return the html object
     )
     if (launch_browser) {

@@ -45,8 +45,8 @@ app_ui  <- function(request) {
       ### title (for app and browser tab) ####
       div(class = "title-panel",
           titlePanel(
-            title = "EJAM (Environmental Justice Analysis Multi-site) Tool v2.3",
-            windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool v2.3"
+            title = "EJAM (Environmental Justice Analysis Multi-site) Tool v2.32",
+            windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool v2.32"
           )
       ),
       
@@ -509,7 +509,7 @@ app_ui  <- function(request) {
                                div(
                                  style = "background-color: #edeff0; color: black; width: 100%; padding: 10px 20px; text-align: right; margin: 10px 0;",
                                  p( style = "margin-bottom: 0",
-                                   "Version 2.3 | Report created on ", 
+                                   "Version 2.32 | Report created on ", 
                                     format(Sys.Date(), '%B %d, %Y'),
                                  )
                                ),

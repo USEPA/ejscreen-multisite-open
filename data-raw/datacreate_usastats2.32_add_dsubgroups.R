@@ -1,8 +1,8 @@
 ############################################################################ #
 
 # First, usastats statestats got created via 
-# EJAM/data-raw/datacreate_blockgroupstats2.3.R
-# EJAM/data-raw/datacreate_usastats2.3.R
+# EJAM/data-raw/datacreate_blockgroupstats2.32.R
+# EJAM/data-raw/datacreate_usastats2.32.R
 
 # Then, this script below was to add columns to usastats and statestats with info on demographic subgroups
 # and maybe other indicators like lowlifex 
@@ -228,8 +228,8 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
  #  "EJAM/data-raw/datacreate_avg.in.us.R"
 
   
-  # usastats_statestats  <- datacreate_usastats2.3()
-  # usastats_statestats  <- datacreate_usastats2.3_add_dsubgroups.R(usastats_statestats)
+  # usastats_statestats  <- datacreate_usastats2.32()
+  # usastats_statestats  <- datacreate_usastats2.32_add_dsubgroups.R(usastats_statestats)
   
   # usastats   <- usastats_statestats$usastats
   # statestats <- usastats_statestats$statestats

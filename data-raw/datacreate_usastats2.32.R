@@ -1,9 +1,9 @@
 #  This had been a 
-# Script to download .gdb file with new 7/2024 version 2.3 EJScreen
+# Script to download .gdb file with 8/12/2024 version 2.32 EJScreen
 # gdb is one place to find the blockgroup data and also has lookup tables for US and State percentile cutoffs and means.
 # .gdb is not essential but good double-check on separately downloaded .csv versions of those.
 
-# But now just see  EJAM/data-raw/datacreate_blockgroupstats2.3 which gets those .csv files for
+# But now just see  EJAM/data-raw/datacreate_blockgroupstats2.32 which gets those .csv files for
 #  usastats_new, statestats_new
 
 #  ######################################################################## #
@@ -24,7 +24,7 @@ setwd(file.path(Sys.getenv("R_USER"), "EJAM")); getwd()
 # golem::detach_all_attached() 
 # print(.packages()) #
 # rm(list = ls())
-savexl <- FALSE
+
 downloadnow <- TRUE
 
 #################################################################################### # 
@@ -35,7 +35,7 @@ downloadnow <- TRUE
 
 # functions to download, unzip, and read  pctile lookup tables  from gdb file on ftp site 
 
-baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/"
+baseurl = "https://https://gaftp.epa.gov/EJScreen/2024/2.32_August_UseMe/"
 
 blockgroupstats_source_usa.gdb.zip   = "EJScreen_2024_BG_with_AS_CNMI_GU_VI.gdb.zip"           # gdb is not essential
 blockgroupstats_source_usa.gdb       = "EJScreen_2024_BG_with_AS_CNMI_GU_VI.gdb"
@@ -46,7 +46,7 @@ gdbzipname       = blockgroupstats_source_usa.gdb.zip
 gdbname          = blockgroupstats_source_usa.gdb
 gdbzipname_state = blockgroupstats_source_state.gdb.zip
 gdbname_state    = blockgroupstats_source_state.gdb
-
+rm(blockgroupstats_source_state.gdb.zip)
 mydir = "~/../../OneDrive - Environmental Protection Agency (EPA)/EJ 2021/EJSCREEN 2024"
 if (!dir.exists(mydir)) {stop('mydir needed')}
 

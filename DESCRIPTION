@@ -1,6 +1,6 @@
 Package: EJAM
 Title: EJAM Environmental Justice Analysis Multisite tool
-Version: 2.3.0
+Version: 2.32.0
 Author: Mark Corrales <corrales.mark@epa.gov>
 Maintainer: Mark Corrales <corrales.mark@epa.gov>
 License: MIT + file LICENSE.md
@@ -77,8 +77,8 @@ VignetteBuilder: knitr, rmarkdown
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 Config/testthat/parallel: false
-EJScreenVersion: 2.3
-EJScreenReleaseDate: July 2024
+EJScreenVersion: 2.32
+EJScreenReleaseDate: 2024-08-12
 ACSVersion: 2018-2022
 ACSReleaseDate: 2023-12-07
 CensusVersion: 2020

@@ -4,7 +4,14 @@
 \alias{ejam2shapefile}
 \title{DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.}
 \usage{
-ejam2shapefile(ejamitout, fname = "bysite.shp", folder = ".", crs = 4269)
+ejam2shapefile(
+  ejamitout,
+  fname = "bysite.shp",
+  folder = ".",
+  crs = 4269,
+  shortcolnames = TRUE,
+  save = TRUE
+)
 }
 \arguments{
 \item{ejamitout}{output of EJAM such as from \code{\link[=ejamit]{ejamit()}}}
@@ -14,6 +21,10 @@ ejam2shapefile(ejamitout, fname = "bysite.shp", folder = ".", crs = 4269)
 \item{folder}{optional folder (directory), path to where it should be saved}
 
 \item{crs}{optional coord ref system}
+
+\item{shortcolnames}{Whether to cut colnames to 10 characters for .shp format}
+
+\item{save}{whether to save file - if FALSE, it returns the object not the file path}
 }
 \value{
 path to saved .zip file
@@ -26,9 +37,14 @@ see
 \href{https://doc.arcgis.com/en/arcgis-online/reference/shapefiles.htm}{Shapefile format basics from arcgis.com}
 }
 \examples{
-  # x <- ejam2shapefile(ejamit(testpoints_100 , radius = 3.1), 
-  #    fname = "test100_3miles.shp", folder = "~/../Downloads")
+\dontrun{
+  # folder = "~/../Downloads"
+  # out <- ejamit(testpoints_100 , radius = 3.1)
+  # fname <- ejam2shapefile(out, "test100_3miles.shp", folder = folder)
+  
   out <- testoutput_ejamit_10pts_1miles
-  # shp <- ejam2shapefile(out,
-  #   fname = "ejamoutput.shp", folder = "~/../Downloads")
+  fname <- ejam2shapefile(out)
+  shp <- shapefile_from_any(fname)
+  map_shapes_leaflet(shp)
+  }
 }

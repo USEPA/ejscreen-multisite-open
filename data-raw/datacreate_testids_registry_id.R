@@ -59,7 +59,7 @@ savex <-  function(x, folder = "./inst/testdata", fname = "example.xlsx")  {
 x <- frs_from_regid(testids_registry_id)[, c("REGISTRY_ID", "PRIMARY_NAME")]
 savex(x, "./inst/testdata/registryid",  "testids_registry_id_8.xlsx")
 rm(x)
-
+rm(savex)
 #################################### #
 ## check what was just created (or was already) in SOURCE package
 

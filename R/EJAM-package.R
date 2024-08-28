@@ -44,7 +44,7 @@
 #'   The American Community Survey 5-year summary file data are updated by
 #'   the United States Census Bureau annually, after which EJScreen and EJAM are updated.
 #'   
-#'   - The mid 2024 releases are called version 2.3 (EJAM/EJScreen) and use ACS 2018-2022.
+#'   - The August 2024 releases are called version 2.32 (EJAM/EJScreen) and use ACS 2018-2022.
 #'   
 #'   
 #' @details  # **Key Functions:**

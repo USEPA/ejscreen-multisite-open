@@ -16,25 +16,24 @@
 #'   - EJ Indexes
 #'   - web link(s) to map or report
 #'
-#' @param out raw data in data.frame form, with results of EJ buffer analysis
+#' @param out like ejamit()$results_bysite, not ejamit().
+#'   The table of raw data in data.frame form, with results of EJ analysis.
 #' @param linkcolname Name of one column in the table that has links to some URL
 #' @param linkcolname2 Another like linkcolname
 #' @param linkcolname3 another 
 #' @param verbose TRUE or FALSE, can see more details reported when function is used.
 #'
 #' @return HTML ready to be used for map popups
-#' @examples \dontrun{
-#'   out <- testoutput_ejscreenapi_plus_50
-#'   x <- popup_from_ejscreen(out)
-#'   popup_print(x[1])
-#'   mapfastej(out)
-#' }
 #' 
 #' @keywords internal
 #' @export
 #' 
 popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2='EJScreen Map', linkcolname3='EJScreenACS', verbose=FALSE) {
   
+  if ("results_bysite" %in% names(out)) {
+    # looks like not just 1 table was provided
+    out <- out$results_bysite
+  }
   if (data.table::is.data.table(out)) {out <- data.table::copy(out); data.table::setDF(out)}
   
   ############################################ #

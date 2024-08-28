@@ -487,7 +487,7 @@ fips_state_from_state_abbrev <- function(ST) {
   
   # not
   # stateinfo2$FIPS.ST[stateinfo2$ST %in% ST]
-  # note state_from_fips() is not really the inverse, though - see help on that function
+  # note state_from_fips_bybg() is not really the inverse, though - see help on that function
 }
 ############################################################################# #
 

@@ -4,6 +4,12 @@
 \name{testoutput_ejscreenapi_1pts_1miles}
 \alias{testoutput_ejscreenapi_1pts_1miles}
 \title{test data, output from this function}
+\format{
+An object of class \code{data.frame} with 1 rows and 292 columns.
+}
+\usage{
+testoutput_ejscreenapi_1pts_1miles
+}
 \description{
 test data, output from this function
 }
@@ -11,22 +17,16 @@ test data, output from this function
 Just for convenience, installed with the package,
 the equivalent of results of
 
-\verb{ejscreenapi(lon = testpoints_5$lon[1], lat = testpoints_5$lat[1]},
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{ radius = 1, unit = 'miles', wkid = 4326,
-
- report_every_n = 25, # report_every_n = 1000,
-
- save_when_report = FALSE, format_report_or_json =  'pjson', on_server_so_dont_save_files = FALSE, 
- ipurl = 'ejscreen.epa.gov',
-
- updateProgress = NULL, drop_redundant_indicators = FALSE)
-}\if{html}{\out{</div>}}
+ejscreenapi(lon = testpoints_5$lon\link{1}, lat = testpoints_5$lat\link{1},
+radius = 1, unit = 'miles', wkid = 4326,
+report_every_n = 25, # report_every_n = 1000,
+save_when_report = FALSE, format_report_or_json =  'pjson', on_server_so_dont_save_files = FALSE,
+ipurl = 'ejscreen.epa.gov',
+updateProgress = NULL, drop_redundant_indicators = FALSE)
 }
 \seealso{
 \link{testpoints_5} \link{testpoints_50} \link{testpoints_500}
 
 \link{testoutput_ejscreenit_5} \link{testoutput_ejscreenit_50} \link{testoutput_ejscreenit_500}
-
-\link{testoutput_ejscreenapi_plus_5} \link{testoutput_ejscreenapi_plus_50} \link{testoutput_ejscreenapi_plus_500}
 }
+\keyword{datasets}
