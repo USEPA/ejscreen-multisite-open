@@ -53,7 +53,10 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
    
       
       roundingPrecision <- table_rounding_info(var = colname)
-      output_df_rounded[[colname]] <- round(output_df_rounded[[colname]], roundingPrecision)
+      if(!is.na(roundingPrecision)){
+        output_df_rounded[[colname]] <- round(output_df_rounded[[colname]], roundingPrecision)
+        
+      }
     }
   
     
