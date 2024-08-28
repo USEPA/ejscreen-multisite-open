@@ -85,6 +85,7 @@ if (TRUE) {
   resaving_testpoints_rda       <- FALSE
   resaving_testpoints_excel     <- FALSE
   resaving_testpoints_helpdocs  <- FALSE
+  resaving_testpoints_bad <- TRUE
   
   recreating_getblocksnearby    <- TRUE  # eg if block data changed, or if recreating_doaggregate_output = TRUE below
   resaving_getblocksnearby_rda  <- TRUE
@@ -111,6 +112,44 @@ if (TRUE) {
 
 # Create and save datasets  ####
 # _ ####
+
+if (resaving_testpoints_bad) {
+  
+  testpoints_bad <- data.frame(
+    rbind(data.frame(lat = 40.644590, lon = -75.199434, note = 'stateborder1'), 
+          data.frame(lat = 40.640419, lon = -75.192781, note = 'stateborder2'),  
+          data.frame(lat = 40.645704, lon = -75.196623, note = 'stateborder3'),  
+          data.frame(lat = 41.538910, lon = -77.889950, note = 'rural'),  
+          data.frame(lat = 40.744996, lon = -73.984264, note = 'urban'),    
+          
+          data.frame(lat = 39, lon = -71.761991, note = 'invalid-nonusa'), 
+          data.frame(lat = -73.984264, lon = 40.744996, note = 'invalid-lat-lon-swapped'), 
+          data.frame(lat = 200, lon = -200, note = 'invalid-impossiblelatlon'), 
+          data.frame(lat = NA, lon = NA, note = 'invalid-na')
+          )
+  )
+  
+  text_to_do <- paste0(
+    "", "testpoints_bad", " = metadata_add(", "testpoints_bad", ")"
+  )
+  eval(parse(text = text_to_do))
+  usethis::use_data(testpoints_bad, overwrite = TRUE)     ############# #
+  ## save as DOCUMENTATION 
+  filecontents <- "
+#' @name testpoints_bad
+#' @docType data
+#' @title test points data.frame with columns note, lat, lon
+#' @details examples of test points for testing functions that need lat lon,
+#'   with some invalid or tricky cases like rural (no blocks nearby), outside US,
+#'   on edge of two states, NA values, etc.
+NULL"
+  # prefix documentation file names with "data_"
+  writeChar(filecontents, con = paste0("./R/data_", "testpoints_bad", ".R"))       ############# #
+  ## save as  EXCEL   ###   #
+  writexl::write_xlsx(list(testpoints = testpoints_bad),
+                      path = paste0("./inst/testdata/latlon/", "testpoints_bad", ".xlsx"))    ############# #
+  
+}
 
 ###################################################### #
 # >_____testpoints_conus5 ______________ ####
