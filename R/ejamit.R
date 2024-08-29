@@ -174,17 +174,12 @@ ejamit <- function(sitepoints,
                    ...
 ) {
 
-  if (!is.null(shapefile)) {
-    sitetype <- "shp"
-  } else if (!is.null(fips)) {
-    sitetype <- "fips"
-  } else {
-    sitetype <- "latlon"
-  }
-  ######################## # 
+  sitetype <- ejamit_sitetype_check(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
+
   # * POLYGONS / SHAPEFILES ####
   
   if (sitetype == "shp") {
+    
     # something like this could replace similar code in server: ***
     shp <- shapefile_from_any(shapefile, cleanit = FALSE)
     shp <- cbind(ejam_uniq_id = 1:nrow(shp), shp) # assign id to ALL even empty or invalid inputs
@@ -433,7 +428,7 @@ ejamit <- function(sitepoints,
     echolink = rep(NA, NROW(out$results_bysite))
   }
   
-  if (!is.null(fips)) {
+  if (sitetype == "fips") {
     
     # analyzing by FIPS not lat lon values
     areatype <- fipstype(fips)
@@ -483,7 +478,7 @@ ejamit <- function(sitepoints,
   out$longnames <- c(newcolnames, out$longnames)
   ################################################################ #
   
-  if (!is.null(fips)) {
+  if (sitetype == "fips") {
     # Analyzed by FIPS so reporting a radius does not make sense here.
     radius <- NA
   }
