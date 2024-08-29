@@ -1,139 +1,50 @@
-# !diagnostics off
-##   disables diagnostics within this document
-# test_local()   would test the local source pkg
-# test_package() would test an installed package
-# test_check()   would test an installed package in the way that is used by R CMD check or check()
-
-## Setting testing_in_logical_order to TRUE 
-## and source-ing this whole file (or step by step)
-## would run tests quietly, 
-## one group of functions at a time, and print summaries to console.
-
+########################################## # 
+# setup ####
+# !diagnostics off ## to disable diagnostics in this document
+#        thisfile = "./tests/manual_nonalphabetical.R"
+# source(thisfile) to test the local source pkg, by group of functions, quietly, summarized
+# test_local()     to test the local source pkg
+# test_package()   to test installed version of package
+# test_check()     to test installed version of package, the way used by R CMD check or check()
 library(testthat)
 library(data.table) # used in functions here
 library(magrittr)
 library(dplyr)
-
-testing_in_logical_order <- TRUE
-# testing_in_logical_order <- FALSE
-########################################## # 
-consoleclear <- function() {if (interactive() & rstudioapi::isAvailable()) {rstudioapi::executeCommand("consoleClear")}}
+consoleclear <- function() if (interactive() & rstudioapi::isAvailable()) {rstudioapi::executeCommand("consoleClear")}
 consoleclear()
-
-if (testing_in_logical_order) {
-
-  ########################### #  
-  # if (interactive()) {
-  #   useloadall <- askYesNo(msg = "Do you want to load and test the current source code files version of EJAM (via devtools::load_all() etc.,
-  #                       rather than testing the installed version)?", default = TRUE)
-  #   if (useloadall) {
-  #     devtools::load_all()
-  #   } else {
-  #     suppressPackageStartupMessages({
-  #       library(EJAM)  # need or not?
-  #     })
-  #   }
-  # } else {
-  #   suppressPackageStartupMessages({
-  #     library(EJAM)  # need or not?
-  #   })
-  # }
-  ########################################## # 
+# if (interactive()) {
+#   useloadall <- askYesNo(msg = "Do you want to load and test the current source code files version of EJAM (via devtools::load_all() etc.,
+#                       rather than testing the installed version)?", default = TRUE)
+#   if (useloadall) {devtools::load_all()} else {suppressPackageStartupMessages({   library(EJAM) }) } #??
+# } else {suppressPackageStartupMessages({   library(EJAM)   }) } #??
+dataload_from_pins("all")
+if (file.exists("./tests/testthat/setup.R")) {
+  source("./tests/testthat/setup.R") #   asks if need load_all or library
+} else {
+  cat("Need to source the setup.R file first \n")    
+}
+########################################## #
+update_list_of_test_files <- TRUE
+if (update_list_of_tests) {
   
-  # GET FULL LATEST LIST OF TEST FILES ####
+  # TESTS FOUND ####
   
   sdir <- getwd()
-  tnames1 <-  basename(list.files(path = file.path(sdir, "tests/testthat"), full.names = TRUE, pattern = "test-"))
-  {
-    tnames2 <- c(
-      "test-FIPS_FUNCTIONS.R",
-      
-      "test-state_from_fips_bybg.R",
-      "test-state_from_latlon.R",
-      
-      # "test-fips_lead_zero.R",
-      # "test-fips_bg_from_anyfips.R",
-      
-      "test-ui_and_server.R",   
-      "test-ejamit.R",           
-      "test-doaggregate.R",     
-      "test-getblocksnearby.R",  
-      "test-getblocksnearbyviaQuadTree.R",    #    -------------- NEEDS MORE TESTS ***
-      "test-getblocksnearby_from_fips.R",
-      "test-getblocks_summarize_blocks_per_site.R",
-      "test-pctile_from_raw_lookup.R",
-      "test-radius_inferred.R",             # this is SLOW THOUGH
-      
-      "test-shapefile_xyz.R",       
-      
-      "test-ejam2barplot_sites.R",
-      "test-ejamit_compare_distances.R",
-      "test-ejamit_compare_groups_of_places.R",
-      
-      "test-naics_from_name.R", 
-      "test-naics_from_any.R",   
-      "test-naics_categories.R",   # not useful tests
-      "test-naics_subcodes_from_code.R",
-      "test-naics2children.R",
-      "test-naics_validation.R",    
-      "test-naics_from_code.R",
-      "test-naics_findwebscrape.R",
-      "test-regid_from_naics.R",
-      
-      "test-frs_is_valid.R",    
-      "test-frs_from_regid.R",
-      "test-frs_from_programid.R",
-      "test-frs_from_naics.R",
-      "test-frs_from_sic.R",
-      
-      "test-latlon_infer.R",
-      "test-latlon_from_sic.R",
-      "test-latlon_is.valid.R",
-      "test-latlon_as.numeric.R",
-      "test-latlon_df_clean.R",
-      "test-latlon_from_anything.R",
-      "test-address_xyz.R", 
-      "test-latlon_from_address.R",
-      "test-latlon_from_vectorofcsvpairs.R",
-      "test-state_from_sitetable.R",
-      
-      "test-MAP_FUNCTIONS.R",
-      
-      
-      "test-fixcolnames.R",
-      "test-fixnames.R",
-      "test-fixnames_to_type.R",
-      "test-fixcolnames_infer.R",
-      "test-varinfo.R",
-      "test-utils_metadata_add.R",
-      
-      "test-ejscreenapi.R",
-      "test-ejscreenapi_plus.R",
-      "test-ejscreenapi1.R",
-      "test-ejscreenit.R",
-      "test-ejscreenRESTbroker-functions.R",
-      
-      
-      "test-mod_save_report.R",
-      "test-mod_view_results.R",
-      "test-mod_specify_sites.R",
-      "test-golem_utils_ui.R",         #  not used
-      "test-golem_utils_server.R"      #  not used
-    )
-  }
+  test_files_found <-  basename(list.files(path = file.path(sdir, "tests/testthat"), full.names = TRUE, pattern = "test-"))
   ########################################## # 
-  {
-    # PUT TEST FILES INTO LOGICAL GROUPS ####
+  
+  # GROUP the TESTS ####
+  
+  testlist = list( 
     
-    test_fips <- c(
-      
+    test_fips = c(
       # "test-fips_lead_zero.R",   
       # "test-fips_bg_from_anyfips.R",    #   test_file("tests/testthat/test-fips_bg_from_anyfips.R")
       "test-FIPS_FUNCTIONS.R",
       "test-state_from_fips_bybg.R",  
       "test-state_from_latlon.R"   
-    )
-    test_naics <- c(
+    ),
+    test_naics = c(
       "test-naics_categories.R",   
       "test-naics_findwebscrape.R", 
       "test-naics_from_any.R",   
@@ -142,16 +53,16 @@ if (testing_in_logical_order) {
       "test-naics_subcodes_from_code.R",
       "test-naics_validation.R",  
       "test-naics2children.R"    
-    )
-    test_frs <- c(
+    ),
+    test_frs = c(
       "test-regid_from_naics.R", 
       "test-frs_from_naics.R",    
       "test-frs_from_programid.R",  
       "test-frs_from_regid.R",  
       "test-frs_from_sic.R",   
       "test-frs_is_valid.R"   
-    )
-    test_latlon <- c(
+    ),
+    test_latlon = c(
       "test-latlon_infer.R",        
       "test-latlon_as.numeric.R",
       "test-latlon_df_clean.R",
@@ -162,216 +73,158 @@ if (testing_in_logical_order) {
       "test-latlon_from_address.R",
       "test-latlon_from_vectorofcsvpairs.R",
       "test-state_from_sitetable.R"
-    )
-    
-    test_maps <- c(
+    ),
+    test_maps = c(
       "test-MAP_FUNCTIONS.R"
-    )
-    
-    test_shape <- c(
+    ),
+    test_shape = c(
       "test-shapefile_xyz.R"  
-    )
-    test_getblocks <- c(
-      "test-radius_inferred.R",  
+    ),
+    test_getblocks = c(
+      "test-radius_inferred.R",              # this is SLOW THOUGH
       "test-getblocks_summarize_blocks_per_site.R",  
       "test-getblocksnearby.R",        
       "test-getblocksnearby_from_fips.R", 
-      "test-getblocksnearbyviaQuadTree.R" 
-    )
-    
-    test_fixcolnames <- c(
+      "test-getblocksnearbyviaQuadTree.R"    #    -------------- NEEDS MORE TESTS ***
+    ),
+    test_fixcolnames = c(
       "test-fixcolnames.R",
       "test-fixnames.R",
       "test-fixnames_to_type.R",
       "test-fixcolnames_infer.R",
       "test-varinfo.R",
       "test-utils_metadata_add.R"
-    )
-    
-    test_doag <- c(
+    ),
+    test_doag = c(
       "test-pctile_from_raw_lookup.R",  
       "test-doaggregate.R"     
-    )
-    test_ejamit <- c(
+    ),
+    test_ejamit = c(
       "test-ejamit.R",
       "test-ejam2barplot_sites.R",
       "test-ejamit_compare_distances.R",
-      "test-ejamit_compare_groups_of_places.R"
-    )
-    
-    test_ejscreenapi <- c(
+      "test-ejamit_compare_groups_of_places.R",
+      "test-ejamit_sitetype_check"
+    ),
+    test_ejscreenapi = c(
       "test-ejscreenapi.R",
       "test-ejscreenapi_plus.R",
       "test-ejscreenapi1.R",
       "test-ejscreenit.R",
       "test-ejscreenRESTbroker-functions.R"
-    )
-    
-    test_mod <- c(
+    ),
+    test_mod = c(
       "test-mod_save_report.R",    
       "test-mod_specify_sites.R",  
       "test-mod_view_results.R"    
-    )
-    test_app <- c(
+    ),
+    test_app = c(
       "test-golem_utils_server.R", # not really used  
       "test-golem_utils_ui.R",     # not really used
       "test-ui_and_server.R"   
     )
-  }
-  # {
-  ########################################## # 
-  groupnames = c(
-    "test_fips",
-    "test_naics",
-    "test_frs",
-    "test_latlon",
-    "test_maps",
-    "test_shape",
-    "test_getblocks",
-    "test_fixcolnames",
-    "test_doag",
-    "test_ejamit",
-    "test_ejscreenapi",
-    "test_mod",
-    "test_app"
   )
-  # }
-  testlist <- sapply(groupnames  , FUN = get)
   ########################################## # 
- # CHECK THEY ARE ALL HERE AND IN GROUPS
+  groupnames = names(testlist)
+  test_all <- as.vector(unlist(testlist))
+  ########################################## # 
+  # GROUPED THEM ALL? ####
   {
     
-  if (length(setdiff(tnames1, tnames2)) > 0) {
-    cat("These are in test folder as files but not in list above: \n\n")
-    print(setdiff(tnames1, tnames2))
-    cat("\n")
-  }
-  
-  if (length(setdiff(tnames2, tnames1)) > 0) {
-    cat("These are in list above but not in test folder as files: \n\n")
-    print(setdiff(tnames2, tnames1))
-    cat("\n")
-  }
-  
-  if (!setequal(tnames1, tnames2)) {
-    stop("add new files to list of files")
-  }
-  
-  test_all <- as.vector(unlist(testlist))
-  
-  if (!all(TRUE == all.equal(sort(test_all), sort(tnames1)))) {
-    cat("\n\n   test files found in folder does not match tnames1 list  \n")
-    print(all.equal(sort(test_all), sort(tnames1))) 
-    cat("\n\n")
-  }
-  
-  if (length(setdiff(tnames1, test_all)) > 0) {
-    cat("These are in test folder as files but not in list of groups above: \n\n")
-    print(setdiff(tnames1, test_all))
-    cat("\n")
-    stop("fix list of files")
-  }
-  
-  if (length(setdiff(test_all, tnames1)) > 0) {
-    cat("These are in list of groups above but not in test folder as files: \n\n")
-    print(setdiff(test_all, tnames1))
-    cat("\n")
-    stop("fix list of test files")
-  }
-  
-  if (any(duplicated(test_all))) {
-    cat("some are listed >1 group\n")
-    stop("some are listed >1 group")
-  }
-  
-  cat("\n\n")
-  ########################################## # 
-  }
-  
-  dataload_from_pins("all")
-  if (file.exists("./tests/testthat/setup.R")) {
-    source("./tests/testthat/setup.R") #   asks if need load_all or library
-  } else {
-    cat("Need to source the setup.R file first \n")    
-  }
-  #################################################### #
-  
-  # FUNCTIONS TO COMPILE MINIMAL REPORTS ON GROUPS OF test FILES ####
-  
-  test1group <- function(fnames = test_all, 
-                         reporter = "minimal" # some of the code below now only works if using this setting
-                         # reporter = default_compact_reporter() # 
-  ) {
-    xtable <- list()
-    tfile <- tempfile("junk", fileext = "txt")
-    for (i in 1:length(fnames)) {
-      cat(".")
-      suppressWarnings(suppressMessages({
-        
-        junk <- capture_output({
-          x <- testthat::test_file(
-            file.path("./tests/testthat/", fnames[i]), 
-            reporter = reporter)
-        })
-        
-      }))
-      x <- as.data.frame(x)
-      x$tests <- x$nb
-      x$nb <- NULL
-      
-      x$flag <- x$tests - x$passed
-      x$err  <- x$tests - x$passed - x$warning
-      
-      x$error_cant_test <- ifelse(x$error, 1, 0)
-      x$error <- NULL
-      
-      x$skipped <- ifelse(x$skipped, 1, 0)
-      
-      x <- x[, c('file',  'test', 
-                 'tests', 'passed', 'failed',  'err',
-                 'warning', 'flag', 'skipped', 'error_cant_test'
-      )]
-      
-      x$test <- substr(x$test, 1, 50) # some are long
-      xtable[[i]] <- data.table::data.table(x)
+    if (!all(TRUE == all.equal(sort(test_all), sort(test_files_found)))) {
+      cat("\n\n   test files found in folder does not match test_files_found list  \n")
+      print(all.equal(sort(test_all), sort(test_files_found))) 
+      cat("\n\n")
     }
-    cat("\n")
-    xtable <- data.table::rbindlist(xtable)
-    print(colSums(xtable[, .(tests, passed, failed, err,
-                             warning, flag, 
-                             skipped, error_cant_test)]))
-    return(xtable)
-  }
-  ########################### #
-  
-  # FUNCTION THAT RUNS ONE SPECIFIC GROUP OF TESTS AT A TIME
-  
-  testbygroup <- function(testlist) {
     
-    # testlist[[(names(testlist)[[1]])]] is the same as get(names(testlist)[[1]]), vector of filenames
-    xtable <- list()
-    i <- 0
-    for (tgroupname in names(testlist)) {
-      i <- i + 1
-      cat("", tgroupname, "group has", length(testlist[[tgroupname]]), "test files ")
-      # print(data.frame(files = testlist[[tgroupname]]))
-      xtable[[i]] <- data.table::data.table(testgroup = tgroupname, test1group(testlist[[tgroupname]]) )
+    if (length(setdiff(test_files_found, test_all)) > 0) {
+      cat("These are in test folder as files but not in list of groups above: \n\n")
+      print(setdiff(test_files_found, test_all))
+      cat("\n")
+      stop("fix list of files")
     }
-    xtable <- data.table::rbindlist(xtable)
-    return(xtable)
+    
+    if (length(setdiff(test_all, test_files_found)) > 0) {
+      cat("These are in list of groups above but not in test folder as files: \n\n")
+      print(setdiff(test_all, test_files_found))
+      cat("\n")
+      stop("fix list of test files")
+    }
+    
+    if (any(duplicated(test_all))) {
+      cat("some are listed >1 group\n")
+      stop("some are listed >1 group")
+    }
+    
+    cat("\n\n")
+    ########################################## # 
   }
-  ########################### #
-  
-  ########################### #  ########################################## #
-  ########################### #  ########################################## #
-  ########################### #  ########################################## #
-  
-} # end if, setup
+} # end if, update_list_of_tests
+# Define Functions that run tests ####
+{
+##     BY GROUP, WITH SUCCINCT SUMMARY
 
-########################### #  ########################################## #
-########################### #  ########################################## #
+test1group <- function(fnames = test_all, 
+                       reporter = "minimal", # some of the code below now only works if using this setting
+                       # reporter = default_compact_reporter(), # 
+                       print = FALSE
+) {
+  xtable <- list()
+  # tfile <- tempfile("junk", fileext = "txt")
+  for (i in 1:length(fnames)) {
+    cat(".")
+    suppressWarnings(suppressMessages({
+      junk <- testthat::capture_output_lines({
+        x <- testthat::test_file(
+          file.path("./tests/testthat/", fnames[i]), 
+          reporter = reporter)
+      }, print = print)
+    }))
+    # testthat_print(junk)
+    x <- as.data.frame(x)
+    x$tests <- x$nb
+    x$nb <- NULL
+    x$flag <- x$tests - x$passed
+    x$err  <- x$tests - x$passed - x$warning
+    x$error_cant_test <- ifelse(x$error, 1, 0)
+    x$error <- NULL
+    x$skipped <- ifelse(x$skipped, 1, 0)
+    x <- x[, c('file',  'test', 
+               'tests', 'passed', 'failed',  'err',
+               'warning', 'flag', 'skipped', 'error_cant_test'
+    )]
+    x$test <- substr(x$test, 1, 50) # some are long
+    xtable[[i]] <- data.table::data.table(x)
+  }
+  cat("\n")
+  xtable <- data.table::rbindlist(xtable)
+  print(colSums(xtable[, .(tests, passed, failed, err,
+                           warning, flag, 
+                           skipped, error_cant_test)]))
+  return(xtable)
+}
+########################### #
 
-## to TEST JUST ONE FILE OR ONE GROUP:
+##     ONE SPECIFIC GROUP OF TESTS AT A TIME
+
+testbygroup <- function(testlist, ...) {
+  # the ... can be print=TRUE, and possibly reporter=default_compact_reporter()
+  # testlist[[(names(testlist)[[1]])]] is the same as get(names(testlist)[[1]]), vector of filenames
+  xtable <- list()
+  i <- 0
+  for (tgroupname in names(testlist)) {
+    i <- i + 1
+    cat("", tgroupname, "group has", length(testlist[[tgroupname]]), "test files ")
+    # print(data.frame(files = testlist[[tgroupname]]))
+    xtable[[i]] <- data.table::data.table(testgroup = tgroupname, 
+                                          test1group(testlist[[tgroupname]], ...) )
+  }
+  xtable <- data.table::rbindlist(xtable)
+  return(xtable)
+}
+}   #   done defining functions
+########################### #  ########################################## #
+# RUN JUST 1 FILE OR GROUP? ####
 
 y = askYesNo("Run only some tests now?")
 if (is.na(y)) {y = FALSE}
@@ -386,7 +239,6 @@ if (y) {
   partial_testlist <- lapply(tname, get) 
   names(partial_testlist) <- tname
   print(partial_testlist)
-  
   
   # [1] "2024-08-24"
   # testgroup err_bygroup                                       file err_byfile
@@ -485,7 +337,7 @@ if (y) {
 } 
 ########################### #  ########################################## #
 
-# RUN ALL THE TESTS  ####
+# RUN ALL TESTS (slow)  ####
 
 y = askYesNo("RUN ALL TESTS NOW?")
 if (is.na(y)) {y = FALSE}
@@ -501,7 +353,7 @@ if (y) {
   # 217.80   18.68  395.68 
   ########################### #  ########################################## #
   x <- testall
-  # save ####
+  ## save results of testing ####
   
   y = askYesNo("Save results of unit testing?") 
   if (is.na(y)) {y = FALSE}
@@ -513,7 +365,7 @@ if (y) {
 ########################### #  ########################################## #
 ########################### #  ########################################## #
 
-# LOOK AT RESULTS SUMMARIES ####
+# SEE WHAT PASSED / FAILED ####
 
 # do this part manually?
 y = askYesNo("View results of unit testing?") 
@@ -550,7 +402,7 @@ if (y) {
   #          testgroup                                   file                                               test tests passed failed   err warning  flag skipped error_cant_test
   # 
   #  1:      test_doag                     test-doaggregate.R   error if in inputs are null, empty, NA, or blank     7      1      3     3       3     6       0               0
-
+  
   prioritize = x[order(-x$flag, -x$failed), 1:11]
   prioritize <- prioritize[prioritize$tests != prioritize$passed | prioritize$error_cant_test > 0, ]
   print(prioritize)
@@ -559,7 +411,7 @@ if (y) {
   #         testgroup                                   file                                               test tests passed failed   err warning  flag skipped error_cant_test
   # 1:      test_doag                     test-doaggregate.R   error if in inputs are null, empty, NA, or blank     7      1      3     3       3     6       0               0
   # 2:       test_frs                test-regid_from_naics.R    no crash (but fails to warn)  for invalid NAICS     4      2      2     2       0     2       0               0
- 
+  
   
   ########################### #
   
