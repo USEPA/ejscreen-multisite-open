@@ -2717,7 +2717,7 @@ app_server <- function(input, output, session) {
   #############################################################################  #
   # DOWNLOAD HTML REPORT Overall ####
   # downloadHandler for community_download - ALMOST THE SAME AS output$download_report 
-  output$community_download <- downloadHandler(
+  output$community_download_all <- downloadHandler(
     filename = function() {
       create_filename(
         file_desc = 'community report',
@@ -2729,36 +2729,12 @@ app_server <- function(input, output, session) {
       )
     },
     content = function(file) {
-      html_content <-  community_download(file)
-      file.rename(html_content, file)
-    }
-  )
-  
-  # downloadHandler for the modal download button - Almost identical to code below. But content uses community_download()
-  output$download_report <- downloadHandler(
-    filename = function() {
-      location_suffix <- if (!is.null(selected_location_name())) {
-        paste0(" - ", selected_location_name())
-      } else {
-        ""
-      }
-      create_filename(
-        file_desc = paste0('community report', location_suffix),
-        title = input$analysis_title,
-        buffer_dist = current_slider_val[[submitted_upload_method()]],
-        site_method = submitted_upload_method(),
-        with_datetime = TRUE,
-        ext = ifelse(input$format1pager == 'pdf', '.pdf', '.html')
-      )
-    },
-    content = function(file) {
-      html_content <-  community_download(file)  # community_download(), unlike handler below
-      file.rename(html_content, file)
+      community_download(file)
     }
   )
   
   # downloadHandler for the modal download button - Almost identical to code above. But content uses temp_file_path
-  output$download_report <- downloadHandler(
+  output$community_download_individual <- downloadHandler(
     filename = function() {
       location_suffix <- if (!is.null(selected_location_name())) {
         paste0(" - ", selected_location_name())
@@ -2768,7 +2744,7 @@ app_server <- function(input, output, session) {
       create_filename(
         file_desc = paste0('community report', location_suffix),
         title = input$analysis_title,
-        buffer_dist = current_slider_val[[submitted_upload_method()]],
+        buffer_dist = submitted_radius_val(),
         site_method = submitted_upload_method(),
         with_datetime = TRUE,
         ext = ifelse(input$format1pager == 'pdf', '.pdf', '.html')
@@ -2779,6 +2755,9 @@ app_server <- function(input, output, session) {
       file.copy(temp_file_path(), file)
     }
   )
+  
+  
+  
   
 
   
@@ -3008,7 +2987,7 @@ app_server <- function(input, output, session) {
           title = "Download Ready",
           "Your report is ready. Click the button below to download.",
           footer = tagList(
-            downloadButton("download_report", "Download Report"),
+            downloadButton("community_download_individual", "Download Report"),
             modalButton("Close")
           ),
           easyClose = TRUE,

@@ -516,7 +516,7 @@ app_ui  <- function(request) {
                                br(),
                                tags$div(
                                  shiny::downloadButton(
-                                   outputId = 'community_download',
+                                   outputId = 'community_download_all',
                                    label = 'Download Community Report', class = 'usa-button'), style = 'text-align: center;'
                                ),
                              ),  # end report tab
