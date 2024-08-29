@@ -2080,19 +2080,14 @@ app_server <- function(input, output, session) {
   # if (input$calculate_ratios) {  ## ratios can be dropped from output table of results but are used by summary report, plots, etc. so simplest is to still calculate them
   #############################################################################  #
   # . 4) ratios ####
-  # ______ AVERAGES and RATIOS TO AVG - ALREADY done by doaggregate() and kept in data_processed()
-  # Also the overall mean and site by site means are in  unlist( data_processed()$results_overall[ , ..names_these_state_avg] )
-  # and (avg.in.us) is a constant for convenience with that same info, in data.frame format.
-  # but did not bother making a copy of the state averages that are in statestats
-  # EJAM::statestats[ EJAM::statestats$PCTILE == "mean", ]
-  # and averages were used create ratios in doaggregate()
+  # ______ AVERAGES and RATIOS TO AVG
+  
+  # *** Ratios were already calculated by doaggregate() 
+  # *** UNLESS somehow the user has changed the defaults to doaggregate(  calculate_ratios = FALSE  )
+
   ############################# #
   ##   demog RATIOS of overall scores to US or state D AVG ####
-  #  *****************   but these are now already calculated in doaggregate()
-  ## as (doaggregate output results_overall ) / (EJAM::usastats mean in USA)
-  ## or (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
-  ## this needs further verification
-  
+
   ratio.to.us.d    <- reactive({unlist(
     data_processed()$results_overall[ , c(..names_d_ratio_to_avg,       ..names_d_subgroups_ratio_to_avg      )]
   ) }) # ???
@@ -2102,9 +2097,6 @@ app_server <- function(input, output, session) {
   
   ############################# #
   ##   enviro RATIOS of overall scores to US or state E AVG  ####
-  #  *****************   but these are now already calculated in doaggregate()  as
-  ## (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
-  ## this needs further verification
   
   ratio.to.us.e    <- reactive({unlist(data_processed()$results_overall[ , ..names_e_ratio_to_avg]) })                     # ???
   # ratio.to.us.e_TEST <- reactive({ unlist(data_summarized()$rows['Average person', names_e]) /
