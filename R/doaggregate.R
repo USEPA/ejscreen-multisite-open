@@ -1375,10 +1375,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ############################################################################## #
   
   if (calculate_ratios) {
-    # RATIO to AVERAGE - (do not duplicate IN server code!)  ####
+    # RATIO to AVERAGE  ####
     #
-    #    app_server code is/was duplicating efforts and trying to calculate these itself !! ***
-    
     ## RATIOS TO US AVG ###
     ratios_to_avg_bysite  <-
       results_bysite[, ..names_these] /
