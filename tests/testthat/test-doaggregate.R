@@ -93,7 +93,7 @@ test_that('error if in inputs are null, empty, NA, or blank',{
   expect_error(doaggregate(NULL, silentinteractive = TRUE))
   expect_error(doaggregate(NA, silentinteractive = TRUE))
   expect_error(doaggregate())
-  expect_error(doaggregate('', silentinteractive = TRUE))
+  expect_warning(doaggregate('', silentinteractive = TRUE))
 })
 
 test_that('warn but no error if input is data.frame but not data.table (?)', {
@@ -109,7 +109,9 @@ test_that('warn but no error if input is data.frame but not data.table (?)', {
 test_that('error if input has column not named distance', {
   wrongnames <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
   data.table::setnames(wrongnames, 'distance', 'radius')
+  suppressWarnings( 
   expect_warning({doaggregate(sites2blocks = wrongnames)})
+  )
 })
 
 

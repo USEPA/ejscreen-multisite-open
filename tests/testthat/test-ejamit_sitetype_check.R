@@ -21,6 +21,7 @@
   ################################################ #
   
   test_that(" if 0 of 3 is provided - try to interactively select file of latlon", {
+    testthat::skip_if_not(interactive())
     expect_no_error({
       sitetype <- ejamit_test( ) 
     })

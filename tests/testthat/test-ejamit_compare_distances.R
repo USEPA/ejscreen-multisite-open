@@ -95,7 +95,7 @@ test_that(
       out$pop[2] > out$pop[1]
     )
     suppressMessages({
-      out2 = ejamit(testpoints_10[1:2,], radius = 2)
+      out2 = ejamit(testpoints_10[1:2,], radius = 2, silentinteractive = TRUE)
     })
     expect_equal(
       out2$results_overall$pop, out$pop[2]
@@ -113,9 +113,9 @@ test_that("donuts ok in ejamit(radius_donut_lower_edge=3)", {
     expect_no_error({
       suppressWarnings({
         suppressMessages({
-          out3    <- ejamit(testpoints_10, radius = 3)   # 0 to 3 miles
-          out10   <- ejamit(testpoints_10, radius = 10)  # 0 to 10 miles
-          outring <- ejamit(testpoints_10, radius = 10, 
+          out3    <- ejamit(testpoints_10, radius = 3, silentinteractive = TRUE)   # 0 to 3 miles
+          out10   <- ejamit(testpoints_10, radius = 10, silentinteractive = TRUE)  # 0 to 10 miles
+          outring <- ejamit(testpoints_10, radius = 10, silentinteractive = TRUE, 
                             radius_donut_lower_edge = 3) # 3 to 10 miles
         })
       })
