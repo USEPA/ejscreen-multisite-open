@@ -1076,7 +1076,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     #       - first get the latlon values of the nearby blocks
     #       - use the block latlon values and distances from site to estimate where the site latlon must have been.
     
-    warning('TEMPORARILY ASSUMING A PLACEHOLDER  ! work in progress on state identification if not in shiny app and not using ejamit(), if sites2states_or_latlon is not provided to doaggregate()')
+    cat('TEMPORARILY ASSUMING A PLACEHOLDER  ! work in progress on state identification if not in shiny app and not using ejamit(), if sites2states_or_latlon is not provided to doaggregate() \n')
     # placeholder until done
     sites2states <- state_from_s2b_bysite(sites2blocks) # works for single-state sites only, NA otherwise
     setDT(sites2states)
