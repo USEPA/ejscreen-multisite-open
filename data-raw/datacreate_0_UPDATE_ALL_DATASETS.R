@@ -58,7 +58,7 @@ source_maybe <- function(scriptname = NULL,
   }
 }
 ######################################### #
-# DESCRIPTION / VERSION ####
+## DESCRIPTION / VERSION ####
 
 desc::desc_print()
 cat('Version metadata as found in DESCRIPTION file \n')
@@ -112,56 +112,6 @@ if (0 == 1) {  # collapsable list
         "\t documentOpen('", rawdir, "/", x, "')"), collapse = "\n"))
   # cbind(x)
   rm(x)
-  # [1,] "datacreate_0_UPDATE_ALL_DATASETS.R"                       
-  # [2,] "datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R"  
-  
-  # [3,] "datacreate_map_headernames.R"                             
-  # [4,] "datacreate_names_of_indicators.R"                         
-  # [5,] "datacreate_names_pct_as_fraction.R"                       
-  # [6,] "datacreate_metadata4pins.R"                               
-  
-  # [20,] "datacreate_blockwts.R"                                    
-  # [21,] "datacreate_bg_cenpop2020.R"                               
-  # [22,] "datacreate_bgpts.R"                                       
-  # [23,] "datacreate_states_shapefile.R"                            
-  # [24,] "datacreate_stateinfo.R"                                   
-  # [25,] "datacreate_stateinfo2.R"                                  
-  # [26,] "datacreate_islandareas.R"                                 
-  # [27,] "datacreate_censusplaces.R"          
-  
-  # [7,] "datacreate_blockgroupstats2.32.R"                          
-  # [8,] "datacreate_blockgroupstats2.32_add_d_acs22columns.R"  
-  # rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.32_recalc_language.R")
-  # [9,] "datacreate_usastats2.32.R"                                 
-  # [10,] "datacreate_usastats2.32_add_dsubgroups.R"                  
-  # [11,] "datacreate_avg.in.us.R"                                   
-  # [12,] "datacreate_high_pctiles_tied_with_min.R"                  
-  # [13,] "datacreate_formulas.R"                                    
-  # [14,] "datacreate_test_address.R"                    
-  # [15,] "datacreate_testpoints_testoutputs.R"                      
-  
-  # [16,] "datacreate_default_points_shown_at_startup.R"      
-  # [17,] "datacreate_testpoints_5_50_500.R"             
-  # [18,] "datacreate_ejscreenRESTbroker2table_na_filler.R"          
-  # [19,] "datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R"
-  
-  # [28,] "datacreate_frs_.R"                                        
-  # [29,] "datacreate_frs_by_mact.R"                                 
-  # [30,] "datacreate_frs_by_sic.R"                                  
-  # [31,] "datacreate_frsprogramcodes.R"                             
-  # [32,] "datacreate_epa_programs.R"                                
-  # [33,] "datacreate_testids_program_sys_id.R"                      
-  # [34,] "datacreate_testids_registry_id.R"                         
-  # [35,] "datacreate_naics_counts.R"                                
-  # [36,] "datacreate_naicstable.R"                                  
-  # [37,] "datacreate_SIC.R"                                         
-  # [38,] "datacreate_sic_counts.R"                                  
-  # [39,] "datacreate_sictable.R"             
-  
-  # [40,] "datacreate_lat_alias.R"                                   
-  # [41,] "datacreate_ejampackages.R"                                
-  # [42,] "datacreate_meters_per_mile.R"                                                      
-  
   
   ####################################### # 
   # overall
@@ -253,25 +203,27 @@ if (0 == 1) {  # collapsable list
 ## Verify pins board access ####
 x <- datawrite_to_pins(justchecking = T) # load_all() first or use EJAM:::
 if (!is.null(x)) {
-  # must use VPN to have access to pins board 
-  #                name                                        title  type file_size             created ejscreen_version varnames - August 5, 2024
-  # 1  frs_by_programid frs_by_programid data from EJScreen for EJAM arrow    154.7M 2024-08-05 14:43:33              2.3     TRUE
-  # 2      frs_by_naics     frs_by_naics data from EJScreen for EJAM arrow    14.68M 2024-08-05 14:43:28              2.3     TRUE
-  # 3        frs_by_sic       frs_by_sic data from EJScreen for EJAM arrow    20.25M 2024-08-05 14:43:21              2.3     TRUE
-  # 4       frs_by_mact      frs_by_mact data from EJScreen for EJAM arrow     4.63M 2024-08-05 14:43:17              2.3     TRUE
-  # 5               frs              frs data from EJScreen for EJAM arrow   146.01M 2024-08-05 14:42:49              2.3     TRUE
+  cat(" Must use VPN to have access to pins board \n\n" )
+  cat("\n As of", as.character(Sys.Date()), "\n\n")
+  x = x[order(x$created), ]
+  rownames(x) <- NULL
+  print(x)
   
-  # 6              bgej             bgej data from EJScreen for EJAM arrow     97.5M 2023-12-05 22:20:29              2.3     TRUE - but not actually updated for v2.3 yet!!
-  # 7          blockwts         blockwts data from EJScreen for EJAM arrow    91.67M 2023-11-17 19:14:23              2.3     TRUE - but not actually updated for v2.3 yet!!
-  # 8          quaddata                       quaddata data for EJAM arrow   218.36M 2023-11-17 19:13:32              2.3     TRUE - but not actually updated for v2.3 yet!!
-  # 9       blockpoints                    blockpoints data for EJAM arrow   155.97M 2023-11-17 19:12:57              2.3     TRUE - but not actually updated for v2.3 yet!!
-  # 10     blockid2fips                   blockid2fips data for EJAM arrow    98.17M 2023-11-17 19:12:36              2.3     TRUE - but not actually updated for v2.3 yet!!
-  # 11        bgid2fips                      bgid2fips data for EJAM arrow     2.98M 2023-11-17 19:12:19              2.3     TRUE - but not actually updated for v2.3 yet!!
+  # As of 2024-08-29 
   
-  
-  
-  
-  
+  #                name                                        title  type file_size             created ejscreen_version varnames
+
+  # 1               frs              frs data from EJScreen for EJAM arrow   146.01M 2024-08-05 14:42:49             2.32     TRUE
+  # 2       frs_by_mact      frs_by_mact data from EJScreen for EJAM arrow     4.63M 2024-08-05 14:43:17             2.32     TRUE
+  # 3        frs_by_sic       frs_by_sic data from EJScreen for EJAM arrow    20.25M 2024-08-05 14:43:21             2.32     TRUE
+  # 4      frs_by_naics     frs_by_naics data from EJScreen for EJAM arrow    14.68M 2024-08-05 14:43:28             2.32     TRUE
+  # 5  frs_by_programid frs_by_programid data from EJScreen for EJAM arrow    154.7M 2024-08-05 14:43:33             2.32     TRUE
+  # 6         bgid2fips                      bgid2fips data for EJAM arrow     2.98M 2024-08-22 18:34:28             2.32     TRUE
+  # 7      blockid2fips                   blockid2fips data for EJAM arrow    98.17M 2024-08-22 18:34:34             2.32     TRUE
+  # 8       blockpoints                    blockpoints data for EJAM arrow   155.97M 2024-08-22 18:34:56             2.32     TRUE
+  # 9          blockwts         blockwts data from EJScreen for EJAM arrow    68.64M 2024-08-22 18:35:34             2.32     TRUE
+  # 10         quaddata                       quaddata data for EJAM arrow   218.36M 2024-08-22 18:35:52             2.32     TRUE
+  # 11             bgej             bgej data from EJScreen for EJAM arrow    84.94M 2024-08-22 18:54:56             2.32     TRUE
   
   pin_seen <- x$name
   pin_expected = c(
@@ -281,7 +233,7 @@ if (!is.null(x)) {
   )
   if (length(setdiff2(pin_seen, pin_expected)) > 0 ) {
     message("Expected to see on pin board but not there: ", paste0(setdiff(pin_expected, pin_seen), collapse = ", "))
-    message("Seeon on pin board but not expected: ", paste0(setdiff(pin_seen, pin_expected), collapse = ", "))
+    message("See on on pin board but not expected: ", paste0(setdiff(pin_seen, pin_expected), collapse = ", "))
   }
   rm(pin_seen, pin_expected, x)
 }
