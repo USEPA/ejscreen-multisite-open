@@ -48,7 +48,7 @@ ejam2excel <- function(ejamitout,
                        ...
 ) {
 
-  table_xls_from_ejam(
+  x = table_xls_from_ejam(
     ejamitout = ejamitout,
     fname = fname,
     save_now = save_now,
@@ -66,4 +66,5 @@ ejam2excel <- function(ejamitout,
     site_method = site_method,
     ...
   )
+  invisible(x)
 }

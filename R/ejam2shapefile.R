@@ -42,9 +42,22 @@ ejam2shapefile <- function(ejamitout, fname = "bysite.shp",  folder = ".",
   df[ , 2] <- unlinkify(df[ , 2])
   df[ , 3] <- unlinkify(df[ , 3])
   
-  if (all(is.na(df$lat)) | all(is.na(df$lat))) {stop(   "latlon at all sites are NA values")}
-  if (any(is.na(df$lat)) | any(is.na(df$lat))) {warning("latlon at some sites are NA values")}
+  if (all(is.na(df$lat)) | all(is.na(df$lon))) {
+    # *** probably it was analysis of FIPS or Shapefile, not latlon
+    cat(
+    'Shapefile of results gets mapped in the shiny app, but 
+this function is not yet implemented for FIPS or Shapefile case - 
+need original shapefile to join it to results.
+Except, if Counties were analyzed, see  mapfastej_counties() \n')
+    warning(   "latlon at all sites are NA values")
+    
   
+    
+    return(NA)
+    
+    } else {
+  if (any(is.na(df$lat)) | any(is.na(df$lon))) {warning("latlon at some sites are NA values")}
+  }
   bysite_shp <- shapefile_from_sitepoints(df, crs = crs)
   
   ## just does sf::st_as_sf()
@@ -60,19 +73,9 @@ ejam2shapefile <- function(ejamitout, fname = "bysite.shp",  folder = ".",
   bysite_shp$lat = df$lat
   bysite_shp$lon = df$lon
   if (!save) {
-    return(bysite_shp) 
+    return(bysite_shp)
     
   } else {
-    
-    folder <- normalizePath(folder)
-    # cat("working directory is ", folder, "\n")
-    if (tools::file_ext(fname) != "shp") {stop("fname extension must be .shp, and the saved file in specified folder will be a .zip file with the .shp etc.")}
-    tds <- file.path(tempdir(), "shp")
-    if (!dir.exists(tds)) {dir.create(tds)}
-    
-    # oldwd <- getwd()
-    # on.exit(setwd(oldwd))
-    # setwd(tds)
     
     ### need >=10 character colnames to save as .shp file format. see sf:::abbreviate_shapefile_names etc.
     ### so shortening them but "geometry" must not be changed
@@ -86,6 +89,15 @@ ejam2shapefile <- function(ejamitout, fname = "bysite.shp",  folder = ".",
     }
     #  Creating a 256th field, but some DBF readers might only support 255 fields
     
+    
+    if (interactive() && !shiny::isRunning()) {
+      folder <- rstudioapi::selectDirectory("Select/confirm Folder to Save .zip in", path = folder)
+    }
+    folder <- normalizePath(folder) # ??
+    if (tools::file_ext(fname) != "shp") {stop("fname extension must be .shp, and the saved file in specified folder will be a .zip file with the .shp etc.")}
+    tds <- file.path(tempdir(), "shp")
+    if (!dir.exists(tds)) {dir.create(tds)}
+    
     sf::st_write(
       obj = bysite_shp,
       dsn = file.path(tds, fname),
@@ -98,14 +110,9 @@ ejam2shapefile <- function(ejamitout, fname = "bysite.shp",  folder = ".",
     fnames <- dir(tds, pattern = fname_noext)
     fnames <- fnames[!grepl("zip$", fnames)]
     if (file.exists(zipname)) {file.remove(zipname)}
-    zip(zipname, files = fnames)
     zipfullpath <- paste0(normalizePath(folder), "\\", zipname)
-    # cat(paste0("saving .zip as ", zipfullpath, '\n'))
-    ## save zipfile in temp directory then copy it to folder specified and return the folder/zipname
-    file.copy(from = zipname, to = file.path(folder, zipname), overwrite = TRUE)
-    
-    # setwd(oldwd)
-    
+    zip(zipfullpath, files = file.path(tds, fnames)) # unzip from tempdir to folder specified by parameter
+
     return(zipfullpath)
   }
 }
