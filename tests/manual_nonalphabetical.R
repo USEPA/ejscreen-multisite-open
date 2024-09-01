@@ -1,4 +1,84 @@
-########################################## # 
+# system.time({
+#   #    ABOUT 7 MINUTES TO RUN TESTS (if large datasets had not yet been loaded)
+#   source("./tests/manual_nonalphabetical.R") # answering Yes to running ALL tests
+# })
+######################################################## #
+if (1 == 0) { # do this part manually if needed
+
+  # TO RELOAD / ITERATE WHILE DEBUGGING:
+  #   TAKES 20 seconds even though supposed to be slower if reset = T,  if not loading block datasets on attach
+  
+  devtools::load_all(reset = TRUE)
+  # dataload_from_pins("all")
+
+  # TO OPEN SOME KEY TEST FILES:
+  
+# rstudioapi::navigateToFile("./tests/testthat/test-FIPS_FUNCTIONS.R")
+# rstudioapi::navigateToFile("./tests/testthat/test-state_from_fips_bybg.R")
+# rstudioapi::navigateToFile("./tests/testthat/test-doaggregate.R")
+# rstudioapi::navigateToFile("./tests/testthat/test-ejamit.R")
+# rstudioapi::navigateToFile("./tests/testthat/test-latlon_df_clean.R")
+
+}
+
+######################################################## #
+# simple checks for easy/basic case, main functions, without actually running unit tests with testthat
+
+if (1 == 0) { # do this part manually if needed
+
+  # latlon
+x <- ejamit(testpoints_5[1:2,], radius = 1)
+# names(x)
+ejam2table_tall(x)
+ejam2barplot(x)
+ejam2barplot_sites(x)
+ejam2tableviewer(x)
+junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
+# ejam2report(x)   #  report not yet working if not in shiny app
+ejam2map(x)
+fname = ejam2shapefile(x, folder = tempdir())
+ shpin = shapefile_from_any(fname)
+ map_shapes_leaflet(shpin)
+ 
+# shapefile
+
+shp <- shape_buffered_from_shapefile( shapefile_from_sitepoints(testpoints_5[1:2,]), radius.miles = 1)
+                                      # or use test data  shp <- shapefile_from_any()
+shp <- shapefile_from_any(system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp", package = "EJAM"))[1:3, ]  
+# x <- ejamit( shapefile = shp )  ## NOT WORKING RIGHT NOW
+# names(x)
+# ejam2table_tall(x)
+# ejam2barplot(x)
+# ejam2barplot_sites(x)
+# ejam2tableviewer(x)
+# junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
+# ejam2report(x)   #  report not yet working if not in shiny app
+## ejam2map(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
+## ejam2shapefile(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
+  # map_shapes_leaflet(x)  
+
+
+# fips
+x <- ejamit(fips = fips_bg_from_anyfips(fips_counties_from_state_abbrev("DE")[1])[1:2]) # just 2 blockgroups
+names(x)
+ejam2table_tall(x)
+ejam2barplot(x)
+ejam2barplot_sites(x)
+ejam2tableviewer(x)
+junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
+# ejam2report(x)   #  report not yet working if not in shiny app
+# ejam2map(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
+# ejam2shapefile(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
+
+x <- ejamit(fips = fips_counties_from_state_abbrev("DE"))  #   3 Counties
+mapfastej_counties(x$results_bysite) # not (x)
+
+
+}
+####################### #
+
+
+########################################## # ########################################## # 
 # Setup ####
 # !diagnostics off ## to disable diagnostics in this document
 #        thisfile = "./tests/manual_nonalphabetical.R"

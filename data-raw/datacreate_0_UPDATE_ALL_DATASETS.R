@@ -558,22 +558,49 @@ source_maybe("datacreate_test_address.R")
 
 
 ############################### pause here
-
+############################### 
 
 # save.image(file.path(localfolder, "work in progress.rda"))
 
 
 # may want to rebuild/ reinstall the package here,
 # or at least load_all()  ?
+ 
+# system.time({
+#   #  installing  TAKES  ~4 MINUTES  EVEN IF .onAttach() changed to say 
+#   # asap_aws   <- FALSE  # download large datasets now?           Set to FALSE while Testing/Building often
+#   # asap_index <- FALSE  
+#   # asap_bg    <- FALSE 
+#   # and install(  reload = TRUE, upgrade = "never" , quick = TRUE 
+#   
+#   devtools::install(reload = TRUE, upgrade = "never", quick = TRUE)
+# })
+ 
+# system.time({
+#   #  THIS TAKES < 30 seconds   if reset = FALSE and not loading block datasets on attach
+#   devtools::load_all(reset = FALSE)
+#   
+# })
 
-
-devtools::install(quick = TRUE)
+system.time({
+  #  THIS TAKES 20 seconds even though supposed to be slower if reset = T  and not loading block datasets on attach
+  devtools::load_all(reset = TRUE)
+})
 
 
 # devtools::check() 
 
 
 # devtools::test()
+
+# rstudioapi::navigateToFile("./tests/manual_nonalphabetical.R")
+# system.time({
+#   #    ABOUT 7 MINUTES TO RUN all TESTS (if large datasets had not yet been loaded)
+   source("./tests/manual_nonalphabetical.R") # answering Yes to running ALL tests
+# })
+
+############################### 
+############################### 
 
 
 ######################################### #
