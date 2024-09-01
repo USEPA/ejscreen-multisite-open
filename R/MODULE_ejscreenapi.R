@@ -1,3 +1,8 @@
+
+# Now see probably-newer full app server (not module) code here:
+#   app_server_EJAMejscreenapi()
+
+
 ################################################ ################################################# #
 ################################################ ################################################# #
 #
@@ -30,7 +35,7 @@ if (testing_ejscreenapi_module) {
           # shiny::textOutput("testinfo2"),
  # EJAM:::mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2),
 
-          mod_ejscreenapi_ui("TESTID",
+ EJAM:::mod_ejscreenapi_ui("TESTID",  # since it is not exported and this test is a script not a function, you have to use ::: to access it
 
                              simpleradius_default_for_ui = 2
                              ),
@@ -51,8 +56,8 @@ if (testing_ejscreenapi_module) {
   ######################### #
   TEST_SERVER <- function(input, output, session) {
 
-  # x <- EJAM:::mod_ejscreenapi_server(
-    x <-        mod_ejscreenapi_server(
+  x <- EJAM:::mod_ejscreenapi_server(  # since it is not exported and this test is a script not a function, you have to use ::: to access it
+    # x <-        mod_ejscreenapi_server(
                   "TESTID",
 
                   default_points_shown_at_startup_react = reactive(testpoints_5[1:2,]),

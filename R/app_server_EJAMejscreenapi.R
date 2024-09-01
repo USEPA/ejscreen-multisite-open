@@ -1,3 +1,34 @@
+
+# can the app_server_EJAMejscreenapi() be wrapped inside moduleServer() to use as a module in EJAM
+# and was that already drafted somewhere? 
+# R/MODULE_ejscreenapi.R  had older approach where all of the code was in that one file?
+
+# mod_ejscreenapi_server <- function(id,
+#                                    # default_radius_react,
+#                                    # default_points_react = NULL, # do we wrap NULL in reactive() in this case?
+#                                    default_points_shown_at_startup_react,
+#                                    # default_points = NULL,  #
+#                                    use_ejscreenit = FALSE  #  use_ejscreenit = FALSE # SWITCH TO TRUE WHEN CONFIRM IT WORKS ***
+# ) {
+#   # figure out what default points to show at startup, which could be a reactive passed here from the parent server/overall app.
+#   # if (!missing(default_points)) default_points_shown_at_startup <- default_points # stop using this and use reactive input only
+#   # if (!missing(default_points_react)) {
+#   #   # ?
+#   #   stopifnot(is.reactive(default_points_react))
+#   # }
+#   # stopifnot(!is.reactive(default_points_shown_at_startup)) # currently this is not supposed to be reactive but would be if we wanted app-controlled default not just passed when calling function
+#   # stopifnot(!is.reactive(parameter2))
+#   
+#   source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))  ### IMPORTANTLY THESE MUST STAY WITHIN THE MODULE NAMESPACE, AND NOT BE AVAILABLE TO OR INTERFERE WITH MAIN APP'S DEFAULTS/ETC.
+#   
+#   # moduleServer ####
+#   
+#   shiny::moduleServer( id, function(input, output, session) {
+#     ns <- session$ns
+#     
+#      then the server code would go here
+########################################### # 
+
 #' app_server for ejscreenapi app
 #'
 #' @param input dont change
@@ -103,7 +134,7 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
                                 "perhourfast", "perhourguess", "perhourslow", "stepradius", "tabletips_message", "whichip")))
   })
   
-  # 1__ MODULE__ * SPECIFY PLACES ######################### 
+  # 1__ should be made into a MODULE__ * SPECIFY PLACES ######################### 
   # ###################   #####################   #####################   #################### # 
   
   # If ECHO search button clicked, Show popup window ####
@@ -883,7 +914,7 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
   
   # ____________________________________________________________________ ####### 
   #
-  # 4__ MODULE?__ * GRAPHICS #### ####################
+  # 4__ could become a MODULE?__ * GRAPHICS #### ####################
   
   ## Boxplots ####
   # 
