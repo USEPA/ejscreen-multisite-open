@@ -417,20 +417,21 @@ NULL
                                       saveas = paste0("./inst/testdata/examples_of_output/",
                                                       out_varname_doagg, ".xlsx")
       )
-      junk2      <- ejam2excel(ejamitout = out_data_doagg,
-                               ok2plot = TRUE,
-                               
-                               radius_or_buffer_in_miles = myrad,
-                               buffer_desc = paste0("Within ", myrad, " miles"),
-                               in.analysis_title =
-                                 "Example of outputs of doaggregate() being formatted and saved using ejam2excel()",
-                               fname = paste0("./inst/testdata/examples_of_output/",
-                                              out_varname_doagg, "_ejam2excel.xlsx"),
-                               save_now = TRUE,
-                               overwrite = TRUE,
-                               launchexcel = FALSE,
-                               interactive_console = FALSE
-      )
+      ### until debugged
+      # junk2      <- ejam2excel(ejamitout = out_data_doagg,
+      #                          ok2plot = TRUE,
+      #                          
+      #                          radius_or_buffer_in_miles = myrad,
+      #                          buffer_desc = paste0("Within ", myrad, " miles"),
+      #                          in.analysis_title =
+      #                            "Example of outputs of doaggregate() being formatted and saved using ejam2excel()",
+      #                          fname = paste0("./inst/testdata/examples_of_output/",
+      #                                         out_varname_doagg, "_ejam2excel.xlsx"),
+      #                          save_now = TRUE,
+      #                          overwrite = TRUE,
+      #                          launchexcel = FALSE,
+      #                          interactive_console = FALSE
+      # )
       
       # writexl::write_xlsx(as.list(out_data_doagg),
       #                     path = paste0("./inst/testdata/examples_of_output/", out_varname_doagg, ".xlsx"))    ############# #
