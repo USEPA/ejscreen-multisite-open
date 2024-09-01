@@ -47,7 +47,7 @@ run_app      <- function(
     ...
 ) {
   # temporary workaround, see https://github.com/ThinkR-open/golem/issues/6
-  source(system.file("global.R", package = "EJAM")) # source('./inst/global1.R')
+  source(system.file("global.R", package = "EJAM")) # source('./inst/global1.R') # uses latest source version if devtools::load_all() has been done.
 
   # This with_golem_options()  just does  shinyApp(ui = app_ui, server = app_server)
   #   which mean app_ui and app_server() need to have been loaded/attached via loadall

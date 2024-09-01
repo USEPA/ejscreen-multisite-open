@@ -31,7 +31,7 @@ label_parse(), label_percent(), label_pvalue(), label_scientific()}
 \item{acsinfo}{large table of metadata as from load_variables function
 from tidycensus pkg}
 
-\item{yr}{like 2021 or 2022 end of 5 year ACS}
+\item{yr}{like 2022, end of 5 year ACS 2018-2022}
 }
 \value{
 plot

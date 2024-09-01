@@ -845,14 +845,6 @@ app_ui  <- function(request) {
                                         
                                         #------- METHODS, AUTHORS, ETC.
                                         
-                                        # authorname1: "The US EPA"
-                                        # authoremail1: ""
-                                        # coauthor_names: NA
-                                        # coauthor_emails: NA
-                                        # fundingsource: NA
-                                        # acs_version: "2017-2021"
-                                        # ejscreen_version: "2.2"
-                                        
                                         fluidRow(
                                           column(2,
                                                  ## input:
@@ -895,11 +887,11 @@ app_ui  <- function(request) {
                                           ## input:
                                           textInput(inputId = 'acs_version',
                                                     label = 'Version of ACS data (years)',
-                                                    placeholder = "2017-2021"),
+                                                    placeholder =  as.vector(metadata_mapping$blockgroupstats[['acs_version']])),
                                           ## input:
                                           textInput(inputId = 'ejscreen_version',
                                                     label = 'Version of EJScreen',
-                                                    placeholder = "2.2")
+                                                    placeholder =  as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']]))
                                         ),
                                         ############################ #
                                         
