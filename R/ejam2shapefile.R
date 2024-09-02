@@ -1,17 +1,19 @@
 
 
-########################    #    DRAFT 
-
 
 #' DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.
 #'
 #' @param ejamitout output of EJAM such as from [ejamit()]
-#' @param fname a filename no path and must be .shp extension
-#' @param folder optional folder (directory), path to where it should be saved
+#' @param fname optional filename with no path and must be .shp extension
+#' @param folder optional - If omitted (and not running in shiny and if interactive() mode),
+#'   this function prompts you to specify the folder, path to where the .zip should be saved.
 #' @param crs optional coord ref system
 #' @param shortcolnames Whether to cut colnames to 10 characters for .shp format
 #' @return path to saved .zip file
 #' @param save whether to save file - if FALSE, it returns the object not the file path
+#' @param varnames optional vector of which colnames of ejamitout$results_bysite 
+#'   to include in shapefile. DJefault is all other than averages, ratios, and raw EJ scores.
+#'   Can be "all" or NULL to include all columns.
 #' @examples \dontrun{
 #'   # folder = "~/../Downloads"
 #'   # out <- ejamit(testpoints_100 , radius = 3.1)
@@ -22,41 +24,67 @@
 #'   shp <- shapefile_from_any(fname)
 #'   map_shapes_leaflet(shp)
 #'   }
-#' @details see 
+#' @details FIELD NAMES (indicator names) CURRENTLY ARE TRUNCATED AND NUMBERED TO BE ONLY 10 CHARACTERS MAX. 
+#' 
+#' see 
 #'   [Shapefile format basics from arcgis.com](https://doc.arcgis.com/en/arcgis-online/reference/shapefiles.htm) 
 #' 
 #' @export
 #' 
-ejam2shapefile <- function(ejamitout, fname = "bysite.shp",  folder = ".", 
-                           crs = 4269, shortcolnames=TRUE, save = TRUE
+ejam2shapefile <- function(ejamitout, fname = "EJAM_results_bysite_date_time.shp",  folder = ".", 
+                           crs = 4269, shortcolnames=TRUE, save = TRUE, 
+                           varnames = "basic250"
 ) { 
   # ,   ...) {
   
-  # library(EJAM);  library(data.table); library(sf)
-  #    ejamitout <- testoutput_ejamit_10pts_1miles; crs = 4269; fname = "bysite.shp" ;  folder =  "~/../Downloads"  # getwd()
-  df <- data.table::setDF(ejamitout$results_bysite)
-  ## and may not support 255 or larger number of characters in a field like the URLs so they get truncated
-  ## perhaps should alter or remove the url columns
-  unlinkify = function(x) {gsub('.*https', 'https', gsub('=report.*', '=report', gsub('., target.*', '', x)))}
-  df[ , 1] <- unlinkify(df[ , 1])
-  df[ , 2] <- unlinkify(df[ , 2])
-  df[ , 3] <- unlinkify(df[ , 3])
+  #  ejamitout <- testoutput_ejamit_10pts_1miles; crs = 4269; fname = "bysite.shp" ;  folder =  "~/../Downloads"  # getwd()
   
-  if (all(is.na(df$lat)) | all(is.na(df$lon))) {
+  df <- data.table::setDF(ejamitout$results_bysite)
+  
+  if (missing(varnames) || is.null(varnames) || all(is.na(varnames)) || varnames[1] == "all") {
+    varnames <- "all"
+    # df <- df
+  } else {
+    if (all(varnames[1] == "basic250")) {
+      # because shapefiles have a cap on number of fields in some implementations
+      # omits averages, ratios, and raw EJ scores, which are not essential or are not in typical EJScreen outputs
+      names_basic250 <- sort(grep("^avg|^state.avg|^ratio|^EJ.D|^state.EJ", names(df), invert = T, value = T)) 
+      ok <- names(df) %in% names_basic250
+      if (any(!ok)) {warning("Some specified varnames not found in ejamitout$results_bysite")}
+      if (all(!ok)) {stop("No specified varnames found in ejamitout$results_bysite") }
+      df <- df[ , ok]
+      message("Using only basic 250 or so columns - 
+To include averages, ratios, and raw EJ scores, set varnames = 'all' or NULL.
+To include specific columns provides those as a character vector of varnames.")
+    } else {
+      ok <- names(df) %in% varnames
+      if (any(!ok)) {warning("Some specified varnames not found in ejamitout$results_bysite")}
+      if (all(!ok)) {stop("No specified varnames found in ejamitout$results_bysite") }
+      df <- df[ , ok]
+    }
+  }
+  
+  ## shapefile may not support 255 or larger number of characters in a field like the URLs so they get truncated
+  ## perhaps should alter or remove the url columns
+urlcols = which(grepl("a href=", names(df)))
+if (length(urlcols) > 0) {
+  df[ , urlcols] <- unlinkify(df[ , urlcols])
+}  
+
+  if (all(is.na(df$lat)) || all(is.na(df$lon))) {
     # *** probably it was analysis of FIPS or Shapefile, not latlon
     cat(
     'Shapefile of results gets mapped in the shiny app, but 
-this function is not yet implemented for FIPS or Shapefile case - 
-need original shapefile to join it to results.
+this save function only handles ejamit analysis of proximity to latlon points --
+it is not yet implemented here for ejamit analysis of polygons from Shapefile or analysis of FIPS -- 
+would need original shapefile to join it to table of results.
 Except, if Counties were analyzed, see  mapfastej_counties() \n')
     warning(   "latlon at all sites are NA values")
     
-  
-    
     return(NA)
-    
-    } else {
-  if (any(is.na(df$lat)) | any(is.na(df$lon))) {warning("latlon at some sites are NA values")}
+
+  } else {
+    if (any(is.na(df$lat)) || any(is.na(df$lon))) {warning("latlon at some sites are NA values")}
   }
   bysite_shp <- shapefile_from_sitepoints(df, crs = crs)
   
@@ -91,9 +119,14 @@ Except, if Counties were analyzed, see  mapfastej_counties() \n')
     
     
     if (interactive() && !shiny::isRunning()) {
-      folder <- rstudioapi::selectDirectory("Select/confirm Folder to Save .zip in", path = folder)
+      if (missing(folder)) {
+        folder <- rstudioapi::selectDirectory("Select/confirm Folder to Save .zip in", path = folder)
+      }
     }
-    folder <- normalizePath(folder) # ??
+    if (missing(fname)) {
+      fname <- create_filename(ext = ".shp", file_desc = "results_bysite") # e.g.,  "EJAM_results_bysite_20240901_162119.shp"
+    }
+    # folder <- normalizePath(folder) # ?? converts from x/y/z  to  x\\y\\z  on windows.
     if (tools::file_ext(fname) != "shp") {stop("fname extension must be .shp, and the saved file in specified folder will be a .zip file with the .shp etc.")}
     tds <- file.path(tempdir(), "shp")
     if (!dir.exists(tds)) {dir.create(tds)}
@@ -106,15 +139,15 @@ Except, if Counties were analyzed, see  mapfastej_counties() \n')
     )
     
     zipname <- paste0(fname, ".zip")
-    fname_noext <- gsub( paste0("\\.", tools::file_ext(fname), "$"), "", dir(tds, pattern = fname))
+    fname_noext <- gsub( paste0("\\.", tools::file_ext(fname), "$"), "", dir(tds, pattern = fname))  # ?? 
     fnames <- dir(tds, pattern = fname_noext)
     fnames <- fnames[!grepl("zip$", fnames)]
     if (file.exists(zipname)) {file.remove(zipname)}
-    zipfullpath <- paste0(normalizePath(folder), "\\", zipname)
-    zip(zipfullpath, files = file.path(tds, fnames)) # unzip from tempdir to folder specified by parameter
 
+    zipfullpath <- paste0(normalizePath(folder), "\\", zipname)
+    zip(zipfullpath, files = file.path(tds, fnames), extras = c('-j', '-D')) # unzip from tempdir to folder specified by parameter. -D should prevent storing Directory info, -j is supposed to use no path info so files are all in root of .zip and there are not folders inside the .zip
+    
     return(zipfullpath)
   }
 }
 ################################################################################### #
-

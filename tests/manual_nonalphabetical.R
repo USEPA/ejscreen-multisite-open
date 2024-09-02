@@ -159,7 +159,8 @@ if (update_list_of_tests) {
       "test-MAP_FUNCTIONS.R"
     ),
     test_shape = c(
-      "test-shapefile_xyz.R"  
+      "test-shapefile_xyz.R",
+      "test-ejam2shapefile.R"
     ),
     test_getblocks = c(
       "test-radius_inferred.R",              # this is SLOW THOUGH

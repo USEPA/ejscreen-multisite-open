@@ -41,7 +41,7 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
                         return_html = FALSE, 
                         launch_browser = TRUE) {
   
-  if (!interactive()) {launch_browser <- FALSE}
+  if (!interactive()) {launch_browser <- FALSE} # but that means other functions cannot override this while not interactive.
   if (is.null(sitenumber)) {
     ejamout1 <- ejamitout$results_overall
   } else {
