@@ -1062,11 +1062,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # *** popwtd avg of sites state pctiles (not raw scores) will be used as the overall state pctiles.
   #  (Because each site has a different site, you cannot just convert overall raw scores to state pctiles).
   
+
   #  ##################################################### #
   
   if (missing( sites2states_or_latlon)) {
     
-    # This case never arises if using shiny app or ejamit() !! 
+    # This case never arises if using shiny app  or ejamit( at least for latlon, not fips or shp cases ) !! 
     
     # This is only an edge case where RStudio user had run getblocksnearby() and has sites2blocks but 
     # then tried to run doaggregate() without providing the original points (or fips or shp) that had been used to create sites2blocks.
@@ -1076,18 +1077,29 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     #       - first get the latlon values of the nearby blocks
     #       - use the block latlon values and distances from site to estimate where the site latlon must have been.
     
-    cat('TEMPORARILY ASSUMING A PLACEHOLDER  ! work in progress on state identification if not in shiny app and not using ejamit(), if sites2states_or_latlon is not provided to doaggregate() \n')
-    # placeholder until done
+    ## But For now, Approximate for multistate sites by using the nearest block's state:  
+    # use nearest 1 block's state, which is often but not always right if near state line,
+    # but in shapefiles case of a polygon covering 2 states has no distance so just whatever happens to be 1st block in list there.
+    # and never arises for FIPS case (fips is always just a single state).
+    cat(' *** TEMPORARILY, for circles covering 2 states, using state of nearest block,
+        and for Shapefiles spanning 2 States,  JUST USING 1 OF THE STATES - 
+        work in progress on state identification if not in shiny app and not using ejamit(), 
+        if sites2states_or_latlon is not provided to doaggregate() \n')
+    # single-state case
     sites2states <- state_from_s2b_bysite(sites2blocks) # works for single-state sites only, NA otherwise
     setDT(sites2states)
     
-    ## and could approximate for multistate sites by using the nearest block's state:  
-    # multistate_ids = sites2states$ejam_uniq_id[is.na(sites2states$ST)]
-    # others <- state_from_nearest_block_bysite(sites2blocks[ejam_uniq_id %in% multistate_ids, ])
-    ## join those but should replace only one with multistate_ids 
-    ##  NOT RIGHT: 
-    # sites2states$ST[is.na(sites2states$ST)] <- others$ST[match(sites2states$ejam_uniq_id[is.na(sites2states$ST)], others$ejam_uniq_id)]
+    if ("confirmed this works" == "done?") {
+      # multistate case
+      multistate_ids <- sites2states$ejam_uniq_id[is.na(sites2states$ST)]
+      others <- state_from_nearest_block_bysite(sites2blocks[ejam_uniq_id %in% multistate_ids, ])
+      ## join those but should replace only one with multistate_ids 
+      ##  NOT RIGHT ???  xxx
+      sites2states$ST[is.na(sites2states$ST)] <- others$ST[match(sites2states$ejam_uniq_id[is.na(sites2states$ST)], others$ejam_uniq_id)]
+    }
+    
   }
+
   
   if (!missing( sites2states_or_latlon)) {
     sites2states <- state_per_site_for_doaggregate(s2b = sites2blocks, s2st = sites2states_or_latlon)

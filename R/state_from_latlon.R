@@ -22,9 +22,20 @@
 
 ########################################### #
 
+
 state_from_nearest_block_bysite <- function(s2b) {
-  # simplistic quick way to get state of nearest block to each site
-  s2b[, .(ST = state_from_blockid(blockid[1])), keyby = ejam_uniq_id]
+  
+  # simplistic quick way to get state of nearest block to each site - 
+  # and if FIPS, works ok. 
+  # but  if a polygon covering 2+ states, it just picks one block which might not be from the state accounting for most of the polygon.
+  if (any(s2b$distance > 0)) {sitetype <- "latlon"} else {
+    sitetype <- "shp or fips"
+  }
+  if (sitetype == "latlon") {
+    s2b[, .(ST = state_from_blockid(blockid[which.min(distance)])), keyby = ejam_uniq_id]
+  } else {
+    s2b[, .(ST = state_from_blockid(blockid[1])), keyby = ejam_uniq_id]    
+  }
 }
 ########################################### #
 
