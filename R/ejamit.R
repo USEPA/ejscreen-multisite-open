@@ -201,7 +201,7 @@ ejamit <- function(sitepoints,
     if (!silentinteractive) {cat('Finding blocks whose internal points are inside each polygon.\n')}
 
     ## . get_blockpoints_in_shape() ####
-    mysites2blocks <- (get_blockpoints_in_shape(shp))$pts
+    mysites2blocks <- (get_blockpoints_in_shape(shp))$pts  # same as server lines 1807 or so
     
     # . doaggregate shp ####
     
