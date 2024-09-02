@@ -35,7 +35,7 @@ sitepoints_from_any <- function(anything, lon_if_used) {
   # Doing these steps here too, even though ejamit() has the same code, 
   # so it won't have to happen once per loop on radius in ejamit_compare_distances_fulloutput() or ejamit_compare_distances()
   
-  # However, for multiple site types as in ejamit_compare_groups_of_places()...? 
+  # However, for multiple site types as in ejamit_compare_types_of_places()...? 
   
   
   # If user entered a table, path to a file (csv, xlsx), or whatever can be handled -- see latlon_from_anything() --

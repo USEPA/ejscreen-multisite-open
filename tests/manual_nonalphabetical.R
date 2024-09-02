@@ -185,7 +185,7 @@ if (update_list_of_tests) {
       "test-ejamit.R",
       "test-ejam2barplot_sites.R",
       "test-ejamit_compare_distances.R",
-      "test-ejamit_compare_groups_of_places.R",
+      "test-ejamit_compare_types_of_places.R",
       "test-ejamit_sitetype_check.R"
     ),
     test_ejscreenapi = c(

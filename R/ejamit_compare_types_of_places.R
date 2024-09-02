@@ -82,7 +82,7 @@
 ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL, 
                                            silentinteractive = TRUE,  ...) {
   
-  ########################################################### 
+  ########################################################## # 
   #  Revamp ejamit_compare_types_of_places()
   # 
   # We should do ejamit(sitepoints) once for the results_overall, results_bysite, results_bybg_people (ie bybgbysite),
@@ -115,7 +115,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   # The problem is still to count each person only once you have to know which blocks are near which site, 
   # for the blockgroups where parts of the bg are near one site and parts are near the other site.
   
-  ########################################################### 
+  ########################################################## # 
   # Find a way to make ejamit by group (by site type) work well with the ejam2xyz() functions.
   # 
   # ejamit_compare_types_of_places() as a 1st draft, for now,  
@@ -131,7 +131,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   # since that expects  "results_overall" and "results_bysite" and "results_bybg_people"
   # It would be useful to have a way that ejamit_compare_types_of_places() or 
   # some bygroup version of ejamit could work easily with the ejam2xyz() functions.
-  ########################################################### 
+  ########################################################## # 
   
   # sitepoints_from_any() will 
   # accept sitepoints interactively or from filepath or from object, 
@@ -159,11 +159,11 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   longnames           <- list()
   typeofsite_list     <- list()
   sitecount_bytype    <- list()
-  ########################################################### 
+  ########################################################## # 
   
   began <- Sys.time()
   ndone <- 0
-  
+  # loop over types ####
   for (i in seq_along(types)) {
     
     cat("Type", i, "of", length(types), "=", types[i], " -- ")
@@ -172,7 +172,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
       
       # *** WILL ejamit() ASSIGN ejam_uniq_id 1:N within each group of sites?
       # Do we want 1:N for the full set of sites only? ***
-      
+      ## ejamit() ####
       ejamit(sitepoints = sitepoints[typeofsite == types[i], ], ..., quiet = TRUE, silentinteractive = TRUE)
     }) 
     
@@ -223,6 +223,8 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   # outall$typeofsite[outall$results_bysite$ejam_uniq_id]
   # (which is only those appearing in results_bysite)
   
+  # out <- list() ####
+  
   out <- list(
     
     types = types,
@@ -254,6 +256,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   out$results_overall$ejam_uniq_id <- out$types # NOTE: this is the code of each type, not typical ejam_uniq_id of 1:N
   names(out$results_overall) <- gsub("ejam_uniq_id", "typeofsite", names(out$results_overall))
   
+  # print some results ####
   print(  
     data.frame(
       sitetype  = out$types,

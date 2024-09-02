@@ -118,7 +118,7 @@ tdat[is.na(tdat$test) & !is.na(tdat$R) & "data_" != substr(tdat$name, 1,5), ] |>
 # 31 ejam2shapefile                             R/ejam2shapefile.R                             NA        
 
 # 32 ejamit_compare_distances                   R/ejamit_compare_distances.R                   NA        
-# 33 ejamit_compare_groups_of_places            R/ejamit_compare_groups_of_places.R            NA        
+# 33 ejamit_compare_types_of_places            R/ejamit_compare_types_of_places.R            NA        
 # 34 ejscreenit_for_ejam                        R/ejscreenit_for_ejam.R                        NA        
 # 35 ejscreen_vs_ejam_                          R/ejscreen_vs_ejam_.R                          NA  
 
