@@ -10,7 +10,7 @@
 #' @export
 #'
 mapfastej <- function(...) {
-
+  
   mapfast(..., column_names = 'ej')
 }
 ############################################################################ #
@@ -41,23 +41,64 @@ mapfastej <- function(...) {
 #' @export
 #'
 mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names, browse = FALSE, color = "#03F") {
-
+  
   if (data.table::is.data.table(mydf)) {mydf <- as.data.frame(mydf)} # in case it was a data.table
   renamed <- mydf # use new names for lat and lon if necessary, but show original names in popup
   names(renamed) <- latlon_infer(names(renamed))
-  if (all(is.na(renamed$lat)) | all(is.na(renamed$lon))) {
+  
+  if (all(is.na(renamed$lat)) || all(is.na(renamed$lon))) {
     warning('no valid lat lon values to map')
-    # maybe could infer FIPS from siteid here and do choropleth color coded map?
-
-    return(NA)
-  }
-
+    
+    # check if FIPS
+    
+    suppressWarnings( { fips <- fips_from_table(mydf) })
+    if (is.null(fips) && "ejam_uniq_id" %in% names(mydf)) {
+      # maybe ejam_uniq_id is a fips code
+      if (all(fipstype(mydf$ejam_uniq_id) %in% c("county", "blockgroup"))) {
+        mydf$fips <- mydf$ejam_uniq_id
+        fips <- mydf$fips
+      }
+    }
+    if (!is.null(fips)) {
+      # try to map fips, e.g., counties or blockgroups at least.
+      if (all(fipstype(fips) == "county")) {
+        return( 
+          mapfastej_counties(fips) 
+        ) 
+        ######## ignores other parameters so far 
+        # and presumes ejamit()$results_bysite output columns here ***
+      }
+      if (all(fipstype(fips) == "blockgroup")) {
+        return(
+          shapes_blockgroups_from_bgfips(fips) 
+        ) 
+        ######## ignores other parameters so far 
+        # and lacks popups ***
+      }
+      warning('FIPS values found but not all are counties or blockgroups. Other types are not implemented here.')
+      return(NA)
+      
+    } else {
+      
+      # check if shapefile
+      
+      if ("sf" %in% class(mydf)) {
+        # try to map shapefile
+        return( map_shapes_leaflet(mydf) )
+      }
+      return(NA)
+    }
+    
+    
+  } #else is latlon
+  
   if (column_names[1] == 'ej') {
     
     ejcols <- c(names_ej, names_ej_state, names_ej_supp, names_ej_supp_state)
-    if(!all(ejcols %in% names(mydf))){
+    if (!all(ejcols %in% names(mydf))) {
       warning('Not all EJ columns found. Please provide a different dataset.')
-      return(NA)
+      ejcols <- ejcols[ejcols %in% names(mydf)]
+      # return(NA)
     }
     # popup_from_ejscreen() code was written to assume rnames (as from ejscreenapi_plus) not longnames (as from ejscreenit),
     # so try to accomodate that here if user provided output of ejscreenit() or long names in general
@@ -68,24 +109,24 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
   } else if (column_names[1] == 'all') {
     mypop <- popup_from_df(mydf)
   } else {
-      if(!all(column_names %in% names(mydf))){
-        warning('Not all column_names found. Mapping without popups. Please provide a different list to include popups.')
-        mypop <- NULL
-      } else {
-        mypop <- popup_from_df(mydf, column_names = column_names, labels = labels)
-      }
+    if (!all(column_names %in% names(mydf))) {
+      warning('Not all column_names found. Mapping without popups. Please provide a different list to include popups.')
+      mypop <- NULL
+    } else {
+      mypop <- popup_from_df(mydf, column_names = column_names, labels = labels)
+    }
   }
-
+  
   radius.meters <- radius * meters_per_mile # data loaded by pkg
   # units are meters for addCircles, and pixels for addCircleMarkers
-
+  
   x <- leaflet::leaflet(data = renamed) |> leaflet::addTiles() |>
     leaflet::addCircles(lng = ~lon, lat = ~lat, radius = radius.meters, color = color,
                         popupOptions = list(maxHeight = 400, maxWidth = 850),
                         popup = mypop) |>
     leaflet.extras2::addEasyprint( ) # button to print or print to pdf and save
   
-
+  
   if (browse) {  # map2browser() would do the same
     htmlwidgets::saveWidget(x, file = fname <- tempfile("mapfast_", fileext = ".html"))
     # htmltools::save_html(x, file = fname <- tempfile("mapfast_", fileext = ".html"))  # might work also?
