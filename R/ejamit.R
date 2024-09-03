@@ -344,7 +344,7 @@ ejamit <- function(sitepoints,
     
     ## . doaggregate pts ####
     
-    if (!silentinteractive) {cat('Aggregating at each buffer and overall.\n')}
+    if (!silentinteractive) {cat('Aggregating at each site and overall.\n')}
     
     out <- suppressWarnings(
       
@@ -514,11 +514,10 @@ ejamit <- function(sitepoints,
     #* show summary in RStudio ####
     # and sites table in viewer pane
     if (nrow(out$results_bysite) > 1000) {message("> 1,000 rows may be too much for client-side DataTables - only showing some rows here")}
-    ejam2tableviewer(out)
+    # ejam2tableviewer(out)
     ###################################### #
-    cat('Output is a list with the following names:\n')
-    print(EJAM:::structure.of.output.list(out) )
-    cat("\nTo view or save, see ejam2report(), ejam2excel(), ejam2map(), ejam2ratios(), ejam2barplot(), etc.   \n\n")
+    print(EJAM:::structure.of.output.list(out, objectname = "Output of ejamit()"))
+    cat("\nWays to view or save results of  'x <- ejamit()'   \n Overall results: ejam2barplot(x); ejam2ratios(x); ejam2table_tall(x); ejam2report(x)\n Results by site: ejam2map(x); ejam2barplot_sites(x); ejam2tableviewer(x); ejam2excel(x); ejam2shapefile(x) \n\n")
   }
   ################################################################ #
   

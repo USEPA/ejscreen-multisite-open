@@ -1679,7 +1679,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       print(x) # print to console, 125 rows
       
       ## datatable by site in RStudio viewer pane
-      print(structure.of.output.list(x))
+      print(structure.of.output.list(x, objectname = "Output of doaggregate()"))
     }
   }
   invisible(results)

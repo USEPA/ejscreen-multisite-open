@@ -4,13 +4,16 @@
 \alias{structure.of.output.list}
 \title{Utility to print summary info about the output of ejamit() or doaggregate()}
 \usage{
-structure.of.output.list(x, maxshown = 10)
+structure.of.output.list(x, maxshown = 10, objectname = NULL)
 }
 \arguments{
 \item{x}{the output of \code{\link[=ejamit]{ejamit()}} or of \code{\link[=doaggregate]{doaggregate()}},
 a list of objects holding results of analysis}
 
 \item{maxshown}{shows only first 10 elements of list by default}
+
+\item{objectname}{name to use in printing summary, e.g., "Output of ejamit()"
+or default is to use the name of the object passed to this function.}
 }
 \value{
 data.frame summarizing names of list, whether each element is a
