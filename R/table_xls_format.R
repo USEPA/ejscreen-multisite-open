@@ -131,15 +131,10 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     warning("table_xls_format() requires either overall or eachsite data as from results of ejamit() or doaggregate() for example") 
     return(NULL)
   }
-  
   if (is.null(heatmap2_colnames)) {
     heatmap2_colnames <- map_headernames$rname[grepl('ratio', map_headernames$varlist)] 
   }
-  
-  if (testing) {
-    cat('in table_xls_format, names of each site: \n\n'); print(names(eachsite))
-    
-  }
+  if (testing) {cat('in table_xls_format, names of each site: \n\n'); print(names(eachsite))}
   # SHORT REPORT COMBINES THESE reactives:
   #   
   #   summary_title() for top of 1pager (it includes input$analysis_title) 
@@ -195,10 +190,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   overall   <- overall |> dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
   eachsite <- eachsite |> dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
   
-  if (testing) {
-    cat('\n   names of hyperlink_colnames \n\n')
-    print(hyperlink_colnames)
-  }
+  if (testing) {cat('\n   names of hyperlink_colnames \n\n'); print(hyperlink_colnames)}
   ############################################## # 
   
   # CREATE TABS ####
@@ -244,7 +236,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       # None provided so try to create one anyway? 
       # example: plot_barplot_ratios( unlist( testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
       if (all(c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg) %in% names(overall))) {
-        cat('plotting ratios to avg by group\n')
+        # cat('plotting ratios to avg by group\n')
         if (data.table::is.data.table(overall)) {
           summary_plot <- try(
             plot_barplot_ratios(unlist( overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]),
@@ -414,9 +406,15 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     data.table::setDF(eachsite) # to make syntax below work since it was written assuming data.frame only not data.table
   }
   # REPLACE THE URLS WITH GOOD ONES
+  
+  if (!("valid" %in% names(eachsite))) {
+    ok <- rep(TRUE, NROW(eachsite))
+  } else {
+    ok <- eachsite$valid
+  }
   #eachsite[ , hyperlink_colnames] <-  (url_4table(eachsite$lat, eachsite$lon, radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
-  eachsite[eachsite$valid == T , hyperlink_colnames] <-  (url_4table(eachsite$lat[eachsite$valid == T], eachsite$lon[eachsite$valid == T], radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
-  eachsite[eachsite$valid == F , hyperlink_colnames] <-  NA# (url_4table(lat=NULL, lon=NULL, radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
+  eachsite[ok , hyperlink_colnames] <-  (url_4table(eachsite$lat[ok], eachsite$lon[ok], radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
+  eachsite[!ok , hyperlink_colnames] <-  NA # (url_4table(lat=NULL, lon=NULL, radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
   
   openxlsx::writeData(wb, 
                       sheet = 'Each Site', x = eachsite, 
@@ -512,7 +510,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   #        "geo")
   vartypes_overall  <- varname2vartype_ejam(headers_overall,  map_headernames)
   vartypes_eachsite <- varname2vartype_ejam(headers_eachsite, map_headernames)
-  cat('\n vartypes \n'); print(unique(c(vartypes_eachsite, vartypes_overall)))
+  if (testing) {cat('\n vartypes \n'); print(unique(c(vartypes_eachsite, vartypes_overall)))}
   # but note varname2color_ejam() can return a color appropriate to each variable name
   
   ## ratio colnums
@@ -529,7 +527,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     heatmap_colnames <- headers_eachsite[heatmap_colnums]
   }
   
-  if(is.function(updateProgress)){
+  if (is.function(updateProgress)) {
     boldtext <- 'Applying formatting'
     updateProgress(message_main = boldtext, value = 0.7)
   }
@@ -708,14 +706,15 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     dec2format <- function(decimalscount) ifelse(decimalscount == 0, "#,###,###", paste0("#,###,##0.", paste0(rep("0", decimalscount), collapse = '')))
     # dec2formats <- Vectorize(dec2format)
     ## only loop over unique values
-    for (i in unique(decimals_tosee)){
-      print(i); print(paste0(dec2format(i),"%"))
+    for (i in unique(decimals_tosee)) {
       perc_cols <- decimals_colnum[which(decimals_tosee == i & decimals_colnum %in%  percentage_colnums_eachsite)]
-      print("percentages:"); print(names(eachsite)[perc_cols])
-      print(i); print(dec2format(i))
       non_perc_cols <- decimals_colnum[which(decimals_tosee == i & !(decimals_colnum %in%  percentage_colnums_eachsite))]
-      print("non-percentages:"); print(names(eachsite)[non_perc_cols])
-      
+      if (testing) {
+        print(i); print(paste0(dec2format(i),"%")) 
+        print("percentages:"); print(names(eachsite)[perc_cols])
+        print(i); print(dec2format(i))
+        print("non-percentages:"); print(names(eachsite)[non_perc_cols])
+      }
       style_cur <- openxlsx::createStyle(numFmt = dec2format(i))
       style_perc <- openxlsx::createStyle(numFmt = paste0(dec2format(i),"%"))
       
@@ -766,7 +765,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     
     # put overall 2 as 2d tab
     
-    if(is.function(updateProgress)){
+    if (is.function(updateProgress)) {
       boldtext <- 'Saving file'
       updateProgress(message_main = boldtext, value = 1)
     }
