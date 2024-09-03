@@ -41,7 +41,7 @@ ejam2shapefile <- function(ejamitout, fname = "EJAM_results_bysite_date_time.shp
   
   df <- data.table::setDF(ejamitout$results_bysite)
   
-  if (missing(varnames) || is.null(varnames) || all(is.na(varnames)) || varnames[1] == "all") {
+  if (is.null(varnames) || all(is.na(varnames)) || varnames[1] == "all") {
     varnames <- "all"
     # df <- df
   } else {
