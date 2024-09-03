@@ -29,7 +29,7 @@ state_from_sitetable <- function(sites, ignorelatlon = FALSE) {
   }
   
   bad_sites2states <- FALSE
-  if (missing(sites)) {stop("requires sites, a table with columns that can be ST, fips or bgfips, or lat and lon, or vector of fips or ST values")}
+  if (missing(sites)) {stop("requires sites, a table with columns that can be ST, fips or bgfips, or lat and lon (and ejam_uniq_id kept if present) or vector of fips or ST values")}
   sites2states <- sites # sites2states_or_latlon # could rename param or variable in code to avoid later doing something by reference and changing the input table by reference using data.table ? ***
   
   # if vector not table was provided, try to interpret as fips or ST values
@@ -67,7 +67,7 @@ state_from_sitetable <- function(sites, ignorelatlon = FALSE) {
   #   bad_sites2states <- TRUE
   # }
   
-  # create ejam_uniq_id column if cannot find one (are we sure we want to do that?) ***
+  # create ejam_uniq_id column only if cannot find one (are we sure we want to do that?) ***
   if (!("ejam_uniq_id" %in% names(sites2states))) {
     if ("n" %in% names(sites2states)) {  # use n or rownumber as ejam_uniq_id if not explicitly provided as ejam_uniq_id column
       sites2states$ejam_uniq_id <- sites2states$n
@@ -75,6 +75,9 @@ state_from_sitetable <- function(sites, ignorelatlon = FALSE) {
       sites2states$ejam_uniq_id <- 1:NROW(sites2states)
     }
   }
+  # note that if this was called by ejamit_compare_types_of_places() and just looking at one of those types, 
+  # an overall ejam_uniq_id column will have been added to the entire sitepoints table and the subset (type) passed here can have
+  # ejam_uniq_id values that are just some subset, not 1:N ! so that needs to be retained and returned by this function.
   ################################## #
   
   # order of best to slowest preference for finding ST info:
@@ -85,7 +88,7 @@ state_from_sitetable <- function(sites, ignorelatlon = FALSE) {
   
   # 3. latlon of sites, points analyzed (not of blocks nearby)       state_from_latlon(lat = , lon = )  # but this is slowest
   
-  # 4.  shapefile of zones - NOT IMPLEMENTED
+  # 4.  shapefile of zones - NOT IMPLEMENTED 
   #
   #     Ideally do not want to infer based on just the polygons, but would need to do work from the s2b type table that came out of  get_blockpoints_in_shape() assuming it has been done.
   #     and that will correctly handle case of polygon entirely in 1 state.
@@ -95,13 +98,13 @@ state_from_sitetable <- function(sites, ignorelatlon = FALSE) {
   #     OR, maybe a weighted avg of the scores from various states...? 
   
   
-  # 1. if ST was already available,  just leave table as-is
+  # 1. if ST was already available,  just leave table as-is ####
   
   if ("ST" %in% names(sites2states)) {
     # done
   } else {
     
-    # 2. is any FIPS there?
+    # 2. is FIPS here? ####
     
     suppressWarnings({x = fips_from_table(sites2states)}) # returns NULL if no column could be interpreted as fips column name, and returns vector of values otherwise
     if (!is.null(x) && (sum(fips_valid(x), na.rm = TRUE) > 0)) {
@@ -110,18 +113,26 @@ state_from_sitetable <- function(sites, ignorelatlon = FALSE) {
       
       if (!ignorelatlon) {
         
-      # 3. lat lon of site points (not blocks) IF ALREADY THERE OR HAD BEEN ESTIMATED VIA latlon_from_s2b() 
-      
-      sites2states <- latlon_from_anything(sites2states, interactiveprompt = FALSE)
+      # 3. lat lon of site points (not blocks) ####
+        # IF ALREADY THERE OR HAD BEEN ESTIMATED VIA latlon_from_s2b() 
+     
+         # *** Note this MIGHT also occur in shapefile case now?
+        
+      sites2states <- latlon_from_anything(sites2states, interactiveprompt = FALSE) # ejam_uniq_id if already was there is preserved here
       if (("lat" %in% names(sites2states) ) && ("lon" %in% names(sites2states))) {
         # use lat lon to get ST, but it takes a few seconds to use the shapefile to do this:
         sites2states <- cbind(
-          sites2states,  
-          state_from_latlon(lat = sites2states$lat, lon = sites2states$lon)  ## VERY SLOW STEP ***
+          sites2states,   # ejam_uniq_id if already was there is preserved here
+          state_from_latlon(lat = sites2states$lat, lon = sites2states$lon)  ## VERY SLOW STEP ***  
         )
       } else {
         
-        # 4. try to handle shapefiles here later
+        # 4. shapefiles case ####
+        # assuming no latlon was found ***
+        
+        # if("sf" %in% class(sites2states)) {}  # but only the non-geometry part, a data.frame, would get passed here from 
+        
+        
         
         bad_sites2states <- TRUE
       }
