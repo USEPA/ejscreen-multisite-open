@@ -38,15 +38,15 @@ test_that("{shinytest2} recording: EJAM", {
   
   print("about to do community download")
   app$wait_for_idle(timeout = 20000)
-  app$click("community_download", wait_ = TRUE, timeout_ = 20000)
-  app$expect_download()
+  # 8/16/24 - Can skip this
+  app$expect_download("community_download")
   
   print("going to details tab")
   app$set_inputs(results_tabs = "Details")
+  app$wait_for_idle(timeout = 20000)
   
   print("downloading results table from details tab")
-  app$click("download_results_table")
-  app$expect_download()
+  # app$expect_download("download_results_table")
   
   print("screenshotting that")
   app$expect_values()
@@ -56,27 +56,33 @@ test_that("{shinytest2} recording: EJAM", {
   app$set_inputs(details_subtabs = "plot_average")
   app$expect_values()
   app$expect_screenshot()
+  app$wait_for_idle(timeout = 20000)
   
   print("Demographic summ_bar-ind")
   app$set_inputs(summ_bar_ind = "Demographic")
   app$expect_values()
   app$expect_screenshot()
+  app$wait_for_idle(timeout = 20000)
   
   print("EJ summ_bar-ind")
   app$set_inputs(summ_bar_ind = "EJ")
   app$expect_values()
   app$expect_screenshot()
+  app$wait_for_idle(timeout = 20000)
   
   print("EJ supplemental")
   app$set_inputs(summ_bar_ind = "EJ Supplemental")
   app$expect_values()
   app$expect_screenshot()
+  app$wait_for_idle(timeout = 20000)
   
   # DETAILS > PLOT RANGE OF SCORES
   print("going to plot_range details subtab")
   app$set_inputs(details_subtabs = "plot_range")
   app$expect_values()
   app$expect_screenshot()
+  app$wait_for_idle(timeout = 20000)
+  
   app$set_inputs(summ_hist_distn = "Sites")
   app$expect_values()
   app$expect_screenshot()
