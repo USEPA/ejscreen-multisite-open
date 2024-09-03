@@ -1,3 +1,22 @@
+# EJAM 2.32.0-EJScreen2.32 (August 2024)
+
+-   New data incorporated, to match EJScreen version 2.32 ozone and other data corrections EJScreen released August 2024 as version 2.32
+-   Bug fixes and enhancements
+-   Will refresh all documentation of R package help files and vignettes (articles) website 
+
+# EJAM 2.3.0-EJScreen2.3 (July 2024)
+
+-   New data and indicators incorporated, to match EJScreen version 2.3 (Environmental indicators `cancer` and `resp` were removed from list of 13 key variables in `names_e`, and `no2` and `drinking` were added). Changes throughout code and datasets to use new data, including metadata in `map_headernames`, variable names stored as `names_e`, `names_e_pctile`, etc., formulas for aggregating across blockgroups for a report via `doaggregate()`, etc.
+-   EJAM now is stand-alone in the sense that it now does not require the packages that had been called EJAMejscreenapi and EJAMbatch.summarizer.
+-   All essential code from the old EJAMbatch.summarizer package are now in EJAM. `map_headernames` in particular is now in the EJAM package.
+-   All essential code from the old EJAMbatch.summarizer package are now in EJAM.
+-   `ejamit(quiet=TRUE)` new parameter prints less to RStudio console
+-   Recreated all test datasets and files like `testoutput_ejamit_10pts_1miles` and removed `testpoints_conus5` dataset
+-   Refreshed all documentation of R package help files and vignettes (articles) website
+-   Versioning system now stores version info at top and bottom of `DESCRIPTION` file, used by get_metadata_mapping(), metadata_mapping() etc.
+-   `names_d` and similar lists of names now are based on `map_headernames` which is the master list
+-   Many new unit tests for various functions
+
 # EJAM 2.2.4 internal beta web app and R package, preparing for internal deployment (June 2024)
 
 ### Changed
@@ -30,7 +49,7 @@
 -   Fixed bugs that caused `ejscreen_vs_ejam()` to not report pctownedunits and to have problems with any of x100varnames not being present in ejscreen output.
 -   Fixed `fips2countyname()` to return NA for inputs that are not countyfips
 
----------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 # EJAM 2.2.3 internal beta web app and R package (May 2024)
 
@@ -80,13 +99,13 @@ One now can categorize facilities based on any criteria for which one already ha
 -   parent company
 -   etc.
 
-One can also include one or more reference groups within the single list of sites analyzed, to simplify comparison of one or more groups of sites to one or more reference groups of places. This allows one to compare residents within 3 miles of certain facilities, for example, to a random sample of comparably-sized locations (once the user has first generated that list of random locations to use as a reference group appended to the list of sites for analysis). \* New functionality is still being further developed so formats may change.
+One can also include one or more reference groups within the single list of sites analyzed, to simplify comparison of one or more groups of sites to one or more reference groups of places. This allows one to compare residents within 3 miles of certain facilities, for example, to a random sample of comparably-sized locations (once the user has first generated that list of random locations to use as a reference group appended to the list of sites for analysis). *New functionality is still being further developed so formats may change.*
 
 ## Other Changes
 
 #### Save Customized Settings in the Web App
 
--   Many app settings and defaults now can be adjusted in the "Advanced"" page one can enable from the "About" page:
+-   Many app settings and defaults now can be adjusted in the "Advanced" page one can enable from the "About" page:
 
     -   radius shown initially in app by default
     -   default title of analysis
@@ -99,7 +118,7 @@ One can also include one or more reference groups within the single list of site
 
 -   The advanced tab also provides a link to what had been called an "interim batch tool" -- EJAM's ejscreenapi shiny app -- if necessary to obtain a batch of data results directly from EJScreen (exact same numbers as reported by the EJScreen API), via link in advanced tab. This might be dropped or changed in the future.
 
--   The "About"" tab has been improved.
+-   The "About" tab has been improved.
 
 #### R package improvements for R users
 
@@ -115,9 +134,7 @@ One can also include one or more reference groups within the single list of site
 -   `sf::st_layers()` is now used by functions using shapefiles
 -   New testdata files (examples of input files to try uploading, and examples of output or intermediate data results) are expanded and improved. See the ["Advanced" article section about what files and objects are installed with the package](https://usepa.github.io/EJAM/articles/4_advanced.html#test-data-available-for-ejam).
 
-```{=html}
-<!-- -->
-```
+```         
          folders available at system.file("testdata", package = "EJAM")
     [1,] "EJAM/testdata/address"                                       
     [2,] "EJAM/testdata/examples_of_output"                            
@@ -127,6 +144,7 @@ One can also include one or more reference groups within the single list of site
     [6,] "EJAM/testdata/programid"                                     
     [7,] "EJAM/testdata/registryid"                                    
     [8,] "EJAM/testdata/shapes"
+```
 
 -   testoutput\_ datasets updated to reflect updated formats and indicators provided by ejamit() and ejscreenit(), and invalid latlon points removed from testpoints_10 and testpoints_1000
 -   dataload_from\_ functions improved
@@ -141,6 +159,8 @@ One can also include one or more reference groups within the single list of site
 -   `naics_from_code()` and `sic_from_code()` bug fixes
 -   names of language-related indicators mostly fixed
 -   other bug fixes
+
+------------------------------------------------------------------------
 
 # EJAM 2.2.2 internal beta web app and R package (3/12/2024)
 

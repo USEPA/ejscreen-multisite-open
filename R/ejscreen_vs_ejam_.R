@@ -6,8 +6,9 @@
 
 # ejscreenapi2ejam_format()  - moved to other source file to be with ejscreenit_for_ejam
 
-# ejscreen_vs_ejam_summary()
+# ejscreen_vs_ejam_summary() ***************************
 # ejscreen_vs_ejam_summary_quantiles()
+# ejscreen_vs_ejam_1var()
 # ejscreen_vs_ejam_see1()
 # ejscreen_vs_ejam_see1map()
 
@@ -84,7 +85,10 @@
 #'
 #' @examples
 #'  \dontrun{
-#'    pts <- testpoints_100[1:5, ]
+#'  # in RStudio, interactive:
+#'  vs <- ejscreen_vscript()
+#'  
+#'  pts <- testpoints_100[1:5, ]
 #'    
 #'   # This step can take a long time, 
 #'   # almost 1 minute / 20 points, as it uses the EJScreen API:
@@ -92,12 +96,17 @@
 #'     testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
 #'   z <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
 #'   
+#'   EJAM:::ejscreen_vs_ejam_summary(z)
+#'   
 #'   # see one site
 #'   ejscreen_vs_ejam_see1(z, mysite = 1)
 #'   
 #'    # Reported key indicators - which ones do or don't match
 #'    # when comparing EJSCREEN and EJAM results?
-#'    keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+#'    keyreportnames <- c('pop', names_these, 
+#'      paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
+#'      paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
+#'    )
 #'    z$EJAM[z$EJAM$rname %in% keyreportnames &  z$same_shown, ]
 #'    z[z$rname %in% keyreportnames & !z$same_shown & !is.na(z$EJSCREEN), ]
 #'   
@@ -216,10 +225,12 @@ ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 #'    
 #'    
 #'    
-#'    
 #'    # Reported key indicators - which ones do or don't match
 #'    # when comparing EJSCREEN and EJAM results?
-#'    keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+#'    keyreportnames <- c('pop', names_these, 
+#'      paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
+#'      paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
+#'    )  
 #'    rname <- colnames(z$EJAM)
 #'    z1[rname %in% keyreportnames &  z1$same_shown, ]
 #'    z1[rname %in% keyreportnames & !z1$same_shown & !is.na(z1$EJSCREEN), ]
@@ -235,9 +246,12 @@ ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 #'    
 #'    # site number 1
 #'    z1 <- sapply(z, function(x) (x[1,]))
-#'    # Reported key indicators - which ones do or don't match
+#'     # Reported key indicators - which ones do or don't match
 #'    # when comparing EJSCREEN and EJAM results?
-#'    keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+#'    keyreportnames <- c('pop', names_these, 
+#'      paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
+#'      paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
+#'    )
 #'    z1[z1$rname %in% keyreportnames &  z1$same_shown, ]
 #'    z1[z1$rname %in% keyreportnames & !z1$same_shown & !is.na(z1$EJSCREEN), ]
 #'    
@@ -445,12 +459,12 @@ ejscreen_vs_ejam_bysite <- function(vsout, pts, varname = "blockcount_near_site"
 #'   # sum_vs1000pts3miles <- ejscreen_vs_ejam_summary(vs1000pts3miles)
 #'   
 #'   }
-#'   
+#' 
 #' @keywords internal
 #'
 ejscreen_vs_ejam_summary <- function(z = ejscreen_vs_ejam(), 
                                      myvars = colnames(z$EJAM), tol = 0.01, 
-                                     prob = 0.95, na.rm = TRUE) {
+                                     prob = 0.95, na.rm = TRUE ) {
   
   # tol Set tol so that results are said to agree if they differ by less than tol percent, where tol is a fraction 0 to 1. 
   # z is output of ejscreen_vs_ejam
@@ -523,6 +537,12 @@ ejscreen_vs_ejam_summary <- function(z = ejscreen_vs_ejam(),
                    #  "sites.agree.rounded", "sites.agree.within.tol",
                    'pct.of.sites.agree.rounded', 'pct.of.sites.agree.within.tol',
                    'median.pct.diff', 'max.pct.diff', 'within.x.pct.at.p.pct.of.sites')
+  
+  # if (!is.null(decimals)) {
+  #   pct_agree[, names(pct_agree) != "indicator"] <- round(pct_agree[, names(pct_agree) != "indicator"], decimals)
+  #   }
+  # rownames(pct_agree) <- pct_agree$indicator  # right now they have original rownum but prints sorted by largest disagreement
+
   cat("\n\n")
   print(pct_agree[pct_agree$indicator %in% usefulvars, usefulstats])
   cat("\n\n")
@@ -530,6 +550,7 @@ ejscreen_vs_ejam_summary <- function(z = ejscreen_vs_ejam(),
   cat(paste0("\n\n Tolerance of ", tol, " was used, so difference of <", tol * 100, "% is within tolerance.\n\n"))
   cat(paste0("Probs (p) used was ", prob, ", so ", prob * 100, "% of sites are within absolute percentage difference reported in output of this function.\n\n" ))
   # }
+  
   
   invisible(pct_agree)
 }
@@ -572,9 +593,32 @@ ejscreen_vs_ejam_summary_quantiles <- function(z,
 ######################################################################### # 
 
 
+#' EJAM/EJSCREEN comparisons - see results for 1 INDICATOR after using ejscreen_vs_ejam()
+#'
+#' @param vs output of ejscreen_vs_ejam() or ejscreen_vscript()
+#' @param varname 
+#' @param info 
+#'
+#' @return  data frame with colnames like 
+#'   EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio, 
+#'   diff, absdiff, pctdiff, etc.
+#'
+#'   and rows represent sites analyzed.
+#'  
+#'
+ejscreen_vs_ejam_1var = function(vs, varname = names_these[4], # "pctlingiso" 
+                                 info = c("EJSCREEN", "EJAM", 
+                                          "ratio", 
+                                          "diff", "absdiff", 
+                                          "pctdiff", "abspctdiff")[c(1,2,5)]) {
+  
+   data.frame(sapply(vs100[info], function(x) x[,varname]))
+  }
+######################################################################### # 
+
 #'  EJAM/EJSCREEN comparisons - see results for 1 site after using ejscreen_vs_ejam()
 #'
-#' @param z output of ejscreen_vs_ejam()
+#' @param z output of ejscreen_vs_ejam() or ejscreen_vscript()
 #' @param myvars optional to check just a subset of the colnames found in z$EJAM and z$EJSCREEN, 
 #'   such as 
 #'   
@@ -648,16 +692,43 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE, ...)
 ######################################################################################### # 
 
 
+#'  EJAM/EJSCREEN comparisons - for interactive RStudio use
+#' @details
+#'  THIS IS A SCRIPT FOR INTERACTIVE RSTUDIO CONSOLE USE 
+#'   TO RUN A SET OF POINTS THROUGH BOTH EJSCREEN AND EJAM
+#'   AND SAVE STATS ON THE DIFFERENCES
+#'   -- including letting you use saved ejscreenapi results and input points
+#'   so you can iterate and rerun just the EJAM portion and compare to the saved benchmark data.
+#'  
+#' 
+#' @param defdir folder
+#' @param n how many points
+#' @param newpts logical, if need new set of random locations
+#' @param pts data.frame of points with columns lat,lon
+#' @param radius miles
+#' @param savedejscreentableoutput is a data.table from ejscreenit()$table 
+#'
+#' @return a list of data frames, with names 
+#'   EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, 
+#'   ratio, diff, absdiff, pctdiff, abspctdiff
+#'   
+#'   diff is EJAM - EJSCREEN
+#'   
+#'   ratio is EJAM / EJSCREEN
+#'   
+#'   pctdiff is ratio - 1
+#'   
+#'   abs is absolute value
+#'   
+#'   For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
+#'   and rows represent sites analyzed.
+#' 
+#' @export
+#' 
 ejscreen_vscript <- function(defdir = getwd(),
                              n, newpts, pts, radius, savedejscreentableoutput) {
   
-  # THIS IS A SCRIPT FOR INTERACTIVE RSTUDIO CONSOLE USE 
-  # TO RUN A SET OF POINTS THROUGH BOTH EJSCREEN AND EJAM 
-  # AND SAVE STATS ON THE DIFFERENCES
-  # -- including letting you use saved ejscreenapi results and input points
-  # so you can iterate and rerun just the EJAM portion and compare to the saved benchmark data.
-  
-  # newpts is T/F, pts is a data.frame, savedejscreentableoutput is a data.table from ejscreenit()$table
+
   if (!interactive() & any(missing(n), missing(pts), missing(radius), missing(savedejscreentableoutput))) {
     stop("required parameters not provided")
   }
@@ -675,10 +746,10 @@ ejscreen_vscript <- function(defdir = getwd(),
   
   
   # # a list of points can be analyzed interactively like this: 
-  if (missing(newpts)) {
+  if (missing(newpts) && missing(pts)) {
     newpts = askYesNo("Use a new set of random points? (instead of saved points)")
   }
-  if (newpts) {
+  if (missing(pts) && newpts) {
     if (missing(n)) {
       n = ask_number(default = 100, title = "Points", message = "How many points to run?")
     }
@@ -686,7 +757,7 @@ ejscreen_vscript <- function(defdir = getwd(),
   } else {
     ###  or reload existing saved points and run EJAM again
     if (missing(pts)) {
-      myfile = rstudioapi::selectFile("Which file has saved pts as .csv?", path = getwd())
+      myfile = rstudioapi::selectFile("Which file has saved pts as .csv?", path = mydir)
       pts <- read.csv(myfile) # load(file.path(mydir, "pts.rda"))
     }
     n = NROW(pts)
@@ -703,7 +774,7 @@ ejscreen_vscript <- function(defdir = getwd(),
     usesavedejscreen <- TRUE
   }
   if (usesavedejscreen) {
-    ###  to redo just the ejam part but use already-run ejscreen numbers since that is slow.
+    ###  to redo just the ejam part eg when iterating fixes but use already-run ejscreen numbers since that is slow.
     if (missing(savedejscreentableoutput)) {
       savedejscreentableoutput_FILENAME = rstudioapi::selectFile("Which file has saved ejscreenapi_plus_out results as .rda ?",  path = getwd())
       nameofobject <- load(savedejscreentableoutput_FILENAME) # load(file.path(mydir, "ejscreenapi_plus_out.rda"))
@@ -742,27 +813,32 @@ ejscreen_vscript <- function(defdir = getwd(),
   on.exit(sink(NULL))
   cat(fname, "\n\n"); print(Sys.Date())
   cat("\n\n-------------------------------------------------------------------\n\n")
+  cat("ejscreen_vs_ejam_summary(vs) \n\n")
   sumvs <- ejscreen_vs_ejam_summary(vs) # just printout not full results
   cat("\n\n-------------------------------------------------------------------\n\n")
+  cat( 'qqq[order(qqq[, "95%"], decreasing = F), c("50%", "95%")] \n\n' )
   print( qqq[order(qqq[, "95%"], decreasing = F), c("50%", "95%")]  )
   cat("\n\n-------------------------------------------------------------------\n\n")
+  cat("ejscreen_vs_ejam_see1(vs, myvars = c('pop', names_these)) \n\n")
   print( ejscreen_vs_ejam_see1(vs, myvars = c('pop', names_these)) )
   cat("\n\n-------------------------------------------------------------------\n\n")
-  print( ejscreen_vs_ejam_see1(vs, myvars = c('lowlifex', "Demog.Index.Supp")) )
+  cat("ejscreen_vs_ejam_see1(vs, myvars = c('lowlifex', 'Demog.Index.Supp')) \n\n")
+  print( ejscreen_vs_ejam_see1(vs, myvars = c('lowlifex', 'Demog.Index.Supp')) )
   cat("\n\n-------------------------------------------------------------------\n\n")
+  cat("ejscreen_vs_ejam_bysite(vs, pts) \n\n")
   print(  ejscreen_vs_ejam_bysite(vs, pts) )
   cat("\n\n-------------------------------------------------------------------\n\n")
   sink(NULL)
   
   # open results in RStudio
-  #rstudioapi::documentOpen(tfile)
+  rstudioapi::documentOpen(tfile)
   
   ######################################################################################### # 
   
   #  save data for R:
-  write.csv(pts, row.names = FALSE, file = file.path(mydir, paste0("EJAM vs EJSCREEN latlon used for ", n, "test points.csv")))
+  write.csv(pts, row.names = FALSE, file = file.path(mydir, paste0("EJAM vs EJSCREEN latlon used for ", n, "test points", gsub(':','.',Sys.time()), ".csv")))
   # save(pts, file = file.path(mydir, paste0(fname, "-pts.rda")))
-  save(vs, file = file.path(mydir, paste0(fname, "-vs.rda")))
+  save(vs, file = file.path(mydir, paste0(fname, "-vs", gsub(':','.',Sys.time()), ".rda")))
   ############################ # 
   setwd(oldir)
   cat("\n\n  Files saved in ", mydir, "\n\n")
@@ -846,7 +922,7 @@ if (1 == 0) {
   
   # WILL FIX: 
   
-  # ejscreenapi() outputs now differ from those names in testoutput_ejscreenapi_1pts_1miles - rebuild examples in EJAMejscreenapi pkg
+  # ejscreenapi() outputs now differ from those names in testoutput_ejscreenapi_1pts_1miles - rebuild examples for  ejscreenapi 
   setdiff2(names(x), names(testoutput_ejscreenapi_1pts_1miles))
   # ok in map_headernames
   # [1] "P_NHWHITE"      "P_NHBLACK"      "P_NHASIAN"      "P_NHAMERIND"    "P_NHHAWPAC"     "P_NHOTHER_RACE" "P_NHTWOMORE"    "TOTALPOP"      

@@ -4,13 +4,19 @@
 \name{islandareas}
 \alias{islandareas}
 \title{islandareas (DATA) table, bounds info on lat lon of US Island Areas}
+\format{
+An object of class \code{data.frame} with 8 rows and 5 columns.
+}
+\usage{
+islandareas
+}
 \description{
 data.frame of info on approximate lat lon bounding boxes around
 American Samoa, Guam, the
 Commonwealth of the Northern Mariana Islands (Northern Mariana Islands),
 and the United States Virgin Islands.
 
-See also \link{stateinfo} and []
+See also \link{stateinfo} and \link{stateinfo2}
 
 See \url{http://www.census.gov/geo/reference/gtc/gtc_island.html}
 
@@ -19,3 +25,4 @@ See datacreate_islandareas.R or data-raw/islandareas.xlsx
 Note the US minor outlying islands are not in that list and are widely dispersed.
 They include Midway Islands, etc.
 }
+\keyword{datasets}

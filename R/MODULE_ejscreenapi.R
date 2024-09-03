@@ -11,8 +11,8 @@ if (testing_ejscreenapi_module) {
 
   # library(   shiny); library(   magrittr); library(   leaflet)  # must attach all of those manually for this to work unless EJAM attached already?
 
-  # library( ## EJAMejscreenapi)
-    source(system.file("global.R", package = "EJAMejscreenapi"))
+  # THIS SHOULD STAY ONLY INSIDE THE MODULE'S NAMESPACE:  ! TO AVOID INTERFERING WITH EJAM globalenv() etc.
+   # source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))
 
   # library( ## EJAM) # for testpoints_10, e.g., BUT THAT WOULD REPLACE AN UPDATED MODULE BELOW IF NOT ALREADY REBUILT/RELOADED WITH UPDATE
 
@@ -131,7 +131,7 @@ mod_ejscreenapi_ui <- function(id,
                                ) {
   ns <- NS(id)
   # I think this needs to be here or in outer app that calls the module, not just in mod_ejscreenapi_server(), so it will be available within this function like specifying default values in UI select/radio buttons/etc.
-  # source(system.file("global.R", package = "EJAMejscreenapi"))
+  # source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))
 
   tagList(
     #  from here on within the brackets is directly copied from ejscreenapi pkg app_ui.R code
@@ -426,8 +426,7 @@ mod_ejscreenapi_server <- function(id,
   # stopifnot(!is.reactive(default_points_shown_at_startup)) # currently this is not supposed to be reactive but would be if we wanted app-controlled default not just passed when calling function
   # stopifnot(!is.reactive(parameter2))
 
-      source(system.file("global.R", package = "EJAMejscreenapi"))  ### IMPORTANTLY THESE WILL STAY WITHIN THE MODULE NAMESPACE, AND NOT BE AVAILABLE TO OR INTERFERE WITH MAIN APP'S DEFAULTS/ETC.
-
+      source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))  ### IMPORTANTLY THESE MUST STAY WITHIN THE MODULE NAMESPACE, AND NOT BE AVAILABLE TO OR INTERFERE WITH MAIN APP'S DEFAULTS/ETC.
 
   # moduleServer ####
 
@@ -620,7 +619,7 @@ mod_ejscreenapi_server <- function(id,
                                                   value =                          input$default_miles,
                                                   min = minradius, max = input$max_miles, step = stepradius
     ) })
-    # minradius and stepradius are defined in EJAMejscreenapi pkg global.R file
+    # minradius and stepradius are defined in   global_EJAMejscreenapi.R file
 
     shiny::observe({     shiny::updateSliderInput(session = session, inputId = ns('radius_via_slider'),
                                                   label = paste0("Radius of ",     input$radius_via_slider, " miles ",
@@ -787,7 +786,8 @@ mod_ejscreenapi_server <- function(id,
               report_every_n = report_every_n_default,
               save_when_report = FALSE, on_server_so_dont_save_files = TRUE,
               updateProgress = updateProgress, # updateProgress is a function that has been defined already and gets passed here to the slow function that needs to report progress bar updates
-              drop_redundant_indicators = TRUE
+              drop_redundant_indicators = TRUE,
+              getstatefromplacename = TRUE
             )
 
             # if (attr(results_table, 'noresults') ) { # needs to be fixed ****
@@ -875,14 +875,14 @@ mod_ejscreenapi_server <- function(id,
         #
         if (input$include_ratios ) {
 
-          names_e_FOR_RATIOS <- map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_e"]  # this should be identical to names_e or namez$e
-          names_d_FOR_RATIOS <- map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_d"]  # this should be identical to names_d or namez$d
-          names_d_subgroups_FOR_RATIOS <- map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_d_subgroups"]  # same as names_d_subgroups or namez$d_subgroups
+          names_e_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_e"]  # this should be identical to names_e or namez$e
+          names_d_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_d"]  # this should be identical to names_d or namez$d
+          names_d_subgroups_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups"]  # same as names_d_subgroups or namez$d_subgroups
 
           ##  ratio to US avg -------------
 
           # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT THE SORT ORDER IS OF THE VARIABLES !
-          usratios <- ratios_to_avg(table_as_displayed,
+          usratios <- calc_ratios_to_avg(table_as_displayed,
                                     evarnames = names_e_FOR_RATIOS,
                                     dvarnames = names_d_FOR_RATIOS)   # lacks subgroups and supplementary ?
           eratios <- round(usratios$ratios_e, 4)
@@ -891,17 +891,17 @@ mod_ejscreenapi_server <- function(id,
           # switch from names of indicators to names of the ratios of those indicators?
           # a PROBLEM HERE IS LIST OF RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES:
 
-          names(eratios) <-   map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_e_FOR_RATIOS) # names_e_ratio_to_avg  # lacks state percentiles here ****
-          names(dratios) <-   map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_d_FOR_RATIOS) # names_d_ratio_to_avg  # lacks state percentiles here ****
+          names(eratios) <-   map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_e_FOR_RATIOS) # names_e_ratio_to_avg  # lacks state percentiles here ****
+          names(dratios) <-   map_headernames$rname[ map_headernames$varlist == "names_d_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_d_FOR_RATIOS) # names_d_ratio_to_avg  # lacks state percentiles here ****
           table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
 
           ##  ratio to STATE avg --------------
 
-          st_ratios <- ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
+          st_ratios <- calc_ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
           eratios <- round(st_ratios$ratios_e, 4)
           dratios <- round(st_ratios$ratios_d, 4)    # lacks subgroups and supplementary ?
-          names(eratios) <- map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
-          names(dratios) <- map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d_ratio_to_state_avg"]
+          names(eratios) <- map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
+          names(dratios) <- map_headernames$rname[ map_headernames$varlist == "names_d_ratio_to_state_avg"]
           table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
 
         } # end of ratio calculations
@@ -1033,21 +1033,13 @@ mod_ejscreenapi_server <- function(id,
           }
           table_as_displayed <- table_as_displayed_reactive()
 
-          # already renamed to whatever was requested via input$usewhichnames
-          # if (input$usewhichnames == 'r') { # friendly here actually means rname
-          #   names(table_as_displayed) <- fixcolnames(names(table_as_displayed), oldtype = 'api', newtype = 'r', mapping_for_names = map_headernames) }
-          # if (input$usewhichnames == 'long') {
-          #   names(table_as_displayed) <- fixcolnames(names(table_as_displayed), oldtype = 'api', newtype = 'long', mapping_for_names = map_longnames)
-          #   # map_longnames <- data.frame(oldnames = map_headernames$oldnames, newnames_ejscreenapi = map_headernames$longname_tableheader, stringsAsFactors = FALSE)
-          #   # names(table_as_displayed) <- fixnames(names(table_as_displayed), mapping_for_names = map_longnames) }
-
           ########################################################  #
           # prep for excel
           #
           currentnametype <- input$usewhichnames
           pctile_colnums <-  which('pctile' ==  fixcolnames(names(table_as_displayed), oldtype = currentnametype, newtype = 'jsondoc_shortvartype') ) # this should get what type each is.
-          # pctile_colnums <- which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$oldnames)])
-          # pctile_colnums <- union(pctile_colnums, which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$longname_tableheader)]))
+          # pctile_colnums <- which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$oldname)])
+          # pctile_colnums <- union(pctile_colnums, which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$longname)]))
 
           # fix URLs to work in csv pulled into Excel or in Excel files (as opposed to datatable shown in web brwsr)
           table_as_displayed$`EJScreen Report` <- gsub('.*(http.*)\", target=.*', '\\1', table_as_displayed$`EJScreen Report`)
@@ -1114,8 +1106,8 @@ mod_ejscreenapi_server <- function(id,
       # circles overlap if 2 facilities are twice the radius apart  # in miles
       # check either pts() or results_table() depending on value of most_recently_changed() being 'upload' or 'results'
       # Do not limit by cap on mapping yet, since this info gets used in table download also which has a larger cap or no cap.
-      if (most_recently_changed() == 'results') {x <-  near_eachother(lat = results_table()$lat, lon = results_table()$lon, distance = 2 * radius_miles()) }
-      if (most_recently_changed() == 'upload')  {x <-  near_eachother(lat = pts()$lat,           lon = pts()$lon,           distance = 2 * radius_miles()) }
+      if (most_recently_changed() == 'results') {x <-  distance_near_eachother(lat = results_table()$lat, lon = results_table()$lon, distance = 2 * radius_miles()) }
+      if (most_recently_changed() == 'upload')  {x <-  distance_near_eachother(lat = pts()$lat,           lon = pts()$lon,           distance = 2 * radius_miles()) }
       x
     })
 
@@ -1285,8 +1277,8 @@ mod_ejscreenapi_server <- function(id,
       req(results_table())
       out <- results_table()
       names(out) <- fixcolnames(names(out), oldtype = 'api', newtype = 'r', mapping_for_names = map_headernames)
-      us.ratios    <- ratios_to_avg(out)
-      #state.ratios <- ratios_to_avg(out = out, zone.prefix = 'state')
+      us.ratios    <- calc_ratios_to_avg(out)
+      #state.ratios <- calc_ratios_to_avg(out = out, zone.prefix = 'state')
       ## boxplots_ratios(us.ratios$ratios_d)
       outplot <- boxplots_ratios(us.ratios$ratios_d, 'pctlowinc', '% low income', wheretext = paste0("Within ", out$radius.miles[1]," miles of"))
       outplot

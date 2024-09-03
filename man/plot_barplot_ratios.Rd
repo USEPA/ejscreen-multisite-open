@@ -27,44 +27,6 @@ ggplot should be returned
 \description{
 Barplot of ratios of demographic (or other) scores to averages (or other references)
 }
-\details{
-\strong{SOME GENERAL NOTES, DURING EJAM DEVELOPMENT}
-
-For plots in general, see:
-\itemize{
-\item \url{https://echarts4r.john-coene.com/articles/themes.html}
-\item \url{https://exts.ggplot2.tidyverse.org/gallery}
-}
-
-\strong{For BARPLOTS, see/ merge/consolidate:}
-\itemize{
-\item output$view1_summary_plot <- renderPlot({v1_summary_plot()}) and v1_summary_plot <- reactive({ })
-in EJAM server for Short Report if  bar type
-\item output$summ_display_bar <- renderPlot({  }) contains its own plot code not a reactive
-in EJAM server for tab showing barplots in Detailed Results
-\item plot_barplot_ratios() drafted function in EJAM
-}
-
-\strong{For BOXPLOTS, see:}
-\itemize{
-\item v1_summary_plot <- reactive({ })     and output$view1_summary_plot <- renderPlot({v1_summary_plot()})
-\itemize{
-\item in EJAM server for SHORT report if box type, and
-\item in EJAM server for LONG report passed as a parameter
-}
-\item boxplots_ratios()   in EJAMejscreenapi
-(NOT in EJAM server for Detailed Results interactive views)
-\item ejscreenapi_script() code also relevant? in EJAMejscreenapi
-\item box/scatter examples in ggplot, \url{https://r-graph-gallery.com/89-box-and-scatter-plot-with-ggplot2.html}
-\item boxplots in base R, \url{https://www.r-bloggers.com/2023/09/how-to-reorder-boxplots-in-r-a-comprehensive-guide}
-}
-
-\strong{For HISTOGRAMS, see:}
-\itemize{
-\item output$summ_display_hist <- renderPlot   in EJAM server for interactive views
-\item the histograms code and discussion  in EJAMbatch.summarizer package
-}
-}
 \examples{
   
   ejam2barplot(testoutput_ejamit_100pts_1miles)

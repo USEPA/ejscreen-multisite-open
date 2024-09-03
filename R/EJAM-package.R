@@ -2,7 +2,7 @@
 
 #' @title EJAM - Environmental Justice Analysis Multisite tool
 #' @name EJAM
-#' @aliases EJAM-package blockwts blockpoints blockid2fips bgid2fips
+#' @aliases EJAM-package
 #'
 #' @md
 #'
@@ -44,127 +44,24 @@
 #'   The American Community Survey 5-year summary file data are updated by
 #'   the United States Census Bureau annually, after which EJScreen and EJAM are updated.
 #'   
-#'   - The mid 2024 releases are called version 2.3 (EJAM/EJScreen) and use ACS 2018-2022.
+#'   - The August 2024 releases are called version 2.32 (EJAM/EJScreen) and use ACS 2018-2022.
 #'   
 #'   
-#'   
-#'   
-#' @details  # **Key Functions:** ***much of this is in vignettes and will be merged ############################################
+#' @details  # **Key Functions:**
 #'
 #'   - **[run_app()]** Launch the web app (R Shiny interface)
 #'
 #'   - **[ejamit()]** Get results (tables, maps, plots) without the web app interface, largely by using these key functions:
 #'
-#'     0. Getting key datasets and indexing blocks, if not yet done, via [dataload_from_pins()] and [indexblocks()]
-#'
-#'     1. **[getblocksnearby()]**  Very fast method to buffer, identifying which blocks are
-#'       within specified distance of point(s) like sites/facilities, and get distance to each.
-#'
-#'     2. **[doaggregate()]** Summarize demographic and environmental indicators from **[blockgroupstats]**.rda (see below)
-#'      within each place, weighted using blockwts (for average resident within specified distance of site (e.g., facility),
-#'      or in each shapefile or FIPS-defined location).
-#' 
-#' @details  # **Data files available as examples:** ####################################################################
-#'
-#'   * **Excel files to read into ejamit()** or getblocksnearby() are in the local source package files in EJAM/inst/testdata/latlon
-#'   * [testpoints_10].rda  and larger datasets each provide a random test points data.frame with columns lat lon (and a unique site id)
-#'   * [testpoints_n()] can generate random test points at places weighted by population, FRS facilities, blockgroup, area, block
-#'   * [testoutput_getblocksnearby_10pts_1miles].rda and larger datasets are sample outputs of getblocksnearbyviaQuadTree or just getblocksnearby(),
-#'     to try as inputs to doaggregate()
-#'
-#' @details  # **Specifying buffer sites / facilities:** ####################################################################
-#'
-#'   A user can specify locations, via an interface, and that shiny app returns
-#'
-#'  - *`sitepoints`*, a data.table with fields lat, lon, and can have a unique site id.
-#'  A user-specified table with maybe 100, 1k, 10k+ points (centers of circular buffers).
-#'  Examples of test data are
-#'
-#'  One can specify sitepoints, with lat/lon coordinates of the places to be analyzed (sites or facilities),
-#'  or can specify areas to be analyzed in general,
-#'  in one of these ways:
-#'
-#'    - **Point locations uploaded** (lat, lon coordinates) - these could be regulated facilities
-#'      for which you already have locations, or could be any other types of points uploaded in a spreadsheet.
-#'
-#'    - **Shapefiles uploaded** to directly define the areas to include instead of using circular buffers around points
-#'
-#'    - **FIPS** to specify a list of counties or tracts or blockgroups, for example, to be compared.
-#'
-#'    - **NAICS or SIC code** Industry categories selected from a list of codes or names, or uploaded in a table.
-#'         The NAICS are 2-digit to 6-digit codes that specify sectors or types of facilities, such as
-#'         325 - Chemical Manufacturing, or 325211 - Plastics Material and Resin Manufacturing.
-#'
-#'    - **Facility IDs** - EPA Facility Registry Service (FRS) ID numbers or FRS Program ID numbers
-#'
-#'    - **Program System Types** - picking a whole category of regulated sites, such as all GHG reporters or all TRI reporters.
-#'
-#'    - **MACT Subpart** to specify Clean Air Act NESHAP program Max. Achievable Control Tech.
-#'         source categories (types of air emissions sources) defined by subpart such as OOOO.
-#'
-#'    Some additional details on some of these:
-#'
-#'  **- BY INDUSTRIAL SECTOR/ NAICS:**
-#'
-#'         Interface lets user select NAICS from pulldown, or type in NAICS
-#'         Interface returns a vector of one or more naics codes,
-#'         to be converted to sitepoints.
-#'
-#'    - **[latlon_from_naics()]** takes NAICS codes and returns a data.table of site points.
-#'      Relies on ** frs_by_naics.rda**  A data.table, needed to get lat lon by naics.
-#'      Need to update FRS data used here regularly, ideally frequently.
-#'      2023 version has columns   REGISTRY_ID,  NAICS, lat, lon
-#'
-#'      NAICS codes also can be selected by text search of industry names or by categories of codes, via [naics_from_any()]
-#'
-#'
-#'  **- BY FACILITY ID or PROGRAM ID:**
-#'
-#'         Interface so user can upload FRS REGISTRY_ID or PROGRAM ID csv/xls file,
-#'         Interface returns a list of REGISTRY_ID values from a copy of the EPA facility registry service (FRS) data
-#'         to be converted to sitepoints.
-#'
-#'    - **[frs_from_regid()]** takes REGISTRY_ID values and returns a data.table of site points.
-#'      Relies on **frs** data.table with columns REGISTRY_ID, lat, lon, etc.
-#'
-#'    - **[frs_from_programid()]** takes EPA program-specific site ID values and returns a data.table of site points.
-#'      Relies on **[frs_by_programid]** data.table with columns program, pgm_sys_id, REGISTRY_ID, lat, lon
-#'
-#'
-#'  **- BY LAT/LON POINT:**
-#'
-#'         Interface so user can specify or upload latitude longitude (and optionally a unique site id and other columns like sitename),
-#'         when using [ejamit()] which in turn uses [latlon_from_anything()].
-#'
-#'         The app keeps track of the sitepoints data.table with an assigned ejam_uniq_id that is just the row number.
-#'
-#'
-#' @details  # **Buffering to find site-block-distances:** ####################################################################
-#'
-#'   Input: **`sitepoints`** data.table from user picking points
-#'
-#'   Columns are lat, lon
-#'
-#'   - **[getblocksnearby()]** which by default uses *[getblocksnearbyviaQuadTree()]*
-#'        Returns `sites2blocks`
-#'        Requires index called localtree that is build from dataset [quaddata]
-#'
-#'   - **sites2blocks**   Created by [getblocksnearby()] to be passed to  [doaggregate()]
-#'      This is a data table with maybe 100k to 1m rows (assume 1k blocks within 3 miles of each site, or 100 blocks within 1 mile),
-#'      `sites2blocks[ , .(ejam_uniq_id, blockid, distance or dist)]`
-#'     - ejam_uniq_id    (the row number 1 through N of the site)
-#'     - blockid     for join to blockwts
-#'     - distance  (in miles, from block to site) (0 or irrelevant for noncircular buffers,
-#'          since a block is only in this table if in one or more buffers,
-#'          unless analysis is for residents within x miles of the edges of some shapes, like facility boundaries)
-#'
+#'   - [key functions](https://usepa.github.io/EJAM/reference/index.html#key-functions) 
+#'   
+#'   - [full documentation of all functions and datasets](https://usepa.github.io/EJAM/reference/index.html)
 #'
 #' @details  # **Data files used for distance calculation:** ####################################################################
 #'
-#'   - ** quaddata.rda** data.table with point location of internal point for each of 8 million Census blocks
-#'     is used prior to or during startup of EJAM to create an index stored in memory, called localtree.
-#'
-#'     quaddata can be obtained using [dataload_from_pins()]
+#'   - [quaddata]
+#'   
+#'   - see [dataload_from_pins()]
 #'
 #'     localtree is the index made from quaddata via [indexblocks()] (using the SearchTrees package)
 #'

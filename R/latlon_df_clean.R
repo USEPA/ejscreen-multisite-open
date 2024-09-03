@@ -15,7 +15,7 @@
 #' @keywords internal
 #'
 latlon_df_clean <- function(df) {
-  if(missing(df)){
+  if (missing(df)) {
     warning('No value provided for argument "df".')
     return(NULL)
   }

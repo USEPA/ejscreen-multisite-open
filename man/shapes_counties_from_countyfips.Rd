@@ -6,7 +6,7 @@
 \usage{
 shapes_counties_from_countyfips(
   countyfips = "10001",
-  outFields = "",
+  outFields = c("NAME", "FIPS", "STATE_ABBR", "STATE_NAME", "POP_SQMI"),
   myservice =
     c("https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Boundaries_2022/FeatureServer/2/query",
     "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_and_States_with_PR/FeatureServer/0/query",

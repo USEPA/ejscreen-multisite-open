@@ -94,7 +94,10 @@ how ties are treated in percentile lookup tables, etc.), or
 }
 \examples{
  \dontrun{
-   pts <- testpoints_100[1:5, ]
+ # in RStudio, interactive:
+ vs <- ejscreen_vscript()
+ 
+ pts <- testpoints_100[1:5, ]
    
   # This step can take a long time, 
   # almost 1 minute / 20 points, as it uses the EJScreen API:
@@ -102,12 +105,17 @@ how ties are treated in percentile lookup tables, etc.), or
     testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
   z <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
   
+  EJAM:::ejscreen_vs_ejam_summary(z)
+  
   # see one site
   ejscreen_vs_ejam_see1(z, mysite = 1)
   
    # Reported key indicators - which ones do or don't match
    # when comparing EJSCREEN and EJAM results?
-   keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+   keyreportnames <- c('pop', names_these, 
+     paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
+     paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
+   )
    z$EJAM[z$EJAM$rname \%in\% keyreportnames &  z$same_shown, ]
    z[z$rname \%in\% keyreportnames & !z$same_shown & !is.na(z$EJSCREEN), ]
   

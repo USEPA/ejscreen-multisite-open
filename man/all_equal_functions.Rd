@@ -15,7 +15,7 @@ all_equal_functions(
 
 \item{package1}{quoted name of package, like "EJAM"}
 
-\item{package2}{quoted name of package, like "EJAMejscreenapi"}
+\item{package2}{quoted name of other package, like "EJAMejscreenapi"}
 }
 \value{
 TRUE or FALSE

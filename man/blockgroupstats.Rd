@@ -11,8 +11,7 @@ For EJ Indexes, see \link{bgej}
 }
 \details{
 \itemize{
-\item For 08/2023 through early 2024, it was EJScreen 2.2 data, ACS 2017-2021.
-\item For mid-2024, EJAM and EJScreen use ACS 2018-2022 data.
+\item Version 2.32.0 of EJAM / EJScreen uses ACS data from 2018-2022.
 }
 
 Each year this should be re-created as for the latest version.

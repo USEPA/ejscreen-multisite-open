@@ -24,6 +24,10 @@ vector of fips codes
 \description{
 Just read the codes in one column of a table obtained from something like read.csv, or excel, etc.
 }
+\examples{
+ fips_from_table( data.frame(countyfips=0, FIPS=1, bgfips=2, other=3, fips=4))
+
+}
 \seealso{
 \code{\link[=fips_bg_from_anyfips]{fips_bg_from_anyfips()}} \code{\link[=fips_lead_zero]{fips_lead_zero()}} \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} \code{\link[=fips_from_table]{fips_from_table()}}
 }

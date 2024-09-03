@@ -50,7 +50,6 @@ several of which are not exported:
 \item \code{\link[=table_rounding_info]{table_rounding_info()}}
 \item \code{\link[=fixcolnames]{fixcolnames()}}
 \item \code{\link[=fixcolnames_infer]{fixcolnames_infer()}}
-\item \code{\link[EJAMejscreenapi:fixnames_to_type]{EJAMejscreenapi::fixnames_to_type()}}
 \item EJAM fixcolnames2related()
 \item EJAM fix_pctcols_x100()
 \item EJAM fixmapheadernamescolname()

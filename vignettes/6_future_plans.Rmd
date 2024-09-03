@@ -11,6 +11,12 @@ vignette: >
 ```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
 #  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
 #    - **See ?pkgdown::build_site** and script in EJAM/data-raw/- EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
+
+
+# THIS ARTICLE 
+#    IS NOT READY TO BE USED
+
+
 ```
 
 ```{r, include = FALSE}

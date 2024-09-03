@@ -57,7 +57,7 @@
 #'   Puts certain columns first.
 #'   
 #' @param results_table from ejscreenapi() function for example
-#' @seealso [url_ejscreenmap()] [near_eachother()]
+#' @seealso [url_ejscreenmap()] [distance_near_eachother()]
 #' @return the input table but with extra columns
 #' 
 #' @keywords internal
@@ -106,7 +106,7 @@ urls_clusters_and_sort_cols <- function(results_table) {
   # Add column to flag sites that are near each other ####
   #
   # want this to reflect radius in this data run, not whatever user may have just changed it to for the next run, so do not use is_clustered()
-  results_table$overlaps_another <- near_eachother(lon = results_table$lon, lat = results_table$lat, 
+  results_table$overlaps_another <- distance_near_eachother(lon = results_table$lon, lat = results_table$lat, 
                                                    distance = 2 * results_table$distance) # not radius_miles() !
   
   ########################################### #  
@@ -160,6 +160,35 @@ url_linkify <- function(url, text) {
 } 
 ################################################### #################################################### #
 
+# convert EJAM html versions of weblinks back to simple URLs
+# in the output tables from ejamit or doaggregate
+
+unlinkify = function(x) {
+  
+  unlinkify_column <- function(z) {gsub('.*https', 'https', gsub('=report.*', '=report', gsub('., target.*', '', as.vector(unlist(z))))) }
+  if (NCOL(x) > 1) {
+    fixed = lapply(x, unlinkify_column)
+  } else {
+    fixed = unlinkify_column(x)
+  }
+  if (is.data.table(x)) {return(as.data.table(fixed))}
+  if (is.data.frame(x)) {return(data.frame(fixed))}
+  return(fixed)
+}
+# test_vec = testoutput_ejamit_10pts_1miles$results_bysite$`EJScreen Report`
+# test_df1 = as.data.frame(testoutput_ejamit_10pts_1miles$results_bysite[ , 1])
+# test_df2 = as.data.frame(testoutput_ejamit_10pts_1miles$results_bysite[ , 1:2])
+# test_dt1 = testoutput_ejamit_10pts_1miles$results_bysite[ , 1]
+# test_dt2 = testoutput_ejamit_10pts_1miles$results_bysite[ , 1:2]
+# 
+# unlinkify(test_df1[1,1])
+# unlinkify(test_vec); class(unlinkify(test_vec))
+# unlinkify(test_df1); class(unlinkify(test_df1))
+# unlinkify(test_dt1); class(unlinkify(test_dt1))
+# unlinkify(test_df2); class(unlinkify(test_df2))
+# unlinkify(test_dt2); class(unlinkify(test_dt2))  
+################################################### #################################################### #
+
 
 #' Get URLs of EJScreen reports
 #' 
@@ -171,8 +200,8 @@ url_linkify <- function(url, text) {
 #'   
 #'   and (https://ejscreen.epa.gov/mapper/ejscreenapi1.html)
 #'   
-#' @param lon one or more longitudes
-#' @param lat one or more latitudes
+#' @param lat one or more latitudes (or a table with lat, lon columns, or filepath with that, or omit to interactively select file)
+#' @param lon one or more longitudes (or omitted -- see lat parameter details)
 #' @param radius miles radius
 #' @param as_html Whether to return as just the urls or as html hyperlinks to use in a DT::datatable() for example
 #' @param linktext used as text for hyperlinks, if supplied and as_html=TRUE
@@ -183,22 +212,22 @@ url_linkify <- function(url, text) {
 #' @param wkid default is 4326 -WGS84 - World Geodetic System 1984, used in GPS - see (https://epsg.io/4326)
 #' @param unit default is 9035 which means miles; for kilometers use 9036
 #' @param f can be "report" or "pjson" or "json"
-#'
+#' @param interactiveprompt passed to sitepoints_from_anything()
 #' @seealso  [url_ejscreen_report()]  [url_ejscreen_acs_report()]   [url_ejscreenmap()]
 #'   [url_echo_facility_webpage()] [url_frs_report()]  [url_enviromapper()]  [url_envirofacts_data()]
 #' @return URL(s)
 #' 
 #' @export
 #'
-url_ejscreen_report <- function(lon='', lat='', radius='', as_html=FALSE, linktext, mobile=FALSE,
-                                areatype="", areaid = "", namestr = "", wkid = 4326, unit = 9035, f = "report") {
+url_ejscreen_report <- function(lat='', lon='', radius='', as_html=FALSE, linktext, mobile=FALSE,
+                                areatype="", areaid = "", namestr = "", wkid = 4326, unit = 9035, f = "report",
+                                interactiveprompt = TRUE) {
   
-  if (!any(areaid == "") & !any(is.null(areaid))) {
+  if (!any(areaid == "") && !any(is.null(areaid))) {
     
     fips <- areaid
-    
     fipstype_copy <- function(fips) {
-      fips <- fips_lead_zero.api(fips = fips) # could use EJAM ::: fips_lead_zero
+      fips <- fips_lead_zero(fips = fips) # could use EJAM ::: fips_lead_zero
       ftype <- rep(NA, length(fips))
       ftype[nchar(fips) == 15] <- "block"
       ftype[nchar(fips) == 12] <- "blockgroup"
@@ -211,7 +240,6 @@ url_ejscreen_report <- function(lon='', lat='', radius='', as_html=FALSE, linkte
       }
       return(ftype)
     }
-    
     areatype <- fipstype_copy(fips)
     if (!(all(areatype %in% c("blockgroup", "tract", "city", "county")))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' for the EJScreen API")}
     if (!(length(areatype) %in% c(1, length(areaid)))) {warning("must provide either 1 areatype value for all or exactly one per areaid")}
@@ -223,17 +251,21 @@ url_ejscreen_report <- function(lon='', lat='', radius='', as_html=FALSE, linkte
     
   } else {
     
+    latlon_table <- sitepoints_from_anything(lat, lon, interactiveprompt = interactiveprompt) # [ , c("lat","lon")] # or could use sitepoints_from_any() that is similar
+    lat <- latlon_table$lat
+    lon <- latlon_table$lon
+    
     # error checking lat lon radius
     
     latlon_radius_validate_lengths <- function(lat, lon, radius) {
-      if (!is.numeric(radius) | !is.numeric(lat) | !is.numeric(lon)) {warning("lat or lon or radius is not numeric")}
+      if (!is.numeric(radius) || !is.numeric(lat) || !is.numeric(lon)) {warning("lat or lon or radius is not numeric")}
       # but that is OK in url_ejscreen_report context where areaid can be used instead and lat default is ""
-      if (length(radius) == 0 | length(lat) == 0 | length(lon) == 0) {warning("lat or lon or radius missing entirely (length of a vector is zero")}
-      if (is.null(radius)     | is.null(lat)     | is.null(lon))     {warning("lat or lon or radius is NULL")}
-      if (anyNA(radius)       | anyNA(lat)       | anyNA(lon))       {warning("lat or lon or radius contain NA value(s)")}
+      if (length(radius) == 0 || length(lat) == 0 || length(lon) == 0) {warning("lat or lon or radius missing entirely (length of a vector is zero")}
+      if (is.null(radius)     || is.null(lat)     || is.null(lon))     {warning("lat or lon or radius is NULL")}
+      if (anyNA(radius)       || anyNA(lat)       || anyNA(lon))       {warning("lat or lon or radius contain NA value(s)")}
       if (length(lat)  != length(lon)) {warning("did not find exactly one lat for each lon value (lengths of vectors differ)")}
       if (!(length(radius) %in% c(1, length(lat), length(lon)))) {warning("must provide either 1 radius value for all sites or exactly one per site")}
-      if (!( "" %in% lat | "" %in% lon ) & (  any(is.na(radius)) | "" %in% radius)) {warning('radius is missing but needed when lat/lon specified')} # ??
+      if (!( "" %in% lat | "" %in% lon ) & (any(is.na(radius)) | "" %in% radius)) {warning('radius is missing but needed when lat/lon specified')} # ??
     }
     latlon_radius_validate_lengths(lat = lat, lon = lon, radius = radius)
   }

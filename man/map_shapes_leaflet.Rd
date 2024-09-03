@@ -4,7 +4,7 @@
 \alias{map_shapes_leaflet}
 \title{Map - polygons - Create leaflet map from shapefile, in shiny app}
 \usage{
-map_shapes_leaflet(shapes, color = "green", popup = shapes$NAME)
+map_shapes_leaflet(shapes, color = "green", popup = NULL)
 }
 \arguments{
 \item{shapes}{like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))}
@@ -18,4 +18,13 @@ html widget from leaflet::leaflet()
 }
 \description{
 Map - polygons - Create leaflet map from shapefile, in shiny app
+}
+\examples{
+out = testoutput_ejamit_10pts_1miles
+out$results_bysite = out$results_bysite[1:2,]
+map_shapes_leaflet(
+  ejam2shapefile(out, save=F),
+  popup = popup_from_ejscreen(out$results_bysite)
+)
+
 }

@@ -42,8 +42,6 @@ plot_distance_mean_by_group <- function(results_bybg_people,
 
   if (is.null(demoglabel) & is.null(demogvarname)) {
     demoglabel <- fixcolnames(c(names_d, names_d_subgroups), oldtype = 'r', newtype = 'shortlabel')
-   # demoglabel <- c(names_d_friendly, names_d_subgroups_friendly)
-    # demoglabel <- c(namez$d_friendly, namez$d_subgroups_friendly)
   }
   if (is.null(demogvarname)) {demogvarname <- c(names_d, names_d_subgroups)} # available from EJAM package. cannot safely put this info in the defaults of the functions without referring to pkg name but want to avoid doing that so this code will work even pkg not installed and just loaded data files and sourced code
 
@@ -51,12 +49,17 @@ plot_distance_mean_by_group <- function(results_bybg_people,
     warning('results_bybg_people must be a data.frame or data.table - returning empty results')
     return(NA)
   }
-  miss <- setdiff(c( demogvarname  ), names(results_bybg_people))
+  miss <- setdiff(c('distance_min_avgperson', demogvarname  ), names(results_bybg_people))
   if ( length(miss) > 0) {
     warning('These must be column names in results_bybg_people but are missing: ', paste0( miss, collapse = ", "))
     return(
       NA
     )
+  }
+  
+  if(all(is.nan(results_bybg_people$distance_min_avgperson))){
+    warning('distance_min_avgperson contains only NaN values')
+    return(NA)
   }
 
   dlist <- demogvarname

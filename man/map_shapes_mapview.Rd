@@ -4,7 +4,12 @@
 \alias{map_shapes_mapview}
 \title{Map - polygons - Use mapview package if available}
 \usage{
-map_shapes_mapview(shapes, col.regions = "green", map.types = "OpenStreetMap")
+map_shapes_mapview(
+  shapes,
+  col.regions = "green",
+  map.types = "OpenStreetMap",
+  ...
+)
 }
 \arguments{
 \item{shapes}{like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))}
@@ -12,6 +17,8 @@ map_shapes_mapview(shapes, col.regions = "green", map.types = "OpenStreetMap")
 \item{col.regions}{passed to \code{\link[mapview:mapView]{mapview::mapview()}}}
 
 \item{map.types}{passed to  \code{\link[mapview:mapView]{mapview::mapview()}}}
+
+\item{...}{passed to mapview}
 }
 \value{
 like output of mapview function \code{\link[mapview:mapView]{mapview::mapview()}},
@@ -22,10 +29,16 @@ when used with an input that is a spatial object as via \code{\link[sf:st_read]{
 Map - polygons - Use mapview package if available
 }
 \examples{
-\dontrun{
+ \dontrun{
   map_shapes_mapview(
     shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
   )
 }
+
+out = ejamit(testpoints_10[1,], radius = 20)
+map_shapes_mapview(
+  ejam2shapefile(out, save=F),
+  popup = popup_from_ejscreen(out$results_bysite)
+)
 
 }

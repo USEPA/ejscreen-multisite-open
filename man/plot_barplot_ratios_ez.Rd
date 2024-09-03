@@ -2,15 +2,17 @@
 % Please edit documentation in R/plot_barplot_ratios.R
 \name{plot_barplot_ratios_ez}
 \alias{plot_barplot_ratios_ez}
-\title{Same as ejam2barplot()}
+\title{Same as ejam2barplot() but ejam2barplot() handles a sitenumber parameter}
 \usage{
 plot_barplot_ratios_ez(
   out,
   varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),
   main = "Demographics at the Analyzed Locations Compared to US Overall",
+  single_location = FALSE,
+  row_index = NULL,
   ...
 )
 }
 \description{
-Same as ejam2barplot()
+Same as ejam2barplot() but ejam2barplot() handles a sitenumber parameter
 }

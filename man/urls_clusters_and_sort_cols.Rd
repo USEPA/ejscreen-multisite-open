@@ -25,6 +25,6 @@ Adds a column to flag sites that are close to other sites, and
 Puts certain columns first.
 }
 \seealso{
-\code{\link[=url_ejscreenmap]{url_ejscreenmap()}} \code{\link[=near_eachother]{near_eachother()}}
+\code{\link[=url_ejscreenmap]{url_ejscreenmap()}} \code{\link[=distance_near_eachother]{distance_near_eachother()}}
 }
 \keyword{internal}

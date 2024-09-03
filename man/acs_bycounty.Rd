@@ -4,14 +4,14 @@
 \alias{acs_bycounty}
 \title{download ACS 5year data from Census API, at County resolution}
 \usage{
-acs_bycounty(myvars = "B03002_001", myst = "DE", yr = 2021)
+acs_bycounty(myvars = "B03002_001", myst = "DE", yr = 2022)
 }
 \arguments{
 \item{myvars}{optional .extracted from x, one or more ACS5 variables like "B03002_001"}
 
 \item{myst}{abbreviation of one state, like "DE"}
 
-\item{yr}{like 2021 or 2022 end of 5 year ACS}
+\item{yr}{like 2022, end of 5 year ACS 2018-2022}
 }
 \value{
 tibble table from output of acs_bycounty() i.e., output of get_acs()

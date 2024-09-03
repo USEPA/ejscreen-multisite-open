@@ -216,7 +216,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
         if (test_batch.summarize ) {
           # step3 = system.time({
           # cat('Started batch.summarize() to calculate stats that summarize those indicators.\n')
-          out2 <- batch.summarize(   # from EJAMbatch.summarizer package
+          out2 <- batch.summarize(
             sitestats = data.frame(out$results_bysite)   # batch.summarize() should work with just this param 
             # popstats =  data.frame(out$results_bysite),
             ## user-selected quantiles to use

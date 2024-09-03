@@ -17,7 +17,7 @@ ejscreenit_for_ejam(sitepoints, radius = 3, fillmissingcolumns = TRUE, ...)
 a data.table that looks like output of ejamit()$results_bysite
 }
 \description{
-A wrapper for EJAM to use ejscreenit() from the EJAMejscreenapi package
+A wrapper for EJAM to use ejscreenit()
 }
 \seealso{
 \code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}} \code{\link[=ejscreenapi2ejam_format]{ejscreenapi2ejam_format()}} which it uses.

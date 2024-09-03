@@ -34,14 +34,14 @@
 #'   # x <- testoutput_ejscreenit_50$table # or
 #'   x <- testoutput_ejscreenapi_plus_5
 #'   myradius <- x$radius.miles[1]
-#'   boxplots_ratios(ratios_to_avg(x)$ratios_d, wheretext = myradius)
-#'   #boxplots_ratios(ratios_to_avg(x)$ratios_e, wheretext = myradius)
+#'   boxplots_ratios(calc_ratios_to_avg(x)$ratios_d, wheretext = myradius)
+#'   #boxplots_ratios(calc_ratios_to_avg(x)$ratios_e, wheretext = myradius)
 #'
 #' @export
 #'
 boxplots_ratios <- function(x, selected_dvar_colname='Demog.Index', selected_dvar_nicename=selected_dvar_colname, towhat_nicename='US average',
                             wheretext="Near") {
-  if (is.list(x) & is.data.frame(x[[1]]) ) {x <- x$ratios_d } # for convenience, in case you said  boxplots_ratios(ratios_to_avg(out))
+  if (is.list(x) & is.data.frame(x[[1]]) ) {x <- x$ratios_d } # for convenience, in case you said  boxplots_ratios(calc_ratios_to_avg(out))
   if (!(selected_dvar_colname %in% names(x))) {
     message(paste0(selected_dvar_colname, ' not found in x - using the one with max ratio'))
 
@@ -51,10 +51,10 @@ boxplots_ratios <- function(x, selected_dvar_colname='Demog.Index', selected_dva
     selected_dvar_nicename <- fixcolnames(selected_dvar_colname, 'r', 'long')
   }
   # now just use semi-long aka friendly varnames for all the rest of the function
-  names(x)              <- fixnames_to_type(names(x),                oldtype = "newnames_ejscreenapi", newtype = "shortlabel")
-  selected_dvar_colname <- fixnames_to_type((selected_dvar_colname), oldtype = "newnames_ejscreenapi", newtype = "shortlabel")
+  names(x)              <- fixnames_to_type(names(x),                oldtype = "rname", newtype = "shortlabel")
+  selected_dvar_colname <- fixnames_to_type((selected_dvar_colname), oldtype = "rname", newtype = "shortlabel")
 
-  DemogRatio75th <- round(stats::quantile(x[ , selected_dvar_colname], 0.75, na.rm = TRUE), 2)
+  DemogRatio75th <- round(stats::quantile(x[ , selected_dvar_colname], 0.75, na.rm = TRUE), 2) #NEED TO LOOK AT
   #DemogRatio50th <- round(stats::quantile(x[ , selected_dvar_colname], 0.50, na.rm = TRUE), 2)
   mymaintext <- paste0("Ratios to ", towhat_nicename, ", as distributed across these sites")
   if (length(wheretext) != 1) {warning('wheretext must be length 1. replacing with At'); wheretext <- "At"}
@@ -64,7 +64,7 @@ boxplots_ratios <- function(x, selected_dvar_colname='Demog.Index', selected_dva
   mysubtext <- paste0(
     wheretext,
     ' at least one site, ', selected_dvar_nicename, ' is ',
-    round(max(x[ , selected_dvar_colname], na.rm = TRUE), 1), 'x the ', towhat_nicename, '\n',
+    round(max(x[ , selected_dvar_colname], na.rm = TRUE), table_rounding_info(selected_dvar_colname)), 'x the ', towhat_nicename, '\n', #NEED TO LOOK AT
     # 'Near most of these ', NROW(x),' sites, ', selected_dvar_nicename,
     # ' is at least ', DemogRatio50th, 'x the ', towhat_nicename, '\n',
     'and at 1 in 4 it is at least ', DemogRatio75th, 'x the ', towhat_nicename

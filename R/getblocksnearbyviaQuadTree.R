@@ -50,6 +50,7 @@
 #'   mostly for testing, but a progress bar feature might be useful unless this is super fast.
 #' @param quiet Optional. set to TRUE to avoid message about using getblock_diagnostics(),
 #'   which is relevant only if a user saved the output of this function.
+#' @param use_unadjusted_distance logical, whether to find points within unadjusted distance
 #' @param retain_unadjusted_distance set to FALSE to drop it and save memory/storage. If TRUE, 
 #'   the distance_unadjusted column will save the actual distance of site to block internal point
 #'   -- the distance column always represents distance to average resident in the block, which is
@@ -69,7 +70,9 @@
 #' @keywords internal
 #'   
 getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, radius_donut_lower_edge = 0, maxradius = 31.07, avoidorphans = FALSE, 
-                                        report_progress_every_n = 500, quiet = FALSE, retain_unadjusted_distance = TRUE,
+                                        report_progress_every_n = 500, quiet = FALSE, 
+                                        use_unadjusted_distance = FALSE,
+                                        retain_unadjusted_distance = TRUE,
                                         quadtree, updateProgress = NULL) {
   
   # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
@@ -309,14 +312,13 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, radius_donut_low
   
   ########################################################################### ## 
   if (!quiet) {
-    cat('Stats via getblocks_diagnostics(), but BEFORE ADJUSTING UP FOR VERY SHORT DISTANCES: \n')
+    cat('Stats via getblocks_diagnostics(), but NOT ADJUSTING UP FOR VERY SHORT DISTANCES: \n')
     cat("min distance before adjustment: ", min(sites2blocks$distance, na.rm = TRUE), "\n")
     cat("max distance before adjustment: ", max(sites2blocks$distance, na.rm = TRUE), "\n\n")
     #getblocks_diagnostics(sites2blocks) # returns NA if no blocks nearby
-    cat("\n\nAdjusting upwards the very short distances now...\n ")
   }
-  
-  # ADJUST THE VERY SHORT DISTANCES ####
+
+  # ADJUST THE VERY SHORT DISTANCES, if use_unadjusted_distance = FALSE  ####
   
   # distance gets adjusted to be the minimum possible value,  0.9 * effective radius of block_radius_miles (see EJScreen Technical Documentation discussion of proximity analysis for rationale)
   #
@@ -333,12 +335,13 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, radius_donut_low
   } else {
     sites2blocks <-  blockwts[sites2blocks, .(ejam_uniq_id, blockid, distance, blockwt, bgid, block_radius_miles), on = 'blockid'] 
   }
-  
+  if (!use_unadjusted_distance) {
+    if (!quiet) {  cat("\n\nAdjusting upwards the very short distances now...\n ")}
   # 2 ways considered here for how exactly to make the adjustment: 
   sites2blocks[distance < block_radius_miles, distance := 0.9 * block_radius_miles]  # assumes distance is in miles
   # or a more continuous but slower (and nonEJScreen way?) adjustment for when dist is between 0.9 and 1.0 times block_radius_miles: 
   # sites2blocks_dt[ , distance  := pmax(block_radius_miles, distance, na.rm = TRUE)] # assumes distance is in miles
-  
+  }
   # now drop that info about area or size of block to save memory. do not need it later in sites2blocks
   sites2blocks[ , block_radius_miles := NULL]
   if (radius_donut_lower_edge > 0) {
@@ -347,7 +350,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, radius_donut_low
     sites2blocks <- sites2blocks[distance <= truedistance, ] # had been inside the loop.
     
   }
-  if (!quiet) {
+  if (!quiet && !use_unadjusted_distance) {
     cat('Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: \n')
     cat("min distance AFTER adjustment: ", min(sites2blocks$distance, na.rm = TRUE), "\n")
     cat("max distance AFTER adjustment: ", max(sites2blocks$distance, na.rm = TRUE), "\n\n")

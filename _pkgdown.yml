@@ -14,8 +14,8 @@ footer:
     left: [draftmsg]
     right: [package, versionmsg]
   components:
-    draftmsg: DRAFT/beta
-    versionmsg: Version 2.2.2 beta
+    draftmsg: DRAFT
+    versionmsg: Version 2.32.0
 home:
   title: EJAM Environmental Justice Analysis Multisite
   description: Webapp and tools summarizing demographic and environmental data for hundreds of places quickly and accurately
@@ -36,8 +36,8 @@ articles:
   - '`2_quickstart`'
   - '`3_analyzing`'
   - '`4_advanced`'
-  - '`5_ejscreenapi`'
-  - '`6_future_plans`'
+  # - '`5_ejscreenapi`'
+  # - '`6_future_plans`'
 reference:
 - title: "Key Functions"
   desc: "The Main High-Level Functions in EJAM"
@@ -49,6 +49,8 @@ reference:
   - ejamit_compare_types_of_places
   - ejam2report
   - ejam2ratios
+  - ejam2tableviewer
+  - ejam2table_tall
   - ejam2excel
   - ejam2map
   - ejam2shapefile
@@ -62,7 +64,6 @@ reference:
   - latlon_from_anything
   - latlon_from_address_table
   - latlon_from_address
-  - latlon_any_format
   - latlon_is.valid
   - lat_alias
   - lon_alias
@@ -174,8 +175,8 @@ reference:
   - fips2statename
   - fips2state_abbrev
   - fips2state_fips
-  - states_infer
-  - state_from_fips
+  - state_from_sitetable
+  - state_from_fips_bybg
   - state_from_latlon
 - subtitle: "Regions"
   contents:
@@ -223,7 +224,6 @@ reference:
   - statestats_query
   - statestats_queryd
   - statestats_querye
-  - regionstats
 - subtitle: "Comparing Distances / Multiple Radius Values"
   contents:
   - ejamit_compare_distances
@@ -237,6 +237,7 @@ reference:
   - distance_trends
 - subtitle: "Calculating Summary Stats, etc."
   contents:
+  - batch.summarize
   - count_sites_with_n_high_scores
   - colcounter_summary_all
   - popshare_at_top_n
@@ -291,7 +292,8 @@ reference:
   - ejam2report
   - ejam2excel
   - ejam2ratios
-  - table_tall_from_overall
+  - ejam2tableviewer
+  - ejam2table_tall
   - table_round
   - table_rounding_info
   - table_order_variables
@@ -334,14 +336,9 @@ reference:
   desc: "Utilities to handle variable names, indicator metadata, formulas, etc."
   contents:
   - fixcolnames
-  - fixcolnames_infer
   - names_d
   - names_e
-  - namez
-  - varname2color_ejam
-  - varname2varcategory_ejam
-  - varname2vartype_ejam
-  - vartype_cat2color_ejam
+  - map_headernames
 - title: "Utilities / Misc."
   contents:
   - run_app
@@ -355,6 +352,18 @@ reference:
   - ejscreenit_for_ejam
 - title: internal
   contents:
+  - latlon_any_format
+  - fixcolnames_infer
+  - namez
+  - varname2color_ejam
+  - varname2varcategory_ejam
+  - varname2vartype_ejam
+  - vartype_cat2color_ejam
+  - batch.clean
+  - rowMaxs2
+  - colMins2
+  - colMaxs2
+  - change.fieldnames
   - ejscreen_vs_ejam
   - app_server
   - app_ui
@@ -374,7 +383,10 @@ reference:
   - formula_varname
   - custom_doaggregate
   - custom_ejamit
-  - ST_by_site_from_sites2blocks
+  - state_from_s2b_bysite
+  - table_tall_from_overall
+  - table_tall_from_site
+  - table_tall_from_bysite
   - tablefixed
   - table_validated_ejamit_row
   - table_xls_from_ejam

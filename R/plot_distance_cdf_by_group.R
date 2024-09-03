@@ -53,7 +53,7 @@ distance_by_group_plot <- function(
     results_bybg_people = NULL,
     radius_miles=round(max(
       results_bybg_people$distance_min_avgperson[!is.infinite(
-        results_bybg_people$distance_min_avgperson)], na.rm = T), 1),
+        results_bybg_people$distance_min_avgperson)], na.rm = T), table_rounding_info("distance_min_avgperson")),
     subgroups_type = NULL, # e.g.
     demogvarname = NULL,  # e.g. namez$d # see note above about this param
     demoglabel = NULL,
@@ -73,8 +73,8 @@ distance_by_group_plot <- function(
   if (!is.null(demogvarname)) {
     if (!is.null(subgroups_type)) {
       # user specified a type
-      if (subgroups_type == "nh")    {demogvarname <- namez$d_subgroups_nh}
-      if (subgroups_type == "alone") {demogvarname <- namez$d_subgroups_alone}
+      if (subgroups_type == "nh")    {demogvarname <- names_d_subgroups_nh}    # namez$d_subgroups_nh}
+      if (subgroups_type == "alone") {demogvarname <- names_d_subgroups_alone} # namez$d_subgroups_alone}
       # and plotting "both" is not visually useful and nh makes more sense
       if (!(subgroups_type %in% c('nh','alone'))) {
         # user specified an invalid type here
@@ -82,12 +82,12 @@ distance_by_group_plot <- function(
         if (exists("default_subgroups_type")) {
           #  user did not provide valid type but global.R provides a default
           demogvarname <- namez$d_subgroups_nh # default if default_subgroups_type from global.R is something other than one of these 2:
-          if (default_subgroups_type == "nh")    {demogvarname <- namez$d_subgroups_nh}
-          if (default_subgroups_type == "alone") {demogvarname <- namez$d_subgroups_alone}
+          if (default_subgroups_type == "nh")    {demogvarname <- names_d_subgroups_nh}     # namez$d_subgroups_nh}
+          if (default_subgroups_type == "alone") {demogvarname <- names_d_subgroups_alone } # namez$d_subgroups_alone}
         } else {
           # no type provided by user or global.R
           # warning('trying to use a default for demogvarname')
-          demogvarname <- namez$d_subgroups_nh
+          demogvarname <- names_d_subgroups_nh  # namez$d_subgroups_nh
         }
       }
     }
@@ -97,11 +97,11 @@ distance_by_group_plot <- function(
 
   # Figure out what labels to use for those demog variables
   if (!is.null(demoglabel)) {
-    demoglabel <- fixcolnames(demogvarname, 'r', 'shortlabel') # renames those it is able to, using an EJAMejscreenapi function fixcolnames
+    demoglabel <- fixcolnames(demogvarname, 'r', 'shortlabel') # renames those it is able to, using   fixcolnames
   }
   if (length(demoglabel) != length(demogvarname)) {
     warning("length of demoglabel and demogvarname must be the same - trying to use defaults for labels instead")
-    demoglabel <- fixcolnames(demogvarname, 'r', 'shortlabel') # renames those it is able to, using an EJAMejscreenapi function fixcolnames
+    demoglabel <- fixcolnames(demogvarname, 'r', 'shortlabel') # renames those it is able to, using  fixcolnames
   }
 
   if (is.list(results_bybg_people) & ("results_bybg_people" %in% names(results_bybg_people))) {
@@ -258,7 +258,7 @@ distance_by_group_plot <- function(
 #' @export
 #'
 distance_cdf_by_group_plot <- function(results_bybg_people,
-                                       radius_miles=round(max(results_bybg_people$distance_min_avgperson, na.rm = T), 1),
+                                       radius_miles=round(max(results_bybg_people$distance_min_avgperson, na.rm = T), table_rounding_info("distance_min_avgperson")),
                                        demogvarname="Demog.Index", demoglabel=demogvarname,
                                        color1="red", color2="black") {
 

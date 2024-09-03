@@ -70,9 +70,16 @@ distance_by_group_by_site <- function(bybg) {
     # $ avg_distance_for_group   : num  3.49 3.49 3.5 3.67 3.54 3.53 3.41 3.26 3.11 3.48 ...
     # $ avg_distance_for_nongroup: num  3.24 3.3 3.21 3.33 3.31 3.3 3.31 3.34 3.43 3.27 ...
    
-    x[[i]] <- y$ratio
-    names(x[[i]]) <- rownames(y)
-    
+    ## valid distance values returned
+    if(!is.na(y)){
+      
+      x[[i]] <- y$ratio
+      names(x[[i]]) <- rownames(y)
+    } else {
+      ## if some invalid NaN distances returned
+      #warning('Nan values found, so no distances returned')
+      return(NA)
+    }
   }
   x = cbind.data.frame(x)
   colnames(x) <- ids

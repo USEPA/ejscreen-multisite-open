@@ -35,11 +35,17 @@
 #'
 #' @return a single number such as 1.5 or 3 that is the estimate of the miles distance that was
 #'   originally requested in getblocksnearby()
+#'   
 #' @export
+#' 
 #' @examples  radius_inferred()
 #'   # radius_inferred(getblocksnearby(testpoints_n(100), radius = 3.25))
+#'   
 radius_inferred <- function(s2b = NULL, decimalsreported = 2, 
                             decimalsforinferring = 3, pctile_of_sites = 0.90, nth_furthest_block = 2) {
+  
+  #  guesstimate <- round(max(s2b$distance, na.rm = TRUE), 1)  # this was a simplified way to get a rough estimate for radius but now uses radius_inferred()
+  
   if (is.null(s2b)) {s2b <- data.table::copy( sites2blocks_example1000pts_1miles)}
   if (!data.table::is.data.table(s2b)) { data.table::setDT(s2b)}
   # setorder(s2b, -distance) # would alter by reference the passed data.table in the calling environment, I think

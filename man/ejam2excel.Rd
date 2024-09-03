@@ -59,11 +59,11 @@ prompts RStudio user interactively asking where to save the downloaded file}
 heatmap_colnames, heatmap_cuts, heatmap_colors, etc.}
 }
 \value{
-same as what \code{\link[=table_xls_from_ejam]{table_xls_from_ejam()}} returns
+returns a workbook object for use by openxlsx::saveWorkbook(wb_out, pathname)
+or returns just the full path/file name of where it was saved if save_now = TRUE
 }
 \description{
 ejam2excel() takes the output of something like ejamit() and
 creates a spreadsheet with an overall summary tab, a site by site table tab,
 as well as other tabs such as map, plot, notes, etc.
-It is an alias for table_xls_from_ejam()
 }

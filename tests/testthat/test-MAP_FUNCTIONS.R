@@ -224,7 +224,7 @@ test_that("mapfastej_counties() works", {
     
     expect_no_error({
       capture.output({
-        mydat = ejamit(fips = fips_counties_from_statename("Rhode Island")[1], radius = 0)$results_bysite
+        mydat = ejamit(fips = fips_counties_from_statename("Rhode Island")[1], radius = 0, silentinteractive = TRUE)$results_bysite
         suppressWarnings({
         x = mapfastej_counties(mydat)
         })

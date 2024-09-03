@@ -6,7 +6,7 @@
 #'   Commonwealth of the Northern Mariana Islands (Northern Mariana Islands),
 #'   and the United States Virgin Islands.
 #'   
-#'   See also [stateinfo] and []
+#'   See also [stateinfo] and [stateinfo2]
 #'   
 #'   See <http://www.census.gov/geo/reference/gtc/gtc_island.html>
 #'   
@@ -14,4 +14,4 @@
 #'   
 #'   Note the US minor outlying islands are not in that list and are widely dispersed.
 #'   They include Midway Islands, etc.
-NULL
+"islandareas"

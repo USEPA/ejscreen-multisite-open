@@ -2,33 +2,17 @@
 
 #' Format the results of ejamit() for excel and optionally save .xlsx file
 #' 
-#' Uses table_xls_format() to format and save results
+#' Almost identical to [ejam2excel()]
 #' 
-#' @param ejamitout output of [ejamit()] 
-#' @param fname optional name or full path and name of file to save locally, like "out.xlsx" 
-#' @param save_now optional logical, whether to save as a .xlsx file locally or just return workbook object
-#'   that can later be written to .xlsx file using [openxlsx::saveWorkbook()]
-#' @param overwrite optional logical, passed to [openxlsx::saveWorkbook()]
-#' @param launchexcel optional logical, passed to [table_xls_format()], whether to launch browser to see spreadsheet immediately
-#' @param interactive_console optional - should set to FALSE when used in code or server. If TRUE,
-#'   prompts RStudio user interactively asking where to save the downloaded file
-#' @param ok2plot optional logical, passed to  [table_xls_format()], whether safe to try and plot or set FALSE if debugging plot problems
-#' @param in.testing optional logical
-#' @param radius_or_buffer_in_miles optional radius in miles
-#' @param in.analysis_title optional title as character string
-#' @param react.v1_summary_plot optional - a plot object
-#' @param radius_or_buffer_description optional text phrase describing places analyzed
-#' @param hyperlink_colnames optional names of columns with URLs
-#' @param site_method optional site method parameter used to create a more specific title with create_filename
-#' @param ... optional additional parameters passed to [table_xls_format()], such as 
-#'   heatmap_colnames, heatmap_cuts, heatmap_colors, etc.
+#' @inheritParams ejam2excel   
+#' 
 #' @examples \dontrun{
 #'   table_xls_from_ejam(testoutput_ejamit_10pts_1miles)
 #'   }
-#'  @seealso [table_xls_format()]
 #' @return returns a workbook object for use by openxlsx::saveWorkbook(wb_out, pathname)
 #'   or returns just the full path/file name of where it was saved if save_now = TRUE
-#' @export
+#'   
+#' @keywords internal
 #'
 table_xls_from_ejam <- function(ejamitout, 
                                 fname = NULL, # full path and name, or just name of .xlsx file 
@@ -140,40 +124,36 @@ table_xls_from_ejam <- function(ejamitout,
   
   if (save_now) {
     if (interactive_console & interactive()) {
-      if(!fname_was_provided){
-        repeat{
+      if (!fname_was_provided) {
+        repeat {
           pathname <- rstudioapi::showPrompt(
             "Save spreadsheet file",
             "Confirm folder and name of file to save",
             default = pathname
           )
-          
-          if(is.null(pathname) || pathname ==  ""){
+
+          if (is.null(pathname) || pathname ==  "") {
             cat('Invalid path/file, please provide a valid path.\n')
             next
           }
-          if(grepl("[<>:\"/\\?*]", pathname)){
+          if (grepl("[<>:\"/\\?*]", pathname)) {
             stop("Filename ocntains invalid characters: <>:\"/\\|?*. Please provide a valid name. \n")
             next
           }
           break
-          
         }
-        
       }
-      
-      
     }
     if (is.null(pathname) || pathname == "" || grepl("[<>:\"/\\?*]", pathname)) { #perform a more robust check of the pathname here. 
       cat('Invalid path/file, so using default: ', default_pathname, '\n')
       pathname <- default_pathname
     }
-    
+
     cat("Saving as ", pathname, "\n")
     ## save file and return for downloading - or do this within table_xls_format( , saveas=fname) ?
     openxlsx::saveWorkbook(wb_out, pathname, overwrite = overwrite)
     return(pathname)
   } else {
-    return(wb_out)
+    invisible(wb_out)
   }
 }

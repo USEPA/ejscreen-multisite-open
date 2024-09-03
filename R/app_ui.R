@@ -45,8 +45,8 @@ app_ui  <- function(request) {
       ### title (for app and browser tab) ####
       div(class = "title-panel",
           titlePanel(
-            title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
-            windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool"
+            title = "EJAM (Environmental Justice Analysis Multi-site) Tool v2.32",
+            windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool v2.32"
           )
       ),
       
@@ -509,14 +509,14 @@ app_ui  <- function(request) {
                                div(
                                  style = "background-color: #edeff0; color: black; width: 100%; padding: 10px 20px; text-align: right; margin: 10px 0;",
                                  p( style = "margin-bottom: 0",
-                                    "Version 2.2 | Report created on ", 
+                                   "Version 2.32 | Report created on ", 
                                     format(Sys.Date(), '%B %d, %Y'),
                                  )
                                ),
                                br(),
                                tags$div(
                                  shiny::downloadButton(
-                                   outputId = 'community_download',
+                                   outputId = 'community_download_all',
                                    label = 'Download Community Report', class = 'usa-button'), style = 'text-align: center;'
                                ),
                              ),  # end report tab
@@ -845,14 +845,6 @@ app_ui  <- function(request) {
                                         
                                         #------- METHODS, AUTHORS, ETC.
                                         
-                                        # authorname1: "The US EPA"
-                                        # authoremail1: ""
-                                        # coauthor_names: NA
-                                        # coauthor_emails: NA
-                                        # fundingsource: NA
-                                        # acs_version: "2017-2021"
-                                        # ejscreen_version: "2.2"
-                                        
                                         fluidRow(
                                           column(2,
                                                  ## input:
@@ -895,11 +887,11 @@ app_ui  <- function(request) {
                                           ## input:
                                           textInput(inputId = 'acs_version',
                                                     label = 'Version of ACS data (years)',
-                                                    placeholder = "2017-2021"),
+                                                    placeholder =  as.vector(metadata_mapping$blockgroupstats[['acs_version']])),
                                           ## input:
                                           textInput(inputId = 'ejscreen_version',
                                                     label = 'Version of EJScreen',
-                                                    placeholder = "2.2")
+                                                    placeholder =  as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']]))
                                         ),
                                         ############################ #
                                         

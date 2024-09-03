@@ -7,7 +7,7 @@
 ejscreen_vs_ejam_see1(z, myvars = names_d, mysite = 1)
 }
 \arguments{
-\item{z}{output of ejscreen_vs_ejam()}
+\item{z}{output of ejscreen_vs_ejam() or ejscreen_vscript()}
 
 \item{myvars}{optional to check just a subset of the colnames found in z$EJAM and z$EJSCREEN,
 such as

@@ -62,4 +62,5 @@ the vast majority of the time for a radius of 1 to 3 miles.
 \examples{
  radius_inferred()
   # radius_inferred(getblocksnearby(testpoints_n(100), radius = 3.25))
+  
 }

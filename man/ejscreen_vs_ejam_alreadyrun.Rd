@@ -85,10 +85,12 @@ Compare EJScreen API vs EJAM stats near site(s) (after results already run)
    
    
    
-   
    # Reported key indicators - which ones do or don't match
    # when comparing EJSCREEN and EJAM results?
-   keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+   keyreportnames <- c('pop', names_these, 
+     paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
+     paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
+   )  
    rname <- colnames(z$EJAM)
    z1[rname \%in\% keyreportnames &  z1$same_shown, ]
    z1[rname \%in\% keyreportnames & !z1$same_shown & !is.na(z1$EJSCREEN), ]
@@ -104,9 +106,12 @@ Compare EJScreen API vs EJAM stats near site(s) (after results already run)
    
    # site number 1
    z1 <- sapply(z, function(x) (x[1,]))
-   # Reported key indicators - which ones do or don't match
+    # Reported key indicators - which ones do or don't match
    # when comparing EJSCREEN and EJAM results?
-   keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+   keyreportnames <- c('pop', names_these, 
+     paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
+     paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
+   )
    z1[z1$rname \%in\% keyreportnames &  z1$same_shown, ]
    z1[z1$rname \%in\% keyreportnames & !z1$same_shown & !is.na(z1$EJSCREEN), ]
    

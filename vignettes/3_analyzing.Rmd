@@ -63,13 +63,15 @@ indexblocks()
 
 -   `getblocksnearby()` takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in `testpoints_100`, and sample output is in `testoutput_getblocksnearby_10pts_1miles`
 
+-   `get_blockpoints_in_shape()` does the same for polygons, finding blocks in each. 
+
 -   `doaggregate()` takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in `testoutput_getblocksnearby_10pts_1miles` and sample output is in `testoutput_doaggregate_10pts_1miles`
 
 # Key groups of functions
 
 The EJAM package reference manual has a complete list of documented functions, grouped by category. There are several categories of functions listed there:
 
--   Key Functions `ejamit()`, `ejam2report()`, `ejam2excel()`, `ejam2map()`, `ejam2ratios()`
+-   Key Functions `ejamit()`, `ejam2report()`, `ejam2excel()`, `ejam2map()`, `ejam2ratios()`, `ejam2table_tall()`
 -   Specify Points by Lat/Lon
 -   Specify Facilities by ID
 -   Specify Facility Type
@@ -396,7 +398,7 @@ cfips <- fips_counties_from_statename(mystate)
 x <- ejamit(fips = cfips) # radius not used
 DT::datatable(x$results_bysite, escape = F)
 
-table_tall_from_overall(x$results_overall)
+ejam2table_tall(x)
 
 t(x$results_bysite[ , c(
   'ejam_uniq_id', 'pop', names_d_subgroups_ratio_to_state_avg), with = F])
@@ -485,6 +487,7 @@ DT::datatable(out2$results_bysite[1:5,   ], escape = FALSE, rownames = FALSE)
 
 ```{r cbind-overall, eval = TRUE, paged.print= TRUE}
 out2 <- testoutput_ejamit_100pts_1miles
+
 names(out2)
 cbind(overall = as.list( out2$results_overall[ , ..names_d]))
 cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
@@ -494,9 +497,22 @@ cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
 
 ```{r}
 out2 <- testoutput_ejamit_100pts_1miles
+
 head(
-  cbind(as.list(out2$results_overall))
-  , 12)
+  ejam2table_tall(out2)
+  , 20)
+# head(
+#   cbind(as.list(out2$results_overall))
+#   , 12)
+```
+
+
+## Just one site, all the indicators
+
+```{r ejam2table_tall_1}
+head(
+  ejam2table_tall(out2, sitenumber = 1)
+  , 20)
 ```
 
 

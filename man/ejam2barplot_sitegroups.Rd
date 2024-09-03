@@ -2,11 +2,11 @@
 % Please edit documentation in R/ejam2barplot_sites.R
 \name{ejam2barplot_sitegroups}
 \alias{ejam2barplot_sitegroups}
-\title{Barplot comparing groups of sites on 1 indicator, for output of ejamit_compare_groups_of_places()
+\title{Barplot comparing groups of sites on 1 indicator, for output of ejamit_compare_types_of_places()
 easy high-level function for getting a quick look at top few groups of sites}
 \usage{
 ejam2barplot_sitegroups(
-  out,
+  ejamitout,
   varname = "pctlowinc",
   names.arg = NULL,
   main = "Sites by Type",
@@ -18,7 +18,7 @@ ejam2barplot_sitegroups(
 )
 }
 \arguments{
-\item{out}{list that is output of ejamit_compare_groups_of_places(), where one element is
+\item{ejamitout}{list that is output of ejamit_compare_types_of_places(), where one element is
 a table named results_bytype}
 
 \item{varname}{name of a column in results_bytype, bar height}
@@ -43,7 +43,7 @@ by default -- only shows top n groups.}
 same as \code{\link[=barplot]{barplot()}}
 }
 \description{
-Barplot comparing groups of sites on 1 indicator, for output of ejamit_compare_groups_of_places()
+Barplot comparing groups of sites on 1 indicator, for output of ejamit_compare_types_of_places()
 easy high-level function for getting a quick look at top few groups of sites
 }
 \details{

@@ -1,5 +1,4 @@
 #' @name frs_by_naics
-#' @docType data
 #' @title frs_by_naics (DATA) data.table of NAICS code(s) for each EPA-regulated site in Facility Registry Service
 #' @seealso [frs] [frs_from_naics()] [naics_categories()] [frs_by_programid] and see naics_from_any in EJAM pkg.
 #' @description 
@@ -12,9 +11,9 @@
 #'  
 #'  MOST SITES LACK NAICS INFO IN FRS! NAICS is missing for about 80 percent of these facilities.
 #'   
-#'   frs here had about 2,571,750 unique REGISTRY_ID values, but 
+#'   frs here had about 2.5 million unique REGISTRY_ID values, but 
 #'   
-#'    frs_by_naics had only about 680,000 rows as of 4/1/2023,
+#'    frs_by_naics had only about 700k rows
 #'    
 #'    about 562,000 unique REGISTRY_ID values with
 #'    

@@ -96,19 +96,28 @@ fixnames_aliases <- function(x, na_if_no_match = FALSE, alias_list = NULL, ignor
       lat = lat_alias, #"lat" "latitude83" "latitude"   "latitudes"  "faclat"  "lats" "y"
       lon = lon_alias, #"lon" "longitude83" "longitude" "longitudes" "faclong" "lons" "long" "longs" "lng" "x"
       
-      # used in fixcolnames("pctlowinc", "rname", "long") etc.
-      rname = "r",
+      # could be used by fips_from_table() etc.  NOTE THESE ARE NOT REALLY IDENTICAL, but fipstype() can differentiate them
+      fips = c('FIPS',   'Fips', 'fips_code', 'fipscode',
+               'blockfips', 
+               'bgfips', 'blockgroupfips', 'blockgroup_fips', 'blockgroup_fips_code',
+               'FIPS.TRACT', 'tractfips', 'tract_fips',
+               'countyfips', 'FIPS.COUNTY',
+               'statefips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST'
+         ),
       
-      # longname_tableheader = long, # *** problem! we already interpret "long" as "lon" (longitude)
-      longname_tableheader = c(
-        # "long", 
-        "longname", "longnames", "full", "description", "longname_tableheader", "header"),
+      # had been used in fixcolnames("pctlowinc", "rname", "long") etc. but "friendly" is ambiguous and should be phased out
+      rname = c("r", "friendly", "newnames_ejscreenapi"),
+      
+      longname = c(
+        # "long",  # *** problem! we already interpret "long" as "lon" (longitude)
+        "longname", "longnames", "full", "description", "header"),
       
       shortlabel = c("short", "shortname", "shortnames", "shortlabel", "shortlabels", "labels", "label"),
       apiname = c('api', 'apiname'),
-      csvname2.2 = c("csv", "csvname2.2"),
-      oldnames = c("original", "old", "oldname", "oldnames"),
-      newnames_ejscreenapi = c("friendly", "newnames_ejscreenapi")
+      csvname = c("csv", "csvname"),
+      acsname = c('acs', 'acsname'),
+      oldname = c("old", "oldnames", "oldname", 'original') 
+       
     )
   } else {
     stopifnot(is.list(alias_list), all(sapply(alias_list, is.atomic)), all(sapply(alias_list, length) > 0))

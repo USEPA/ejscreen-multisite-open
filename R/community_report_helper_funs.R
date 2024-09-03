@@ -4,42 +4,45 @@
 #'
 #' @param output_df, single row of results table from doaggregate -
 #'   either results_overall or one row of bysite
-#' @param var_value, variable name of indicator to pull from results,
+#' @param e, variable name of indicator to pull from results,
 #'   such as 'pm', 'pctlowinc', 'Demog.Index'
-#' @param var_name, nicer name of indicator to use in table row;
+#' @param longname, nicer name of indicator to use in table row;
 #'   can include HTML sub/superscripts
 #'
 #' @keywords internal
 #'
-fill_tbl_row <- function(output_df, var_value, var_name) {
-  txt <- "<tr>"
 
+
+
+fill_tbl_row <- function(output_df, Rname, longname) {
+  
   id_col <- "selected-variables"
-  txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
-                id_col,'\">',
-                var_name,'</td>')
+  
   
   hdr_names <- c('value','state-average',
                  'percentile-in-state','usa average','percentile-in-usa')
   
-  var_values <- paste0(c('', 'state.avg.', 'state.pctile.', 'avg.', 'pctile.'),
-                       var_value)
+  Rnames <- paste0(c('', 'state.avg.', 'state.pctile.', 'avg.', 'pctile.'),
+                       Rname)
   
-  for (j in seq_along(var_values)) {
-    cur_var <- var_values[j]
-    if ('data.table' %in% class(output_df)) {
-      cur_val <- output_df[, ..cur_var]
-    } else {
-      cur_val <- output_df[, cur_var]
-    }
-    txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
-                  hdr_names[j],'\">',
-                  cur_val,'</td>')
-    
+  cur_vals <- if ('data.table' %in% class(output_df)){
+    sapply(Rnames, function(v) output_df[, ..v])
+  }else{
+    sapply(Rnames, function(v) output_df[,v])
   }
-  txt <- paste0(txt, '\n','</tr>')
+  
+  
+  txt <- paste0(
+    "<tr>",
+    '\n','<td headers=\"data-indicators-table-',
+    id_col,'\">',
+    longname,'</td>',
+    paste0('\n','<td headers=\"data-indicators-table-', hdr_names, '\">', cur_vals, '</td>',
+           collapse=""),'\n</tr>')
+  
   return(txt)
 }
+
 ################################################################### #
 
 
@@ -47,42 +50,40 @@ fill_tbl_row <- function(output_df, var_value, var_name) {
 #'
 #'@param output_df, single row of results table from doaggregate -
 #'  either results_overall or one row of bysite
-#'@param var_value, variable name of indicator to pull from results,
+#'@param Rname, variable name of indicator to pull from results,
 #'  such as 'pm', 'pctlowinc', 'Demog.Index'
-#'@param var_name, nicer name of indicator to use in table row;
+#'@param longname, nicer name of indicator to use in table row;
 #'  can include HTML sub/superscripts
 #'
 #' @keywords internal
 #'
-fill_tbl_row_ej <- function(output_df, var_value, var_name) {
-  txt <- '<tr>'
+fill_tbl_row_ej <- function(output_df, Rname, longname) {
+  
   
   id_col <- 'selected-variables'
-  txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
-                id_col,'\">',
-                var_name,'</td>')
+  
   
   hdr_names <- c('value',
                  'percentile-in-state','percentile-in-usa')
   
-  var_values <- paste0(c('','state.pctile.','pctile.'), var_value)
+  Rnames <- paste0(c('','state.pctile.','pctile.'), Rname)
   
-  for (j in seq_along(var_values)) {
-    cur_var <- var_values[j]
-    if (!(cur_var) %in% names(output_df)) {
-      warning(paste0(cur_var, ' not found in dataset!'))
-    }
-    if ('data.table' %in% class(output_df)) {
-      cur_val <- output_df[, ..cur_var] #round(output_df[,..cur_var],2)
-    } else {
-      cur_val <- output_df[, cur_var]#round(output_df[,cur_var],2)
-    }
-    txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
-                  hdr_names[j],'\">',
-                  cur_val,'</td>')
-    
+  cur_vals <- if ('data.table' %in% class(output_df)){
+    sapply(Rnames, function(v) ifelse(v %in% names(output_df), output_df[,..v], NA))
+  } else{
+    sapply(Rnames, function(v) ifelse(v %in% names(output_df), output_df[, v], NA))
   }
-  txt <- paste0(txt, '\n','</tr>')
+  
+  
+  
+  txt <- paste0(
+    "<tr>",
+    '\n','<td headers=\"data-indicators-table-',
+    id_col,'\">',
+    longname,'</td>',
+    paste0('\n','<td headers=\"data-indicators-table-', hdr_names, '\">', cur_vals, '</td>',
+           collapse=""),'\n</tr>')
+  
   return(txt)
 }
 ################################################################### #
@@ -121,58 +122,35 @@ fill_tbl_full <- function(output_df) {
   
   full_html <- paste(full_html, tbl_head, sep = '\n')
   
-  var_values_e <- c('pm','o3','dpm','cancer','resp','rsei','traffic.score','pctpre1960',
-                    'proximity.npl','proximity.rmp','proximity.tsdf','ust','proximity.npdes')
+  ## reorder indicators to match report order
   
-  var_names_e <- c(
-    'Particulate Matter&nbsp;&nbsp;(&mu;g/m<span class=\"table-superscript\"><sup>3</sup></span>)',
-    'Ozone&nbsp;&nbsp;(ppb)',
-    'Diesel Particulate Matter&nbsp;&nbsp;(&mu;g/m<span class=\"table-superscript\"><sup>3</sup></span>)',
-    'Air Toxics Cancer Risk*&nbsp;&nbsp;(lifetime risk per million)',
-    'Air Toxics Respiratory HI*',
-    'Toxic Releases to Air',
-    'Traffic Proximity&nbsp;&nbsp;(daily traffic count/distance to road)',
-    'Lead Paint&nbsp;&nbsp;(% Pre-1960 Housing)',
-    'Superfund Proximity&nbsp;&nbsp;(site count/km distance)',
-    'RMP Facility Proximity&nbsp;&nbsp;(facility count/km distance)',
-    'Hazardous Waste Proximity&nbsp;&nbsp;(facility count/km distance)',
-    'Underground Storage Tanks&nbsp;&nbsp;(count/km<span class=\"table-superscript\"><sup>3</sup></span>)',
-    'Wastewater Discharge&nbsp;&nbsp;(toxicity-weighted concentration/m distance)'
-  )
   
-  tbl_rows_e <- sapply(seq_along(var_values_e), function(x) {
+  Rnames_e <- namesbyvarlist(varlist = 'names_e')$rname
+
+  longnames_e <- fixcolnames(Rnames_e, oldtype = 'r', newtype = 'long')
+  
+  tbl_rows_e <- sapply(seq_along(Rnames_e), function(x) {
     fill_tbl_row(output_df,
-                 var_value = var_values_e[x],
-                 var_name = var_names_e[x])
+                 Rname = Rnames_e[x],
+                 longname = longnames_e[x])
   })
   full_html <- paste(full_html,
                      paste(tbl_rows_e , collapse = '\n'),
-                     
                      sep = '', collapse = '\n')
   full_html <- paste(full_html, tbl_head2,collapse = '\n')
   
   
-  var_values_d <- c(
-    'Demog.Index', 'Demog.Index.Supp','pctmin','pctlowinc','pctunemployed',
-    'pctlingiso','pctlths','pctunder5','pctover64','lowlifex')
+  ## reorder indicators to match report order
   
-  var_names_d <- c('Demographic Index',
-                   'Supplemental Demographic Index',
-                   'People of Color',
-                   'Low Income',
-                   'Unemployment Rate',
-                   'Limited English Speaking Households',
-                   'Less Than High School Education',
-                   'Under Age 5',
-                   'Over Age 64',
-                   'Low Life Expectancy'
-  )
+  Rnames_d <- namesbyvarlist(varlist = 'names_d')$rname
   
-  tbl_rows_d <- sapply(seq_along(var_values_d),
+  longnames_d <- fixcolnames(Rnames_d, oldtype = 'r', newtype = 'long')
+  
+  tbl_rows_d <- sapply(seq_along(Rnames_d),
                        function(x) {
                          fill_tbl_row(output_df,
-                                      var_value = var_values_d[x],
-                                      var_name = var_names_d[x])})
+                                      Rname = Rnames_d[x],
+                                      longname = longnames_d[x])})
   full_html <- paste(full_html,
                      paste(tbl_rows_d, collapse = '\n'),
                      sep = '', collapse = '\n')
@@ -213,39 +191,40 @@ fill_tbl_full_ej <- function(output_df) {
   
   full_html <- tbl_head #paste(full_html, tbl_head, sep='\n')
   
+  ## reorder indicators to match report order
+  
+  Rnames_ej <-namesbyvarlist(varlist = 'names_ej')$rname
+  
+  longnames_ej <- fixcolnames(Rnames_ej, oldtype = 'r', newtype = 'long')
+  
+  tbl_rows_ej <- sapply(seq_along(Rnames_ej),
+                        function(x) {
+                          fill_tbl_row_ej(output_df, 
+                                          Rname = Rnames_ej[x],
+                                          longname = longnames_ej[x])
+                        })
   
   full_html <- paste(full_html,
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.pm.eo', var_name='Particulate Matter'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.o3.eo', var_name='Ozone'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.dpm.eo', var_name='Diesel Particulate Matter'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.cancer.eo', var_name='Air Toxics Cancer Risk'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.resp.eo', var_name='Air Toxics Respiratory HI'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.rsei.eo', var_name='Toxic Releases to Air'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.traffic.score.eo', var_name='Traffic Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.pctpre1960.eo', var_name='Lead Paint'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.npl.eo', var_name='Superfund Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.rmp.eo', var_name='RMP Facility Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.tsdf.eo', var_name='Hazardous Waste Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.ust.eo', var_name='Underground Storage Tanks'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.npdes.eo', var_name='Wastewater Discharge')
-                     , sep='', collapse='\n')
+                      paste(tbl_rows_ej, collapse = '\n'),
+                      sep = '', collapse = '\n')
   full_html <- paste(full_html, tbl_head2, collapse = '\n')
   
+  ## reorder indicators to match report order
+  
+  Rnames_ej_supp <- namesbyvarlist(varlist = 'names_ej_supp')$rname
+  
+  longnames_ej_supp <- fixcolnames(Rnames_ej_supp, oldtype = 'r', newtype = 'long')
+  
+  tbl_rows_ej_supp <- sapply(seq_along(Rnames_ej_supp),
+                        function(x) {
+                          fill_tbl_row_ej(output_df, 
+                                          Rname = Rnames_ej_supp[x],
+                                          longname = longnames_ej_supp[x])
+                        })
+  
   full_html <- paste(full_html,
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.pm.supp', var_name='Particulate Matter'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.o3.supp', var_name='Ozone'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.dpm.supp', var_name='Diesel Particulate Matter'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.cancer.supp', var_name='Air Toxics Cancer Risk'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.resp.supp', var_name='Air Toxics Respiratory HI'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.rsei.supp', var_name='Toxic Releases to Air'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.traffic.score.supp', var_name='Traffic Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.pctpre1960.supp', var_name='Lead Paint'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.npl.supp', var_name='Superfund Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.rmp.supp', var_name='RMP Facility Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.tsdf.supp', var_name='Hazardous Waste Proximity'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.ust.supp', var_name='Underground Storage Tanks'),
-                     fill_tbl_row_ej(output_df, 'EJ.DISPARITY.proximity.npdes.supp', var_name='Wastewater Discharge')
-                     , sep='', collapse='\n')
+                      paste(tbl_rows_ej_supp, collapse = '\n'),
+                      sep = '', collapse = '\n')
   
   full_html <- paste(full_html, '</tbody>
 </table>', collapse = '\n')
@@ -258,35 +237,42 @@ fill_tbl_full_ej <- function(output_df) {
 #' Write a demographic subgroup indicator to an html table row
 #'
 #'@param output_df, single row of results table from doaggregate - either results_overall or one row of bysite
-#'@param var_value, variable name of indicator to pull from results, such as 'pm', 'pctlowinc', 'Demog.Index'
-#'@param var_name, nicer name of indicator to use in table row; can include HTML sub/superscripts
+#'@param Rname, variable name of indicator to pull from results, such as 'pm', 'pctlowinc', 'Demog.Index'
+#'@param longname, nicer name of indicator to use in table row; can include HTML sub/superscripts
+#'
+#' @keywords internal
+
+#' Write a demographic subgroup indicator to an html table row
+#'
+#'@param output_df, single row of results table from doaggregate - either results_overall or one row of bysite
+#'@param Rname, variable name of indicator to pull from results, such as 'pm', 'pctlowinc', 'Demog.Index'
+#'@param longname, nicer name of indicator to use in table row; can include HTML sub/superscripts
 #'
 #' @keywords internal
 #'
-fill_tbl_row_subgroups <- function(output_df, var_value, var_name) {
+fill_tbl_row_subgroups <- function(output_df, Rname, longname) {
   txt <- '<tr>'
   
   id_col <- 'selected-variables'
   txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
                 id_col,'\">',
-                var_name,'</td>')
+                longname,'</td>')
   
-  hdr_names <- c('value')
+  hdr_names <- 'value'
   
-  var_values <- paste0(c(''), var_value)
+  Rnames <- paste0(c(''), Rname)
   
-  for (j in seq_along(var_values)) {
-    cur_var <- var_values[j]
-    if ('data.table' %in% class(output_df)) {
-      cur_val <- round(100*output_df[, ..cur_var], 1)#round(output_df[,..cur_var],2)
-    } else {
-      cur_val <- round(100*output_df[, cur_var],1) #round(output_df[,cur_var],2)
-    }
-    txt <-  paste0(txt, '\n','<td headers=\"data-indicators-table-',
-                   hdr_names[j],'\">',
-                   cur_val,'%','</td>')
-    
+  cur_val <- if ('data.table' %in% class(output_df)){
+    output_df[, ..Rnames]
+  } else{
+    output_df[, Rnames]
   }
+  
+  txt <-  paste0(txt, '\n', paste0('<td headers=\"data-indicators-table-',
+                                   hdr_names,'\">',
+                                   cur_val,'%','</td>'))
+  
+  
   txt <- paste0(txt, '\n','</tr>')
   return(txt)
 }
@@ -330,35 +316,36 @@ fill_tbl_full_subgroups <- function(output_df) {
 <th colspan=\"7\">Limited English Speaking Breakdown</th>
   </tr>'
   
-  full_html <- paste(full_html, tbl_head, sep='\n')
+  full_html <- paste(full_html, tbl_head, sep = '\n')
   
-  var_values_d_race <- c('pctnhwa','pctnhba','pctnhaa','pcthisp',
-                         'pctnhaiana','pctnhnhpia','pctnhotheralone',
-                         'pctnhmulti')
-  var_names_d_race <- c('% White', '% Black','% Asian','% Hispanic',
-                        '% American Indian','% Hawaiian/Pacific Islander',
-                        '% Other Race','% Two or more races')
+  ## reorder indicators to match report order
+
   
-  tbl_rows_d_race <- sapply(seq_along(var_values_d_race), function(x) {
+  Rnames_d_race <- namesbyvarlist(varlist = 'names_d_subgroups')$rname
+  
+  longnames_d_race <- fixcolnames(Rnames_d_race, oldtype = 'r', newtype = 'long')
+  
+  tbl_rows_d_race <- sapply(seq_along(Rnames_d_race), function(x) {
     fill_tbl_row_subgroups(output_df,
-                           var_value = var_values_d_race[x],
-                           var_name=var_names_d_race[x])
+                           Rname = Rnames_d_race[x],
+                           longname = longnames_d_race[x])
   })
+ 
   full_html <- paste(full_html,
-                     paste(tbl_rows_d_race , collapse='\n'),
+                     paste(tbl_rows_d_race , collapse = '\n'),
                      
-                     sep='', collapse='\n')
+                     sep = '', collapse = '\n')
   full_html <- paste(full_html, tbl_head2,collapse = '\n')
   
   
-  var_values_d_gender <- c('pctmale','pctfemale')
+  Rnames_d_gender <- c('pctmale','pctfemale')
   
-  var_names_d_gender <- c('% Male', '% Female')
+  longnames_d_gender <- c('% Male', '% Female')
   
-  tbl_rows_d_gender <- sapply(seq_along(var_values_d_gender), function(x) {
+  tbl_rows_d_gender <- sapply(seq_along(Rnames_d_gender), function(x) {
     fill_tbl_row_subgroups(output_df,
-                           var_value = var_values_d_gender[x],
-                           var_name = var_names_d_gender[x])
+                           Rname = Rnames_d_gender[x],
+                           longname = longnames_d_gender[x])
   }
   )
   full_html <- paste(full_html,
@@ -367,14 +354,14 @@ fill_tbl_full_subgroups <- function(output_df) {
   
   full_html <- paste(full_html, tbl_head3, collapse = '\n')
   
-  var_values_d_lim <- c("pctspanish_li", "pctie_li", "pctapi_li", "pctother_li")
-  var_names_d_lim <- fixcolnames(var_values_d_lim, 'r', 'shortlabel')
-  # c('Speak Spanish', 'Speak Other Indo-European Languages','Speak Asian-Pacific Island Languages', 'Speak Other Languages')
+  Rnames_d_lim <- namesbyvarlist('names_d_languageli')$rname#intersect(names_d_language, names(blockgroupstats))  
+ # names_d_language_li
+  longnames_d_lim <- fixcolnames(Rnames_d_lim, 'r', 'short')
   
-  tbl_rows_d_lim <- sapply(seq_along(var_values_d_lim), function(x) {
+  tbl_rows_d_lim <- sapply(seq_along(Rnames_d_lim), function(x) {
     fill_tbl_row_subgroups(output_df,
-                           var_value = var_values_d_lim[x],
-                           var_name = var_names_d_lim[x])
+                           Rname = Rnames_d_lim[x],
+                           longname = longnames_d_lim[x])
   }
   )
   full_html <- paste(full_html,
@@ -460,7 +447,7 @@ generate_ej_header <- function() {
   '<br>
  <div id=\"page-2-header\" class=\"header\" style=\"background-color: #005ea2;  color: white; text-align: center; padding: 20px 32px 10px 32px;\">
             <h2 tabindex=\"8\" style=\"font-size: 18px; margin-bottom: 5px\">Environmental Justice & Supplemental Indexes</h2>
-            <p style=\"font-family: Oswald, Arial, sans-serif; font-size: 15px; padding-left: 20px;\">The environmental justice and supplemental indexes are a combination of environmental and socioeconomic information. There are thirteen EJ indexes and supplemental indexes in EJScreen reflecting the 13 environmental indicators. The indexes for a selected area are compared to those for all other locations in the state or nation. For more information and calculation details on the EJ and supplemental indexes, please visit the <a tabindex=\"9\" href=\"https://www.epa.gov/ejscreen\" style=\"color: white\">EJScreen website</a>. </p>
+            <p style=\"font-family: Oswald, Arial, sans-serif; font-size: 15px; padding-left: 20px;\">The environmental justice and supplemental indexes are a combination of environmental and socioeconomic information. For each of the environmental indicators in EJScreen, there is an EJ Index and a Supplemental EJ Index. The indexes for a selected area are compared to those for all other locations in the state or nation. For more information and calculation details on the EJ and supplemental indexes, please visit the <a tabindex=\"9\" href=\"https://www.epa.gov/ejscreen\" style=\"color: white\">EJScreen website</a>. </p>
         </div>
         <div style=\"background-color: #71bf44; color: white; text-align: center; padding: 0 32px 7px 32px;\">
             <h3  tabindex=\"10\" style=\"padding-top: 10px; margin-bottom: -10px; font-family: Arial, sans-serif; font-size: 23px;\">EJ INDEXES</h3>
@@ -477,6 +464,6 @@ generate_ej_header <- function() {
 generate_ej_supp_header <- function() {
   '<div style=\"background-color: #71bf44; color: white; text-align: center; padding: 0 32px 7px 32px;\">
     <h3 tabindex=\"11\" style=\"padding-top: 10px; margin-bottom: -10px; font-family: Arial, sans-serif; font-size: 23px;\">SUPPLEMENTAL INDEXES</h3>
-      <p style=\"font-family: Oswald, Arial, sans-serif; font-weight: 300; font-size: 16px; margin-bottom: -2px; padding-left: 20px;\">The supplemental indexes offer a different perspective on community-level vulnerability. They combine data on percent low-income, percent linguistically isolated, percent less than high school education, percent unemployed, and low life expectancy with a single environmental indicator.  </p>
+      <p style=\"font-family: Oswald, Arial, sans-serif; font-weight: 300; font-size: 16px; margin-bottom: -2px; padding-left: 20px;\">The supplemental indexes offer a different perspective on community-level vulnerability. Each one combines the Demographic Indicator with a single environmental indicator.  </p>
   </div>'
 }

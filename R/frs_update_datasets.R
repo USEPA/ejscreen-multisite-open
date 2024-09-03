@@ -1,29 +1,30 @@
 #' Main function that updates several FRS datasets for use in EJAM
-#' @details **This takes several minutes** to download and clean data files,
 #' 
+#' @details
+#' This takes several minutes to download and clean data files,
 #' and is used by someone maintaining the EJAM package, to obtain updated 
 #' Facility Registry Service (FRS) data on EPA-regulated sites.
 #'   
 #' To update the datasets in the R package from local source code, 
 #'   use frs_update_datasets(), in conjunction with the EJAM package.
 #'   
-#'  **This function is only for a package maintainer/updater or to update a local copy.**
+#'  This function is only for a package maintainer/updater or to update a local copy.
 #' 
 #'   For example to read back in a saved file, 
 #'   
-#'   #  frs <- arrow::read_ipc_file(file = file.path(folder_save_as_arrow, "frs.arrow"))
+#'     frs <- arrow::read_ipc_file(file = file.path(folder_save_as_arrow, "frs.arrow"))
 #'   
 #'   Or, more generally,
 #'   
 #'   to assign to default, current environment: 
 #'   
-#'   # varname <- "frs"
+#'   varname <- "frs"
 #'   
-#'   # fold <- folder_save_as_arrow # e.g., fold <- getwd()
+#'   fold <- folder_save_as_arrow # e.g., fold <- getwd()
 #'   
-#'   # fname <- paste0(varname, ".arrow")
+#'   fname <- paste0(varname, ".arrow")
 #'   
-#'   # assign(varname, value = arrow::read_ipc_file(file = file.path(fold, fname)))
+#'   assign(varname, value = arrow::read_ipc_file(file = file.path(fold, fname)))
 #'   
 #' @param folder optional folder for where to download to; uses temp folder by default
 #' @param folder_save_as_arrow optional folder where to save any .arrow files

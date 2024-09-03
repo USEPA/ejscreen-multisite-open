@@ -2,12 +2,10 @@
 % Please edit documentation in R/namesbyvarlist.R
 \name{namesbyvarlist}
 \alias{namesbyvarlist}
+\alias{varlist2names}
 \title{Get indicator names within a varlist like names_d}
 \usage{
-namesbyvarlist(
-  varlist,
-  nametype = c("rname", "longname_tableheader", "apiname")[1]
-)
+namesbyvarlist(varlist, nametype = c("rname", "longname", "apiname")[1])
 }
 \arguments{
 \item{varlist}{one character string like "names_d", or a vector of them}
@@ -22,7 +20,12 @@ a data.frame one row per indicator, one col per nametype and a column identifyin
 Get indicator names within a varlist like names_d
 }
 \details{
-Note names_d_friendly refers to the semi-long names to use in labels
+varlist2names() is a way to just get a vector of variable names even if the varlist is not stored as a separate data object
+and is only found in the map_headernames$varlist column:
+
+varlist2names(c('names_d', 'names_d_subgroups'))
+
+c(names_d, names_d_subgroups)
 }
 \examples{
  unique(map_headernames$varlist)
@@ -30,12 +33,14 @@ Note names_d_friendly refers to the semi-long names to use in labels
  namesbyvarlist('names_e_avg', 'rname')
  namesbyvarlist('names_d')
  namesbyvarlist('names_d', 'r')
- namesbyvarlist('names_d', 'friendly')
+ namesbyvarlist('names_d', 'long')
  namesbyvarlist('names_d', 'shortlabel')
  
- namesbyvarlist( 'names_e_pctile', c('r', 'longname_tableheader'))    
+ namesbyvarlist( 'names_e_pctile', c('r', 'longname'))    
  namesbyvarlist(c('names_e_pctile', 'names_e_state_pctile'), 
-   c('varlist', 'r', 'api',   'names_friendly', 'longname_tableheader'))
-
+   c('varlist', 'rname', 'apiname', 'csvname', 'shortlabel', 'longname'))
+}
+\seealso{
+\code{\link[=names_from_varlist]{names_from_varlist()}} \code{\link[=varlist2names]{varlist2names()}} \code{\link[=varin_map_headernames]{varin_map_headernames()}} \code{\link[=varinfo]{varinfo()}} \code{\link[=names_whichlist_multi_key]{names_whichlist_multi_key()}} \code{\link[=vnames]{vnames()}}
 }
 \keyword{internal}

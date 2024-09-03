@@ -5,7 +5,7 @@
 \title{View HTML Report on EJAM Results (Overall or at 1 Site)}
 \usage{
 ejam2report(
-  ejamout = testoutput_ejamit_10pts_1miles,
+  ejamitout = testoutput_ejamit_10pts_1miles,
   sitenumber = NULL,
   analysis_title = "EJAM Report",
   submitted_upload_method = c("latlon", "SHP", "FIPS")[1],
@@ -15,7 +15,7 @@ ejam2report(
 )
 }
 \arguments{
-\item{ejamout}{output as from \code{\link[=ejamit]{ejamit()}}, list with a data.table called \code{results_bysite}
+\item{ejamitout}{output as from \code{\link[=ejamit]{ejamit()}}, list with a data.table called \code{results_bysite}
 if sitenumber parameter is used, or a data.table called \code{results_overall} otherwise}
 
 \item{sitenumber}{If a number is provided, the report is about

@@ -16,12 +16,14 @@
 fixmapheadernamescolname <- function(x, 
                                      alias_list = list(
                                        rname = "r",
-                                       longname_tableheader = c("long", "longname", "longnames", "full", "description", "longname_tableheader", "header"),
-                                       shortlabel = c("short", "shortname", "shortnames", "shortlabel", "shortlabels", "labels", "label"),
-                                       apiname = c('api', 'apiname'),
-                                       csvname2.2 = c("csv", "csvname"),  # *** change with v 2.2 vs 2.3
-                                       newnames_ejscreenapi = "friendly",
-                                       oldnames = c("original", "old", "oldname", "oldnames")
+                                       longname = c("long", "longnames", "full", "description"),
+                                       shortlabel = c("short", "shortname", "shortnames", "labels", "label"),
+                                       acsname = 'acs',
+                                       apiname = 'api',
+                                       csvname = c("csv"),  # *** changed after v 2.2 
+                                       # csvname2.2 = "csvname2.2",         # *** changed after v 2.2
+                                       # SHOULD PHASE OUT "friendly" - CONFUSING TO USE friendly for long elsewhere but  rname here
+                                       oldname = c("original", "old", "oldnames")
                                      )) {
   
   # long is potentially a problem! 
@@ -33,12 +35,13 @@ fixmapheadernamescolname <- function(x,
   )
   
   # akas <- list(api = 'apiname',
-  #              csv = 'csvname2.2',
+  #              csv = 'csvname', 
+  #              acs = 'acsname',
   #              r =   'rname',
-  #              original = 'oldnames',
-  #              friendly = 'newnames_ejscreenapi',
-  #              long = 'longname_tableheader')
+  #              original = 'oldname',
+  #              long = 'longname')
   # x[x %in% names(akas)] <- as.vector(unlist(akas[match(x[x %in% names(akas)], names(akas))]))
+  
   return(x)
 }
 #################################################################### # 

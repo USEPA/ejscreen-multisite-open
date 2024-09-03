@@ -77,7 +77,8 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p>data.frame that is the output of ejscreen analysis, for example:</p>
-<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">ejscreenit</span>(testpoints_5)<span class="sc">$</span>table</span>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">ejscreenit</span>(testpoints_5)<span class="sc">$</span>table</span>
+
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> testoutput_ejscreenapi_plus_50</span></code></pre><p></p></div></dd>
 
 
@@ -125,7 +126,7 @@ from US block groups or people's bg scores)</p></li>
 <span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejscreenapi_plus_5</span></span>
 <span>  <span class="va">myradius</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">radius.miles</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span>  <span class="fu">boxplots_ratios</span><span class="op">(</span><span class="fu">ratios_to_avg</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">$</span><span class="va">ratios_d</span>, wheretext <span class="op">=</span> <span class="va">myradius</span><span class="op">)</span></span>
-<span>  <span class="co">#boxplots_ratios(ratios_to_avg(x)$ratios_e, wheretext = myradius)</span></span>
+<span>  <span class="co">#boxplots_ratios(calc_ratios_to_avg(x)$ratios_e, wheretext = myradius)</span></span>
 <span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

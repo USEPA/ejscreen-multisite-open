@@ -11,6 +11,13 @@ vignette: >
 ```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
 #  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
 #    - **See ?pkgdown::build_site** and script in EJAM/data-raw/- EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
+
+
+# THIS ARTICLE IN PARTICULAR IS NOT UPDATED FOR VERSION 2.32 
+# AND NOT REVISED SINCE MOVING MOST CONTENT TO EJAM PACKAGE
+# AND NOT CHECKED WITH MODULE OR EJAM AT ALL
+# SO IT IS NOT READY TO BE USED
+
 ```
 
 ```{r SETUP_default_eval_or_not, include = FALSE}
@@ -114,21 +121,17 @@ x$table
 
 ### Get EJScreen results tables in a local web app \*\*\*not tested
 
-```{r run_app_EJAMejscreenapi, eval = FALSE}
-### *** NOT TESTED - MAY NO LONGER WORK AS SHIFT TO USING MODULE VERSION
-# If you have the local source package EJAMejscreenapi you can do this:
-# setwd("YOUR PATH GOES HERE  EJAMejscreenapi")
-library(EJAMejscreenapi)
-EJAMejscreenapi::run_app()
+```{r app_run_EJAMejscreenapi, eval = FALSE}
+### *** NOT TESTED - MAY NO LONGER WORK AS SHIFT TO USING MODULE VERSION and update to v2.32
+
+EJAM::app_run_EJAMejscreenapi()
+
 ```
 
 ### Get EJScreen results tables in a local web app module \*\*\*not tested
 
 ```{r api_module, eval = FALSE}
-library(EJAMejscreenapi) 
-library(shiny); library(magrittr); library(leaflet)  
-# must attach all of those manually for this to work?
-source(system.file("global.R", package = "EJAMejscreenapi"))
+
 default_calculate_ratios <- TRUE
 use_ejscreenit_tf <- FALSE
 ######################### #
@@ -233,9 +236,9 @@ out1 <- out1[!(1:NROW(out1) %in% missingdatarows), ]
 
 # Compare Speeds for EJAM and EJScreen API
 
-EJAM is designed to provide results for large numbers of sites very quickly, so it can analyze well over 100,000 sites per hour, and can analyze 1,000 sites in something like 10 to 20 seconds (assuming it has already been initialized with loaded data and indexing, which needs to be done once up front and can take a minute). Using the EJScreen API by contrast as of early 2024 took well over 100 times as long.
+EJAM is designed to provide results for large numbers of sites very quickly, so it can analyze well over 100,000 sites per hour, and can analyze 1,000 sites in something like 10 to 20 seconds (assuming it has already been initialized with loaded data and indexing, which needs to be done once up front and can take a minute). Using the EJScreen API by contrast as of mid 2024 took well over 100 times as long.
 
-There are some (internal / not necessarily all exported) EJAM and EJAMejscreenapi functions:
+There are some (internal / not necessarily all exported) EJAM functions that are relevant:
 
 -   speedreport
 
