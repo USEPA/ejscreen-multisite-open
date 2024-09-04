@@ -297,10 +297,10 @@ app_server <- function(input, output, session) {
     #
     if ("working_HERE?" == "working_NOT_IN_SHINY_ONLY") { 
       
-      # newer way
+      # newer way drafted
       
       shp <- shapefile_from_any(infiles, cleanit = FALSE)
-      if (failed) {
+      if (is.null(shp)) {
         # cant read file type specified ____________________________________
         disable_buttons[['SHP']] <- TRUE
         shiny::validate('Not all required file extensions found.')
@@ -381,7 +381,7 @@ app_server <- function(input, output, session) {
       }
       disable_buttons[['SHP']] <- FALSE                                                 # a reactiveValues object
       shp_proj$valid <- shp_is_valid
-      shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)
+      shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)   #  UNIQUE ID HERE
       shp_proj$invalid_msg <- NA
       shp_proj$invalid_msg[shp_proj$valid == F] <- shp_valid_check$reason[shp_proj$valid == F]
       shp_proj$invalid_msg[is.na(shp_proj$geometry)] <- 'bad geometry'
@@ -1870,7 +1870,7 @@ app_server <- function(input, output, session) {
         out <- suppressWarnings(
           doaggregate(
             sites2blocks = sites2blocks,
-            sites2states_or_latlon = d_upload,                        # already removed invalids
+            sites2states_or_latlon = d_upload,   #  ??? seems wrong - for shp case, this was set as  d_upload <- sites2blocks  why?
             radius = input$bt_rad_buff,
             #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
             subgroups_type = input$subgroups_type, # nh, alone, or both # or use default of doaggregate() based on whatever subgroups_d etc are now ***
