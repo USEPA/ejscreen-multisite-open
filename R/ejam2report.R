@@ -119,6 +119,8 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
       in_shiny = FALSE,
       filename = temp_comm_report_or_null # passing NULL should make it return the html object
     )
+    cat(x, file = temp_comm_report)
+    
     if (launch_browser) {
       browseURL(temp_comm_report)
     }
