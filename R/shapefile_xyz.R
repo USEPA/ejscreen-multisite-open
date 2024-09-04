@@ -57,7 +57,7 @@
 #' @param layer optional layer name passed to [sf::st_read()]
 #' @param ... passed to [sf::st_read()]
 #' 
-#' @return a shapefile object using [sf::st_read()]
+#' @return a simple feature [sf::sf] class object using [sf::st_read()]
 #' @seealso [shapefile_from_folder()]
 #'
 #' @export
@@ -66,14 +66,14 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
   
   # test cases:  see unit tests file
   
-  # if already a shapefile object, just return it as-is but use cleanit and crs (and layer??)
+  # if already a sf object, just return it as-is but use cleanit and crs (and layer??)
   if ("sf" %in% class(path)) {
     if (cleanit) {
       path <- shapefile_clean(path, crs = crs)  # includes st_transform(path, crs)
     } else {
       path <- sf::st_transform(path, crs = crs)
     }
-    return(path)
+    return(path) # input param called "path" actually was already a spatial object so just return it
   }
   
   # if path invalid/not provided, ask RStudio user to specify a file or folder
@@ -84,6 +84,15 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
       path <- rstudioapi::selectFile(caption = "Select a file (zip, shp, dbf, json, etc.) [or Cancel to specify a whole folder]", path = getwd(), existing = TRUE)
       if (is.null(path)) {
         path <- rstudioapi::selectDirectory(caption = "Select Folder", path = getwd())
+      }
+      if (any(is.null(path)) || any(is.na(path)) || any(length(path)) == 0 || any(!is.character(path)) || !is.atomic(path)) {
+        # if they clicked Cancel or something else went wrong
+        if (shiny::isRunning()) {
+          warning("need to specify valid path")
+          return(NULL)
+        } else {
+          stop("need to specify valid path")
+        }
       }
       
     } else {
