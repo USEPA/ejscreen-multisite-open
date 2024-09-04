@@ -250,7 +250,8 @@ ejamit <- function(sitepoints,
     shp_valid <- shp[shp$valid, ]
     
     ##################################### #
-    # . radius (buffer) ####
+    
+    # . radius (buffer) for polygons ####
     if (missing(radius)) {
       if (interactive() && !silentinteractive && !in_shiny && rstudioapi::isAvailable()) {
         radius <- askradius(default = 0, message = "To add a buffer around each polygon, enter distance in miles. For none, use 0.")
@@ -264,7 +265,7 @@ ejamit <- function(sitepoints,
     }
     ##################################### #
     if (!silentinteractive) {cat('Finding blocks whose internal points are inside each polygon.\n')}
-    
+
     # . get_blockpoints_in_shape() ####
     
     mysites2blocks <- get_blockpoints_in_shape(shp_valid)$pts
@@ -298,7 +299,6 @@ ejamit <- function(sitepoints,
       )
     )
     
-    
     ################################################################ #
     
     ## Handle sites dropped during getblocksnearby or doaggregate steps
@@ -324,7 +324,11 @@ ejamit <- function(sitepoints,
     
     # getblocksnearby_from_fips() should include doing something like fips_lead_zero() ?
     # but also want to know what type each fips is (probably all should be same like all are tracts or all are county fips)
-    radius <- 999 # use this value when analyzing by fips not by circular buffers.
+    
+    ## . radius is ignored for fips ####
+    radius <- 999 # use this value when analyzing by fips not by circular buffers, as input to doaggregate(),
+    # then in output of doaggregate()$results_bysite$radius.miles is returned as 0 for every fips, as in _overall. 
+    if (!missing(radius) && radius != 0 && radius != 999) {warning("radius was specified, but will be ignored as irrelevant when analyzing fips")}
     
     ## . getblocksnearby_from_fips() ####
     
@@ -380,6 +384,8 @@ ejamit <- function(sitepoints,
     
     # * LAT/LON POINTS ####
     
+    ## . getblocksnearby() ####
+
     ################################################################################## #
     # note this overlaps or duplicates code in app_server.R   for data_up_latlon()  and data_up_frs() 
     
@@ -407,8 +413,6 @@ ejamit <- function(sitepoints,
     stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
     
     ###   *** should we drop all columns other than lat,lon,ejam_uniq_id ? ST? user might have provided a huge number of columns/ waste of memory.
-    
-    
     
     ##################################### #
     ## . radius ####
