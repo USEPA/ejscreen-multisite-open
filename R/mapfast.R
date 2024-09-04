@@ -43,14 +43,60 @@ mapfastej <- function(...) {
 mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names, browse = FALSE, color = "#03F") {
   
   if (data.table::is.data.table(mydf)) {mydf <- as.data.frame(mydf)} # in case it was a data.table
+  if (!is.data.frame(mydf)) {
+    # might want to allow a vector of fips?
+    if (is.atomic(mydf)) {mydf = data.frame(fips = mydf)} else {
+      warning("cannot map - mydf must be a data.frame or data.table")
+      return(NA)
+    }}
+  ######################################## # 
+  # popups ####
+  
+  # popup_from_ejscreen() code was written to assume rnames (as from ejscreenapi_plus) not longnames (as from ejscreenit),
+  # so try to accomodate that here if user provided output of ejscreenit() or long names in general
+  # popup_from_ejscreen() needs to flexibly allow long format names as input.
+  # ejscreenit() and app_server already handle this issue by renaming to rnames before calling popup_from_ejscreen()
+  names(mydf) <- fixcolnames(names(mydf), "long", "r") # if already r, this does nothing. if long, it makes them r format so popup_from_ejscreen() will work
+  
+  if (column_names[1] == 'ej') {
+    
+    ejcols <- c(names_ej, names_ej_state, names_ej_supp, names_ej_supp_state)
+    if (!all(ejcols %in% names(mydf))) {
+      if (!any(ejcols %in% names(mydf))) {
+        # mypop <- popup_from_ejscreen(mydf) # use this if   popup_from_ejscreen() is made able to handle missing
+        mypop <- popup_from_df(mydf) ## ignoring labels here?
+        warning('No EJ columns found. Popups will use all columns. Ignoring column_names and labels.')
+      } else {
+        # mypop <- popup_from_ejscreen(mydf) # use this if   popup_from_ejscreen() is made able to handle missing
+        mypop <- popup_from_df(mydf) ## ignoring labels here?
+        warning('Not all EJ columns found. Popups will use all columns. Ignoring column_names and labels.')
+      }
+    } else {
+      mypop <- popup_from_ejscreen(mydf)
+    }
+    
+  } else if (column_names[1] == 'all') {
+    mypop <- popup_from_df(mydf)
+  } else {
+    if (!all(column_names %in% names(mydf))) {
+      warning('Not all column_names found. Popups will use all columns. Ignoring column_names and labels.')
+      mypop <- popup_from_df(mydf)
+    } else {
+      mypop <- popup_from_df(mydf, column_names = column_names, labels = labels)
+    }
+  }
+  ######################################## # 
+  
+  # no lat,lon? ####
+  
   renamed <- mydf # use new names for lat and lon if necessary, but show original names in popup
   names(renamed) <- latlon_infer(names(renamed))
   
   if (all(is.na(renamed$lat)) || all(is.na(renamed$lon))) {
-    warning('no valid lat lon values to map')
+    message("no lat,lon values found")    
+    rm(renamed)
     
-    # check if FIPS
-    
+    ## fips? ####
     suppressWarnings( { fips <- fips_from_table(mydf) })
     if (is.null(fips) && "ejam_uniq_id" %in% names(mydf)) {
       # maybe ejam_uniq_id is a fips code
@@ -60,66 +106,59 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
       }
     }
     if (!is.null(fips)) {
+      message("no lat/lon found, but FIPS seem to be present")
       # try to map fips, e.g., counties or blockgroups at least.
       if (all(fipstype(fips) == "county")) {
-        return( 
-          mapfastej_counties(fips) 
-        ) 
         ######## ignores other parameters so far 
-        # and presumes ejamit()$results_bysite output columns here ***
+        # and presumes ejamit()$results_bysite output columns here ***  
+        #  add popup info here
+        x <-  mapfastej_counties(fips)   # may fail if wrong colnames !
+        if (browse) {  map2browser(x) }
+        return(x) 
       }
       if (all(fipstype(fips) == "blockgroup")) {
-        return(
-          shapes_blockgroups_from_bgfips(fips) 
-        ) 
         ######## ignores other parameters so far 
-        # and lacks popups ***
+        #  add popup info here and in map_shapes_leaflet()
+        x <- map_shapes_leaflet(
+          shapes_blockgroups_from_bgfips(fips),
+          popup = mypopup
+        )
+        if (browse) {  map2browser(x) }
+        return(x) 
       }
       warning('FIPS values found but not all are counties or blockgroups. Other types are not implemented here.')
       return(NA)
       
     } else {
       
-      # check if shapefile
-      
+      # not latlon or fips, so check if shapefile
+      # shp? ####
       if ("sf" %in% class(mydf)) {
         # try to map shapefile
-        return( map_shapes_leaflet(mydf) )
+        x = try(map_shapes_leaflet(mydf))     
+        if (inherits(x, "try-error")) {
+          warning('Could not map shapefile')
+          return( NA )
+        } else {
+          if (!missing(radius)) {
+            warning("radius parameter ignored - assuming it was already added as a buffer around polygons")
+          }
+          if (browse) {  map2browser(x) }
+          return(x)
+        }
+      } else {
+        warning('no valid lat lon values or FIPS or shapefile to map')
+        return(NA)
       }
-      return(NA)
-    }
-    
-    
-  } #else is latlon
-  
-  if (column_names[1] == 'ej') {
-    
-    ejcols <- c(names_ej, names_ej_state, names_ej_supp, names_ej_supp_state)
-    if (!all(ejcols %in% names(mydf))) {
-      warning('Not all EJ columns found. Please provide a different dataset.')
-      ejcols <- ejcols[ejcols %in% names(mydf)]
-      # return(NA)
-    }
-    # popup_from_ejscreen() code was written to assume rnames (as from ejscreenapi_plus) not longnames (as from ejscreenit),
-    # so try to accomodate that here if user provided output of ejscreenit() or long names in general
-    # popup_from_ejscreen() needs to flexibly allow long format names as input.
-    # ejscreenit() and app_server already handle this issue by renaming to rnames before calling popup_from_ejscreen()
-    names(mydf) <- fixcolnames(names(mydf), "long", "r") # if already r, this does nothing. if long, it makes them r format so popup_from_ejscreen() will work
-    mypop <- popup_from_ejscreen(mydf)
-  } else if (column_names[1] == 'all') {
-    mypop <- popup_from_df(mydf)
-  } else {
-    if (!all(column_names %in% names(mydf))) {
-      warning('Not all column_names found. Mapping without popups. Please provide a different list to include popups.')
-      mypop <- NULL
-    } else {
-      mypop <- popup_from_df(mydf, column_names = column_names, labels = labels)
+      ########################################### # 
     }
   }
   
+  # radius ####
   radius.meters <- radius * meters_per_mile # data loaded by pkg
   # units are meters for addCircles, and pixels for addCircleMarkers
   
+  # latlon ####
   x <- leaflet::leaflet(data = renamed) |> leaflet::addTiles() |>
     leaflet::addCircles(lng = ~lon, lat = ~lat, radius = radius.meters, color = color,
                         popupOptions = list(maxHeight = 400, maxWidth = 850),
@@ -133,6 +172,9 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     browseURL(fname)
     cat(fname, "\n")
   }
+  
   return(x)
 }
 ############################################################################ #
+
+
