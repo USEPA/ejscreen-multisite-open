@@ -14,9 +14,9 @@
 #'
 ejamit_sitetype_check <- function(sitepoints, fips=NULL, shapefile=NULL) { 
   
-  if (!is.null(shapefile)) {
+  if (!is.null(shapefile) || !missing(shapefile)) {
     sitetype <- "shp"
-  } else if (!is.null(fips)) {
+  } else if (!is.null(fips) || !missing(fips)) {
     sitetype <- "fips"
   } else {
     sitetype <- "latlon" # if none of 3 is specified, tries to interactively select file of latlon

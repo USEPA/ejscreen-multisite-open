@@ -303,8 +303,8 @@ ejamit <- function(sitepoints,
     
     ## Handle sites dropped during getblocksnearby or doaggregate steps
     dup <- shp  # all rows, including invalid ones
-    dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
-    dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
+    dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% mysites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
+    dup$valid <- dup$ejam_uniq_id %in% mysites2blocks$ejam_uniq_id
     dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
     dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
     
