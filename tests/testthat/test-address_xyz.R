@@ -66,6 +66,7 @@ testthat::test_that("address_from_table works", {
 ###################### #
 
 testthat::test_that("latlon_from_address works", {
+  skip_if_not_installed("AOI")
   if (!exists("geocode")) {
     library(AOI)
     cat("MUST LOAD AOI PKG FOR THIS geocode to work \n\n")
@@ -91,7 +92,13 @@ testthat::test_that("latlon_from_address works", {
 })
 ###################### #
 
+testthat::test_that("latlon_from_address err if too many addresses", {
+  testthat::expect_error(latlon_from_address(rep("a", 1001)))
+  })
+###################### #
+
 testthat::test_that("latlon_from_address_table works on test_address_table", {
+  skip_if_not_installed("AOI")
   testthat::expect_no_error({
     x <- latlon_from_address_table(test_address_table)
   })
@@ -112,6 +119,8 @@ testthat::test_that("latlon_from_address_table works on test_address_table", {
 ###################### #
 
 testthat::test_that("odd case- latlon_from_address_table works on test_address_table_withfull", {
+  
+  skip_if_not_installed("AOI")
   
   x <- latlon_from_address_table(test_address_table_withfull)
   
