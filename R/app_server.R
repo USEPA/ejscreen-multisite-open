@@ -295,110 +295,99 @@ app_server <- function(input, output, session) {
     
     ####### SHOULD REPLACE WITH CODE IN NEW FUNCTIONS that avoid saving uploaded shapefiles locally on server LIKE shapefile_from_filepaths() ***
     #
-    if ("working_HERE?" == "working_NOT_IN_SHINY_ONLY") { # new way. works outside shiny, at least.
+    if ("working_HERE?" == "working_NOT_IN_SHINY_ONLY") { 
       
-      if (!shapefile_filepaths_valid(filepaths = infiles)) { # done by shapefile_from_filepaths() too but this allows shiny validate()
+      # newer way
+      
+      shp <- shapefile_from_any(infiles, cleanit = FALSE)
+      if (failed) {
+        # cant read file type specified ____________________________________
         disable_buttons[['SHP']] <- TRUE
-        validate('Not all required file extensions found.')
+        shiny::validate('Not all required file extensions found.')
       }
-      shp <- shapefile_from_filepaths(infiles, cleanit = FALSE) # cleanit = FALSE allows shiny to handle that with messages
-      # numna <- nrow(shp[!sf::st_is_valid(shp),])
-      numna <- nrow(shp[!sf::st_is_valid(shp) | sf::st_is_empty(shp), ]) # now counts and removes polygons that are not valid but also if "empty"
-      invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
-      shp <- shapefile_clean(shp) # uses default crs = 4269;  drops invalid rows or return NULL if none valid  # shp <- sf::st_transform(shp, crs = 4269) # done by shapefile_clean()
-      shp$valid <- !sf::st_is_empty(shp)
       
-      #shp[!sf::st_is_empty(shp), ] # *** remove this if shapefile_clean() will do it
-      
-      #shp <- shp[!sf::st_is_empty(shp), ] # *** remove this if shapefile_clean() will do it
-      if (is.null(shp)) {
-        invalid_alert[['SHP']] <- 0 # hides the invalid site warning
-        an_map_text_shp(HTML(NULL)) # hides the count of uploaded shapes
-        disable_buttons[['SHP']] <- TRUE
-        shiny::validate('No shapes found in file uploaded.')
-      }
-      disable_buttons[['SHP']] <- FALSE
-      
-      
-      shp <- cbind(ejam_uniq_id = 1:nrow(shp), shp)
-      class(shp) <- c(class(shp), 'data.table')
-      shp
-      ####### #    #######     ####### #
+
     } else {
       
       # older way
       
+      # detect type of file(s) specified, and read it
       infile_ext <- tools::file_ext(infiles)
-      
-      if ((!all(c('shp','shx','dbf','prj') %in% infile_ext)) & (all(!(c('zip') %in% infile_ext)))) {
+      if (!all(c('shp','shx','dbf','prj') %in% infile_ext) && !('zip' %in% infile_ext) && !('json' %in% infile_ext)) {
+        # cant read file type specified ____________________________________
         disable_buttons[['SHP']] <- TRUE
         shiny::validate('Not all required file extensions found.')
       }
-      if (length(infile_ext) == 1 & any(grepl("zip",infile_ext))) {
+      if (length(infile_ext) == 1 & any(grepl("json", infile_ext))) {
+        # read json file ____________________________________
+        shp <- shapefile_from_json(infiles)
         
-        #read in zip file
-        shp <- shapefile_from_zip(infiles)
-        
-        
-        #Standard shapefile upload with temp directory upload
-      }else{
-        dir <- unique(dirname(infiles)) # get folder (a temp one created by shiny for the uploaded file)
-        outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path\name from temp dir plus original filename of file selected by user to upload
-        name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # ??? get filename minus extension, of 1 file selected by user to upload
-        purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
-        
-        shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
-        
-        
+      } else {
+        if (length(infile_ext) == 1 & any(grepl("zip", infile_ext))) {
+          # read zip file____________________________________
+          shp <- shapefile_from_zip(infiles)
+          
+        } else {
+          # read .shp etc.____________________________________
+          dir <- unique(dirname(infiles)) # get folder (a temp one created by shiny for the uploaded file)
+          outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path\name from temp dir plus original filename of file selected by user to upload
+          name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # ??? get filename minus extension, of 1 file selected by user to upload
+          purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
+          shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+        }
       }
-      
-      #if NULL is return from shapefile_xyz, present message in app
+    }
+      # if shp is null, present message in app
       if (is.null(shp)) {
-        disable_buttons[['SHP']] <- TRUE
-        shiny::validate("Uploaded file should contain the following file extensions: shp, shx, dbf, prj")
+        disable_buttons[['SHP']] <- TRUE                                # a reactiveValues object
+        shiny::validate("Uploaded file should contain the following file extensions: shp,shx,dbf,prj or json or zip")
       }
       
-      #if polygon contains point features, present message in app
+      # if shp contains point features, present message in app
       if (any(sf::st_geometry_type(shp) == "POINT")) {
-        disable_buttons[['SHP']] <- TRUE
+        disable_buttons[['SHP']] <- TRUE                                # a reactiveValues object
         shiny::validate("Shape file must be of polygon geometry.")
       }
       
+      # Drop Z and/or M dimensions from feature geometries, resetting classes appropriately
       shp <- sf::st_zm(shp)
       
-      # standardize shapefile geometry (not always stardard variable name)
-      if (any(grepl("sfc",lapply(shp,class)))) {
-        colnames(shp)[grepl("sfc",lapply(shp,class))] <- "geometry"
+      # standardize colname to "geometry" since standard name not always seen. Can be "Shape" for example: shp <- shapefile_from_any(system.file('testdata/shapes/portland.gdb.zip', package = "EJAM"))  
+      if (any(grepl("sfc", lapply(shp, class)))) {
+        colnames(shp)[grepl("sfc", lapply(shp, class))] <- "geometry"
         st_geometry(shp) <- "geometry"
       }
+      
+      # check if shp is valid, and
+      # add "valid" and "invalid_msg" columns re invalid rows/polygons
       
       if (nrow(shp) > 0) {
         ## terra provides faster valid check than sf
         shp_valid_check <- terra::is.valid(terra::vect(shp), messages = T)
         shp_is_valid <- shp_valid_check$valid
         numna <- sum(!shp_is_valid)
-        num_valid_pts_uploaded[['SHP']] <- length(shp_is_valid) - sum(!shp_is_valid)
-        invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
-        #shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
+        num_valid_pts_uploaded[['SHP']] <- length(shp_is_valid) - sum(!shp_is_valid)    # a reactiveValues object
+        invalid_alert[['SHP']] <- numna                                                 # a reactiveValues object 
+        #shp_valid <- shp[sf::st_is_valid(shp),] # old way to check which shapes valid 
         shp_valid <- dplyr::mutate(shp, siteid = dplyr::row_number())
         shp_proj <- sf::st_transform(shp_valid,crs = 4269)
       } else {
-        invalid_alert[['SHP']] <- 0 # hides the invalid site warning
-        an_map_text_shp(HTML(NULL)) # hides the count of uploaded sites/shapes
-        disable_buttons[['SHP']] <- TRUE
+        # zero polygons found
+        invalid_alert[['SHP']] <- 0  # hides invalid site warning                       # a reactiveValues object
+        an_map_text_shp(HTML(NULL))  # hides the count of uploaded sites/shapes         # a reactiveValues object
+        disable_buttons[['SHP']] <- TRUE                                                # a reactiveValues object
         ## if not matched, return this message
         shiny::validate('No shapes found in file uploaded.')
       }
-      disable_buttons[['SHP']] <- FALSE
+      disable_buttons[['SHP']] <- FALSE                                                 # a reactiveValues object
       shp_proj$valid <- shp_is_valid
       shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)
       shp_proj$invalid_msg <- NA
       shp_proj$invalid_msg[shp_proj$valid == F] <- shp_valid_check$reason[shp_proj$valid == F]
-      
       shp_proj$invalid_msg[is.na(shp_proj$geometry)] <- 'bad geometry'
       class(shp_proj) <- c(class(shp_proj), 'data.table')
       shp_proj
-    }
+
     
   }) # END OF SHAPEFILE UPLOAD
   
@@ -406,7 +395,6 @@ app_server <- function(input, output, session) {
   
   ## *** note: repeated file reading code below could be replaced by  latlon_from_anything() ####
   #  ext <- latlon_from_anything(input$ss_upload_latlon$datapath)
-  
   
   ## reactive: latlon is typed in on-screen via MODULE *** ####
   # see also  EJAM/R/mod_dataentry_EXAMPLE.R
