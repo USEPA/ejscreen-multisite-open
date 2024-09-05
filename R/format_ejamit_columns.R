@@ -34,47 +34,56 @@ format_ejamit_columns <- function(df, nms=c()){
   
   if(length(nms)==0 | is.null(nms)){
     warning('No valid names found. Please provide names of columns using the nms argument.')
-    return(NULL)
+    return(df)
   }
   
   nms <- nms[nms %in% map_headernames$rname]
-  if(length(nms) == 0){return(NULL)}
+  if(length(nms) == 0){return(df)}
   decimal_num <- as.numeric(fixcolnames(nms, 'rname','decimals'))#varinfo(nms, 'decimals')$decimals)
   sigfig_num <- as.numeric(fixcolnames(nms, 'rname','sigfigs')) #varinfo(nms, 'sigfigs')$sigfigs)
   
   is.percentage <- as.logical(fixcolnames(nms, 'rname','pct_as_fraction_ejamit')) 
   is.percentage[is.na(is.percentage)] <- FALSE
   # df_display <- df  
-  raw_values <- unlist(df[, ..nms])
-  formatted_values <- rep(NA, length(raw_values))
-  for(i in seq_along(is.percentage)){
+  #raw_values <- unlist(df[, ..nms])
+  #formatted_values <- rep(NA, length(raw_values))
+  for(i in seq_along(nms)){
+    colname <- nms[i]
+    cur_value <- df[[colname]]
     
-    cur_value <- raw_values[i]
+    if(!is.numeric(cur_value)){
+      warning(paste("Skipping non numeric:", colname))
+      next
+     }
+    #  else{
+    #   warning(paste("not skipping:", colname))
+    # }
+    
     if(is.percentage[i] == TRUE){
       if(is.na(decimal_num[i])){
-        cur_value <-  
+        df[[colname]] <-  
           scales::label_percent(scale=100, accuracy=1)(cur_value)
       } else {
-        cur_value <-  
+        df[[colname]] <-  
           scales::label_percent(scale=100, accuracy=1/(10^decimal_num[i]))(cur_value)
       }
       
     } else {
       if(!is.na(decimal_num[i])){
-        cur_value <- round(cur_value, digits = decimal_num[i]) 
+        df[[colname]] <- round(cur_value, digits = decimal_num[i]) 
       }
       if(!is.na(sigfig_num[i])){
-        cur_value <- signif(cur_value, digits = sigfig_num[i])
+        df[[colname]] <- signif(cur_value, digits = sigfig_num[i])
       }
-      cur_value <- scales::label_comma(accuracy = ifelse(is.na(decimal_num[i]), 1,
+      df[[colname]] <- scales::label_comma(accuracy = ifelse(is.na(decimal_num[i]), 1,
                                                          1/(10^decimal_num[i])))(cur_value)
     }
-    formatted_values[i] <- cur_value
+    
   }
   
- 
-  names(formatted_values) <- nms
-  return(formatted_values)
+  return(df)
+  #names(formatted_values) <- nms
+  #return(formatted_values)
   #return(data.frame(raw = raw_values, fmt = formatted_values))
   #return(df)
   #df_display[, nms] <- formatted_values

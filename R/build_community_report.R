@@ -38,7 +38,9 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
   #r100x <- colnames(output_df_rounded) %in% setdiff(c(names_d, names_d_avg, names_d_state_avg), names_demog_index) # units were 0-1 not 0-100
   #r100x <- setdiff(r100x, names_demog_index)
   #output_df_rounded[, r100x] <- 100 * (output_df_rounded[, r100x])
-  output_df_rounded <- fix_pctcols_x100(output_df_rounded, cnames = names_pct_as_fraction_ejamit)
+  
+  
+  #output_df_rounded <- fix_pctcols_x100(output_df_rounded, cnames = names_pct_as_fraction_ejamit) #No need for this iwth format_ejamit_col
   expandedVarlist <- c()
 
   for (var in varlist){
@@ -47,27 +49,28 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
     }
   }
 
-
-  for (colname in colnames(output_df_rounded)){
-    if (colname %in% expandedVarlist){
-   
-      
-      roundingPrecision <- table_rounding_info(var = colname)
-      if(!is.na(roundingPrecision)){
-        output_df_rounded[[colname]] <- round(output_df_rounded[[colname]], roundingPrecision)
-        
-      }
-    }
+  #No need for this with format_ejamit_columns.R
+  # for (colname in colnames(output_df_rounded)){
+  #   if (colname %in% expandedVarlist){
+  # 
+  # 
+  #     roundingPrecision <- table_rounding_info(var = colname)
+  #     if(!is.na(roundingPrecision)){
+  #       output_df_rounded[[colname]] <- round(output_df_rounded[[colname]], roundingPrecision)
+  # 
+  #     }
+  #   }
+  # 
+  # 
+  # }
+  # 
+  # names_present <- varinfo(var = names(output_df_rounded), info = 'varlist')
+  # 
+  # 
+  # pctsign <- colnames(output_df_rounded) %in% setdiff(c(names_d, names_d_avg, names_d_state_avg), names_demog_index)
+  # output_df_rounded[, pctsign] <- paste0(output_df_rounded[, pctsign], "%")
   
-    
-  }
-  
-  names_present <- varinfo(var = names(output_df_rounded), info = 'varlist')
-
-  
-  pctsign <- colnames(output_df_rounded) %in% setdiff(c(names_d, names_d_avg, names_d_state_avg), names_demog_index)
-  output_df_rounded[, pctsign] <- paste0(output_df_rounded[, pctsign], "%")
-  
+  output_df_rounded <- format_ejamit_columns(output_df_rounded, expandedVarlist)
   
   full_page <- paste0(
     generate_html_header(analysis_title, totalpop, locationstr, in_shiny = in_shiny),
