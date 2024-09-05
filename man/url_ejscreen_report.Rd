@@ -16,7 +16,8 @@ url_ejscreen_report(
   namestr = "",
   wkid = 4326,
   unit = 9035,
-  f = "report"
+  f = "report",
+  interactiveprompt = TRUE
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ url_ejscreen_report(
 \item{unit}{default is 9035 which means miles; for kilometers use 9036}
 
 \item{f}{can be "report" or "pjson" or "json"}
+
+\item{interactiveprompt}{passed to sitepoints_from_anything()}
 }
 \value{
 URL(s)

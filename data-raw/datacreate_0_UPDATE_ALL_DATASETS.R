@@ -1,15 +1,15 @@
 ############################################################### #
-
 ## Scripts to update / create latest versions of datasets 
-# ANNUAL blockgroup data from ACS and EJScreen
-# NON-ANNUAL (frequent, episodic, etc.) other datasets
-# see EJAM's github issues about this
+# - ANNUAL blockgroup data from ACS and EJScreen
+# - NON-ANNUAL (frequent, episodic, etc.) other datasets
+# also see EJAM pkg github issues about this.
 
 # SETUP ####
 
 rm(list = ls())
-#localfolder <-  "~/../Downloads/ejscreen new ftp downloads"
-localfolder <- "~/../Downloads/EJAMbigfiles"
+
+#localfolder <- "~/../Downloads/ejscreen new ftp downloads"
+localfolder  <- "~/../Downloads/EJAMbigfiles"
 if (interactive()) {localfolder <- rstudioapi::selectDirectory("Confirm where to archive .arrow and other files locally", path = localfolder) }
 if (!dir.exists(localfolder)) {stop(paste0("need valid localfolder - ", localfolder, " was not found"))}
 if (!exists("td")) {td <- tempdir() }
@@ -20,36 +20,56 @@ if (interactive()) {
   askquestions <- askYesNo("Do you want to answer questions interactively like this about what to save where, etc.? (vs running all scripts without pauses)")
   if (is.na("askquestions")) {askquestions <- FALSE}
 }
+######### #
+consoleclear <- function() {
+  if (interactive() & rstudioapi::isAvailable()) {rstudioapi::executeCommand("consoleClear")}}
+loadall <- function() {
+  cat("\nReloading from source so that the updated datasets will get lazyloaded instead of previously loaded or installed versions...\n\n")
+  devtools::load_all()}
+rmost2 <- function(notremove = c(
+  c("askquestions", "localfolder", "td", "rawdir", 
+    "source_maybe", "consoleclear" ,  "reload", "rmost2", "loadall"),
+  "blockwts", "blockpoints", "blockid2fips", "quaddata", "localtree",
+  "bgej", "bgid2fips",
+  "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact"
+)) {rmost(notremove = notremove)}
 ######################################### #
 source_maybe <- function(scriptname = NULL,
                          DOIT = TRUE, 
                          question = paste0("Do ", scriptname, "?"),
                          folder = NULL) {
   if (is.null(scriptname)) {stop("requires scriptname")}
-  if (!exists('askquestions')) {
-    askquestions <- TRUE
+  if (missing(folder)) {
+    if ( exists("rawdir")) {folder <- rawdir}
+    if (!exists("rawdir")) {folder <- "./data-raw"}
   }
-  if (exists("rawdir") && missing(folder)) {
-    folder <- rawdir
-  } else {
-    if (missing(folder)) {
-      folder <-  "./data-raw"
-    }  
-  }
+  if (!exists('askquestions')) {askquestions <- TRUE}
   if (askquestions && interactive()) {
     DOIT <- utils::askYesNo(question)
     if (!is.na(DOIT) && DOIT) {DOIT <- TRUE}
   }
   if (DOIT) {
-    cat(paste0("Doing ", scriptname, " \n"))
-    spath = file.path(folder, scriptname)
+    spath <- file.path(folder, scriptname)
     if (!file.exists(spath)) {stop(paste0("requires valid folder and scriptname. Tried: ", spath))}
+    cat(paste0("Doing ", scriptname, " \n"))
     source(spath)
   } else {
     cat("Skipping ", scriptname, "\n")
   }
 }
 ######################################### #
+## DESCRIPTION / VERSION ####
+
+desc::desc_print()
+cat('Version metadata as found in DESCRIPTION file \n')
+print(desc::desc_get_version())
+if (askquestions && interactive()) {
+  y <- askYesNo("Do you first need to update metadata (version, etc.), which is in DESCRIPTION file? ")
+} else {y <- FALSE}
+if (y) {
+  usethis::edit_file('DESCRIPTION')
+}
+#   metadata_mapping() uses DESCRIPTION info and gets done via devtools::load_all() or library(EJAM)
 
 golem::detach_all_attached()
 
@@ -76,8 +96,10 @@ load_all()
 if (0 == 1) {  # collapsable list
   ####   THESE ARE SORTED INTO GROUPS THAT GO TOGETHER : 
   x <- c("datacreate_0_UPDATE_ALL_DATASETS.R", "datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R",
+         "datacreate_map_headernames.R", "datacreate_names_of_indicators.R", "datacreate_names_pct_as_fraction.R", "datacreate_metadata4pins.R", 
          "datacreate_blockwts.R", "datacreate_bg_cenpop2020.R", "datacreate_bgpts.R", "datacreate_states_shapefile.R", "datacreate_stateinfo.R", "datacreate_stateinfo2.R", "datacreate_islandareas.R", "datacreate_censusplaces.R", 
-         "datacreate_map_headernames.R", "datacreate_names_of_indicators.R", "datacreate_names_pct_as_fraction.R", "datacreate_metadata4pins.R", "datacreate_blockgroupstats2.3.R", "datacreate_blockgroupstats2.3_add_d_acs22columns.R", "datacreate_usastats2.3.R", "datacreate_usastats2.3_add_dsubgroups.R", "datacreate_avg.in.us.R", "datacreate_high_pctiles_tied_with_min.R", "datacreate_formulas.R", "datacreate_test_address.R", "datacreate_testpoints_testoutputs.R", 
+         "datacreate_blockgroupstats2.32.R", "datacreate_blockgroupstats2.32_add_d_acs22columns.R",  "datacreate_blockgroupstats2.32_recalc_language.R",
+         "datacreate_usastats2.32.R", "datacreate_usastats2.32_add_dsubgroups.R", "datacreate_avg.in.us.R", "datacreate_high_pctiles_tied_with_min.R", "datacreate_formulas.R", "datacreate_test_address.R", "datacreate_testpoints_testoutputs.R", 
          "datacreate_default_points_shown_at_startup.R", "datacreate_testpoints_5_50_500.R", "datacreate_ejscreenRESTbroker2table_na_filler.R", "datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R",
          "datacreate_frs_.R", "datacreate_frs_by_mact.R", "datacreate_frs_by_sic.R", "datacreate_frsprogramcodes.R", "datacreate_epa_programs.R", "datacreate_testids_program_sys_id.R", "datacreate_testids_registry_id.R", "datacreate_naics_counts.R", "datacreate_naicstable.R", "datacreate_SIC.R", "datacreate_sic_counts.R", "datacreate_sictable.R", 
          "datacreate_lat_alias.R", "datacreate_ejampackages.R", "datacreate_meters_per_mile.R"
@@ -90,54 +112,6 @@ if (0 == 1) {  # collapsable list
         "\t documentOpen('", rawdir, "/", x, "')"), collapse = "\n"))
   # cbind(x)
   rm(x)
-  # [1,] "datacreate_0_UPDATE_ALL_DATASETS.R"                       
-  # [2,] "datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R"  
-  
-  # [20,] "datacreate_blockwts.R"                                    
-  # [21,] "datacreate_bg_cenpop2020.R"                               
-  # [22,] "datacreate_bgpts.R"                                       
-  # [23,] "datacreate_states_shapefile.R"                            
-  # [24,] "datacreate_stateinfo.R"                                   
-  # [25,] "datacreate_stateinfo2.R"                                  
-  # [26,] "datacreate_islandareas.R"                                 
-  # [27,] "datacreate_censusplaces.R"          
-  
-  # [3,] "datacreate_map_headernames.R"                             
-  # [4,] "datacreate_names_of_indicators.R"                         
-  # [5,] "datacreate_names_pct_as_fraction.R"                       
-  # [6,] "datacreate_metadata4pins.R"                               
-  # [7,] "datacreate_blockgroupstats2.3.R"                          
-  # [8,] "datacreate_blockgroupstats2.3_add_d_acs22columns.R"       
-  # [9,] "datacreate_usastats2.3.R"                                 
-  # [10,] "datacreate_usastats2.3_add_dsubgroups.R"                  
-  # [11,] "datacreate_avg.in.us.R"                                   
-  # [12,] "datacreate_high_pctiles_tied_with_min.R"                  
-  # [13,] "datacreate_formulas.R"                                    
-  # [14,] "datacreate_test_address.R"                    
-  # [15,] "datacreate_testpoints_testoutputs.R"                      
-  
-  # [16,] "datacreate_default_points_shown_at_startup.R"      
-  # [17,] "datacreate_testpoints_5_50_500.R"             
-  # [18,] "datacreate_ejscreenRESTbroker2table_na_filler.R"          
-  # [19,] "datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R"
-  
-  # [28,] "datacreate_frs_.R"                                        
-  # [29,] "datacreate_frs_by_mact.R"                                 
-  # [30,] "datacreate_frs_by_sic.R"                                  
-  # [31,] "datacreate_frsprogramcodes.R"                             
-  # [32,] "datacreate_epa_programs.R"                                
-  # [33,] "datacreate_testids_program_sys_id.R"                      
-  # [34,] "datacreate_testids_registry_id.R"                         
-  # [35,] "datacreate_naics_counts.R"                                
-  # [36,] "datacreate_naicstable.R"                                  
-  # [37,] "datacreate_SIC.R"                                         
-  # [38,] "datacreate_sic_counts.R"                                  
-  # [39,] "datacreate_sictable.R"             
-  
-  # [40,] "datacreate_lat_alias.R"                                   
-  # [41,] "datacreate_ejampackages.R"                                
-  # [42,] "datacreate_meters_per_mile.R"                                                      
-  
   
   ####################################### # 
   # overall
@@ -148,6 +122,11 @@ if (0 == 1) {  # collapsable list
   #
   # To create and save the datasets from within the EJAM source package root folder,
   # 
+  ##  new indicators, variable names
+  documentOpen('./data-raw/datacreate_map_headernames.R')       # ok
+  documentOpen('./data-raw/datacreate_names_of_indicators.R')   # ok
+  documentOpen('./data-raw/datacreate_names_pct_as_fraction.R') # ok
+  
   #   blocks
   documentOpen('./data-raw/datacreate_blockwts.R')           # needs Island Areas added
   #    and be sure to obtain correct version either from census or directly from ejscreen team
@@ -165,18 +144,15 @@ if (0 == 1) {  # collapsable list
   
   # with annual ejscreen data updates
   # 
-  ##  new indicators, variable names
-  documentOpen('./data-raw/datacreate_map_headernames.R')       # ok
-  documentOpen('./data-raw/datacreate_names_of_indicators.R')   # ok
-  documentOpen('./data-raw/datacreate_names_pct_as_fraction.R') # ok
   ##  ejscreen demog and envt data on every blockgroup
   ##  + pctile and avg lookup tables
   documentOpen("./data-raw/datacreate_metadata4pins.R") # ok
-  documentOpen('./data-raw/datacreate_blockgroupstats2.3.R') # and bgej      # ok
-  documentOpen('./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R')   # ok
+  documentOpen('./data-raw/datacreate_blockgroupstats2.32.R') # and bgej      # ok
+  documentOpen('./data-raw/datacreate_blockgroupstats2.32_add_d_acs22columns.R')   # ok
+  rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.32_recalc_language.R")
   
-  documentOpen('./data-raw/datacreate_usastats2.3.R')                 # ok
-  documentOpen('./data-raw/datacreate_usastats2.3_add_dsubgroups.R')  # ok
+  documentOpen('./data-raw/datacreate_usastats2.32.R')                 # ok
+  documentOpen('./data-raw/datacreate_usastats2.32_add_dsubgroups.R')  # ok
   documentOpen('./data-raw/datacreate_avg.in.us.R')                   # ok
   documentOpen('./data-raw/datacreate_high_pctiles_tied_with_min.R')  # ok
   ##  calculations and examples of outputs
@@ -227,45 +203,37 @@ if (0 == 1) {  # collapsable list
 ## Verify pins board access ####
 x <- datawrite_to_pins(justchecking = T) # load_all() first or use EJAM:::
 if (!is.null(x)) {
-  # must use VPN to have access to pins board 
-  #                name                                        title  type file_size             created ejscreen_version varnames  - through July 2024
-  # 1  frs_by_programid frs_by_programid data from EJScreen for EJAM arrow   124.14M 2023-12-11 17:21:17              2.2     TRUE
-  # 2              bgej             bgej data from EJScreen for EJAM arrow     97.5M 2023-12-05 22:20:29              2.2     TRUE
-  # 3       frs_by_mact      frs_by_mact data from EJScreen for EJAM arrow     2.31M 2023-12-11 17:22:00              2.2     TRUE
-  # 4        frs_by_sic       frs_by_sic data from EJScreen for EJAM arrow    20.35M 2023-12-11 17:21:53              2.2     TRUE
-  # 5      frs_by_naics     frs_by_naics data from EJScreen for EJAM arrow    16.93M 2023-12-11 17:21:48              2.2     TRUE
-  # 6               frs              frs data from EJScreen for EJAM arrow   145.22M 2023-12-11 17:20:42              2.2     TRUE
-  # 7          blockwts         blockwts data from EJScreen for EJAM arrow    91.67M 2023-11-17 19:14:23              2.2     TRUE
-  # 8          quaddata                       quaddata data for EJAM arrow   218.36M 2023-11-17 19:13:32              2.2     TRUE
-  # 9       blockpoints                    blockpoints data for EJAM arrow   155.97M 2023-11-17 19:12:57              2.2     TRUE
-  # 10     blockid2fips                   blockid2fips data for EJAM arrow    98.17M 2023-11-17 19:12:36              2.2     TRUE
-  # 11        bgid2fips                      bgid2fips data for EJAM arrow     2.98M 2023-11-17 19:12:19              2.2     TRUE
+  cat(" Must use VPN to have access to pins board \n\n" )
+  cat("\n As of", as.character(Sys.Date()), "\n\n")
+  x = x[order(x$created), ]
+  rownames(x) <- NULL
+  print(x)
   
-  #                name                                        title  type file_size             created ejscreen_version varnames - August 5, 2024
-  # 1  frs_by_programid frs_by_programid data from EJScreen for EJAM arrow    154.7M 2024-08-05 14:43:33              2.3     TRUE
-  # 2      frs_by_naics     frs_by_naics data from EJScreen for EJAM arrow    14.68M 2024-08-05 14:43:28              2.3     TRUE
-  # 3        frs_by_sic       frs_by_sic data from EJScreen for EJAM arrow    20.25M 2024-08-05 14:43:21              2.3     TRUE
-  # 4       frs_by_mact      frs_by_mact data from EJScreen for EJAM arrow     4.63M 2024-08-05 14:43:17              2.3     TRUE
-  # 5               frs              frs data from EJScreen for EJAM arrow   146.01M 2024-08-05 14:42:49              2.3     TRUE
+  # As of 2024-08-29 
   
-  # 6              bgej             bgej data from EJScreen for EJAM arrow     97.5M 2023-12-05 22:20:29              2.3     TRUE - but not actually updated for v2.3 yet!!
-  # 7          blockwts         blockwts data from EJScreen for EJAM arrow    91.67M 2023-11-17 19:14:23              2.3     TRUE - but not actually updated for v2.3 yet!!
-  # 8          quaddata                       quaddata data for EJAM arrow   218.36M 2023-11-17 19:13:32              2.3     TRUE - but not actually updated for v2.3 yet!!
-  # 9       blockpoints                    blockpoints data for EJAM arrow   155.97M 2023-11-17 19:12:57              2.3     TRUE - but not actually updated for v2.3 yet!!
-  # 10     blockid2fips                   blockid2fips data for EJAM arrow    98.17M 2023-11-17 19:12:36              2.3     TRUE - but not actually updated for v2.3 yet!!
-  # 11        bgid2fips                      bgid2fips data for EJAM arrow     2.98M 2023-11-17 19:12:19              2.3     TRUE - but not actually updated for v2.3 yet!!
+  #                name                                        title  type file_size             created ejscreen_version varnames
+
+  # 1               frs              frs data from EJScreen for EJAM arrow   146.01M 2024-08-05 14:42:49             2.32     TRUE
+  # 2       frs_by_mact      frs_by_mact data from EJScreen for EJAM arrow     4.63M 2024-08-05 14:43:17             2.32     TRUE
+  # 3        frs_by_sic       frs_by_sic data from EJScreen for EJAM arrow    20.25M 2024-08-05 14:43:21             2.32     TRUE
+  # 4      frs_by_naics     frs_by_naics data from EJScreen for EJAM arrow    14.68M 2024-08-05 14:43:28             2.32     TRUE
+  # 5  frs_by_programid frs_by_programid data from EJScreen for EJAM arrow    154.7M 2024-08-05 14:43:33             2.32     TRUE
+  # 6         bgid2fips                      bgid2fips data for EJAM arrow     2.98M 2024-08-22 18:34:28             2.32     TRUE
+  # 7      blockid2fips                   blockid2fips data for EJAM arrow    98.17M 2024-08-22 18:34:34             2.32     TRUE
+  # 8       blockpoints                    blockpoints data for EJAM arrow   155.97M 2024-08-22 18:34:56             2.32     TRUE
+  # 9          blockwts         blockwts data from EJScreen for EJAM arrow    68.64M 2024-08-22 18:35:34             2.32     TRUE
+  # 10         quaddata                       quaddata data for EJAM arrow   218.36M 2024-08-22 18:35:52             2.32     TRUE
+  # 11             bgej             bgej data from EJScreen for EJAM arrow    84.94M 2024-08-22 18:54:56             2.32     TRUE
   
-  
-  # 
   pin_seen <- x$name
   pin_expected = c(
     'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-    'bgej', 'bgid2fips',
+    'bgej', 'bgid2fips', # note that 'bg_cenpop2020' and 'bgpts' are in EJAM/data/ not pins
     'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"
   )
   if (length(setdiff2(pin_seen, pin_expected)) > 0 ) {
     message("Expected to see on pin board but not there: ", paste0(setdiff(pin_expected, pin_seen), collapse = ", "))
-    message("Seeon on pin board but not expected: ", paste0(setdiff(pin_seen, pin_expected), collapse = ", "))
+    message("See on on pin board but not expected: ", paste0(setdiff(pin_seen, pin_expected), collapse = ", "))
   }
   rm(pin_seen, pin_expected, x)
 }
@@ -273,7 +241,48 @@ if (!is.null(x)) {
 ######################################### ########################################## #
 # ~------------------------------------------- ####
 
-# *** ANNUAL CHANGES IN FIPS CODES or Census Boundaries (if EJScreen incorporates those) ####
+# *** NAMES OF INDICATORS/ VARIABLES etc. ANNUAL UPDATES ####
+######################################### #
+### datacreate_map_headernames.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_map_headernames.R")
+source_maybe("datacreate_map_headernames.R", DOIT = TRUE)
+######################################### #
+### datacreate_names_of_indicators.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_names_of_indicators.R")
+source_maybe("datacreate_names_of_indicators.R")   # NOTE THAT   THIS TAKES A LONG TIME, ACTUALLY
+
+consoleclear()
+ls()
+loadall()
+
+### that will create but also assign metadata to and save for pkg via use_data() 
+### It is a script that mostly uses a function so that
+### all the variables created do not show up in the global environment - they get saved in pkg ready for lazy-loading if/when needed
+### BUT any subsequent scripts that depend on those will not use the correct new versions unless we do load.all() anyway... 
+### metadata is assigned inside this  
+### use_data is done inside this  
+######################################### #
+### datacreate_names_pct_as_fraction.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_names_pct_as_fraction.R")
+source_maybe("datacreate_names_pct_as_fraction.R")
+######################################### #
+### datacreate_metadata4pins.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_metadata4pins.R")
+source_maybe("datacreate_metadata4pins.R") # does use_data()
+# this just stores title, description of each dataset that gets put in pins board - no dates info
+# dates info for pins is generated right when being written to pins board.
+######################################### #
+### Must use load_all() or build/install, to make available those new variable name lists 
+#  and possibly modified  metadata4pins.rda
+#  (the source package as just updated, not the version installed)
+#  and so all functions will use the new source version 
+
+rmost2()
+loadall()
+
+######################################### ########################################## #
+
+# *** FIPS CODES/ Census Boundaries - ANNUAL UPDATES (if EJScreen incorporates those) ####
 
 ######################################### #
 ## blocks  ####
@@ -283,29 +292,26 @@ if (!is.null(x)) {
 ### datacreate_blockwts.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_blockwts.R")
 ### this requires package called ejanalysis/census2020download, which is not on CRAN!
+
+# THIS TAKES A VERY LONG TIME:
+
 source_maybe('datacreate_blockwts.R', DOIT = FALSE) # script that can include metadata_add() and use_data()
 #    and be sure to obtain correct version either from census or directly from ejscreen team
 # Creates mylistoftables, a list that includes tables blockwts, blockpoints, bgid2fips, etc.,
 #   gets updated when FIPS codes or boundaries change for blocks or blockgroups
-#  such as in Connecticut for v2.2 change to v2.3 !
+#  such as in Connecticut for v2.2 change to v2.32 !
 #  and then datawrite_to_pins() if those datasets were updated.
+# bgej  is not ready yet here... it is made when blockgroupstats is made.  
+# note that 'bg_cenpop2020' and 'bgpts' are in EJAM/data/ not pins
 
-
- EJAM::datawrite_to_local(c("bgid2fips", "blockid2fips", "blockpoints", "blockwts", 'quaddata'))
-
-if (!exists("blockid2fips")) {dataload_from_pins("blockid2fips", justchecking = F)}
+# take a look/ check 
 length(unique(substr(blockid2fips$blockfips,1,2)))
-if (!exists("bgid2fips")) {dataload_from_pins("bgid2fips")}
 nacounts(bgid2fips, showall = T)
-
-################ #
-## check blockid values in all these datasets
-
 nacounts(blockwts, showall = T)
 nacounts(blockpoints, showall = T)
 nacounts(quaddata, showall = T)
 nacounts(blockid2fips, showall = T)
-
+## check blockid values in all these datasets
 stopifnot(
   all(
     setequal(blockid2fips$blockid, blockpoints$blockid), 
@@ -330,11 +336,17 @@ stopifnot(
 # blockwts :     blockid, bgid, blockwt, block_radius_miles 
 # quaddata :      blockid   and      BLOCK_X, BLOCK_Z, BLOCK_Y
 
+### SAVE LOCALLY AND TO PINS BOARD ####
+
+these <- c("bgid2fips",   "blockid2fips", "blockpoints", "blockwts", 'quaddata')
+datawrite_to_local(these)
+datawrite_to_pins(varnames = these) # it asks interactively to confirm which ones to save to pins
+
 # ONE COULD LOAD FROM LOCAL OR PINS THE EXISTING VERSIONS OF THESE DATASETS IF available INSTEAD OF UPDATING THEM
 
 ######################################### #
 ## blockgroups ####
-# documentOpen('./data-raw/datacreate_bgpts.R')              # USED BY datacreate_blockgroupstats2.3.R !! otherwise redundant w bg_cenpop2020
+# documentOpen('./data-raw/datacreate_bgpts.R')              # USED BY datacreate_blockgroupstats2.32.R !! otherwise redundant w bg_cenpop2020
 # documentOpen('./data-raw/datacreate_bg_cenpop2020.R')      # confirm if changed since 2020
 
 ######################################### #
@@ -370,7 +382,7 @@ source_maybe("datacreate_states_shapefile.R", DOIT = FALSE, folder = rawdir)
 ### datacreate_stateinfo2.R ####
 # documentOpen('./data-raw/datacreate_stateinfo.R')          # ok (missing Island Areas)
 # documentOpen('./data-raw/datacreate_stateinfo2.R')         # ok (has Island Areas)
-## ok to update metadata whenever - these should never really change but want to note version 2.3 etc.
+## ok to update metadata whenever - these should never really change but want to note version 2.32 etc.
 source_maybe('datacreate_stateinfo.R', DOIT = FALSE, folder = rawdir)
 source_maybe('datacreate_stateinfo2.R', DOIT = FALSE, folder = rawdir)
 ######################################### #
@@ -390,51 +402,24 @@ source_maybe("datacreate_censusplaces.R", DOIT = FALSE, folder = rawdir)
 ######################################### ########################################## #
 
 
+## updated block-related datasets should be on local disk now but not yet in pins,
+## and updated names_xyz and map_headernames should be in globalenv and in /data/ but not in installed pkg yet.
+## so maybe best to rm(list = ls()) and load_all() again to get all new versions of everything
+rmost2()
+cat("Running load_all() but you may want to rebuild/install now \n")
+loadall()
+
+
 # ~------------------------------------------- ####
-# *** ANNUAL UPDATES OF EJScreen ####
-
-## Indicator/variable names etc. ####
-######################################### #
-### datacreate_map_headernames.R ####
-# rstudioapi::documentOpen("./data-raw/datacreate_map_headernames.R")
-source_maybe("datacreate_map_headernames.R", DOIT = TRUE)
-######################################### #
-### datacreate_names_of_indicators.R ####
-# rstudioapi::documentOpen("./data-raw/datacreate_names_of_indicators.R")
-source_maybe("datacreate_names_of_indicators.R")
-### this will create but also assign metadata to and save for pkg via use_data() 
-### It is a script that mostly uses a function so that
-### all the variables created do not show up in the global environment - they get saved in pkg ready for lazy-loading if/when needed
-### BUT any subsequent scripts that depend on those will not use the correct new versions unless we do load.all() anyway... 
-### metadata is assigned inside this  
-### use_data is done inside this  
-######################################### #
-### datacreate_names_pct_as_fraction.R ####
-# rstudioapi::documentOpen("./data-raw/datacreate_names_pct_as_fraction.R")
-source_maybe("datacreate_names_pct_as_fraction.R")
-######################################### #
-### datacreate_metadata4pins.R ####
-# rstudioapi::documentOpen("./data-raw/datacreate_metadata4pins.R")
-source_maybe("datacreate_metadata4pins.R") # does use_data()
-# this just stores title, description of each dataset that gets put in pins board - no dates info
-# dates info for pins is generated right when being written to pins board.
-######################################### #
-### Must use load_all() or build/install, to make available those new variable name lists 
-#  and possibly modified  metadata4pins.rda
-#  (the source package as just updated, not the version installed)
-#  and so all functions will use the new source version 
-
-rmost(notremove = c("askquestions", "localfolder", "td", "rawdir", "source_maybe"))
-
-devtools::load_all()
+# *** EJSCREEN BLOCKGROUP DATA - ANNUAL UPDATES ####
 
 ## Demog + Envt data on blockgroups ####
 ## + pctile & avg lookup tables (usastats, statestats) ####
 
 ######################################### #
-### datacreate_blockgroupstats2.3 (also starts making usastats,statestats!!) ####
-### ACS22 via datacreate_blockgroupstats2.3_add_d_acs22columns ####
-# rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.3.R")
+### datacreate_blockgroupstats2.32.R (also starts making usastats,statestats!!) ####
+### ACS22 via datacreate_blockgroupstats2.32_add_d_acs22columns ####
+# rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.32.R")
 if (askquestions && interactive()) {
   y = askYesNo("Did you already update bgpts via new block weights and fips dataset? (required before updating blockgroupstats)")
   if (is.na(y) || !y) {
@@ -443,14 +428,43 @@ if (askquestions && interactive()) {
   }
 }
 
-source_maybe("datacreate_blockgroupstats2.3.R") # (also starts making usastats,statestats!!)
-# created bgej
+source_maybe("datacreate_blockgroupstats2.32.R") # (also starts making usastats,statestats!!)
+# created bgej (with metadata, and saved it locally but not to pins yet)
+### bgej to pins ####
+######################################### #
+if (askquestions && interactive()) {
+  pinej = askYesNo("write to bgej pins? ")
+  if (!is.na(pinej) && pinej) {
+    ## do not save via  usethis::use_data(bgej, overwrite = TRUE) - it is a large file
+    ## Save bgej to pins board as .arrow file
+    datawrite_to_pins("bgej", type = "arrow")
+    # defaults should work but anyone doing this needs authentication, access to pins board !
+  }}
 # created blockgroupstats_new as interim object
 # created usastats, statestats but not final versions yet
 
-# rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R")  # reads ACS22 extra file of demographics not on ftp site
-source_maybe("datacreate_blockgroupstats2.3_add_d_acs22columns.R")  # reads ACS22 extra file of demographics not on ftp site
+################################################################################ #
+if (interactive() && askquestions) {
+  SAVEIMAGE = askYesNo("Save globalenv() as an .RData file now?")
+  if (is.na(SAVEIMAGE)) {SAVEIMAGE <- FALSE}
+}
+if (SAVEIMAGE) { # ARCHIVE as IMAGE?  
+  cat("\n SAVING IMAGE OF WORK IN PROGRESS... \n\n")
+  save.image(file = file.path(localfolder, "save.image work on NEW blockgroupstats usastats statestats.rda"))
+}
+################################################################################ #
+
+# rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.32_recalc_language.R")
+source_maybe("datacreate_blockgroupstats2.32_recalc_language.R", DOIT = TRUE) # this just creates a function that is later used to fix language data
+
+# rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.32_add_d_acs22columns.R")  
+# reads ACS22 extra file of demographics not on ftp site
+source_maybe("datacreate_blockgroupstats2.32_add_d_acs22columns.R")  # reads ACS22 extra file of demographics not on ftp site
+
+
+
 # created blockgroupstats (now with demog subgroups from ACS22 extra file of demographics not on ftp site)
+
 
 ################ ################# ################# ################# #
 ################ ################# ################# ################# ################# #
@@ -464,11 +478,10 @@ source_maybe("datacreate_blockgroupstats2.3_add_d_acs22columns.R")  # reads ACS2
 # + blockwts :      blockid, bgid, etc.
 
 # data.table(blockgroupstats)[is.na(bgfips), table(ST)]
-# ST
-# AS  GU  MP 
+# AS  GU  MP  - had been this but now zero since those were dropped
 # 77  58 135 
 # data.table(blockgroupstats)[is.na(bgid), table(ST)]
-# ST
+# - had been this but now zero since those were dropped
 # AS   CT   GU   MP   VI 
 # 77 2717   58  135  416 
 
@@ -484,7 +497,8 @@ stopifnot(
     !anyDuplicated(bgid2fips$bgid),
     !anyDuplicated(bgpts),
     !anyDuplicated(blockwts)
-  ))
+  )
+)
 
 stopifnot(
   all(
@@ -499,37 +513,26 @@ stopifnot(
 
 stopifnot(
   all(
-    setequal(blockgroupstats$bgid, bgej$bgid),   # ok
-    setequal(blockgroupstats$bgid, quaddata$bgid),  # false due to CT 19 as of 8/14/24
-    setequal(blockgroupstats$bgid, bgid2fips$bgid), # false
-    setequal(blockgroupstats$bgid, bgpts$bgid), # false
-    setequal(blockgroupstats$bgid, bg_cenpop2020$bgid), # false
-    setequal(blockgroupstats$bgid, blockwts$bgid) # false
+    setequal(blockgroupstats$bgid, bgej$bgid),    # ok
+    setequal(blockgroupstats$bgid, quaddata$bgid)   , # false due to CT 19 as of 8/14/24
+    setequal(blockgroupstats$bgid, bgid2fips$bgid)  , # false
+    setequal(blockgroupstats$bgid, bgpts$bgid)      , # false
+    setequal(blockgroupstats$bgid, bg_cenpop2020$bgid)  , # false
+    setequal(blockgroupstats$bgid, blockwts$bgid)         # false
   )
 )
-
 ################ ################# ################# ################# #
 ################ ################# ################# ################# #
 
 ######################################### #
-if (askquestions && interactive()) {
-  pinej = askYesNo("write to bgej pins? ")
-  if (!is.na(pinej) && pinej) {
-    ## do not save via  usethis::use_data(bgej, overwrite = TRUE) - it is a large file
-    ## Save bgej to pins board as .arrow file
-    datawrite_to_pins("bgej", type = "arrow")
-    # defaults should work but anyone doing this needs authentication, access to pins board !
-  }}
-
-######################################### #
-### datacreate_usastats2.3.R ####
-# rstudioapi::documentOpen("./data-raw/datacreate_usastats2.3.R")
-source_maybe("datacreate_usastats2.3.R")
+### datacreate_usastats2.32.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_usastats2.32.R")
+source_maybe("datacreate_usastats2.32.R")
 # now usastats and statestats exist
 ######################################### #
-### datacreate_usastats2.3_add_dsubgroups.R ####
-# rstudioapi::documentOpen("./data-raw/datacreate_usastats2.3_add_dsubgroups.R")
-source_maybe("datacreate_usastats2.3_add_dsubgroups.R")
+### datacreate_usastats2.32_add_dsubgroups.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_usastats2.32_add_dsubgroups.R")
+source_maybe("datacreate_usastats2.32_add_dsubgroups.R")
 print(nacounts(usastats))
 print(nacounts(statestats))
 
@@ -555,16 +558,34 @@ source_maybe("datacreate_test_address.R")
 
 
 ############################### pause here
-
+############################### 
 
 # save.image(file.path(localfolder, "work in progress.rda"))
 
 
 # may want to rebuild/ reinstall the package here,
 # or at least load_all()  ?
+ 
+# system.time({
+#   #  installing  TAKES  ~4 MINUTES  EVEN IF .onAttach() changed to say 
+#   # asap_aws   <- FALSE  # download large datasets now?           Set to FALSE while Testing/Building often
+#   # asap_index <- FALSE  
+#   # asap_bg    <- FALSE 
+#   # and install(  reload = TRUE, upgrade = "never" , quick = TRUE 
+#   
+#   devtools::install(reload = TRUE, upgrade = "never", quick = TRUE)
+# })
+ 
+# system.time({
+#   #  THIS TAKES < 30 seconds   if reset = FALSE and not loading block datasets on attach
+#   devtools::load_all(reset = FALSE)
+#   
+# })
 
-
-devtools::install(quick = TRUE)
+system.time({
+  #  THIS TAKES 20 seconds even though supposed to be slower if reset = T  and not loading block datasets on attach
+  devtools::load_all(reset = TRUE)
+})
 
 
 # devtools::check() 
@@ -572,14 +593,24 @@ devtools::install(quick = TRUE)
 
 # devtools::test()
 
+# rstudioapi::navigateToFile("./tests/manual_nonalphabetical.R")
+# system.time({
+#   #    ABOUT 7 MINUTES TO RUN all TESTS (if large datasets had not yet been loaded)
+   source("./tests/manual_nonalphabetical.R") # answering Yes to running ALL tests
+# })
+
+############################### 
+############################### 
+
 
 ######################################### #
 ### datacreate_testpoints_testoutputs.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_testpoints_testoutputs.R")
+cat( "NOT WORKING YET IN V.2.32:  datacreate_testpoints_testoutputs.R  \n"   )
 source_maybe("datacreate_testpoints_testoutputs.R")
 
 # ~------------------------------------------- ####
-## Formerly in EJAMejscreenapi package ####
+## EJAMejscreenapi info ####
 ######################################### #
 
 ### datacreate_default_points_shown_at_startup.R ####
@@ -591,8 +622,10 @@ source_maybe('datacreate_testpoints_5_50_500.R')
 ### datacreate_ejscreenRESTbroker2table_na_filler.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_ejscreenRESTbroker2table_na_filler.R")
 source_maybe('datacreate_ejscreenRESTbroker2table_na_filler.R')
+
 ### datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R  ####
 # rstudioapi::documentOpen("./data-raw/datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R")
+cat( "NOT WORKING YET IN V.2.32:  datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R  \n"   )
 source_maybe('datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R')
 
 ######################################### ########################################## #
@@ -602,25 +635,29 @@ document()
 
 devtools::install(quick = TRUE)
 
-# 
-# install()
 
 ######################################### ########################################## #
 
 ######################################### #
 ######################################### #
 # ~------------------------------------------- ####
-# *** FRS UPDATES (incl. NAICS/SIC) ####
+# *** FRS (regulated facilities) FREQUENT UPDATES (incl. NAICS/SIC) ####
 
 ########################################## #
-
-# FRS ####
-
+#
 
 ## >>> frs functions need cleanup here <<< ####
-
 cat(                                        "frs functions need cleanup here  \n")
 warning("frs functions need cleanup here")
+
+
+
+
+
+#                            TO BE CHECKED/ REVISED HERE
+
+
+
 
 
 ## frs_by_ (lat,lon, regid,program,mact) ####
@@ -658,14 +695,26 @@ source_maybe('datacreate_testids_program_sys_id.R')
 source_maybe('datacreate_testids_registry_id.R')
 ########################################## #
 
-# NAICS/SIC ####
-
+# NAICS/ SIC Counts from FRS, etc. ####
 
 ## >>>             ADD SCRIPTS HERE? <<< ####
-
-cat(                                        "naics functions not here yet? \n")
+cat(                                        "naics functions not here yet? ... \n")
 warning("naics functions not here yet")
 
+
+
+
+#                            TO BE ADDED HERE
+
+
+
+
+
+
+
+
+# THESE BELOW JUST DO COUNTS BY CODE - they dont actually update the NAICS/SIC info from the FRS data 
+# (nor the names of industries by code that change maybe every 3 yrs for NAICS)
 
 ### datacreate_naics_counts.R ####
 # documentOpen('./data-raw/datacreate_naics_counts.R')    # script
@@ -783,7 +832,7 @@ cat("\n\n")
 these = c("blockwts", "blockpoints", "blockid2fips", "quaddata",  
           "bgid2fips"
 )
-          # , "bgej")
+# , "bgej")
 
 datawrite_to_pins(varnames = these) # it will ask interactively to confirm which ones among defaults to save to pins
 
@@ -804,13 +853,7 @@ x[,c("name", "created", "ejscreen_version")]
 # ~ ####
 # CLEANUP - Remove most objects ####
 
-rmost(
-  notremove = c(
-    "blockwts", "blockpoints", "blockid2fips", "quaddata", "localtree",
-    "bgej", "bgid2fips",
-    "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact"
-  )
-)
+rmost2()
 cat("Running load_all() but you may want to rebuild/install now \n")
 devtools::load_all()
 

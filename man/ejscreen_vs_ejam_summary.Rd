@@ -95,6 +95,6 @@ EJAM/EJSCREEN comparisons - see summary stats after using ejscreen_vs_ejam()
   # sum_vs1000pts3miles <- ejscreen_vs_ejam_summary(vs1000pts3miles)
   
   }
-  
+
 }
 \keyword{internal}

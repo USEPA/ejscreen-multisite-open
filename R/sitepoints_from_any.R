@@ -5,7 +5,7 @@
 #' @aliases sitepoints_from_anything
 #' @param anything see [latlon_from_anything()], which this is passed to
 #' @param lon_if_used see [latlon_from_anything()], which this is passed to
-#' 
+#' @param ... passed to latlon_from_anything()
 #' @return data.frame with lat,lon, and ejam_uniq_id as colnames, one row per point
 #' @examples
 #'  sitepoints_from_any(testpoints_10)
@@ -27,7 +27,7 @@
 #'  }
 #' @export
 #'
-sitepoints_from_any <- function(anything, lon_if_used) {
+sitepoints_from_any <- function(anything, lon_if_used, ...) {
   
   # note this overlaps or duplicates code in ejamit() and app_server.R
   #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
@@ -35,13 +35,13 @@ sitepoints_from_any <- function(anything, lon_if_used) {
   # Doing these steps here too, even though ejamit() has the same code, 
   # so it won't have to happen once per loop on radius in ejamit_compare_distances_fulloutput() or ejamit_compare_distances()
   
-  # However, for multiple site types as in ejamit_compare_groups_of_places()...? 
+  # However, for multiple site types as in ejamit_compare_types_of_places()...? 
   
   
   # If user entered a table, path to a file (csv, xlsx), or whatever can be handled -- see latlon_from_anything() --
   # read it to get the lat lon values from there
   #  by using sitepoints <- latlon_from_anything() which also gets done by getblocksnearby()
-  sitepoints <- latlon_from_anything(anything, lon_if_used)
+  sitepoints <- latlon_from_anything(anything, lon_if_used, ...)
   stopifnot(
     is.data.frame(sitepoints), 
     "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), 
@@ -50,9 +50,11 @@ sitepoints_from_any <- function(anything, lon_if_used) {
   
   ## check for ejam_uniq_id column;  add if not present
   if ('ejam_uniq_id' %in% names(sitepoints)) {
-    message("Note that ejam_uniq_id was already in sitepoints, and might not be 1:NROW(sitepoints), which might cause issues")
+    if (!all.equal(sitepoints$ejam_uniq_id, seq_along(sitepoints$ejam_uniq_id))) {
+      message("Note that ejam_uniq_id was already in sitepoints, and might not be 1:NROW(sitepoints), which might cause issues")
+    }
   }
-  if (!("character" %in% class(sitepoints)) & !'ejam_uniq_id' %in% names(sitepoints)) {
+  if (!("character" %in% class(sitepoints)) && !'ejam_uniq_id' %in% names(sitepoints)) {
     # message('sitepoints did not contain a column named ejam_uniq_id, so one was added')
     sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
   }
@@ -63,6 +65,6 @@ sitepoints_from_any <- function(anything, lon_if_used) {
 
 #' @export
 #' @inherit sitepoints_from_any
-sitepoints_from_anything <- function(anything, lon_if_used) {
-  sitepoints_from_any(anything, lon_if_used)
+sitepoints_from_anything <- function(anything, lon_if_used, ...) {
+  sitepoints_from_any(anything, lon_if_used, ...)
   }

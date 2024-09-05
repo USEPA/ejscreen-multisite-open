@@ -118,5 +118,5 @@ savex(test_address_table_9,         "./inst/testdata/address", "test_address_tab
 savex(test_address_table,           "./inst/testdata/address", "test_address_table.xlsx")
 savex(test_address_table_goodnames, "./inst/testdata/address", "test_address_table_goodnames.xlsx")
 savex(test_address_table_withfull,  "./inst/testdata/address", "test_address_table_withfull.xlsx")
-
+rm(savex)
 ##################### #

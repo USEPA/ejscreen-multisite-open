@@ -20,8 +20,8 @@ fixmapheadernamescolname <- function(x,
                                        shortlabel = c("short", "shortname", "shortnames", "labels", "label"),
                                        acsname = 'acs',
                                        apiname = 'api',
-                                       csvname = c("csv"),  # *** changed with v 2.2 vs 2.3
-                                       # csvname2.2 = "csvname2.2",         # *** changed with v 2.2 vs 2.3
+                                       csvname = c("csv"),  # *** changed after v 2.2 
+                                       # csvname2.2 = "csvname2.2",         # *** changed after v 2.2
                                        # SHOULD PHASE OUT "friendly" - CONFUSING TO USE friendly for long elsewhere but  rname here
                                        oldname = c("original", "old", "oldnames")
                                      )) {

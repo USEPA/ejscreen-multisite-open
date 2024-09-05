@@ -5,6 +5,8 @@
 #' @param x the output of [ejamit()] or of [doaggregate()],
 #'   a list of objects holding results of analysis
 #' @param maxshown shows only first 10 elements of list by default
+#' @param objectname name to use in printing summary, e.g., "Output of ejamit()"
+#'   or default is to use the name of the object passed to this function.
 #' @return data.frame summarizing names of list, whether each element is a 
 #'   data.table, data.frame, or vector, and rows/cols/length info
 #' @examples  
@@ -17,10 +19,15 @@
 #'   
 #' @keywords internal
 #' 
-structure.of.output.list <- function(x, maxshown=10) {
+structure.of.output.list <- function(x, maxshown=10, objectname = NULL) {
   
+  if (is.null(objectname)) {
   nameofx  <- deparse1(substitute(x))
-  cat("\n", nameofx, "is a", paste0(class(x), collapse = " and "), '\n\n')
+  cat(paste0("\n'", nameofx, "' is a"), paste0(class(x), collapse = " and "), ' with these elements:\n\n')
+  } else {
+    cat(paste0("\n", objectname, " is a"), paste0(class(x), collapse = " and "), ' with these elements:\n\n')
+  }
+  
   if (is.data.frame(x) | is.atomic(x)) {x <- list(x); names(x) <- nameofx } 
   if (is.list(x) & length(x) > maxshown) {
     message("Showing first ", maxshown," elements of list. To see more, try using parameter maxshown.")

@@ -45,7 +45,7 @@ url_4table <- function(lat, lon, radius, regid = NULL, as_html = TRUE) {
   )
   
   results_bysite <- data.table(
-    `EJScreen Report` = url_ejscreen_report(lat = lat, lon = lon, radius = radius, as_html = as_html),
+    `EJScreen Report` = url_ejscreen_report(lat = lat, lon = lon, radius = radius, as_html = as_html, interactiveprompt = FALSE),
     `EJScreen Map`    = url_ejscreenmap(    lat = lat, lon = lon,                  as_html = as_html),
     `ECHO report` = echolink
   )

@@ -27,7 +27,7 @@
 #'
 latlon_as.numeric <- function(x) {
 
-  if(missing(x)){
+  if (missing(x)) {
     warning('No value provided for argument "x".')
     return(NULL)
   }

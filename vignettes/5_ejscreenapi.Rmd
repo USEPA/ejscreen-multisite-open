@@ -13,7 +13,7 @@ vignette: >
 #    - **See ?pkgdown::build_site** and script in EJAM/data-raw/- EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
 
 
-# THIS ARTICLE IN PARTICULAR IS NOT UPDATED FOR VERSION 2.3 
+# THIS ARTICLE IN PARTICULAR IS NOT UPDATED FOR VERSION 2.32 
 # AND NOT REVISED SINCE MOVING MOST CONTENT TO EJAM PACKAGE
 # AND NOT CHECKED WITH MODULE OR EJAM AT ALL
 # SO IT IS NOT READY TO BE USED
@@ -122,7 +122,7 @@ x$table
 ### Get EJScreen results tables in a local web app \*\*\*not tested
 
 ```{r app_run_EJAMejscreenapi, eval = FALSE}
-### *** NOT TESTED - MAY NO LONGER WORK AS SHIFT TO USING MODULE VERSION and update to v2.3
+### *** NOT TESTED - MAY NO LONGER WORK AS SHIFT TO USING MODULE VERSION and update to v2.32
 
 EJAM::app_run_EJAMejscreenapi()
 

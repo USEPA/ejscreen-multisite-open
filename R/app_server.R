@@ -2080,19 +2080,14 @@ app_server <- function(input, output, session) {
   # if (input$calculate_ratios) {  ## ratios can be dropped from output table of results but are used by summary report, plots, etc. so simplest is to still calculate them
   #############################################################################  #
   # . 4) ratios ####
-  # ______ AVERAGES and RATIOS TO AVG - ALREADY done by doaggregate() and kept in data_processed()
-  # Also the overall mean and site by site means are in  unlist( data_processed()$results_overall[ , ..names_these_state_avg] )
-  # and (avg.in.us) is a constant for convenience with that same info, in data.frame format.
-  # but did not bother making a copy of the state averages that are in statestats
-  # EJAM::statestats[ EJAM::statestats$PCTILE == "mean", ]
-  # and averages were used create ratios in doaggregate()
+  # ______ AVERAGES and RATIOS TO AVG
+  
+  # *** Ratios were already calculated by doaggregate() 
+  # *** UNLESS somehow the user has changed the defaults to doaggregate(  calculate_ratios = FALSE  )
+
   ############################# #
   ##   demog RATIOS of overall scores to US or state D AVG ####
-  #  *****************   but these are now already calculated in doaggregate()
-  ## as (doaggregate output results_overall ) / (EJAM::usastats mean in USA)
-  ## or (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
-  ## this needs further verification
-  
+
   ratio.to.us.d    <- reactive({unlist(
     data_processed()$results_overall[ , c(..names_d_ratio_to_avg,       ..names_d_subgroups_ratio_to_avg      )]
   ) }) # ???
@@ -2102,9 +2097,6 @@ app_server <- function(input, output, session) {
   
   ############################# #
   ##   enviro RATIOS of overall scores to US or state E AVG  ####
-  #  *****************   but these are now already calculated in doaggregate()  as
-  ## (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
-  ## this needs further verification
   
   ratio.to.us.e    <- reactive({unlist(data_processed()$results_overall[ , ..names_e_ratio_to_avg]) })                     # ???
   # ratio.to.us.e_TEST <- reactive({ unlist(data_summarized()$rows['Average person', names_e]) /
@@ -2580,7 +2572,7 @@ app_server <- function(input, output, session) {
   
   # Function to generate HTML content ***
   # Modified community_download function to accept a row_index parameter
-  
+  # FUNCTION TO RENDER HTML REPORT ####
   community_download <- function(file, row_index = NULL) {
     
     # Create a progress object
@@ -2596,7 +2588,7 @@ app_server <- function(input, output, session) {
     progress$set(value = 0.2, detail = "Defining parameters...")
     # Define parameters for Rmd rendering
     rad <- data_processed()$results_overall$radius.miles
-    
+    ## > report on just 1 site ####
     progress$set(value = 0.3, detail = "Adjusting data...")
     # Adjust the data based on whether a specific row is selected
     if (!is.null(row_index)) {
@@ -2683,6 +2675,7 @@ app_server <- function(input, output, session) {
       
       map_to_use <- single_location_map()
     } else {
+      ## > report on just all sites overall ####
       output_df <- data_processed()$results_overall
       popstr <- prettyNum(total_pop(), big.mark = ',')
       locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""), 
@@ -2714,9 +2707,9 @@ app_server <- function(input, output, session) {
     )
   }
   #############################################################################  #
-  
-  # downloadHandler for community_download
-  output$community_download <- downloadHandler(
+  # DOWNLOAD HTML REPORT Overall ####
+  # downloadHandler for community_download - ALMOST THE SAME AS output$download_report 
+  output$community_download_all <- downloadHandler(
     filename = function() {
       create_filename(
         file_desc = 'community report',
@@ -2728,13 +2721,12 @@ app_server <- function(input, output, session) {
       )
     },
     content = function(file) {
-      html_content <-  community_download(file)
-      file.rename(html_content, file)
+      community_download(file)
     }
   )
   
-  # downloadHandler for the modal download button
-  output$download_report <- downloadHandler(
+  # downloadHandler for the modal download button - Almost identical to code above. But content uses temp_file_path
+  output$community_download_individual <- downloadHandler(
     filename = function() {
       location_suffix <- if (!is.null(selected_location_name())) {
         paste0(" - ", selected_location_name())
@@ -2744,40 +2736,20 @@ app_server <- function(input, output, session) {
       create_filename(
         file_desc = paste0('community report', location_suffix),
         title = input$analysis_title,
-        buffer_dist = current_slider_val[[submitted_upload_method()]],
+        buffer_dist = submitted_radius_val(),
         site_method = submitted_upload_method(),
         with_datetime = TRUE,
         ext = ifelse(input$format1pager == 'pdf', '.pdf', '.html')
       )
     },
     content = function(file) {
-      html_content <-  community_download(file)
-      file.rename(html_content, file)
-    }
-  )
-  
-  # downloadHandler for the modal download button
-  output$download_report <- downloadHandler(
-    filename = function() {
-      location_suffix <- if (!is.null(selected_location_name())) {
-        paste0(" - ", selected_location_name())
-      } else {
-        ""
-      }
-      create_filename(
-        file_desc = paste0('community report', location_suffix),
-        title = input$analysis_title,
-        buffer_dist = current_slider_val[[submitted_upload_method()]],
-        site_method = submitted_upload_method(),
-        with_datetime = TRUE,
-        ext = ifelse(input$format1pager == 'pdf', '.pdf', '.html')
-      )
-    },
-    content = function(file) {
-      req(temp_file_path())
+      req(temp_file_path())              # temp_file_path, unlike handler above
       file.copy(temp_file_path(), file)
     }
   )
+  
+  
+  
   
 
   
@@ -2946,7 +2918,7 @@ app_server <- function(input, output, session) {
     # )
   })
   #############################################################################  #
-  ## SUMMARY REPORT ON 1 SITE (via Button on Table of Sites) ####
+  ## DOWNLOAD HTML REPORT on 1 SITE (via Button on Table of Sites) ####
   
   cur_button <- reactiveVal(NULL)
   temp_file_path <- reactiveVal(NULL)
@@ -3007,7 +2979,7 @@ app_server <- function(input, output, session) {
           title = "Download Ready",
           "Your report is ready. Click the button below to download.",
           footer = tagList(
-            downloadButton("download_report", "Download Report"),
+            downloadButton("community_download_individual", "Download Report"),
             modalButton("Close")
           ),
           easyClose = TRUE,

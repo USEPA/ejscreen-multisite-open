@@ -94,13 +94,18 @@ how ties are treated in percentile lookup tables, etc.), or
 }
 \examples{
  \dontrun{
-   pts <- testpoints_100[1:5, ]
+ # in RStudio, interactive:
+ vs <- ejscreen_vscript()
+ 
+ pts <- testpoints_100[1:5, ]
    
   # This step can take a long time, 
   # almost 1 minute / 20 points, as it uses the EJScreen API:
   #z <- ejscreen_vs_ejam(
     testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
   z <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
+  
+  EJAM:::ejscreen_vs_ejam_summary(z)
   
   # see one site
   ejscreen_vs_ejam_see1(z, mysite = 1)

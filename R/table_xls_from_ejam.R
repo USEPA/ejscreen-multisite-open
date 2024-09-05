@@ -154,6 +154,6 @@ table_xls_from_ejam <- function(ejamitout,
     openxlsx::saveWorkbook(wb_out, pathname, overwrite = overwrite)
     return(pathname)
   } else {
-    return(wb_out)
+    invisible(wb_out)
   }
 }
