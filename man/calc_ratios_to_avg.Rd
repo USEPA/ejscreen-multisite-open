@@ -6,10 +6,9 @@
 \usage{
 calc_ratios_to_avg(
   out,
-  evarnames = map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_e"],
-  dvarnames = map_headernames$newnames_ejscreenapi[map_headernames$varlist \%in\%
-    c("names_d", "names_d_subgroups")],
-  zone.prefix = "",
+  evarnames = names_e,
+  dvarnames = c(names_d, names_d_subgroups),
+  zone.prefix = c("", "state.")[1],
   avg.evarnames = paste0(zone.prefix, "avg.", evarnames),
   avg.dvarnames = paste0(zone.prefix, "avg.", dvarnames)
 )
