@@ -61,7 +61,7 @@ plot_vs_us <- function(bysite = NULL, # ejamit()$results_bysite,
     bysite <- copy(bysite)
   }
   # correct for different 0-1 or 0-100 scaling in blockgroupstats and ejamit()$results_bysite
-  bysite <- fix_pctcols_x100(bysite)
+  bysite <- fix_pctcols_x100(bysite, cnames = names_pct_as_fraction_ejamit)
   data.table::setDT(bysite)
   sites <- cbind(bysite[ , c("pop", varname), with = FALSE], Locations = siteslabel)
   
@@ -76,12 +76,12 @@ plot_vs_us <- function(bysite = NULL, # ejamit()$results_bysite,
       refdata <- blockgroupstats[!is.na(blockgroupstats$pop) & !is.na(blockgroupstats[ , varname]), c("pop", varname)]
     }
     if (!fix_pctcols) {warning("if using default refdata, blockgroupstats, fix_pctcols must be TRUE and ignored if set FALSE")}
-    refdata <- fix_pctcols_x100(refdata)
+    refdata <- fix_pctcols_x100(refdata, cnames = names_pct_as_fraction_blockgroupstats)
   } else {
     if (!(varname %in% names(refdata))) {stop(varname, "must be a column name in refdata")}
     if (fix_pctcols) {
       message("assuming refdata provided was a subset of blockgroupstats, so rescaling some indicators to ensure all percentages are scaled as 0-100 not 0-1")
-      refdata <- fix_pctcols_x100(refdata)
+      refdata <- fix_pctcols_x100(refdata, cnames = names_pct_as_fraction_blockgroupstats)
     }
   }
   data.table::setDT(refdata)
