@@ -89,10 +89,7 @@ ejscreenapi2ejam_format <- function(ejscreenapi_plus_out, fillmissingcolumns = F
   # Should already be rname format?, but 
   # just in case, try to convert as if they were long names as in output of ejscreenit()
   colnames(x) <- fixcolnames(colnames(x), "long", "r")
-  #manually fix a couple we know differ
-  # colnames(x) <- gsub("EJScreenPDF", "EJScreen Report", colnames(x)) # should be obsolete / fixed now
-  # colnames(x) <- gsub("EJScreenMAP", "EJScreen Map", colnames(x)) # should be obsolete / fixed now
-  
+
   # Remove columns from API output that are not in the EJAM output format 
   
   keepthese <- which(colnames(x) %in% ejamvars)

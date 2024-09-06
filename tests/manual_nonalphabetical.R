@@ -4,76 +4,76 @@
 # })
 ######################################################## #
 if (1 == 0) { # do this part manually if needed
-
+  
   # TO RELOAD / ITERATE WHILE DEBUGGING:
   #   TAKES 20 seconds even though supposed to be slower if reset = T,  if not loading block datasets on attach
   
   devtools::load_all(reset = TRUE)
   # dataload_from_pins("all")
-
+  
   # TO OPEN SOME KEY TEST FILES:
   
-# rstudioapi::navigateToFile("./tests/testthat/test-FIPS_FUNCTIONS.R")
-# rstudioapi::navigateToFile("./tests/testthat/test-state_from_fips_bybg.R")
-# rstudioapi::navigateToFile("./tests/testthat/test-doaggregate.R")
-# rstudioapi::navigateToFile("./tests/testthat/test-ejamit.R")
-# rstudioapi::navigateToFile("./tests/testthat/test-latlon_df_clean.R")
-
+  # rstudioapi::navigateToFile("./tests/testthat/test-FIPS_FUNCTIONS.R")
+  # rstudioapi::navigateToFile("./tests/testthat/test-state_from_fips_bybg.R")
+  # rstudioapi::navigateToFile("./tests/testthat/test-doaggregate.R")
+  # rstudioapi::navigateToFile("./tests/testthat/test-ejamit.R")
+  # rstudioapi::navigateToFile("./tests/testthat/test-latlon_df_clean.R")
+  
 }
 
 ######################################################## #
 # simple checks for easy/basic case, main functions, without actually running unit tests with testthat
 
 if (1 == 0) { # do this part manually if needed
-
+  
   # latlon
-x <- ejamit(testpoints_5[1:2,], radius = 1)
-# names(x)
-ejam2table_tall(x)
-ejam2barplot(x)
-ejam2barplot_sites(x)
-ejam2tableviewer(x)
-junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
-# ejam2report(x)   #  report not yet working if not in shiny app
-ejam2map(x)
-fname = ejam2shapefile(x, folder = tempdir())
- shpin = shapefile_from_any(fname)
- map_shapes_leaflet(shpin)
- 
-# shapefile
-
-shp <- shape_buffered_from_shapefile( shapefile_from_sitepoints(testpoints_5[1:2,]), radius.miles = 1)
-                                      # or use test data  shp <- shapefile_from_any()
-shp <- shapefile_from_any(system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp", package = "EJAM"))[1:3, ]  
-# x <- ejamit( shapefile = shp )  ## NOT WORKING RIGHT NOW
-# names(x)
-# ejam2table_tall(x)
-# ejam2barplot(x)
-# ejam2barplot_sites(x)
-# ejam2tableviewer(x)
-# junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
-# ejam2report(x)   #  report not yet working if not in shiny app
-## ejam2map(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
-## ejam2shapefile(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
+  x <- ejamit(testpoints_5[1:2,], radius = 1)
+  # names(x)
+  ejam2table_tall(x)
+  ejam2barplot(x)
+  ejam2barplot_sites(x)
+  ejam2tableviewer(x)
+  junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
+  # ejam2report(x)   #  report not yet working if not in shiny app
+  ejam2map(x)
+  fname = ejam2shapefile(x, folder = tempdir())
+  shpin = shapefile_from_any(fname)
+  map_shapes_leaflet(shpin)
+  
+  # shapefile
+  
+  shp <- shape_buffered_from_shapefile( shapefile_from_sitepoints(testpoints_5[1:2,]), radius.miles = 1)
+  # or use test data  shp <- shapefile_from_any()
+  shp <- shapefile_from_any(system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp", package = "EJAM"))[1:3, ]  
+  # x <- ejamit( shapefile = shp )  ## NOT WORKING RIGHT NOW
+  # names(x)
+  # ejam2table_tall(x)
+  # ejam2barplot(x)
+  # ejam2barplot_sites(x)
+  # ejam2tableviewer(x)
+  # junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
+  # ejam2report(x)   #  report not yet working if not in shiny app
+  ## ejam2map(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
+  ## ejam2shapefile(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
   # map_shapes_leaflet(x)  
-
-
-# fips
-x <- ejamit(fips = fips_bg_from_anyfips(fips_counties_from_state_abbrev("DE")[1])[1:2]) # just 2 blockgroups
-names(x)
-ejam2table_tall(x)
-ejam2barplot(x)
-ejam2barplot_sites(x)
-ejam2tableviewer(x)
-junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
-# ejam2report(x)   #  report not yet working if not in shiny app
-# ejam2map(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
-# ejam2shapefile(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
-
-x <- ejamit(fips = fips_counties_from_state_abbrev("DE"))  #   3 Counties
-mapfastej_counties(x$results_bysite) # not (x)
-
-
+  
+  
+  # fips
+  x <- ejamit(fips = fips_bg_from_anyfips(fips_counties_from_state_abbrev("DE")[1])[1:2]) # just 2 blockgroups
+  names(x)
+  ejam2table_tall(x)
+  ejam2barplot(x)
+  ejam2barplot_sites(x)
+  ejam2tableviewer(x)
+  junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
+  # ejam2report(x)   #  report not yet working if not in shiny app
+  # ejam2map(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
+  # ejam2shapefile(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
+  
+  x <- ejamit(fips = fips_counties_from_state_abbrev("DE"))  #   3 Counties
+  mapfastej_counties(x$results_bysite) # not (x)
+  
+  
 }
 ####################### #
 
@@ -106,8 +106,8 @@ if (file.exists("./tests/testthat/setup.R")) {
   cat("Need to source the setup.R file first \n")    
 }
 ########################################## #
-  
-  ## Find the tests ####
+
+## Find the tests ####
 update_list_of_tests <- TRUE
 if (update_list_of_tests) {
   sdir <- getwd()
@@ -244,67 +244,67 @@ if (update_list_of_tests) {
 } # end if, update_list_of_tests
 ## Define Functions that run tests ####
 {
-##     BY GROUP, WITH SUCCINCT SUMMARY
-
-test1group <- function(fnames = test_all, 
-                       reporter = "minimal", # some of the code below now only works if using this setting
-                       # reporter = default_compact_reporter(), # 
-                       print = FALSE
-) {
-  xtable <- list()
-  # tfile <- tempfile("junk", fileext = "txt")
-  for (i in 1:length(fnames)) {
-    cat(".")
-    suppressWarnings(suppressMessages({
-      junk <- testthat::capture_output_lines({
-        x <- testthat::test_file(
-          file.path("./tests/testthat/", fnames[i]), 
-          reporter = reporter)
-      }, print = print)
-    }))
-    # testthat_print(junk)
-    x <- as.data.frame(x)
-    x$tests <- x$nb
-    x$nb <- NULL
-    x$flag <- x$tests - x$passed
-    x$err  <- x$tests - x$passed - x$warning
-    x$error_cant_test <- ifelse(x$error, 1, 0)
-    x$error <- NULL
-    x$skipped <- ifelse(x$skipped, 1, 0)
-    x <- x[, c('file',  'test', 
-               'tests', 'passed', 'failed',  'err',
-               'warning', 'flag', 'skipped', 'error_cant_test'
-    )]
-    x$test <- substr(x$test, 1, 50) # some are long
-    xtable[[i]] <- data.table::data.table(x)
+  ##     BY GROUP, WITH SUCCINCT SUMMARY
+  
+  test1group <- function(fnames = test_all, 
+                         reporter = "minimal", # some of the code below now only works if using this setting
+                         # reporter = default_compact_reporter(), # 
+                         print = FALSE
+  ) {
+    xtable <- list()
+    # tfile <- tempfile("junk", fileext = "txt")
+    for (i in 1:length(fnames)) {
+      cat(".")
+      suppressWarnings(suppressMessages({
+        junk <- testthat::capture_output_lines({
+          x <- testthat::test_file(
+            file.path("./tests/testthat/", fnames[i]), 
+            reporter = reporter)
+        }, print = print)
+      }))
+      # testthat_print(junk)
+      x <- as.data.frame(x)
+      x$tests <- x$nb
+      x$nb <- NULL
+      x$flag <- x$tests - x$passed
+      x$err  <- x$tests - x$passed - x$warning
+      x$error_cant_test <- ifelse(x$error, 1, 0)
+      x$error <- NULL
+      x$skipped <- ifelse(x$skipped, 1, 0)
+      x <- x[, c('file',  'test', 
+                 'tests', 'passed', 'failed',  'err',
+                 'warning', 'flag', 'skipped', 'error_cant_test'
+      )]
+      x$test <- substr(x$test, 1, 50) # some are long
+      xtable[[i]] <- data.table::data.table(x)
+    }
+    cat("\n")
+    xtable <- data.table::rbindlist(xtable)
+    print(colSums(xtable[, .(tests, passed, failed, err,
+                             warning, flag, 
+                             skipped, error_cant_test)]))
+    return(xtable)
   }
-  cat("\n")
-  xtable <- data.table::rbindlist(xtable)
-  print(colSums(xtable[, .(tests, passed, failed, err,
-                           warning, flag, 
-                           skipped, error_cant_test)]))
-  return(xtable)
-}
-########################### #
-
-##     ONE SPECIFIC GROUP OF TESTS AT A TIME
-
-testbygroup <- function(testlist, ...) {
-  # the ... can be print=TRUE, and possibly reporter=default_compact_reporter()
-  # testlist[[(names(testlist)[[1]])]] is the same as get(names(testlist)[[1]]), vector of filenames
-  xtable <- list()
-  i <- 0
-  for (tgroupname in names(testlist)) {
-    i <- i + 1
-    fnames = unlist(testlist[[tgroupname]])
-    cat("", tgroupname, "group has", length(fnames), "test files ")
-    # print(data.frame(files = testlist[[tgroupname]]))
-    xtable[[i]] <- data.table::data.table(testgroup = tgroupname, 
-                                          test1group(testlist[[tgroupname]], ...) )
+  ########################### #
+  
+  ##     ONE SPECIFIC GROUP OF TESTS AT A TIME
+  
+  testbygroup <- function(testlist, ...) {
+    # the ... can be print=TRUE, and possibly reporter=default_compact_reporter()
+    # testlist[[(names(testlist)[[1]])]] is the same as get(names(testlist)[[1]]), vector of filenames
+    xtable <- list()
+    i <- 0
+    for (tgroupname in names(testlist)) {
+      i <- i + 1
+      fnames = unlist(testlist[[tgroupname]])
+      cat("", tgroupname, "group has", length(fnames), "test files ")
+      # print(data.frame(files = testlist[[tgroupname]]))
+      xtable[[i]] <- data.table::data.table(testgroup = tgroupname, 
+                                            test1group(testlist[[tgroupname]], ...) )
+    }
+    xtable <- data.table::rbindlist(xtable)
+    return(xtable)
   }
-  xtable <- data.table::rbindlist(xtable)
-  return(xtable)
-}
 }   #   done defining functions
 ########################### #  ########################################## #
 # RUN JUST 1 FILE OR GROUP? ####
@@ -318,12 +318,12 @@ if (y) {
     "WHICH TEST OR GROUPS COMMA-SEP LIST",
     paste0(shortgroupnames, collapse = ","),
     # "fips,naics,frs,latlon,maps,shape,getblocks,fixcolnames,doag,ejamit,ejscreenapi,mod,app"
-    )
+  )
   tname <- unlist(strsplit(gsub(" ", "", tname), ","))
   tname = paste0("test_", tname)
   #    test_file("./tests/testthat/test-MAP_FUNCTIONS.R" )
   partial_testlist <-  testlist[names(testlist) %in% tname] 
-
+  
   consoleclear()
   
   x = testbygroup(testlist = partial_testlist)
@@ -429,7 +429,7 @@ if (y) {
   prioritize = x[order(-x$flag, -x$failed), 1:11]
   prioritize <- prioritize[prioritize$tests != prioritize$passed | prioritize$error_cant_test > 0, ]
   print(prioritize)
-
+  
   cat("\n\n")
   # cat("MORE KEY TESTS DETAILS")
   # cat("\n\n")

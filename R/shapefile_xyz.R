@@ -709,8 +709,15 @@ shape_buffered_from_shapefile <- function(shapefile, radius.miles, crs = 4269, .
 #'
 shape_buffered_from_shapefile_points <- function(shapefile_points, radius.miles, crs = 4269, ...) {
   
-  # add error checking ***
-  
+  if (!("sf" %in% class(shapefile_points)) ) {
+    warning("input was not a simple feature object, but will convert to one")
+    shapefile_points <- try({
+      shapefile_from_sitepoints(shapefile_points, crs = crs)  
+    })
+    if (inherits(shapefile_points, "try-error")) {
+      stop("could not convert to simple feature object")
+    }
+  }
   return(sf::st_buffer(shapefile_points %>%  sf::st_transform(crs = crs), #
                        dist = units::set_units(radius.miles, "mi"), ...))
 }

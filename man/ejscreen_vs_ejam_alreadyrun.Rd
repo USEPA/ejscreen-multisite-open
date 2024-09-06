@@ -9,9 +9,7 @@ ejscreen_vs_ejam_alreadyrun(
   ejamsite,
   nadrop = FALSE,
   x100fix = TRUE,
-  x100varnames = c(names_d, names_d_avg, names_d_state_avg, names_d_subgroups,
-    names_d_subgroups_avg, names_d_subgroups_state_avg, "pctdisability", "pctownedunits",
-    "pctunder18", "pctover17", "pctmale", "pctfemale")
+  x100varnames = names_pct_as_fraction_ejscreenit
 )
 }
 \arguments{

@@ -68,14 +68,21 @@ if (!require(remotes)) {install.packages("remotes")}
 remotes::install_github('USEPA/EJAM')
 
 ```
+To install the development version, which may be newer but not yet fully working:
+```{r}
+if (!require(remotes)) {install.packages("remotes")}
+remotes::install_github('USEPA/EJAM', ref = "development")
+```
 
-However, until the repositories are made public, you need to be on VPN and also get a PAT to do this -- see details below.
+
+
+However, until the repository is made public, you need to be on VPN and also get a PAT to do this -- see details below.
 
 ### if you need the full source code or want to build/install in RStudio on your own
 
-There is now no other EJAM-specific package as of 7/2024 that EJAM needs - all of the code is consolidated in the EJAM package.
+There is now no other EJAM-specific package that EJAM needs - all of the code is consolidated in the EJAM package.
 
-The package is only available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM"){.uri target="_blank" rel="noreferrer noopener"} (not CRAN)
+The package is available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM"){.uri target="_blank" rel="noreferrer noopener"} (not CRAN)
 
 -   [EJAM](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM"){.uri target="_blank" rel="noreferrer noopener"}
 

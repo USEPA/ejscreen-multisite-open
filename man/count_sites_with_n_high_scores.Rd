@@ -2,7 +2,7 @@
 % Please edit documentation in R/count_sites_with_n_high_scores.R
 \name{count_sites_with_n_high_scores}
 \alias{count_sites_with_n_high_scores}
-\title{Answers questions like What \verb{\%} of sites have at least 1 demog. indicator \verb{>2x} state avg?}
+\title{Answers questions like how many sites have demog. indicators >2x the state avg?}
 \usage{
 count_sites_with_n_high_scores(
   scores,

@@ -104,7 +104,7 @@ state_from_sitetable <- function(sites, ignorelatlon = FALSE) {
     # done
   } else {
     
-    # 2. is FIPS here? ####
+    # 2. is any FIPS there?
     
     suppressWarnings({x = fips_from_table(sites2states)}) # returns NULL if no column could be interpreted as fips column name, and returns vector of values otherwise
     if (!is.null(x) && (sum(fips_valid(x), na.rm = TRUE) > 0)) {
