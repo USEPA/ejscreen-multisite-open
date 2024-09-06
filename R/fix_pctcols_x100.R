@@ -17,7 +17,7 @@
 #'
 #' @examples 
 #'  y = data.frame(pctlowinc = 1:2, pctpre1960 = 1:2, avg.pctunemployed = 1:2, avg.pctpre1960 = 1:2)
-#'  fix_pctcols_x100(y)
+#'  
 #'  fix_pctcols_x100(y, names_pct_as_fraction_ejscreenit)
 #'  fix_pctcols_x100(y, names_pct_as_fraction_blockgroupstats)
 #'  fix_pctcols_x100(y, names_pct_as_fraction_ejamit)
@@ -27,7 +27,7 @@
 #'  names_pct_as_fraction_ejamit
 #'  cat("\n\n")
 #'  ytable = data.table(pctlowinc = 1:2, pctpre1960 = 1:2, avg.pctunemployed = 1:2, avg.pctpre1960 = 1:2)
-#'  fix_pctcols_x100(ytable)
+#'  
 #'  fix_pctcols_x100(ytable, names_pct_as_fraction_blockgroupstats) 
 #'  fix_pctcols_x100(ytable, names_pct_as_fraction_ejamit)
 #'  cat("\n\n")
@@ -36,27 +36,38 @@
 #'  
 #' @keywords internal
 #'
-fix_pctcols_x100 <- function(df, cnames = NULL) {
+fix_pctcols_x100 <- function(df, cnames = c(names_pct_as_fraction_blockgroupstats, 
+                                            names_pct_as_fraction_ejamit,
+                                            names_pct_as_fraction_ejscreenit)[2]
+) {
   
   ## which percentage indicators are stored as 0-1.00 not 0-100 ?
   ## This will correct for different scaling in blockgroupstats and ejamit()$results_bysite, etc.
   
   # inefficient to pass the whole df here but should work
   
-  if (is.null(cnames)) {
-    cnames <- unique(c(
-      names_pct_as_fraction_blockgroupstats, 
-      names_pct_as_fraction_ejamit,
-      names_pct_as_fraction_ejscreenit
-    ))
-  } # EJAM package data includes names_pct_as_fraction_blockgroupstats,
+  if (missing(cnames)) {
+    message("missing cnames parameter so assuming defaults should be used")
+  }
   tofix <- names(df)[names(df) %in% cnames]
+  if (length(tofix) != length(cnames)) {
+    message("note that not all of cnames were found in df")
+  }
+  
   if (is.data.table(df)) {
-    # df[ , (tofix) := lapply(.SD, function(z) z * 100), .SDcols = tofix] #painful syntax and updates the data.table in the calling envt by reference which may be unexpected
+    
+    ## This way would be only slightly faster, using data.table approach, 
+    ## saving about  0.01 seconds for 1,000 points dataset with cnames = names_pct_as_fraction_ejamit
+    ## but would update the data.table in the calling envt by reference 
+    ## rather than just returning an updated copy, which may be unexpected.
+    #
+    # df[ , (tofix) := lapply(.SD, function(z) z * 100), .SDcols = tofix] 
+    
     setDF(df)
     df[ , tofix] <- df[ , tofix] * 100
     setDT(df)
     return(df)
+    
   } else {
     df[ , tofix] <- df[ , tofix] * 100
     return(df)
