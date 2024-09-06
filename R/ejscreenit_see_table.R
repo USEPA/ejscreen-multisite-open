@@ -26,16 +26,6 @@ ejscreenit_see_table <- function(x) {
                                       #  areaid = "", # not a parameter
                                       as_html = TRUE, linktext = "EJScreen Map")
 
-  ## note EJAM function table_tall_from_overall does this too:
-  # x <- copy(results_overall)
-  # x <- fix_pctcols_x100(x)
-  # x <- table_round(x)
-  # x <- as.vector(unlist(x))
-  # x[!var_is_numeric_ish(x)] <- NA # easier to just drop the info like state name/abbrev.
-  # # a vector has to be numeric or not, cannot have just some elements numeric some char.
-  # # x[var_is_numeric_ish(x)] <- as.numeric(x[var_is_numeric_ish(x)] )
-  # x  <- as.numeric(x  )
-
   names(y) <- fixcolnames(names(y), 'r', 'long')  # in case currently r format
   DT::datatable(y, escape = FALSE) # escape FALSE ensures URLs work as links in RStudio viewer
 }
