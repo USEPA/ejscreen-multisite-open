@@ -182,9 +182,9 @@ calc_byformula <- function(mydf, formulas = NULL, keep = formula_varname(formula
     # and it splits up on _ etc.
     ## Also might consider package called  sourcetools that has a tokenize function to parse text into parts
 
-    y <- try(source_this_codetext(thisformula), silent = FALSE)
+    # y <- try(source_this_codetext(thisformula), silent = FALSE)
 
-    # y <- try(source_this_codetext(thisformula), silent = TRUE)
+    y <- try(source_this_codetext(thisformula), silent = TRUE)
     # tries to evaluate formula in THIS environment (the one that called the function source_this... )
     suppressWarnings(
       if (class(y) == "try-error") {

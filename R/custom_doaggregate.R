@@ -135,7 +135,7 @@ custom_doaggregate <- function(sites2blocks,
   # no ratios calculated
   # no EJ Indexes created
   # no summary stats like from batch.summarize(), etc.
-
+  
   #################### #
   # aggregate from blocks up to blockgroups
   
@@ -171,13 +171,13 @@ custom_doaggregate <- function(sites2blocks,
   # join nationwide indicator data to these places analyzed
   bybg_bysite  <- merge(bybg_bysite,  custom_blockgroupstats, by = "bgid")
   bybg_overall <- merge(bybg_overall, custom_blockgroupstats, by = "bgid")
-
+  
   #################### #
   # calculations just for EACH block group 
   #  No aggregation yet (sum of counts, percentage as ratio, avg of 2 values, etc.)
   if (!is.null(custom_formulas)) {
-  bybg_bysite   <- calc_ejam(bybg_bysite,  keep.old = c("ejam_uniq_id", "bgid", "pop", "bgwt"), keep.new = "all", formulas = custom_formulas)
-  bybg_overall  <- calc_ejam(bybg_overall, keep.old = c("ejam_uniq_id", "bgid", "pop", "bgwt"), keep.new = "all", formulas = custom_formulas)
+    bybg_bysite   <- calc_ejam(bybg_bysite,  keep.old = c("ejam_uniq_id", "bgid", "pop", "bgwt"), keep.new = "all", formulas = custom_formulas)
+    bybg_overall  <- calc_ejam(bybg_overall, keep.old = c("ejam_uniq_id", "bgid", "pop", "bgwt"), keep.new = "all", formulas = custom_formulas)
   }
   
   ################# ------------------------------------------------------------------------- ################ #
@@ -191,7 +191,7 @@ custom_doaggregate <- function(sites2blocks,
   ## sums of counts
   
   ### started this idea but would need to apply calc_ejam() by group, and would need to include bgwt * x, etc. 
-# see datacreate_formulas_d or formulas_all
+  # see datacreate_formulas_d or formulas_all
   # 
   # results_overall <- calc_ejam(bybg_overall, keep.old = "", keep.new = "all", formulas = formulas_all)
   # results_bysite <- 
@@ -272,7 +272,7 @@ custom_doaggregate <- function(sites2blocks,
   }), .SDcols = popmeancols_inbgstats, by = .(ejam_uniq_id) ]
   
   results_bysite <- merge(results_bysite, results_bysite_popmeans, by = "ejam_uniq_id")
-
+  
   
   ## popwtd mean OVERALL ###
   results_overall_popmeans <- bybg_overall[ ,  lapply(.SD, FUN = function(x) {
@@ -283,47 +283,74 @@ custom_doaggregate <- function(sites2blocks,
   
   # results_bybg  table of 1 row per bg-site pair is already done
   
-
-  if (!is.null(custom_formulas)) {
-  ################################################# #
-  # CUSTOM FORMULAS would be HANDLED HERE #
-  ################################################# #
   
-  # if ("WORKING YET?" == "YES NOW" && !is.null(custom_formulas)) {
-  #   
-  #   # to be written...
-  #   ## *** PROBLEM HOW TO ALLOW CUSTOM FORMULAS THAT
-  #   ##  ALSO WILL  INCORPORATE THE bgwt multiplication 
-  #   ##   needed to rollup across block groups correctly??
-  #   
-  #   
-  #   if (is.null(custom_cols)) {
-  #     custom_cols = EJAM:::formula_varname(custom_formulas)
-  #   }
-  # 
-  # results_bysite_custom  <-  calc_ejam(bybg_bysite,
-  #                    keep.old = c("bgid" ,"pop"),
-  #                    keep.new = "all",
-  #                    formulas = custom_formulas)
-  #   # that aggregates from 1 row per site-bg pair into just 1 row per site
-  # 
-  # results_overall_custom <- 
-  #   #calc_ejam(bgwts_overall, keep.old = c("bgid", "pop"), keep.new = "all", formulas = custom_formulas)
-  # # that aggregates from 1 row per bg into just 1 row total
-  # 
-  #   
-  #   
-  #   # add it to the other outputs
-  #   results_overall <- 0
-  # }
+  if (!is.null(custom_formulas)) {
+    ################################################# #
+    # aggregation via CUSTOM FORMULAS would be HANDLED HERE #
+    ################################################# #
+    
+    # if ("WORKING YET?" == "YES NOW" && !is.null(custom_formulas)) {
+    #   
+    #   # to be written...
+    #   ## *** PROBLEM HOW TO ALLOW CUSTOM FORMULAS THAT
+    #   ##  ALSO WILL  INCORPORATE THE bgwt multiplication 
+    #   ##   needed to rollup across block groups correctly??
+    #   
+    #   
+    #   if (is.null(custom_cols)) {
+    #     custom_cols = EJAM:::formula_varname(custom_formulas)
+    #   }
+    # 
+    # results_bysite_custom  <-  bybg_bysite[ , calc_ejam( ..???? ), by = "ejam_uniq_id"] 
+    
+    # need to aggregate from 1 row per site-bg pair into just 1 row per site
+    
+    #   setDT(bybg_bysite)[, sitepop := sum(pop * bgwt, na.rm = TRUE), by = .(ejam_uniq_id)]
+    # bybg_bysite
+    
+    results_bysite_custom <- list()
+    ids = unique(bybg_bysite$ejam_uniq_id)
+    n = length(ids)
+    for (sitenum in 1:n) {
+      
+      # THIS IS WRONG - IT SHOULD ROLL UP BY SITE BUT STILL KEEPS ALL THE BLOCKGROUPS...
+      # and should use btwt
+      
+      # NEED A WAY TO DO AGGREGATION BYSITE AND FORMULAS AT THE SAME TIME OR CORRECTLY SEPARATELY.
+      #  calc_ejam() has each formula but  does no aggregation.
+      #  and just doing data.table   dt[, xyz, by = "ejam_uniq_id"]  
+      #   would aggregate but need the formula(s) in there.
+      #  check formulas_all, which seemed to allow for aggregation-like calculation??
+      
+      results_bysite_custom[[sitenum]] <- calc_ejam(
+        bybg_bysite[bybg_bysite$ejam_uniq_id == ids[sitenum], ],
+        keep.old = c("bgid" ,"pop"),
+        keep.new = "all",
+        formulas = custom_formulas
+      )
+    }
+    results_bysite_custom <- rbindlist(results_bysite_custom)
+    
+    # 
+    # 
+    # 
+    # results_overall_custom <-  aggregate to 1 row only
+    # 
+    #   
+    #   
+    #   # add it to the other outputs
+    
+    #   results_overall <- .........................
+    
+    # }
   }
   
   ########## no ratios, percentiles, averages, etc. etc.
   ########## no other columns added like radius.miles, lat/lon, URLs, block counts, etc. etc. 
   
   results_overall = fix_pctcols_x100(results_overall)
-  results_bysite = fix_pctcols_x100(results_bysite)
-  results_bybg = fix_pctcols_x100(results_bybg)
+  results_bysite  = fix_pctcols_x100(results_bysite)
+  results_bybg    = fix_pctcols_x100(results_bybg)
   
   return(
     list(
@@ -377,20 +404,20 @@ custom_ejamit <- function(sitepoints, radius = 3, fips = NULL, shapefile = NULL,
     if (!is.null(shapefile)) {
       sites2blocks <- get_blockpoints_in_shape(shapefile_from_any(shapefile))
     } else {
-       sites2blocks <- getblocksnearby(sitepoints = sitepoints, radius = radius)
+      sites2blocks <- getblocksnearby(sitepoints = sitepoints, radius = radius)
     }
   }
-
+  
   return(
-  custom_doaggregate(sites2blocks = sites2blocks,
-                     custom_blockgroupstats = custom_blockgroupstats,
-                     countcols = countcols,
-                     popmeancols = popmeancols,
-                     wtcols = wtcols,
-                     custom_formulas = custom_formulas,
-                     custom_cols = custom_cols,
-                     custom_map_headernames = custom_map_headernames
-                     )
+    custom_doaggregate(sites2blocks = sites2blocks,
+                       custom_blockgroupstats = custom_blockgroupstats,
+                       countcols = countcols,
+                       popmeancols = popmeancols,
+                       wtcols = wtcols,
+                       custom_formulas = custom_formulas,
+                       custom_cols = custom_cols,
+                       custom_map_headernames = custom_map_headernames
+    )
   )
 }
 ############################################### # 
@@ -398,7 +425,7 @@ custom_ejamit <- function(sitepoints, radius = 3, fips = NULL, shapefile = NULL,
 
 
 ############################################### # 
-# stop()
+# stop() !!!
 
 ### test/debug/ try these new functions ...
 # 
@@ -407,52 +434,123 @@ custom_ejamit <- function(sitepoints, radius = 3, fips = NULL, shapefile = NULL,
 #   ## s2b = getblocksnearby(testpoints_10, radius = 1)
 #   s2b = testoutput_getblocksnearby_10pts_1miles
 #   x = custom_doaggregate(s2b)
- if (1 == 0) {  
- data.frame(
-   custom = round(t(x$results_overall[, ..names_these]),3),
-   ejamit = round(t(testoutput_ejamit_10pts_1miles$results_overall[, ..names_these]),3)
-   )
- 
-##                    custom    ejamit
-## Demog.Index         0.413    0.402   ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean. 
-## Demog.Index.Supp    0.180    0.177   ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean.
-## pctlowinc           0.417    0.396   ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean.
-## pctlingiso          0.070    0.068   ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean.
-## pctunemployed       0.059    0.057   ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean.
-## pctlths             0.141    0.149   ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean.
-## lowlifex            0.216    0.216
-## pctunder5           0.064    0.064
-## pctover64           0.108    0.108
-## pctmin              0.408    0.408
-## pcthisp            25.471    0.255  ******* 100x
-## pctnhba             8.590    0.086  ******* 100x
-## pctnhaa             2.968    0.030  ******* 100x
-## pctnhaiana          0.884    0.009  ******* 100x
-## pctnhnhpia          0.002    0.000  ******* 100x
-## pctnhotheralone     0.091    0.001  ******* 100x
-## pctnhmulti          2.836    0.028  ******* 100x
-## pctnhwa            59.158    0.592  ******* 100x
-## pm                  8.034    8.034
-## o3                 60.623   60.623
-## cancer             26.527   26.527
-## resp                0.289    0.289
-## dpm                 0.363    0.363
-## pctpre1960         38.380    0.413  ******* 100x and ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean.
-## traffic.score     179.121  179.121
-## proximity.npl       0.387    0.387
-## proximity.rmp       0.595    0.595
-## proximity.tsdf      1.353    1.353
-## proximity.npdes     0.014    0.014
-## ust                 5.489    5.489
-## rsei             6492.776 6492.776
+if (1 == 0) {
+  data.frame(
+    custom = round(t(x$results_overall[, ..names_these]),3),
+    ejamit = round(t(testoutput_ejamit_10pts_1miles$results_overall[, ..names_these]),3)
+  )
   
+  ##                    custom    ejamit
+  ## Demog.Index         0.413    0.402   ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean. 
+  ## Demog.Index.Supp    0.180    0.177   ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean.
+  ## pctlowinc           0.417    0.396   ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean.
+  ## pctlingiso          0.070    0.068   ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean.
+  ## pctunemployed       0.059    0.057   ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean.
+  ## pctlths             0.141    0.149   ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean.
+  ## lowlifex            0.216    0.216
+  ## pctunder5           0.064    0.064
+  ## pctover64           0.108    0.108
+  ## pctmin              0.408    0.408
+  ## pcthisp            25.471    0.255  ******* 100x
+  ## pctnhba             8.590    0.086  ******* 100x
+  ## pctnhaa             2.968    0.030  ******* 100x
+  ## pctnhaiana          0.884    0.009  ******* 100x
+  ## pctnhnhpia          0.002    0.000  ******* 100x
+  ## pctnhotheralone     0.091    0.001  ******* 100x
+  ## pctnhmulti          2.836    0.028  ******* 100x
+  ## pctnhwa            59.158    0.592  ******* 100x
+  ## pm                  8.034    8.034
+  ## o3                 60.623   60.623
+  ## cancer             26.527   26.527
+  ## resp                0.289    0.289
+  ## dpm                 0.363    0.363
+  ## pctpre1960         38.380    0.413  ******* 100x and ## pop mean not quite same as how it was calculated as ratio of sums of counts or correct-denominator-wtd-mean.
+  ## traffic.score     179.121  179.121
+  ## proximity.npl       0.387    0.387
+  ## proximity.rmp       0.595    0.595
+  ## proximity.tsdf      1.353    1.353
+  ## proximity.npdes     0.014    0.014
+  ## ust                 5.489    5.489
+  ## rsei             6492.776 6492.776
+  
+  
+  i = 3 
+  
+  cbind(
+    custom = round(t(x$results_bysite[i, ..names_these]),3),
+    ejamit = round(t(testoutput_ejamit_10pts_1miles$results_bysite[i, ..names_these]),3),
+    ejscreenit = round(t(outapi[i, ..names_these]),3) # just one site
+  )
+  
+  
+  ######################################################### # 
+  ######################################################### # 
+  
+  
+  supressWarnings({
+    x = custom_ejamit(testpoints_10, 
+                      custom_blockgroupstats = data.frame(blockgroupstats[,.(pop, bgfips, bgid, pctlowinc)]), 
+                      countcols = "pop", 
+                      popmeancols = "pctlowinc", 
+                      wtcols = "pop", 
+                      custom_formulas = formulas_d, 
+                      custom_map_headernames = map_headernames)
+  })
+  
+  y = ejamit(testpoints_10)
+  x$results_bysite[,.(ejam_uniq_id,      pop,  pctlowinc )]
+  y$results_bysite[,.(ejam_uniq_id,      pop,  pctlowinc )]
+  
+  ######################################################### # 
+  ######################################################### # 
+  
+  # define some test inputs  
+  
+  formulas_test = c("high_pctlowinc <- pctlowinc >= 0.50", "high_pop <- pop >= 5000")
+  
+  formulas_test = c(formulas_test, formulas_d)
+  
+  bg_test = data.frame(blockgroupstats[, .(bgid, bgfips, pop, pctlowinc)])
+  
+  map_headernames_test = data.frame(
+    rname  = c("pop", "pctlowinc", "high_pctlowinc", "high_pop"),
+    shortlabel = c("Pop", "%low-inc.", "High %lowinc?", "Large Pop.?"),
+    longname_tableheader = c("Pop", "% low income", "% low income is High", "Population is Large"),
+    pct_as_fraction_blockgroupstats = FALSE,
+    pct_as_fraction_ejamit = FALSE
+  )
+  
+  
+  sitepoints = testpoints_10
+  custom_blockgroupstats = bg_test
+  countcols = "pop"
+  popmeancols = "pctlowinc"
+  wtcols = "pop"
+  # custom_cols = NULL
+  custom_formulas = formulas_test
+  custom_map_headernames = map_headernames_test
+  radius = 3
+  
+  # do this which is in custom_ejamit()
+  sites2blocks <- getblocksnearby(sitepoints = sitepoints, radius = radius)
+  
+  
+  
+  # out_test <- custom_ejamit(
+  #   sitepoints = testpoints_10,
+  #   custom_blockgroupstats = bg_test, 
+  #   countcols = "pop",
+  #   popmeancols = "pctlowinc", 
+  #   wtcols = "pop", 
+  #   # custom_cols = NULL,
+  #   custom_formulas = formulas_test, 
+  #   custom_map_headernames = map_headernames_test
+  # )
+  
+  out_test$results_bysite
+  
+  
+  # out_test$results_bysite[out_test$results_bysite$high_pctlowinc, ]
+  
+}
 
- i = 3 
- 
- cbind(
-   custom = round(t(x$results_bysite[i, ..names_these]),3),
-   ejamit = round(t(testoutput_ejamit_10pts_1miles$results_bysite[i, ..names_these]),3),
-   ejscreenit = round(t(outapi[i, ..names_these]),3) # just one site
- )
- }
- 
