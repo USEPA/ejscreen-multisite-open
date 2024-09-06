@@ -34,32 +34,40 @@
 #'   
 #' @keywords internal
 #' @export
-#'   
+#'
 calc_ratios_to_avg <- function(out, 
-                          evarnames = map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_e"], #EJAM ::names_e, 
-                          dvarnames = map_headernames$newnames_ejscreenapi[map_headernames$varlist %in% c("names_d", "names_d_subgroups" )], #EJAM ::names_d and names_d_subgroups
-                          zone.prefix='', # can just specify "state." if the 
-                          # indicators use state.avg.indicator (and blank if  avg.indicator as variable names)
+                          evarnames = names_e, 
+                          dvarnames = c(names_d, names_d_subgroups),
+                          zone.prefix = c('', 'state.')[1], 
+                          # specify "state." for state.avg.indicator and blank for avg.indicator as variable names
                           avg.evarnames=paste0(zone.prefix, 'avg.', evarnames), 
                           avg.dvarnames=paste0(zone.prefix, 'avg.', dvarnames)) {
   
+  if (is.list(out) && !is.data.frame(out)) {
+    if ("results_bysite" %in% names(out)) {
+      # looks like it is the output of ejamit()
+      out <- out$results_bysite
+    } else {
+      if ("table" %in% names(out)) {
+        # looks like it is the output of ejscreenit()
+        out <- out$table
+      } else {
+        stop("parameter out is invalid")
+      }
+    }
+  }
+   if (is.data.table(out)) {setDF(out)}
+  
   ##   ratios of nearby indicator score to US overall, 
-  ## try to get quick barplot(s) or PDF(density) or CDF
+  ##  to get quick barplot(s) or PDF(density) or CDF
   ## at one site or average site or all in one graphic. 
    
-  # # for examples, see non_shiny_example_script.R
- 
-  ## tedious part is specifying the variable names, ideally flexibly.
-  ## And  this app uses Demog.Index instead of VSI.eo
-   
-  # just do some error checking here:
-   if (is.data.table(out)) {setDF(out)}
   # confirm those colnames are there
   d_haveboth <- (avg.dvarnames %in% names(out)) & (dvarnames %in% names(out))
   e_haveboth <- (avg.evarnames %in% names(out)) & (evarnames %in% names(out))
   if (any(!e_haveboth, !d_haveboth)) {
     warning('some variable names are not found in out - ignoring those')
-    cat('Missing from outputs of API, but expected to see here: \n\n')
+    cat('Missing from table provided, but expected to see here: \n\n')
     if (any(!d_haveboth)) cat("Demog: ", paste(setdiff(c(dvarnames, avg.dvarnames), names(out)), collapse = ", "), '\n\n')
     if (any(!e_haveboth)) cat("Envt: " , paste(setdiff(c(evarnames, avg.evarnames), names(out)), collapse = ", "), '\n\n')
     }
@@ -72,9 +80,8 @@ calc_ratios_to_avg <- function(out,
   if (length( allnames) == 0) {stop("None of the specified (or expected default if not specified) Variable names were found in the provided dataset")}
   if (length(evarnames) == 0) {stop("None of the specified (or expected default if not specified) evarnames were found in the provided dataset")}
   if (length(dvarnames) == 0) {stop("None of the specified (or expected default if not specified) dvarnames were found in the provided dataset")}
-  
-  
-  # blanks crashed it - make any non numeric into NA # ejscreenapi_plus() ADDS COMMAS AND MAKES NUMERIC pop COUNTS INTO A CHARACTER FIELD
+
+  # so blanks wont cause error, make any non numeric into NA # ejscreenapi_plus() ADDS COMMAS AND MAKES NUMERIC pop COUNTS INTO A CHARACTER FIELD
   if (any(!is.numeric(out[ , allnames]))) {
     # warning('some values are not numeric - replacing those with NA')
     out[ , allnames] <- suppressWarnings(sapply(out[ , allnames], as.numeric))
