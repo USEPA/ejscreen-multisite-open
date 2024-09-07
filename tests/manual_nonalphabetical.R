@@ -1,8 +1,10 @@
 # system.time({
-#   #    ABOUT 7 MINUTES TO RUN TESTS (if large datasets had not yet been loaded)
-#   source("./tests/manual_nonalphabetical.R") # answering Yes to running ALL tests
+#   ##    ABOUT 7 MINUTES TO RUN TESTS (if large datasets had not yet been loaded)
+#   source("./tests/manual_nonalphabetical.R") #####
+#     ## answering Yes to running ALL tests
 # })
 ######################################################## #
+# load_all() if iterating ####
 if (1 == 0) { # do this part manually if needed
   
   # TO RELOAD / ITERATE WHILE DEBUGGING:
@@ -20,10 +22,9 @@ if (1 == 0) { # do this part manually if needed
   # rstudioapi::navigateToFile("./tests/testthat/test-latlon_df_clean.R")
   
 }
-
 ######################################################## #
-# simple checks for easy/basic case, main functions, without actually running unit tests with testthat
-
+# just do basic quick checks? (not unit tests) ####
+# for easy/basic case, main functions, without actually running unit tests with testthat
 if (1 == 0) { # do this part manually if needed
   
   # latlon
@@ -90,23 +91,9 @@ library(testthat)
 library(data.table) # used in functions here
 library(magrittr)
 library(dplyr)
-consoleclear <- function() if (interactive() & rstudioapi::isAvailable()) {rstudioapi::executeCommand("consoleClear")}
+consoleclear <- function() {if (interactive() & rstudioapi::isAvailable()) {rstudioapi::executeCommand("consoleClear")}}
 consoleclear()
-# if (interactive()) {
-#   useloadall <- askYesNo(msg = "Do you want to load and test the current source code files version of EJAM (via devtools::load_all() etc.,
-#                       rather than testing the installed version)?", default = TRUE)
-#   if (useloadall) {devtools::load_all()} else {suppressPackageStartupMessages({   library(EJAM) }) } #??
-# } else {suppressPackageStartupMessages({   library(EJAM)   }) } #??
-dataload_from_pins("all")
-
-if (file.exists("./tests/testthat/setup.R")) {
-  # rstudioapi::navigateToFile("./tests/testthat/setup.R")
-  source("./tests/testthat/setup.R") #   asks if need load_all or library
-} else {
-  cat("Need to source the setup.R file first \n")    
-}
 ########################################## #
-
 ## Find the tests ####
 update_list_of_tests <- TRUE
 if (update_list_of_tests) {
@@ -306,12 +293,22 @@ if (update_list_of_tests) {
     return(xtable)
   }
 }   #   done defining functions
+#################################################### # 
 ########################### #  ########################################## #
-# RUN JUST 1 FILE OR GROUP? ####
+# >>Ask what to do<< ####
+useloadall = TRUE
+y_runsome = FALSE # if T, need to also create partial_testlist
+y_runall = TRUE
+y_seeresults = TRUE
+y_save = TRUE
 
-y = askYesNo("Run only some tests now?")
-if (is.na(y)) {y = FALSE}
-if (y) {
+if (interactive()) {
+  useloadall <- askYesNo(msg = "Do you want to load and test the current source code files version of EJAM (via devtools::load_all() etc.,
+                      rather than testing the installed version)?", default = TRUE)
+  
+  y_runsome = askYesNo("Run only some tests now?")
+  if (is.na(y_runsome)) {y_runsome = FALSE}
+  if (y_runsome) {
   fnames = unlist(testlist)
   shortgroupnames = gsub("^test_(.*)","\\1", names((testlist)))
   tname = rstudioapi::showPrompt(
@@ -323,7 +320,37 @@ if (y) {
   tname = paste0("test_", tname)
   #    test_file("./tests/testthat/test-MAP_FUNCTIONS.R" )
   partial_testlist <-  testlist[names(testlist) %in% tname] 
+  }
   
+  y_runall = askYesNo("RUN ALL TESTS NOW?")
+  y_seeresults = askYesNo("View results of unit testing?")
+  y_save = askYesNo("Save results of unit testing?")
+}
+############ # 
+if (y_runall == FALSE && y_runsome == FALSE) {
+  stop('no tests run')
+} 
+
+if (useloadall) {
+  devtools::load_all()
+} else {
+  suppressPackageStartupMessages({   library(EJAM)   }) 
+}
+dataload_from_pins("all")
+if (file.exists("./tests/testthat/setup.R")) {
+  # rstudioapi::navigateToFile("./tests/testthat/setup.R")
+  source("./tests/testthat/setup.R") #   asks if need load_all or library
+} else {
+  cat("Need to source the setup.R file first \n")    
+}
+
+########################### #  ########################################## #
+# RUN JUST 1 FILE OR GROUP? ####
+
+# y_runsome = askYesNo("Run only some tests now?")
+# if (is.na(y_runsome)) {y_runsome = FALSE}
+if (y_runsome) {
+
   consoleclear()
   
   x = testbygroup(testlist = partial_testlist)
@@ -335,9 +362,9 @@ if (y) {
 
 # RUN ALL TESTS (slow)  ####
 
-y = askYesNo("RUN ALL TESTS NOW?")
-if (is.na(y)) {y = FALSE}
-if (y) {
+# y_runall = askYesNo("RUN ALL TESTS NOW?")
+if (is.na(y_runall)) {y_runall = FALSE}
+if (y_runall) {
   ## takes almost 5 minutes 
   consoleclear()
   
@@ -351,9 +378,9 @@ if (y) {
   x <- testall
   ## save results of testing ####
   
-  y = askYesNo("Save results of unit testing?") 
-  if (is.na(y)) {y = FALSE}
-  if (y) {
+  # y_save = askYesNo("Save results of unit testing?") 
+  if (is.na(y_save)) {y_save = FALSE}
+  if (y_save) {
     fname <- paste0("./tests/results_of_unit_testing_", as.character(Sys.Date()), ".rda")
     save(testall, file = fname)
   } # end if - save
@@ -363,9 +390,9 @@ if (y) {
 
 # SEE WHAT PASSED / FAILED ####
 
-y = askYesNo("View results of unit testing?") 
-if (is.na(y)) {y = FALSE}
-if (y) {
+# y_seeresults = askYesNo("View results of unit testing?") 
+if (is.na(y_seeresults)) {y_seeresults = FALSE}
+if (y_seeresults) {
   consoleclear()
   ########################### #  ########################### #
   
