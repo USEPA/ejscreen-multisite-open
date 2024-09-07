@@ -118,7 +118,8 @@ shapefix = function(shp,
   shp_proj$invalid_msg <- NA
   shp_proj$invalid_msg[shp_proj$valid == F] <- shp_valid_check$reason[shp_proj$valid == F]
   shp_proj$invalid_msg[is.na(shp_proj$geometry)] <- 'bad geometry'
-  class(shp_proj) <- c(class(shp_proj), 'data.table')
+  # class(shp_proj) <- c(class(shp_proj), 'data.table')
+  data.table::setDT(shp_proj)
   # shp_proj
   shp <- shp_proj
   
