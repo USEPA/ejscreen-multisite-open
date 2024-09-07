@@ -4,16 +4,19 @@
 #' DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.
 #'
 #' @param ejamitout output of EJAM such as from [ejamit()]
-#' @param fname optional filename with no path and must be .shp extension
+#' @param fname optional filename with no path and must be .shp extension. Ignored if save=F.
 #' @param folder optional - If omitted (and not running in shiny and if interactive() mode),
 #'   this function prompts you to specify the folder, path to where the .zip should be saved.
+#'   If omitted and not running in shiny or not interactive() mode, it uses tempdir().
+#'   Ignored if save=F.
+#' @param save whether to save file - if FALSE, it returns the object not the file path
 #' @param crs optional coord ref system
 #' @param shortcolnames Whether to cut colnames to 10 characters for .shp format
-#' @return path to saved .zip file
-#' @param save whether to save file - if FALSE, it returns the object not the file path
 #' @param varnames optional vector of which colnames of ejamitout$results_bysite 
 #'   to include in shapefile. DJefault is all other than averages, ratios, and raw EJ scores.
 #'   Can be "all" or NULL to include all columns.
+#'   
+#' @return path to saved .zip file
 #' @examples \dontrun{
 #'   # folder = "~/../Downloads"
 #'   # out <- ejamit(testpoints_100 , radius = 3.1)
@@ -31,8 +34,11 @@
 #' 
 #' @export
 #' 
-ejam2shapefile <- function(ejamitout, fname = "EJAM_results_bysite_date_time.shp",  folder = ".", 
-                           crs = 4269, shortcolnames=TRUE, save = TRUE, 
+ejam2shapefile <- function(ejamitout, 
+                           fname = "EJAM_results_bysite_date_time.shp", 
+                           folder = tempdir(), # only used if not specified and in shiny or not interactive 
+                           save = TRUE, 
+                           crs = 4269, shortcolnames=TRUE, 
                            varnames = "basic250"
 ) { 
   # ,   ...) {
@@ -117,19 +123,25 @@ Except, if Counties were analyzed, see  mapfastej_counties() \n')
     }
     #  Creating a 256th field, but some DBF readers might only support 255 fields
     
-    
+    # ASKS TO CONFIRM THE DEFAULT FOLDER IS OK #### 
     if (interactive() && !shiny::isRunning()) {
       if (missing(folder)) {
         folder <- rstudioapi::selectDirectory("Select/confirm Folder to Save .zip in", path = folder)
       }
     }
+    if (!dir.exists(folder)) {stop("folder does not exist")}
+    # folder <- normalizePath(folder) # ?? converts from x/y/z  to  x\\y\\z  on windows.
+    
+    # DO NOT ASK TO CONFIRM THE DEFAULT FILENAME IS OK ####
     if (missing(fname)) {
       fname <- create_filename(ext = ".shp", file_desc = "results_bysite") # e.g.,  "EJAM_results_bysite_20240901_162119.shp"
     }
-    # folder <- normalizePath(folder) # ?? converts from x/y/z  to  x\\y\\z  on windows.
+    if (basename(fname) != fname) {stop("fname must not include path, only filename with .shp extension - use folder parameter to specify folder")}
     if (tools::file_ext(fname) != "shp") {stop("fname extension must be .shp, and the saved file in specified folder will be a .zip file with the .shp etc.")}
+    
     tds <- file.path(tempdir(), "shp")
     if (!dir.exists(tds)) {dir.create(tds)}
+    if (!dir.exists(tds)) {stop('could not create temp directory')}
     
     sf::st_write(
       obj = bysite_shp,
@@ -137,15 +149,20 @@ Except, if Counties were analyzed, see  mapfastej_counties() \n')
       append = FALSE, delete_layer = TRUE # ,  # should overwrite any existing, but fails if already exists?
       # ...
     )
+    if (!file.exists(file.path(tds, fname))) {stop('could not write to file at ', file.path(tds, fname))}
     
     zipname <- paste0(fname, ".zip")
     fname_noext <- gsub( paste0("\\.", tools::file_ext(fname), "$"), "", dir(tds, pattern = fname))  # ?? 
     fnames <- dir(tds, pattern = fname_noext)
     fnames <- fnames[!grepl("zip$", fnames)]
     if (file.exists(zipname)) {file.remove(zipname)}
-
     zipfullpath <- paste0(normalizePath(folder), "\\", zipname)
-    zip(zipfullpath, files = file.path(tds, fnames), extras = c('-j', '-D')) # unzip from tempdir to folder specified by parameter. -D should prevent storing Directory info, -j is supposed to use no path info so files are all in root of .zip and there are not folders inside the .zip
+    
+    zip(zipfullpath, files = file.path(tds, fnames), extras = c('-j', '-D')) 
+    # unzip from tempdir to folder specified by parameter.
+    # -D should prevent storing Directory info, 
+    # -j is supposed to use no path info so files are all in root of .zip and there are not folders inside the .zip
+    if (!file.exists(zipfullpath)) {stop('could not create zip file at ', zipfullpath)}
     
     return(zipfullpath)
   }
