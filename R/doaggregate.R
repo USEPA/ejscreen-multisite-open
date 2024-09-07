@@ -1080,22 +1080,25 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     # use nearest 1 block's state, which is often but not always right if near state line,
     # but in shapefiles case of a polygon covering 2 states has no distance so just whatever happens to be 1st block in list there.
     # and never arises for FIPS case (fips is always just a single state).
-    cat(' *** TEMPORARILY, for circles covering 2 states, using state of nearest block,
-        and for Shapefiles spanning 2 States,  JUST USING 1 OF THE STATES - 
-        work in progress on state identification if not in shiny app and not using ejamit(), 
-        if sites2states_or_latlon is not provided to doaggregate() \n')
+    cat(' *** For now, if sites2states_or_latlon is not provided to doaggregate(),
+        for circles covering 2 states, it will use state of nearest block,
+        and for Shapefiles spanning 2 States, will just use 1 of the States -
+        not selected by area or population, but just whatever happens to be first in the table.
+        This should only arise if not in shiny app and not using ejamit() and 
+        sites2states_or_latlon was not provided to doaggregate() \n')
     # single-state case
     sites2states <- state_from_s2b_bysite(sites2blocks) # works for single-state sites only, NA otherwise
     setDT(sites2states)
     
-    if ("confirmed this works" == "done?") {
+    # if ("confirmed this works" == "done?") {
       # multistate case
       multistate_ids <- sites2states$ejam_uniq_id[is.na(sites2states$ST)]
       others <- state_from_nearest_block_bysite(sites2blocks[ejam_uniq_id %in% multistate_ids, ])
+      # returns data.table with cols ejam_uniq_id,ST and one row per unique id
       ## join those but should replace only one with multistate_ids 
-      ##  NOT RIGHT ???  xxx
+      ##  ???  xxx
       sites2states$ST[is.na(sites2states$ST)] <- others$ST[match(sites2states$ejam_uniq_id[is.na(sites2states$ST)], others$ejam_uniq_id)]
-    }
+    # }
     
   }
 
