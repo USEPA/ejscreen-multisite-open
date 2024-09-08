@@ -1110,17 +1110,22 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #  ##################################################### #
   
   results_bysite[sites2states, ST := ST, on = "ejam_uniq_id"] # check this, including when ST is NA ***
-  results_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  #  results_bysite[, statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  # results_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  
+  results_bysite[ , statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  results_bysite[ , REGION := fips_st2eparegion(fips_state_from_state_abbrev(ST))]
   results_bysite[sites2states, in_how_many_states := in_how_many_states, on = "ejam_uniq_id"]
   
   results_overall$ST <- NA
   results_overall$statename <- NA
+  results_overall$REGION <- NA
   results_overall$ejam_uniq_id <- NA  ## adds blank ejam_uniq_id column to results_overall (no longer tied to include_ejindexes)
   results_overall$in_how_many_states <- length(unique(na.omit(results_bysite$ST)))
   
   # results_bybg_people$ST is created from sites2bgs_plusblockgroupdata_bysite$ST and ST is already in that table 
   # since ST was joined from blockgroupstats around line 569, for each bg, but that is not always 1 state for a given site.
-  sites2bgs_plusblockgroupdata_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  # same as the very slightly slower... fips2statename(fips_state_from_state_abbrev(ST))
+  # sites2bgs_plusblockgroupdata_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  # same as the very slightly slower... fips2statename(fips_state_from_state_abbrev(ST))
+  sites2bgs_plusblockgroupdata_bysite[, statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  sites2bgs_plusblockgroupdata_bysite[, REGION := fips_st2eparegion(fips_state_from_state_abbrev(ST))]
   sites2bgs_plusblockgroupdata_bysite$in_how_many_states <- 1 # since a single blockgroup can only be in one state
   #  ##################################################### #  ##################################################### #
   
@@ -1486,7 +1491,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       'pop',           # '[or names_wts]',
       'sitename',
       'lon', 'lat', # do we want to make consistently lat,lon not lon,lat ??? ***
-      'ST', 'statename', 'REGION',
+      'ST', 'statename', 'in_how_many_states', 'REGION',
       
       
       ## RATIOS to AVG (DEMOG and ENVT) ----------------------------------------\
@@ -1539,17 +1544,22 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       ### D US PCTILE ###
       names_d_pctile,
       names_d_subgroups_nh_pctile,       names_d_subgroups_alone_pctile,
+      names_health_pctile, 
+      
       ### D US AVERAGES ###
       names_d_avg,
       names_d_subgroups_nh_avg,          names_d_subgroups_alone_avg,
+      names_health_avg,
       
       ### D STATE PCTILE ##
       names_d_state_pctile,
       names_d_subgroups_nh_state_pctile, names_d_subgroups_alone_state_pctile,
+      names_health_state_pctile,
+      
       ### D STATE AVERAGES ###
       names_d_state_avg,
       names_d_subgroups_nh_state_avg ,   names_d_subgroups_alone_state_avg,
-      
+      names_health_state_avg,
       
       ## ENVIRONMENTAL ----------------------------------------\
       

@@ -116,6 +116,10 @@ datacreate_names_of_indicators <- function() {
   # assign all the lists of variable names to the global environment
   for (i in seq_along(vlists)) {
     vns <- varlist2names(vlists[i])
+    if (anyDuplicated(vns)) {
+      warning(paste0("check order of indicators in ", vlists[i], " because duplicates had to be removed from it." ))
+      vns = unique(vns)
+    }
     assign(vlists[i], vns)
   }
   # assign metadata to all those lists
