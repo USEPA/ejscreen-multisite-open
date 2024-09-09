@@ -6,7 +6,12 @@
 #' @rawNamespace import(shiny, except = c(dataTableOutput, renderDataTable))
 #' @importFrom shinyjs useShinyjs extendShinyjs
 #'
+#'
+#'
+library(desc)
 app_ui  <- function(request) {
+  
+  
   
   tagList(
     # golem_add_external_resources() ####
@@ -43,10 +48,12 @@ app_ui  <- function(request) {
       html_header_fmt,
       
       ### title (for app and browser tab) ####
+      
+      
       div(class = "title-panel",
           titlePanel(
-            title = "EJAM (Environmental Justice Analysis Multi-site) Tool v2.32",
-            windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool v2.32"
+            title = paste("EJAM (Environmental Justice Analysis Multi-site) Tool v",ejam_app_version, sep =""),
+            windowTitle = paste("EJAM (Environmental Justice Analysis Multi-site) Tool v", ejam_app_version, sep ="")
           )
       ),
       
@@ -509,8 +516,7 @@ app_ui  <- function(request) {
                                div(
                                  style = "background-color: #edeff0; color: black; width: 100%; padding: 10px 20px; text-align: right; margin: 10px 0;",
                                  p( style = "margin-bottom: 0",
-                                   "Version 2.32 | Report created on ", 
-                                    format(Sys.Date(), '%B %d, %Y'),
+                                    paste("Version", ejam_app_version, "| Report created on", format(Sys.Date(), '%B %d, %Y'))
                                  )
                                ),
                                br(),
