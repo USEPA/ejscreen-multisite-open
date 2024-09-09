@@ -73,11 +73,11 @@ format_ejamit_columns <- function(df, nms=c()){
         df[[colname]] <- round(cur_value, digits = decimal_num[i]) 
       }
       if(!is.na(sigfig_num[i])){
-        df[[colname]] <- signif(cur_value, digits = sigfig_num[i])
+        df[[colname]] <- signif(df[[colname]], digits = sigfig_num[i])
       }
       df[[colname]] <- scales::label_comma(accuracy = ifelse(is.na(decimal_num[i]), 1,
-                                                         1/(10^decimal_num[i])))(cur_value)
-    }
+                                                       1/(10^decimal_num[i])))(df[[colname]])
+      }
     
   }
   
