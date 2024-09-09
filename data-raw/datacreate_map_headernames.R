@@ -42,11 +42,6 @@ if (!exists("fpath")) {
   map_headernames <- datacreate_map_headernames(fpath)
 }
 
-# patch to fill in some missing info, used by batch.summarize()
-# but should make names_r_all more complete
-map_headernames$calculation_type[map_headernames$rname %in% setdiff(map_headernames$rname[calctype(map_headernames$rname) == "sum of counts"], names_all_r[calctype(names_all_r) == "sum of counts"])] <- "sum of counts"
-
-
 map_headernames <- metadata_add(map_headernames)
 usethis::use_data(map_headernames, overwrite = TRUE)
 
