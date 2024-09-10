@@ -5,7 +5,8 @@
 #' @aliases sitepoints_from_anything
 #' @param anything see [latlon_from_anything()], which this is passed to
 #' @param lon_if_used see [latlon_from_anything()], which this is passed to
-#' @param ... passed to latlon_from_anything()
+#' @param invalid_msg_table set to TRUE if you want columns "valid" and "invalid_msg" also 
+#' @param set_invalid_to_na used by latlon_df_clean()
 #' @return data.frame with lat,lon, and ejam_uniq_id as colnames, one row per point
 #' @examples
 #'  sitepoints_from_any(testpoints_10)
@@ -17,6 +18,9 @@
 #'  sitepoints_from_any(pts)
 #'  pts = data.table(Lat = testpoints_10$lat, Long = testpoints_10$lon)
 #'  sitepoints_from_any(pts)
+#'  
+#'  sitepoints_from_anything(testpoints_bad, set_invalid_to_na = F, invalid_msg_table = T)
+#'  
 #'  \dontrun{
 #'  if (interactive()) {
 #'    pts <- sitepoints_from_any()
@@ -27,7 +31,7 @@
 #'  }
 #' @export
 #'
-sitepoints_from_any <- function(anything, lon_if_used, ...) {
+sitepoints_from_any <- function(anything, lon_if_used, invalid_msg_table = FALSE, set_invalid_to_na = TRUE) {
   
   # note this overlaps or duplicates code in ejamit() and app_server.R
   #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
@@ -41,7 +45,9 @@ sitepoints_from_any <- function(anything, lon_if_used, ...) {
   # If user entered a table, path to a file (csv, xlsx), or whatever can be handled -- see latlon_from_anything() --
   # read it to get the lat lon values from there
   #  by using sitepoints <- latlon_from_anything() which also gets done by getblocksnearby()
-  sitepoints <- latlon_from_anything(anything, lon_if_used, ...)
+  
+  # can add columns "valid" and "invalid_msg" 
+  sitepoints <- latlon_from_anything(anything, lon_if_used, invalid_msg_table = invalid_msg_table, set_invalid_to_na = set_invalid_to_na)
   stopifnot(
     is.data.frame(sitepoints), 
     "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), 
@@ -58,6 +64,9 @@ sitepoints_from_any <- function(anything, lon_if_used, ...) {
     # message('sitepoints did not contain a column named ejam_uniq_id, so one was added')
     sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
   }
+  # if (invalid_msg_table) {
+  #   sitepoints <- latlon_is.valid(lat = sitepoints$lat, lon = sitepoints$lon, invalid_msg_table = TRUE)
+  # } # latlon_from_anything() above already used latlon_is.valid() and using it directly here would return ONLY those 2 validity columns
   
   return(sitepoints)
 }
@@ -65,6 +74,6 @@ sitepoints_from_any <- function(anything, lon_if_used, ...) {
 
 #' @export
 #' @inherit sitepoints_from_any
-sitepoints_from_anything <- function(anything, lon_if_used, ...) {
-  sitepoints_from_any(anything, lon_if_used, ...)
-  }
+sitepoints_from_anything <- function(anything, lon_if_used, invalid_msg_table = FALSE, set_invalid_to_na = TRUE) {
+  sitepoints_from_any(anything, lon_if_used, invalid_msg_table = invalid_msg_table, set_invalid_to_na = set_invalid_to_na)
+}

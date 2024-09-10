@@ -251,7 +251,7 @@ url_ejscreen_report <- function(lat='', lon='', radius='', as_html=FALSE, linkte
     
   } else {
     
-    latlon_table <- sitepoints_from_anything(lat, lon, interactiveprompt = interactiveprompt) # [ , c("lat","lon")] # or could use sitepoints_from_any() that is similar
+    latlon_table <- latlon_from_anything(lat, lon, interactiveprompt = interactiveprompt) # [ , c("lat","lon")] 
     lat <- latlon_table$lat
     lon <- latlon_table$lon
     

@@ -4,7 +4,7 @@
 \alias{latlon_is.valid}
 \title{Check if lat lon are OK -- validate latitudes and longitudes}
 \usage{
-latlon_is.valid(lat, lon, quiet = TRUE)
+latlon_is.valid(lat, lon, quiet = TRUE, invalid_msg_table = FALSE)
 }
 \arguments{
 \item{lat}{vector of latitudes
@@ -13,6 +13,8 @@ latlon_is.valid(lat, lon, quiet = TRUE)
 \item{lon}{vector of longitudes}
 
 \item{quiet}{optional logical, if TRUE, show list of bad values in console}
+
+\item{invalid_msg_table}{set TRUE if you want a data.frame with colnames "valid" and "invalid_msg"}
 }
 \value{
 logical vector, one element per lat lon pair (location)
