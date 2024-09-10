@@ -121,28 +121,11 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   ########################################################## # 
   
   if (sitetype == "shp") {
-    
-    # duplicates some code in ejamit() but is needed here to get ejam_uniq_id only once  to allow ejamit_compare_types_of_places() to work when it passes only a subset of rows to ejamit each time
-    # and so this function can handle just once any user provided filename, interactive selection of file, instead of each type of place trying to do that.
+    # shapefile_from_any()  now does shapefix() which creates unique ids only if not already there, etc.
     shp <- shapefile_from_any(shapefile, cleanit = FALSE)
-    if (!"ejam_uniq_id" %in% names(shp)) { 
-      shp <- cbind(ejam_uniq_id = 1:nrow(shp), shp) # assign id to ALL even empty or invalid inputs   #############  this adds ejam_uniq_id
-    }
-    
     if (is.null(typeofsite) || length(typeofsite) != NROW(shp)) {
       stop("typeofsite must be a vector as long as NROW(shapefile), (before empty or invalid ones are removed), each unique value defining a group of sites")
     }
-
-    shp$valid <- shp$valid <- (sf::st_is_valid(shp) &  !sf::st_is_empty(shp))
-    shp[shp$valid, ] <- shapefile_clean(shp) # uses default crs = 4269;  drops invalid rows or return NULL if none valid  # shp <- sf::st_transform(shp, crs = 4269) # done by shapefile_clean()
-    # *** is it ok to retain invalid rows for analysis or should they be dropped? can ejamit() handle those?? ***
-    if (is.null(shp)) {stop('No valid shapes found in shapefile')}
-    class(shp) <- unique(c(class(shp), 'data.table'))
-    if (!shiny::isRunning() && !silentinteractive) {
-      cat('Checking for valid polygons.\n')
-      message(paste0("Assigned unique IDs to but dropped ", sum(!shp$valid), " invalid or empty rows from shapefile."))
-    }
-    
   } else {
     shp <- shapefile # NULL
   }

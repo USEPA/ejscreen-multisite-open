@@ -51,7 +51,7 @@ fix_pctcols_x100 <- function(df, cnames = c(names_pct_as_fraction_blockgroupstat
   }
   tofix <- names(df)[names(df) %in% cnames]
   if (length(tofix) != length(cnames)) {
-    message("note that not all of cnames were found in df")
+    # message("note that not all of cnames were found in df")
   }
   
   if (is.data.table(df)) {

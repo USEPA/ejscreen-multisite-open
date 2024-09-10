@@ -177,7 +177,7 @@ ejamit <- function(sitepoints,
 ) {
   
   sitetype <- ejamit_sitetype_check(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
-  if (interactive() && !silentinteractive) {print(sitetype)}
+  if (interactive() && !silentinteractive) {cat("Type of sites provided:", sitetype, '\n')}
   
   # * POLYGONS / SHAPEFILES ####
   
@@ -186,69 +186,14 @@ ejamit <- function(sitepoints,
     ## . check shp ####
     
     shp <- shapefile_from_any(shapefile, cleanit = FALSE) # if user entered ejamit(shapefile=1), e.g., it will prompt for an actual file.
+    # now it does shapefix()
     
-    # made this very much like code in server: ***
+    # Here we retain all rows, columns include ejam_uniq_id, valid, invalid_msg
+    data_uploaded <- sf::st_drop_geometry(shp)[, unique(c(1:2, which(names(shp) == "ejam_uniq_id")))] # any 1 or 2 plus id to make sure it isn't just 1 col and drop=T happens
     
-    if (is.null(shp)) {
-      # disable_buttons[['SHP']] <- TRUE                                # a reactiveValues object
-      # shiny::validate("Uploaded file should contain the following file extensions: shp,shx,dbf,prj or json or zip")
-      stop("file should contain the following file extensions: shp,shx,dbf,prj or json or zip")
-    }
-    
-    # if shp contains point features, present message in app
-    if (any(sf::st_geometry_type(shp) == "POINT")) {
-      # disable_buttons[['SHP']] <- TRUE                                # a reactiveValues object
-      # shiny::validate("Shape file must be of polygon geometry.")
-      stop("Shape file must be of polygon geometry.") 
-    }
-    
-    # Drop Z and/or M dimensions from feature geometries, resetting classes appropriately
-    shp <- sf::st_zm(shp)
-    
-    # standardize colname to "geometry" since standard name not always seen. Can be "Shape" for example: shp <- shapefile_from_any(system.file('testdata/shapes/portland.gdb.zip', package = "EJAM"))  
-    if (any(grepl("sfc", lapply(shp, class)))) {
-      colnames(shp)[grepl("sfc", lapply(shp, class))] <- "geometry"
-      st_geometry(shp) <- "geometry"
-    }
-    
-    ## check if shp is valid, and
-    ## add "valid" and "invalid_msg" columns re invalid rows/polygons
-    
-    if (nrow(shp) > 0) {
-      ## terra provides faster valid check than sf
-      shp_valid_check <- terra::is.valid(terra::vect(shp), messages = T)
-      shp_is_valid <- shp_valid_check$valid
-      numna <- sum(!shp_is_valid)
-      warning(paste0(numna, "invalid polygons"))
-      # num_valid_pts_uploaded[['SHP']] <- length(shp_is_valid) - sum(!shp_is_valid)    # a reactiveValues object
-      # invalid_alert[['SHP']] <- numna                                                 # a reactiveValues object 
-      ##shp_valid <- shp[sf::st_is_valid(shp),] # old way to check which shapes valid 
-      shp_valid <- dplyr::mutate(shp, siteid = dplyr::row_number())
-      shp_proj <- sf::st_transform(shp_valid,crs = 4269)
-    } else {
-      ## zero polygons found
-      # invalid_alert[['SHP']] <- 0  # hides invalid site warning                       # a reactiveValues object
-      # an_map_text_shp(HTML(NULL))  # hides the count of uploaded sites/shapes         # a reactiveValues object
-      # disable_buttons[['SHP']] <- TRUE                                                # a reactiveValues object
-      ## if not matched, return this message
-      # shiny::validate('No shapes found in file uploaded.')
-      stop("No shapes found in file")
-    }
-    # disable_buttons[['SHP']] <- FALSE                                                 # a reactiveValues object
-    shp_proj$valid <- shp_is_valid
-    
-    if (!"ejam_uniq_id" %in% names(shp)) { # this should allow ejamit_compare_types_of_places() to work when it passes only a subset of rows here
-      shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)    #  UNIQUE ID HERE
-    }
-    shp_proj$invalid_msg <- NA
-    shp_proj$invalid_msg[shp_proj$valid == F] <- shp_valid_check$reason[shp_proj$valid == F]
-    shp_proj$invalid_msg[is.na(shp_proj$geometry)] <- 'bad geometry'
-    class(shp_proj) <- c(class(shp_proj), 'data.table')
-    
-    shp <- shp_proj
-    rm(shp_proj)
-    shp_valid <- shp[shp$valid, ]
-    
+    # Here are just valid ones
+    shp_valid <- shp[shp$valid, ] # valid ones only
+    rm(shp)
     ##################################### #
     
     # . radius (buffer) for polygons ####
@@ -298,22 +243,8 @@ ejamit <- function(sitepoints,
         testing = testing
       )
     )
-    
-    ################################################################ #
-    
-    ## Handle sites dropped during getblocksnearby or doaggregate steps
-    dup <- shp  # all rows, including invalid ones
-    dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% mysites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
-    dup$valid <- dup$ejam_uniq_id %in% mysites2blocks$ejam_uniq_id
-    dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
-    dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
-    
-    out$results_bysite <- merge(dup[, c('ejam_uniq_id','valid','invalid_msg')],
-                                out$results_bysite,
-                                by = 'ejam_uniq_id', all = T) %>%
-      sf::st_drop_geometry()
-    
-  }
+
+  } # end shp type
   ######################## #
   
   if (sitetype == "fips") {
@@ -324,6 +255,14 @@ ejamit <- function(sitepoints,
     
     # getblocksnearby_from_fips() should include doing something like fips_lead_zero() ?
     # but also want to know what type each fips is (probably all should be same like all are tracts or all are county fips)
+
+    # Here we retain all rows, columns include ejam_uniq_id, valid, invalid_msg
+    data_uploaded = data.frame(fips = fips, ejam_uniq_id = fips, n = 1:length(fips), valid = fips_valid(fips))
+    data_uploaded$invalid_msg = ifelse(data_uploaded$valid, "",  "invalid FIPS")
+    data_uploaded$ejam_uniq_id = as.character(data_uploaded$ejam_uniq_id) # for merge or join below to work, must match class (integer vs character) of output of doaggregate() and before that output of getblocksnearby_from_fips(fips_counties_from_state_abbrev('DE'))  #  1:length(fips)) 
+    
+    # Here we only keep valid ones (vector not data.frame)
+    fips <- fips[data_uploaded$valid]
     
     ## . radius is ignored for fips ####
     radius <- 999 # use this value when analyzing by fips not by circular buffers, as input to doaggregate(),
@@ -350,6 +289,7 @@ ejamit <- function(sitepoints,
     ## . doaggregate  fips ####
     
     if (!silentinteractive) {cat('Aggregating at each FIPS Census unit and overall.\n')}
+    # sites2states_or_latlon 
     # fipshere <- fips # ?? in case any got dropped during getblocks..., but cant create state pctiles for those anyway.
     fipshere <- unique(mysites2blocks$ejam_uniq_id)
     sites2states_or_latlon <- data.table(ejam_uniq_id = fipshere, ST = fips2state_abbrev(fipshere))
@@ -377,7 +317,7 @@ ejamit <- function(sitepoints,
         testing = testing
       )
     )
-  }
+  } # end fips type
   ######################## #
   
   if (sitetype == "latlon") {
@@ -390,28 +330,18 @@ ejamit <- function(sitepoints,
     # note this overlaps or duplicates code in app_server.R   for data_up_latlon()  and data_up_frs() 
     
     ## . check pts ####
-    if (missing(sitepoints)) {
-      if (interactive() && !silentinteractive && !in_shiny && rstudioapi::isAvailable()) {
-        sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with columns lat, lon (or synonyms)", path = '.' )
-        # that returns the path to the file
-        sitepoints <- latlon_from_anything(sitepoints) # in rstudio interactively read file and infer colnames with lat lon
-      } else {
-        if (shiny::isRunning()) {
-          warning("sitepoints (locations to analyze) is missing but required.")
-          return(NULL)
-        } else {
-          stop("sitepoints (locations to analyze) is missing but required.")
-        }
-      }
-    }
-    # If user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
-    #  by using sitepoints <- latlon_from_anything(sitepoints) which gets done by getblocksnearby()
-    ################################################################################## #
-    # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
     
-    sitepoints <- sitepoints_from_anything(anything = sitepoints) # adds ejam_uniq_id column if it is missing. if present and not 1:N, warns but leaves it that way so ejamit_compare_types_of_places() can work.
+    # Get pts, if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
+    # adds ejam_uniq_id column if it is missing. if present and not 1:N, warns but leaves it that way so ejamit_compare_types_of_places() can work.
+    sitepoints <- sitepoints_from_anything(anything = sitepoints, invalid_msg_table = TRUE, set_invalid_to_na = FALSE)
     stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
     
+    # Here are preserved ALL rows (pts) including invalid ones
+    data_uploaded <- sitepoints[, c("ejam_uniq_id", "lat", "lon", "valid", "invalid_msg" )] # invalids here were not passed to getblock... but some valids here might not return from getblock.. so this distinguishes where it was dropped 
+    data_uploaded <- data.frame(data_uploaded) # not data.table
+    
+    # Here are only valid points
+    sitepoints <- sitepoints[sitepoints$valid, ] # only valid points go through doaggregate() but we preserved full list as data_uploaded, like data_uploaded() in server
     ###   *** should we drop all columns other than lat,lon,ejam_uniq_id ? ST? user might have provided a huge number of columns/ waste of memory.
     
     ##################################### #
@@ -442,7 +372,7 @@ ejamit <- function(sitepoints,
     
     mysites2blocks <- getblocksnearby(
       
-      sitepoints = sitepoints,
+      sitepoints = sitepoints, # invalid latlon were already dropped
       radius = radius,
       radius_donut_lower_edge = radius_donut_lower_edge,
       maxradius = maxradius,
@@ -481,61 +411,50 @@ ejamit <- function(sitepoints,
         testing = testing
       )
     )
-    
-    ################################################################ #
-    
-    ## Handle sites dropped during getblocksnearby or doaggregate steps
-    dup <- sitepoints
-    dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
-    dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
-    dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
-    dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
-    
-    
-    ## merge valid and invalid places (to add those back into results, as mostly empty rows; but already done above for FIPS case)
-    
-    out$results_bysite <- merge(dup[, .(ejam_uniq_id, valid, invalid_msg)],
-                                out$results_bysite,
-                                by = 'ejam_uniq_id', all = T)
-  }
-  # end of lat lon vs FIPS vs shapefile
+
+  } # end latlon type
   
+  # end of lat lon vs FIPS vs shapefile
   ################################################################ #
   # ~ ####
+  # Handle sites dropped during getblocksnearby or doaggregate steps or with no data (zero pop)
+  # * valid, invalid_msg   ####
   
-  # * Invalid sites? ####
-  ### _>>> differs from server code ! *** ####  
+  #     latlon, shp, fips handled the same way here
   
-  # Add rows with invalid sites & cols with valid flag/msg
-  # Handles sites dropped during getblocksnearby or doaggregate steps or with no data (zero pop)
-  # dup here means "data uploaded" or data user provided" 
-  if (sitetype == "latlon") {
-    dup <- data.frame(sitepoints) # latlon. already has ejam_uniq_id
-  }
-  if (sitetype == "fips") {
-    dup <- data.frame(fips = fips, ejam_uniq_id = as.character(fips)) # for merge or join below to work, must match class (integer vs character) of output of doaggregate() and before that output of getblocksnearby_from_fips(fips_counties_from_state_abbrev('DE'))  #  1:length(fips)) 
-  }
-  if (sitetype == "shp") {
-    dup <- sf::st_drop_geometry(shp)[, unique(c(1:2, which(names(shp) == "ejam_uniq_id")))] # any 1 or 2 plus id to make sure it isn't just 1 col and drop=T happens
-    # # shp already had ejam_uniq_id
-  }
+  # Add rows with invalid sites that were dropped before getblocks...
+  # Flag as invalid other cases (dropped by getblocks... or by doaggregate, or had no results)
+  # Say why, in invalid_msg column
   
-  site_in_blocksfound  <- dup$ejam_uniq_id %in% mysites2blocks$ejam_uniq_id
-  site_in_results      <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
-  site_in_results_pop0 <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id[out$results_bysite$pop == 0]
+  # data_uploaded is a data.frame, all rows including invalid, cols = ejam_uniq_id, valid, invalid_msg, done for latlon, fips, and shp cases.
+  # "valid" and "invalid_msg"   already created for shp by shapefix() in shapefile_from_any() 
+  # "valid" and "invalid_msg"   already created for latlon in sitepoints_from_any() 
+  # "valid" and "invalid_msg"   already created for fips by fips_valid()
   
-  dup$valid <- site_in_results & !site_in_results_pop0
-  dup$invalid_msg <- ""
-  dup$invalid_msg[!site_in_blocksfound] <- "no blocks found nearby"
-  dup$invalid_msg[site_in_blocksfound & !site_in_results] <- "no results found" # never happens? how can doaggregate drop it entirely if it was in mysites2blocks ?
-  dup$invalid_msg[site_in_results_pop0] <- "blocks found but zero residents - unable to aggregate" # msg differs from server version
+  dropped_before_getblocks <- !data_uploaded$valid
+  site_in_blocksfound  <- data_uploaded$ejam_uniq_id %in% mysites2blocks$ejam_uniq_id
+  site_in_results      <- data_uploaded$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
+  site_in_results_pop0 <- data_uploaded$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id[out$results_bysite$pop == 0]
   
-  # Add invalid sites and invalid flag/msg to results, so output has ALL sites, even those dropped by getblocks (or somehow dropped by just doaggregate)
-  setDT(dup)
-  out$results_bysite <- merge(dup[, .(ejam_uniq_id, valid, invalid_msg)],
+  data_uploaded$valid[site_in_results_pop0 | !site_in_results] <- FALSE  # NOTE this also says invalid if zero population
+
+  data_uploaded$invalid_msg[!dropped_before_getblocks & !site_in_blocksfound] <- "no block centroids (area too small for low pop density)"
+  data_uploaded$invalid_msg[site_in_blocksfound & !site_in_results] <- "blocks with residents found but unable to aggregate" # why?
+  data_uploaded$invalid_msg[site_in_results_pop0]   <- "blocks found but zero residents" # msg differs from server version
+  
+  # Merge invalid and valid sites and msg, so results_bysite has ALL sites originally provided for analysis.
+  setDT(data_uploaded)
+  out$results_bysite <- merge(data_uploaded[, .(ejam_uniq_id, valid, invalid_msg, lat, lon)],
                               out$results_bysite,
                               by = 'ejam_uniq_id', all = T)
   setorder(out$results_bysite, ejam_uniq_id)
+  
+  out$results_overall$valid <- sum(out$results_bysite$valid, na.rm = TRUE)
+  out$results_overall$invalid_msg <- ""
+  if (!setequal(names(out$results_overall), names(out$results_bysite))) {stop('column names in bysite and overall do not match')}
+  setcolorder(out$results_overall, names(out$results_bysite))
+  
+  out$longnames <- fixcolnames(names(out$results_bysite), 'r', 'long') # or try to sort c(fixcolnames(c("valid", "invalid_msg"), 'r', 'long'), out$longnames)
   ################################################################ #
   
   # * Hyperlinks ####
@@ -635,7 +554,7 @@ ejamit <- function(sitepoints,
   
   # * table_tall_from_overall() ####
   
-  out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
+  out$formatted <- table_tall_from_overall(out$results_overall, fixcolnames(names(out$results_bysite), 'r', 'long')) # out$longnames)
   
   ###################################### #
   if (interactive() & !silentinteractive & !in_shiny) {
