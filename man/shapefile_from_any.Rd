@@ -7,7 +7,8 @@
 shapefile_from_any(path = NULL, cleanit = TRUE, crs = 4269, layer = NULL, ...)
 }
 \arguments{
-\item{path}{path of file(s) that is/are .gdb, .zip, .shp etc., or folder
+\item{path}{path of file(s) that is/are .gdb, .zip, .shp,
+.geojson, .json, etc., or folder
 \itemize{
 \item If .zip or folder that has more than one shapefile in it,
 cannot be read by this function,
@@ -24,6 +25,7 @@ which works only it is x.shp and no other .shp exists in folder
 and x.shx, x.dbf, x.prj are in the folder.
 \item If vector of .shp, .shx, .dbf, and .prj file names
 (that may include paths), reads with \code{\link[=shapefile_from_filepaths]{shapefile_from_filepaths()}}
+\item If .json or .geojson, reads with \code{\link[=shapefile_from_json]{shapefile_from_json()}}
 }}
 
 \item{cleanit}{set to FALSE if you want to skip validation and dropping invalid rows}
@@ -36,7 +38,7 @@ default is crs = 4269 or Geodetic CRS NAD83}
 \item{...}{passed to \code{\link[sf:st_read]{sf::st_read()}}}
 }
 \value{
-a shapefile object using \code{\link[sf:st_read]{sf::st_read()}}
+a simple feature \link[sf:sf]{sf::sf} class object using \code{\link[sf:st_read]{sf::st_read()}}
 }
 \description{
 Read shapefile from any file or folder (trying to infer the format)
