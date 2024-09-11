@@ -33,17 +33,17 @@ jobs:
           
       - name: Install Shinytest2 Dependencies
         run: 
-          Rscript -e 'install.packages(c("curl", "chromote", "httr", "shinytest2", "remotes"))'
+          Rscript -e 'install.packages(c("curl", "chromote", "httr", "shinytest2", "devtools"))'
           
       - name: Install App Dependencies
         run: 
-          Rscript -e 'remotes::install_deps(dependencies = TRUE)'
+          Rscript -e 'devtools::install_deps(dependencies = TRUE)'
       
-      - name: Install EJAM
-        run: 
-          Rscript -e 'devtools::install_local('.', force=T)'
-          
-           
+      # - name: Install EJAM
+      #   run: 
+      #     Rscript -e 'devtools::install_local('.', force=T)'
+      #     
+      #      
       # - name: Run Shiny Tests
       #   run: Rscript -e 'shinytest2::test_app(".", filter="app-functionality")'
       # 
