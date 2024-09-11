@@ -28,6 +28,7 @@ jobs:
       
       - name: Install Dependencies
         run: 
+          Rscript -e 'install.packages("curl")'
           Rscript -e 'install.packages(c("chromote", "httr"))'
           Rscript -e 'install.packages("shinytest2")'
           
