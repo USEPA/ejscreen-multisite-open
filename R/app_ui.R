@@ -577,7 +577,8 @@ app_ui  <- function(request) {
                                             ### _BARPLOT (AVG SCORES) - tabPanel(title = 'Plot Average Scores' ####
                                             # .
                                             
-                                            tabPanel(title = 'Plot Average Scores',
+                                            tabPanel(id="plot_average", 
+                                                     title = 'Plot Average Scores',
                                                      h4('About this Chart'),
                                                      helpText('These charts show how each demographic group and environmental stressor, in the analyzed locations, compares to its US average.'),
                                                      
@@ -624,7 +625,8 @@ app_ui  <- function(request) {
                                             
                                             ### _HISTOPLOT (RANGE OF SCORES) - tabPanel(title = 'Plot Full Range of Scores' ####
                                             
-                                            tabPanel(title = 'Plot Full Range of Scores',
+                                            tabPanel(id="plot_range", 
+                                                     title = 'Plot Full Range of Scores',
                                                      ### _HISTOGRAM
                                                      #h3(id = 'histogram',"Explore Indicator Distributions"),
                                                      h4('About this Chart'),
