@@ -11,6 +11,7 @@ library(EJAM)
 dataload_from_pins("all")
 
 # test_check("EJAM")
+message("test")
 test_app(".", filter="app-functionality")
 # This is what ensures tests are run during  R CMD check,
 #   which you can start via  check() (i.e., build then do ⁠R CMD check)
