@@ -1122,7 +1122,7 @@ app_ui  <- function(request) {
                  ## Viewing maps, saving results ####
                  h2("Viewing maps, saving results"),
                  
-                 textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", value = ""),
+                 textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", value = gsub("[^a-zA-Z0-9 ]", "", "")),
                  
                  ## Map colors, weights, opacity ####
                  ### in ejscreenapi:
@@ -1203,7 +1203,7 @@ app_ui  <- function(request) {
                  ## input: GROUP NAME for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
                  shiny::textInput(inputId = 'an_threshgroup1',
                                   label = 'Name for 1st set of comparisons',
-                                  value = default.an_threshgroup1
+                                  value = gsub("[^a-zA-Z0-9 -]", "", default.an_threshgroup1)
                  ),
                  ## input: variable names for 1st set of comparisons
                  shiny::selectizeInput(inputId = 'an_threshnames1',
@@ -1222,7 +1222,7 @@ app_ui  <- function(request) {
                  ## input: GROUP NAME for 2d set of comparisons
                  shiny::textInput(inputId = 'an_threshgroup2',
                                   label = 'Name for 2nd set of comparisons',
-                                  value =   default.an_threshgroup2
+                                  value = gsub("[^a-zA-Z0-9 -]", "", default.an_threshgroup2)
                  ),
                  ## input: variable names for 2d set of comparisons
                  shiny::selectizeInput(inputId = 'an_threshnames2',
@@ -1243,7 +1243,7 @@ app_ui  <- function(request) {
                  
                  shiny::textInput("standard_analysis_title",
                                   label = "Default title to show on each short report",
-                                  value = default_standard_analysis_title),
+                                  value = gsub("[^a-zA-Z0-9 ]", "", default_standard_analysis_title)),
                  
                  ## input: Type of plot for 1page report
                  shiny::radioButtons(inputId = "plotkind_1pager",
@@ -1255,7 +1255,7 @@ app_ui  <- function(request) {
                  #                  was DISABLED while PDF KNITTING DEBUGGED
                  radioButtons("format1pager", "Format", choices = c(html = "html", html = "pdf"), inline = TRUE),
                  
-                 textInput(inputId = "Custom_title_for_bar_plot_of_indicators", label = "Enter title for bar plot of indicators", value = "" ),
+                 textInput(inputId = "Custom_title_for_bar_plot_of_indicators", label = "Enter title for bar plot of indicators", value = gsub("[^a-zA-Z0-9 ]", "", "") ),
                  
                  ######################################################## #
                  ## Long report options ####

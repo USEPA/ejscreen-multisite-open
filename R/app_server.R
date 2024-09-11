@@ -262,6 +262,12 @@ app_server <- function(input, output, session) {
   #   submitted_upload_method(current_upload_method())
   # })
   
+  ## Sanitize
+  sanitize = function(text) {
+    gsub("[^a-zA-Z0-9 ]", "", text)
+  }
+  
+  
   observeEvent(input$show_data_preview,
                {
                  showModal( shiny::modalDialog(title = 'Selected location data', size = 'l', easyClose = TRUE,
@@ -2151,7 +2157,7 @@ app_server <- function(input, output, session) {
     shiny::textInput('analysis_title',
                      label = 'Name of Your Analysis',
                      #placeholder = 'EJ Analysis of My List of Places',
-                     value = input$standard_analysis_title)
+                     value = sanitize(input$standard_analysis_title))
   })
   
   ### summary header is stored in a reactive
