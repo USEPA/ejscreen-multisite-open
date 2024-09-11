@@ -41,7 +41,7 @@ jobs:
       
       - name: Install EJAM
         run: 
-          Rscript -e 'devtools::install_local("EJAM")'
+          Rscript -e 'devtools::install_local('.', force=T)'
           
            
       # - name: Run Shiny Tests
