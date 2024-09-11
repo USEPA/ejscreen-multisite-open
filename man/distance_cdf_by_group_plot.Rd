@@ -6,7 +6,8 @@
 \usage{
 distance_cdf_by_group_plot(
   results_bybg_people,
-  radius_miles = round(max(results_bybg_people$distance_min_avgperson, na.rm = T), 1),
+  radius_miles = round(max(results_bybg_people$distance_min_avgperson, na.rm = T),
+    table_rounding_info("distance_min_avgperson")),
   demogvarname = "Demog.Index",
   demoglabel = demogvarname,
   color1 = "red",

@@ -16,6 +16,8 @@
 #' @param typeofsite   vector of length same as NROW(sitepoints), where 
 #'   each unique value defines a group of sites
 #' @param silentinteractive passed to [ejamit()]
+#' @param shapefile  see [ejamit()]
+#' @param fips  see [ejamit()]
 #' @param ...  see [ejamit()]
 #'
 #' @return similar to ejamit output but results_overall has one row per unique typeofsite
@@ -27,7 +29,7 @@
 #'     typeofsite = c("A", "B", "B", "C"))
 #'   cbind(Rows_or_length = sapply(out, NROW))
 #'   
-#'   ejam2barplot_sitegroups(out, names_ratio_to_avg_these[1], topn = 3)
+#'   ejam2barplot_sitegroups(out, names_these_ratio_to_avg[1], topn = 3)
 #'   
 #'   ejam2barplot_sitegroups(out, "sitecount_unique", topn=3, sortby = F)
 #'   
@@ -80,9 +82,72 @@
 #'   }
 #'   
 ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL, 
+                                           shapefile = NULL, fips = NULL,
                                            silentinteractive = TRUE,  ...) {
   
-  ########################################################### 
+  ########################################################## # 
+  # note this means latlon vs fips vs shp, not type in the sense of which group (subset) that is specified via typeofsite param
+  sitetype <- ejamit_sitetype_check(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
+  ########################################################## # 
+  
+  if (sitetype == 'fips') {
+    
+    if (is.null(typeofsite) || length(typeofsite) != NROW(fips)) {
+      stop("typeofsite must be a vector as long as fips, each unique value defining a group of sites")
+    }
+  } else {
+    fips <- NULL
+  }
+  ########################################################## # 
+  
+  if (sitetype == "latlon") {
+    
+    # sitepoints_from_any() will 
+    # accept sitepoints interactively or from filepath or from object, 
+    # infer lat/lon cols,
+
+    # Note sitepoints_from_any() is able to check if sitepoints was missing 
+    #  in expected params of ejamit_compare_types_of_places()
+    sitepoints <- sitepoints_from_any(sitepoints)   #############  this adds ejam_uniq_id only if not there yet
+    sitepoints <- data.frame(sitepoints)
+    # sitepoints$typeofsite <- typeofsite # that would not get used
+    #################### # 
+    if (is.null(typeofsite) || length(typeofsite) != NROW(sitepoints)) {
+      stop("typeofsite must be a vector as long as NROW(sitepoints), each unique value defining a group of sites")
+    }
+  } else {
+    sitepoints <- NULL
+  }
+  ########################################################## # 
+  
+  if (sitetype == "shp") {
+    
+    # duplicates some code in ejamit() but is needed here to get ejam_uniq_id only once  to allow ejamit_compare_types_of_places() to work when it passes only a subset of rows to ejamit each time
+    # and so this function can handle just once any user provided filename, interactive selection of file, instead of each type of place trying to do that.
+    shp <- shapefile_from_any(shapefile, cleanit = FALSE)
+    if (!"ejam_uniq_id" %in% names(shp)) { 
+      shp <- cbind(ejam_uniq_id = 1:nrow(shp), shp) # assign id to ALL even empty or invalid inputs   #############  this adds ejam_uniq_id
+    }
+    
+    if (is.null(typeofsite) || length(typeofsite) != NROW(shp)) {
+      stop("typeofsite must be a vector as long as NROW(shapefile), (before empty or invalid ones are removed), each unique value defining a group of sites")
+    }
+
+    shp$valid <- shp$valid <- (sf::st_is_valid(shp) &  !sf::st_is_empty(shp))
+    shp[shp$valid, ] <- shapefile_clean(shp) # uses default crs = 4269;  drops invalid rows or return NULL if none valid  # shp <- sf::st_transform(shp, crs = 4269) # done by shapefile_clean()
+    # *** is it ok to retain invalid rows for analysis or should they be dropped? can ejamit() handle those?? ***
+    if (is.null(shp)) {stop('No valid shapes found in shapefile')}
+    class(shp) <- unique(c(class(shp), 'data.table'))
+    if (!shiny::isRunning() && !silentinteractive) {
+      cat('Checking for valid polygons.\n')
+      message(paste0("Assigned unique IDs to but dropped ", sum(!shp$valid), " invalid or empty rows from shapefile."))
+    }
+    
+  } else {
+    shp <- shapefile # NULL
+  }
+  
+  ########################################################## # 
   #  Revamp ejamit_compare_types_of_places()
   # 
   # We should do ejamit(sitepoints) once for the results_overall, results_bysite, results_bybg_people (ie bybgbysite),
@@ -115,7 +180,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   # The problem is still to count each person only once you have to know which blocks are near which site, 
   # for the blockgroups where parts of the bg are near one site and parts are near the other site.
   
-  ########################################################### 
+  ########################################################## # 
   # Find a way to make ejamit by group (by site type) work well with the ejam2xyz() functions.
   # 
   # ejamit_compare_types_of_places() as a 1st draft, for now,  
@@ -131,25 +196,9 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   # since that expects  "results_overall" and "results_bysite" and "results_bybg_people"
   # It would be useful to have a way that ejamit_compare_types_of_places() or 
   # some bygroup version of ejamit could work easily with the ejam2xyz() functions.
-  ########################################################### 
+  ########################################################## # 
   
-  # sitepoints_from_any() will 
-  # accept sitepoints interactively or from filepath or from object, 
-  # infer lat/lon cols,
   
-  # *** and this would assign ejam_uniq_id 1:N just once for ALL sites, not once per group...
-  # *** is that what we want? 
-  # *** ejamit() below in a loop will again create ejam_uniq_id 1:n within each group, though, right?!
-  
-  # Note sitepoints_from_any() is able to check if sitepoints was missing 
-  #  in expected params of ejamit_compare_types_of_places()
-  sitepoints <- sitepoints_from_any(sitepoints)   
-  sitepoints <- data.frame(sitepoints)
-  # sitepoints$typeofsite <- typeofsite # that would not get used
-  #################### # 
-  if (is.null(typeofsite) || length(typeofsite) != NROW(sitepoints)) {
-    stop("typeofsite must be a vector as long as NROW(sitepoints), each unique value defining a group of sites")
-  }
   types <- unique(typeofsite)
   
   results_overall     <- list()
@@ -159,21 +208,32 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   longnames           <- list()
   typeofsite_list     <- list()
   sitecount_bytype    <- list()
-  ########################################################### 
+  ########################################################## # 
   
   began <- Sys.time()
   ndone <- 0
+  
+  # loop over types ####
   
   for (i in seq_along(types)) {
     
     cat("Type", i, "of", length(types), "=", types[i], " -- ")
     
+    if (sitetype == "latlon") {sitepoints_subset = sitepoints[typeofsite == types[i], ]} else {sitepoints_subset = NULL}
+    if (sitetype == "fips")   {fips_subset       = fips[      typeofsite == types[i]  ]} else {fips_subset       = NULL}
+    if (sitetype == "shp")    {shapefile_subset  = shp[       typeofsite == types[i], ]} else {shapefile_subset  = NULL}
+    
     out <- suppressWarnings({
       
-      # *** WILL ejamit() ASSIGN ejam_uniq_id 1:N within each group of sites?
-      # Do we want 1:N for the full set of sites only? ***
+      # *** make sure ejamit() does not reASSIGN ejam_uniq_id 1:N within each group of sites 
+      #  we want 1:N for the full set of sites only  ***
+      ## ejamit() ####
       
-      ejamit(sitepoints = sitepoints[typeofsite == types[i], ], ..., quiet = TRUE, silentinteractive = TRUE)
+      ejamit(
+        sitepoints = sitepoints_subset, 
+        fips       = fips_subset,
+        shapefile  = shapefile_subset,
+        ..., quiet = TRUE, silentinteractive = TRUE)
     }) 
     
     results_overall[[i]] <- out$results_overall   # one row, for this group of places (this type) 
@@ -198,7 +258,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
     sitecount_bytype[[i]] <- NROW(results_bysite[[i]]) 
     
     ndone <- ndone + sitecount_bytype[[i]]
-    cat("Finished", ndone, "of", NROW(sitepoints), "sites. ")
+    cat("Finished", ndone, "of", sum(sitecount_bytype), "sites. ") # check this 
     junk <- speedreport(began, Sys.time(), ndone)
   }
   cat("\n\n")
@@ -223,6 +283,8 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   # outall$typeofsite[outall$results_bysite$ejam_uniq_id]
   # (which is only those appearing in results_bysite)
   
+  # out <- list() ####
+  
   out <- list(
     
     types = types,
@@ -233,7 +295,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
     # results_overall = ejamit(sitepoints = sitepoints, ...)$results_overall,
     ## This seems inefficient to run them all AGAIN but as a whole instead of by group:
     
-    ejam_uniq_id = sitepoints$ejam_uniq_id,
+    ejam_uniq_id =  sitepoints$ejam_uniq_id,      # FIX ***
     typeofsite = unlist(typeofsite_list),
     results_bysite = data.table::rbindlist(results_bysite),
     # Does not have a column with typeofsite, because we want it to be the
@@ -251,27 +313,33 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   # print(data.frame(sitecount = as.vector(out$sitecount_bytype), out$results_overall[ , c("typeofsite", "pop")]))
   
   out$results_overall <- out$results_bytype # overall is the name needed in ejam2excel() etc.
-  out$results_overall$ejam_uniq_id <- out$types # NOTE: this is the code of each type, not typical ejam_uniq_id of 1:N
-  names(out$results_overall) <- gsub("ejam_uniq_id", "typeofsite", names(out$results_overall))
+  out$results_overall$ejam_uniq_id <- out$types # NOTE: this for the "overall" table 1 row per type 
+  #   is the code of each type, not typical ejam_uniq_id of 1:N
+  names(out$results_overall) <- gsub("ejam_uniq_id", "typeofsite", names(out$results_overall)) # make it more clear by naming it this way
   
+  # print some results ####
   print(  
     data.frame(
       sitetype  = out$types,
       sitecount = out$sitecount_bytype,
-      pop = round(out$results_bytype$pop, 0),
+      pop = round(out$results_bytype$pop, table_rounding_info("pop")),
       round(out$results_bytype[, 
                                names_d_ratio_to_state_avg,
                                ## or else
                                # c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg), 
                                
-                               with = FALSE], 1)
+                               with = FALSE],  table_rounding_info(names_d_ratio_to_state_avg))
     )
   )
   cat("Use  ejam2excel(out)  to view results, and see the types of sites compared, one row each, in the Overall tab\n")
   cat("Use ejam2barplot_sitegroups() to plot results.\n\n")
   ended <- Sys.time()
-  cat(paste0("\n ", NROW(sitepoints), " sites in ", length(unique(typeofsite)), " groups (types of sites).\n"))
-  speedreport(began, ended, NROW(sitepoints))
+  cat(paste0("\n ",
+             sum(out$sitecount_bytype),   # FIX/check *** should also equal NROW(results_bysite)
+             " sites in ", length(unique(typeofsite)), " groups (types of sites).\n"))
+  speedreport(began, ended, 
+              sum(out$sitecount_bytype)   # FIX/check ***  should also equal NROW(results_bysite)
+  )
   
   return(out)
 }

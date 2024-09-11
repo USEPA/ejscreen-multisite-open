@@ -60,11 +60,21 @@ fips_counties_from_countyname <- function(countyname, ST) {
   countyfips  <- bgs_co_st$countyfips[match(co_st, bgs_co_st$fullname)]
 }
 #  *** SAVE ONLY THE FIRST COUNTY LISTED WHEN THERE ARE MULTIPLE ONES THAT CONTAIN A GIVEN CENSUS PLACE, TO SIMPLIFY THIS
-censusplaces$COUNTY <- gsub(",.*", "", censusplaces$COUNTY)
-  
+
+############################ #
 # fix issue of encoding characters  "Do\xf1a Ana County" "NM"  ***   ISO-8859-1  ??  stringi::stri_enc_detect(censusplaces$COUNTY)
-stop('fix encoding first')
-countyfips  <- fips_counties_from_countyname(censusplaces$COUNTY, censusplaces$STATE)
+x = stringi::stri_enc_detect(censusplaces$COUNTY); y = lapply(x, FUN = function(z) z$Encoding[1]); table(unlist(y))
+# IBM420_ltr ISO-8859-1 ISO-8859-2 ISO-8859-9   UTF-16BE      UTF-8 
+#          1      39401       1758         35          8        211 
+bestguess = "ISO-8859-1"
+
+censusplaces$COUNTY <-  stringi::stri_enc_toascii(censusplaces$COUNTY)
+
+# stop('fix encoding first')
+############################ #
+
+censusplaces$COUNTY <- gsub(",.*", "", censusplaces$COUNTY)
+  countyfips  <- fips_counties_from_countyname(censusplaces$COUNTY, censusplaces$STATE)
 
 censusplaces[ , CO_FIPS := as.integer(..countyfips)]
 censusplaces[ , countyfips := NULL]

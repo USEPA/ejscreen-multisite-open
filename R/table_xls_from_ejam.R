@@ -124,42 +124,36 @@ table_xls_from_ejam <- function(ejamitout,
   
   if (save_now) {
     if (interactive_console & interactive()) {
-      if(!fname_was_provided){
-        repeat{
+      if (!fname_was_provided) {
+        repeat {
           pathname <- rstudioapi::showPrompt(
             "Save spreadsheet file",
             "Confirm folder and name of file to save",
             default = pathname
           )
-          
-          if(is.null(pathname) || pathname ==  ""){
+
+          if (is.null(pathname) || pathname ==  "") {
             cat('Invalid path/file, please provide a valid path.\n')
             next
           }
-          if(grepl("[<>:\"/\\?*]", pathname)){
+          if (grepl("[<>:\"/\\?*]", pathname)) {
             stop("Filename ocntains invalid characters: <>:\"/\\|?*. Please provide a valid name. \n")
             next
           }
           break
-          
         }
-        
       }
-      
-      
     }
     if (is.null(pathname) || pathname == "" || grepl("[<>:\"/\\?*]", pathname)) { #perform a more robust check of the pathname here. 
       cat('Invalid path/file, so using default: ', default_pathname, '\n')
       pathname <- default_pathname
     }
-    
-    
-    
+
     cat("Saving as ", pathname, "\n")
     ## save file and return for downloading - or do this within table_xls_format( , saveas=fname) ?
     openxlsx::saveWorkbook(wb_out, pathname, overwrite = overwrite)
     return(pathname)
   } else {
-    return(wb_out)
+    invisible(wb_out)
   }
 }

@@ -39,7 +39,7 @@ stopifnot( all.equal(bgpts$bgid, bgid2fips$bgid) )
 bgpts[ , bgfips := bgid2fips$bgfips]
 
 ############################################# # 
-#  THE  v2.3 block table from EJScreen team with weights already had PR at least,
+#  THE  v2.32 block table from EJScreen team with weights already had PR at least,
 
 ## bgid2fips has only 50 states plus DC and PR, but not AS GU MP VI, which is fine:
 length(fips2state_abbrev(rownames(table(substr(bgid2fips$bgfips,1,2)))))

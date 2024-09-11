@@ -29,8 +29,9 @@
 # countcols ####
   
 # countcols = "pop"
-countcols <- intersect(names_all_r[calctype(names_all_r) %in%  "sum of counts"], names(blockgroupstats))
-  
+countcols <- names_all_r[calctype(names_all_r) %in%  "sum of counts"]
+# countcols <- intersect(countcols, names(blockgroupstats))
+
 # wtdmeancols ####
 
 ## POPULATION WEIGHTED
@@ -38,7 +39,8 @@ countcols <- intersect(names_all_r[calctype(names_all_r) %in%  "sum of counts"],
 # ## OTHER-WEIGHTED
 # y = map_headernames$rname[map_headernames$calculation_type == "wtdmean" & map_headernames$denominator != "pop"]
 
-wtdmeancols <- intersect(names_all_r[calctype(names_all_r) %in%  c("wtdmean")], names(blockgroupstats))
+wtdmeancols <- names_all_r[calctype(names_all_r) %in%  c("wtdmean")]
+# wtdmeancols <- intersect(wtdmeancols, names(blockgroupstats))
 
 ## Define weights (denominators) ####
 
@@ -194,11 +196,33 @@ formulas_all     = c(formulas_sum, formulas_wtdmean)
 # THESE WOULD BE THE FORMULAS IF PERCENTAGE IS CALCULATED AS RATIO OF SUMS OF COUNTS, NOT A WTDMEAN:
 
 # RATIOS OF COUNTS
+
 varnames = wtdmeancols
-varnames = c(names_d, names_d_subgroups, names_d_subgroups_alone, 
-             "pctdisability",   "pctownedunits",  "pctpoor", 
-             "pct_lan_spanish",  "pct_lan_ie",  "pct_lan_api", "pct_lan_eng_na",  # no calc type info
-             "pctspanish_li",   "pctie_li",  "pctapi_li" , "pctother_li" )
+# missing:  
+# "pct_lan_spanish" "pct_lan_ie"      "pct_lan_api"     "pct_lan_eng_na"  --- wrong names
+## had:
+# c("Demog.Index", "Demog.Index.State", "Demog.Index.Supp", "Demog.Index.Supp.State", 
+#   "dpm", "drinking", "lifexyears", "lowlifex", "no2", "o3", "pctaa", 
+#   "pctaiana", "pctapi_li", "pctba", "pctdisability", "pctfemale", 
+#   "pcthisp", "pctie_li", "pctlan_api", "pctlan_ie", "pctlan_nonenglish", 
+#   "pctlan_other", "pctlan_spanish", "pctlingiso", "pctlowinc", 
+#   "pctlths", "pctmale", "pctmin", "pctmulti", "pctnhaa", "pctnhaiana", 
+#   "pctnhba", "pctnhmulti", "pctnhnhpia", "pctnhotheralone", "pctnhpia", 
+#   "pctnhwa", "pctother_li", "pctotheralone", "pctover17", "pctover64", 
+#   "pctownedunits", "pctpoor", "pctpre1960", "pctspanish_li", "pctunder18", 
+#   "pctunder5", "pctunemployed", "pctwa", "percapincome", "pm", 
+#   "proximity.npdes", "proximity.npl", "proximity.rmp", "proximity.tsdf", 
+#   "rsei", "traffic.score", "ust")
+
+# varnames = c(names_d, names_d_subgroups, names_d_subgroups_alone, 
+#              "pctdisability",   "pctownedunits",  "pctpoor", 
+#              "pct_lan_spanish",  "pct_lan_ie",  "pct_lan_api", "pct_lan_eng_na",  # no calc type info
+#              "pctspanish_li",   "pctie_li",  "pctapi_li" , "pctother_li" )
+#### missing:
+#  "Demog.Index.State"  "Demog.Index.Supp.State"   "lifexyears"  "lowlifex" 
+#  "pctfemale" "pctmale"  "pctover17"    "pctunder18"  "percapincome" 
+#  "pctlan_api"  "pctlan_ie"  "pctlan_nonenglish"  "pctlan_other"  "pctlan_spanish"
+
 
 varnames_count = gsub("pct", "", varnames)
 varnames_wt = varinfo(varnames, "denominator")$denominator
@@ -285,7 +309,7 @@ print(ls())
 #   # "Demog.Index = (pctlowinc + pctmin) / 2",
 #   # "Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + ifelse(is.na(lowlifex), 0, lowlifex) ) / ifelse(is.na(lowlifex), 4, 5)"
 #  
-# # # formulas changed and there are 4 variants of demog index for v2.3
+# # # formulas changed and there are 4 variants of demog index for v2.32
 #   
 # )
     # pctfemale1849 = ifelse(pop == 0, 0, female1849  / pop),

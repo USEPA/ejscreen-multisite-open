@@ -215,25 +215,25 @@ map_counties_in_state <- function(ST = "DE", colorcolumn = c("NAME", "POP_SQMI",
       # continuous ramp of map colors
       vpal <- leaflet::colorNumeric("viridis", domain = NULL)
       x = map_shapes_leaflet(cshapes,
-                         color = ~vpal(colorscore))
+                             color = ~vpal(colorscore))
     } else {
       # bins of map color
       vpal <- leaflet::colorFactor('viridis' , domain = NULL)
       x = map_shapes_leaflet(cshapes, 
-                         color = ~vpal(factor(colorscore))  ) }
+                             color = ~vpal(factor(colorscore))  ) }
   }
   if (type == "mapview") {
     if (length(unique(colorscore))  > 10 && !is.numeric(colorscore)) {
       x = map_shapes_mapview(cshapes,
                              zcol = colorcolumn, legend = FALSE,
-                               col.regions = mapviewGetOption("raster.palette"))
+                             col.regions = mapviewGetOption("raster.palette"))
       # col.regions = colorscore
       
     } else {
-    x = map_shapes_mapview(cshapes,
-                           zcol = colorcolumn, legend = TRUE
-                           , col.regions = mapviewGetOption("raster.palette"))
-                       #col.regions = colorscore)
+      x = map_shapes_mapview(cshapes,
+                             zcol = colorcolumn, legend = TRUE
+                             , col.regions = mapviewGetOption("raster.palette"))
+      #col.regions = colorscore)
     }
   }
   # print(x)
@@ -266,12 +266,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
                                static_not_leaflet = FALSE, main = "Selected Counties", ...) {
   
   # *** CANNOT HANDLE colorvarname = ANYTHING ELSE BESIDES THOSE SCALED 0 TO 100, SO FAR
-  
-  # fips_ky <- fips_counties_from_statename("Kentucky")
-  # x <- ejamit(fips = fips_ky, radius = 0)
-  # mydf <- x$results_bysite
-
-  if(!(colorvarname %in% names(mydf))){
+  if (!(colorvarname %in% names(mydf))) {
     warning('Selected value for "colorvarname" not found. Please try a different indicator.')
     return(NULL)
   }
@@ -303,14 +298,12 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
     poplabels <- fixcolnames(names(popindicators), 'r', 'shortlabel') # friendly labels for indicators
     popup2 <- popup_from_any(popindicators, labels = poplabels)
     
-    
     mymap <- map_shapes_leaflet(mymapdata, popup = popup2, color = shading)
     mymap <- mymap %>% leaflet::addLegend(
       colors = c("yellow", "orange", "red"),
       labels = c(80, 90, 100),
       title = fixcolnames(colorvarname, 'rname', 'shortlabel'))
   }
-  
   return(mymap)
 }
 ########################### # ########################### # ########################### # ########################### #
@@ -381,12 +374,30 @@ map_shapes_plot <- function(shapes, main = "Selected Census Units", ...) {
 #' @param popup  passed to leaflet::addPolygons()
 #'
 #' @return html widget from leaflet::leaflet()
-#'
+#' @examples
+#' out = testoutput_ejamit_10pts_1miles
+#' out$results_bysite = out$results_bysite[1:2,]
+#' map_shapes_leaflet(
+#'   ejam2shapefile(out, save=F),
+#'   popup = popup_from_ejscreen(out$results_bysite)
+#' )
+#' 
 #' @export
 #'
-map_shapes_leaflet <- function(shapes, color = "green", popup = shapes$NAME) {
+map_shapes_leaflet <- function(shapes, color = "green", popup = NULL) {
   
-  mymap <- leaflet(shapes) %>% addPolygons(color = color, popup = popup) %>% addTiles()
+  if (is.null(popup)) {
+    # if all but 3 colnames are in both, looks like results of ejamit(), so use that type of popup formatting
+    if (length(setdiff2(names(shapes), names(testoutput_ejamit_10pts_1miles$results_overall))) < 3) {
+      popup = popup_from_ejscreen(sf::st_drop_geometry(shapes))
+    } else {
+      popup <- popup_from_any(sf::st_drop_geometry(shapes))
+    }
+  }
+  
+  mymap <- leaflet(shapes) %>% 
+    addPolygons(color = color, popup = popup) %>% 
+    addTiles()
   return(mymap)
 }
 ########################### # ########################### # ########################### # ########################### #
@@ -403,7 +414,9 @@ map_shapes_leaflet <- function(shapes, color = "green", popup = shapes$NAME) {
 #' @export
 #'
 map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = shapes$NAME)  {
-  
+  # *** need to confirm this default for popup is right -
+  # compare to the one now in map_shapes_leaflet()
+  # in RStudio console, can do  map_shapes_leaflet(shapes)
   mymap <- mymap %>%
     addPolygons(data = shapes, color = color,  popup = popup) %>%
     addTiles()
@@ -421,12 +434,19 @@ map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = sha
 #' @return like output of mapview function [mapview::mapview()],
 #'   if mapview package is installed,
 #'   when used with an input that is a spatial object as via [sf::read_sf()]
-#' @examples \dontrun{
+#' @examples
+#'  \dontrun{
 #'   map_shapes_mapview(
 #'     shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #'   )
 #' }
 #'
+#' out = ejamit(testpoints_10[1,], radius = 20)
+#' map_shapes_mapview(
+#'   ejam2shapefile(out, save=F),
+#'   popup = popup_from_ejscreen(out$results_bysite)
+#' )
+#' 
 #' @export
 #'
 map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenStreetMap", ...) {
@@ -645,3 +665,31 @@ mapfast_gg <- function(mydf=data.frame(lat = 40, lon = -100)[0,],
 #
 ############################ #
 
+
+#' Map - Open Google Maps in browser
+#'
+#' @param lat - Anything that can be handled by [sitepoints_from_any()].
+#'   Leave unspecified to interactively browse to a .xlsx file that has lat,lon columns,
+#'   or lat can be a data.frame with lat,lon column names in which case longitude should not be provided,
+#'   such as lat = testpoints[1,], or lat and lon can be separately provided as vectors.
+#' @param lon longitude, or omit this parameter to provide points as the first parameter.
+#' 
+#' @param zoom zoomed out value could be 3 or 5, zoomed in default is 12
+#' @param launch logical, whether to launch browser 
+#' @return opens a browser window with Google Maps centered on the specified lat, lon
+#' @examples # map_google(testpoints_10[1,])
+#' 
+#' @export
+#'
+map_google <- function(lat, lon, zoom = 12, point = TRUE, launch = TRUE) {
+  
+  urls = url_map_google(lat = lat, lon = lon, zoom = zoom, point = point)
+  if (launch) {
+    if (length(urls) > 1) {
+      message("browsing to only the first URL out of ", length(urls))
+    }
+    browseURL(urls[1])
+  }
+  urls
+}
+############################ #

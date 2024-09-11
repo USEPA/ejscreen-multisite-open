@@ -41,7 +41,7 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
                         return_html = FALSE, 
                         launch_browser = TRUE) {
   
-  if (!interactive()) {launch_browser <- FALSE}
+  if (!interactive()) {launch_browser <- FALSE} # but that means other functions cannot override this while not interactive.
   if (is.null(sitenumber)) {
     ejamout1 <- ejamitout$results_overall
   } else {
@@ -54,7 +54,7 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
   x <- as.numeric(sitenumber)
   if (ejamout1$valid == T) {
     #!(submitted_upload_method %in% c('FIPS')) &
-    popstr <- prettyNum(round(ejamout1$pop), big.mark = ',')
+    popstr <- prettyNum(round(ejamout1$pop, table_rounding_info("pop")), big.mark = ',')
     
     if (submitted_upload_method == 'SHP') {
       locationstr <- paste0('Polygon ', data_up_shp[x,]$OBJECTID_1)
@@ -67,7 +67,7 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
       locationstr <- paste0(ejamout1$radius.miles, ' Mile Ring Centered at ',
                             ejamout1$lat, ', ',
                             ejamout1$lon, '<br>', 'Area in Square Miles: ',
-                            round(pi * ejamout1$radius.miles^2, 2)
+                            round(pi * ejamout1$radius.miles^2, table_rounding_info("radius.miles"))
       )
     }
     
@@ -97,7 +97,18 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
       temp_comm_report_or_null <- NULL
     } else {
     temp_comm_report_or_null <- temp_comm_report
-}
+    }
+    
+    ## as used in community_report_template.Rmd it is this:
+    # build_community_report(
+    #   output_df = params$output_df,
+    #   analysis_title = params$analysis_title,
+    #   totalpop = params$totalpop,
+    #   locationstr = params$locationstr,
+    #   include_ejindexes = params$include_ejindexes,
+    #   in_shiny = params$in_shiny,
+    #   filename = params$filename
+    # )
     
     x <- build_community_report(
       output_df = ejamout1,
@@ -105,7 +116,7 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
       totalpop = popstr,
       locationstr = locationstr,
       include_ejindexes = include_ejindexes,
-      in_shiny = F,
+      in_shiny = FALSE,
       filename = temp_comm_report_or_null # passing NULL should make it return the html object
     )
     if (launch_browser) {

@@ -18,7 +18,7 @@
 #'
 #' @param myvars  optional .extracted from x, one or more ACS5 variables like "B03002_001"
 #' @param myst abbreviation of one state, like "DE"
-#' @param yr like 2021 or 2022 end of 5 year ACS
+#' @param yr like 2022, end of 5 year ACS 2018-2022
 #'
 #' @return tibble table from output of acs_bycounty() i.e., output of get_acs()
 #'   from tidycensus pkg
@@ -36,7 +36,7 @@
 #' }
 #' @export
 #'
-acs_bycounty <- function(myvars = "B03002_001", myst = "DE", yr = 2021) {
+acs_bycounty <- function(myvars = "B03002_001", myst = "DE", yr = 2022) {
   
   ## This right now only works if all extra packages have been attached by hand or added to DESCRIPTION Imports
   ### ## Packages not otherwise required by EJAM:
@@ -77,7 +77,7 @@ acs_bycounty <- function(myvars = "B03002_001", myst = "DE", yr = 2021) {
 #'
 #' @param acsinfo large table of metadata as from load_variables function
 #'   from tidycensus pkg
-#' @param yr like 2021 or 2022 end of 5 year ACS
+#' @param yr like 2022, end of 5 year ACS 2018-2022
 #'
 #' @return plot
 #'

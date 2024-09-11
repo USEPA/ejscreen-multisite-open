@@ -1,10 +1,10 @@
-## unit tests for EJAM::state_from_fips
+## unit tests for EJAM::state_from_fips_bybg
 ## Author: Sara Sokolinski
 
 
 # does it work?
 test_that('lookup works correctly',{
-  expect_no_warning({val <- state_from_fips("45")})
+  expect_no_warning({val <- state_from_fips_bybg("45")})
   expect_equal(val[1], "SC")
 })
 
@@ -14,14 +14,14 @@ test_that('actually does not warn but does not crash, for invalid fips',{
   suppressWarnings({
     
   expect_no_error({
-    val <- state_from_fips("452")
+    val <- state_from_fips_bybg("452")
     })
   expect_true(
     is.na(val[1])
     )
 
   expect_no_error({
-    val <- state_from_fips("blue")
+    val <- state_from_fips_bybg("blue")
   })
   expect_true(is.na(val[1]))
 })
@@ -35,7 +35,7 @@ test_that('actually does not warn but does not crash, for invalid fips',{
 #
 # test_that('abbrev works',{
 #   expect_no_warning({
-#     val <- state_from_fips("45", abbrev = FALSE)
+#     val <- state_from_fips_bybg("45", abbrev = FALSE)
 #                     })
 #   expect_equal(val[1], "South Carolina")
 # })

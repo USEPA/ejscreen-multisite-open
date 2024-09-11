@@ -115,7 +115,7 @@ latlon_is.islandareas <- function(lat, lon)  {
     warning('No lat or lon column found')
     return(FALSE)
   }
-
+  
   x <- islandareas
   states <- unique(x$ST)
   # ok <- rep(TRUE, length(states))
@@ -164,21 +164,10 @@ latlon_is.islandareas <- function(lat, lon)  {
 #' @export
 #'
 latlon_is.valid <- function(lat, lon, quiet = TRUE) {
-  if(missing(lat) | missing(lon)){
-    warning('"lat" and/or "lon" argument not provided, please provide both values.')
-    return(FALSE)
-  }
-  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
-    warning('"lat" and/or "lon" cannot be coerced to a numeric.')
-    return(FALSE)
-  }
-  if(is.null(lat) | is.null(lon)){
-    warning('No lat or lon column found')
-
-    return(FALSE)
-  }
-  if (missing(lon)) {
+  
+  if (missing(lon) && !missing(lat)) {
     if (is.data.frame(lat)) {
+      # allow user to provide a data.frame with lat and lon columns, as an option
       # do no use latlon_infer() here -- needs to have been done already elsewhere
       if (!all(c("lat", "lon") %in% colnames(lat))) {
         warning("if lat is a data.frame it must have lat and lon as colnames")
@@ -187,15 +176,24 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE) {
       lon <- lat$lon
       lat <- lat$lat
     } else {
-      warning('no lon values(s) provided')
+      warning('no lon values provided')
       return(FALSE)
     }
+  }
+  if (missing(lat)) {
+    warning('no lat values provided')
+    return(FALSE)
   }
   if (is.null(lat) | is.null(lon)) {
     warning('No lat provided or no lon provided')
     return(FALSE)
   }
-  
+  if (all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))) {
+    warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
+
+
   # assume none bad until proven otherwise
   bad         <- rep(FALSE, length(lat))
   
@@ -224,7 +222,8 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE) {
       cat('\n\n')
     }
     if (all(bad)) {
-      if (any(latlon_is.valid(lat = lon, lon = lat))) {
+      if (any(latlon_is.valid(lat = c(lon, testpoints_10$lon[1]), lon = c(lat, testpoints_10$lat[1])))) {
+        # added 1 valid but swapped lat/lon pair to avoid infinite recursion loop here if all bad both ways
         warning("Maybe lat vs lon got mixed up. Did you accidentally provide lon,lat instead of lat,lon ?")
       }
     } 

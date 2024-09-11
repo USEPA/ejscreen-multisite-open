@@ -28,7 +28,7 @@
 #'  namesbyvarlist( 'names_e_pctile', c('r', 'longname'))    
 #'  namesbyvarlist(c('names_e_pctile', 'names_e_state_pctile'), 
 #'    c('varlist', 'rname', 'apiname', 'csvname', 'shortlabel', 'longname'))
-#' @seealso  [varlist2names()] [varin_map_headernames()] [varinfo()] [names_whichlist_multi_key()] [vnames()]
+#' @seealso [names_from_varlist()] [varlist2names()] [varin_map_headernames()] [varinfo()] [names_whichlist_multi_key()] [vnames()]
 #' 
 #' @keywords internal
 #' @export
@@ -62,6 +62,8 @@ namesbyvarlist <- function(varlist, nametype=c('rname','longname','apiname')[1])
   }
 }
 ########################################## #
+#' @keywords internal
+#' @export
 names_from_varlist <- function(vlist) {
   namesbyvarlist(vlist)$rname
 }

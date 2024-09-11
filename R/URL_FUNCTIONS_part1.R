@@ -160,6 +160,35 @@ url_linkify <- function(url, text) {
 } 
 ################################################### #################################################### #
 
+# convert EJAM html versions of weblinks back to simple URLs
+# in the output tables from ejamit or doaggregate
+
+unlinkify = function(x) {
+  
+  unlinkify_column <- function(z) {gsub('.*https', 'https', gsub('=report.*', '=report', gsub('., target.*', '', as.vector(unlist(z))))) }
+  if (NCOL(x) > 1) {
+    fixed = lapply(x, unlinkify_column)
+  } else {
+    fixed = unlinkify_column(x)
+  }
+  if (is.data.table(x)) {return(as.data.table(fixed))}
+  if (is.data.frame(x)) {return(data.frame(fixed))}
+  return(fixed)
+}
+# test_vec = testoutput_ejamit_10pts_1miles$results_bysite$`EJScreen Report`
+# test_df1 = as.data.frame(testoutput_ejamit_10pts_1miles$results_bysite[ , 1])
+# test_df2 = as.data.frame(testoutput_ejamit_10pts_1miles$results_bysite[ , 1:2])
+# test_dt1 = testoutput_ejamit_10pts_1miles$results_bysite[ , 1]
+# test_dt2 = testoutput_ejamit_10pts_1miles$results_bysite[ , 1:2]
+# 
+# unlinkify(test_df1[1,1])
+# unlinkify(test_vec); class(unlinkify(test_vec))
+# unlinkify(test_df1); class(unlinkify(test_df1))
+# unlinkify(test_dt1); class(unlinkify(test_dt1))
+# unlinkify(test_df2); class(unlinkify(test_df2))
+# unlinkify(test_dt2); class(unlinkify(test_dt2))  
+################################################### #################################################### #
+
 
 #' Get URLs of EJScreen reports
 #' 
@@ -183,7 +212,7 @@ url_linkify <- function(url, text) {
 #' @param wkid default is 4326 -WGS84 - World Geodetic System 1984, used in GPS - see (https://epsg.io/4326)
 #' @param unit default is 9035 which means miles; for kilometers use 9036
 #' @param f can be "report" or "pjson" or "json"
-#'
+#' @param interactiveprompt passed to sitepoints_from_anything()
 #' @seealso  [url_ejscreen_report()]  [url_ejscreen_acs_report()]   [url_ejscreenmap()]
 #'   [url_echo_facility_webpage()] [url_frs_report()]  [url_enviromapper()]  [url_envirofacts_data()]
 #' @return URL(s)
@@ -191,7 +220,8 @@ url_linkify <- function(url, text) {
 #' @export
 #'
 url_ejscreen_report <- function(lat='', lon='', radius='', as_html=FALSE, linktext, mobile=FALSE,
-                                areatype="", areaid = "", namestr = "", wkid = 4326, unit = 9035, f = "report") {
+                                areatype="", areaid = "", namestr = "", wkid = 4326, unit = 9035, f = "report",
+                                interactiveprompt = TRUE) {
   
   if (!any(areaid == "") && !any(is.null(areaid))) {
     
@@ -221,9 +251,7 @@ url_ejscreen_report <- function(lat='', lon='', radius='', as_html=FALSE, linkte
     
   } else {
     
-    # Flexibly allow for user to provide latlon as 1 table or as 2 vectors or 1 filename or 1 interactively selected file
-    
-    latlon_table <- latlon_from_anything(lat, lon)[ , c("lat","lon")] # or could use sitepoints_from_any() that is similar
+    latlon_table <- sitepoints_from_anything(lat, lon, interactiveprompt = interactiveprompt) # [ , c("lat","lon")] # or could use sitepoints_from_any() that is similar
     lat <- latlon_table$lat
     lon <- latlon_table$lon
     

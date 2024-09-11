@@ -1,8 +1,8 @@
 ############################################################################ #
 
 # First, usastats statestats got created via 
-# EJAM/data-raw/datacreate_blockgroupstats2.3.R
-# EJAM/data-raw/datacreate_usastats2.3.R
+# EJAM/data-raw/datacreate_blockgroupstats2.32.R
+# EJAM/data-raw/datacreate_usastats2.32.R
 
 # Then, this script below was to add columns to usastats and statestats with info on demographic subgroups
 # and maybe other indicators like lowlifex 
@@ -208,12 +208,15 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
   usastats$OBJECTID <- NULL
   statestats$OBJECTID <- NULL
   
-# fix scaling of percentages of new groups:
+  
+  if (max(usastats[, unique(c(names_d_subgroups_alone, names_d_subgroups_nh))]) > 1) {
+    # fix scaling of percentages of new groups:
     usastats[, unique(c(names_d_subgroups_alone, names_d_subgroups_nh))] <-   usastats[, unique(c( names_d_subgroups_alone, 
                                                                                                    names_d_subgroups_nh))]  / 100
-  statestats[, unique(c(names_d_subgroups_alone,  names_d_subgroups_nh))] <- statestats[, unique(c( names_d_subgroups_alone, 
-                                                                                                    names_d_subgroups_nh))]  / 100
-  rm(bg)
+    statestats[, unique(c(names_d_subgroups_alone,  names_d_subgroups_nh))] <- statestats[, unique(c( names_d_subgroups_alone, 
+                                                                                                      names_d_subgroups_nh))]  / 100
+    rm(bg)
+  }
   
   # save.image(file = 'work on usastats and statestats 2024-07.rda')
   
@@ -225,8 +228,8 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
  #  "EJAM/data-raw/datacreate_avg.in.us.R"
 
   
-  # usastats_statestats  <- datacreate_usastats2.3()
-  # usastats_statestats  <- datacreate_usastats2.3_add_dsubgroups.R(usastats_statestats)
+  # usastats_statestats  <- datacreate_usastats2.32()
+  # usastats_statestats  <- datacreate_usastats2.32_add_dsubgroups.R(usastats_statestats)
   
   # usastats   <- usastats_statestats$usastats
   # statestats <- usastats_statestats$statestats

@@ -13,7 +13,8 @@ popup_from_ejscreen(
 )
 }
 \arguments{
-\item{out}{raw data in data.frame form, with results of EJ buffer analysis}
+\item{out}{like ejamit()$results_bysite, not ejamit().
+The table of raw data in data.frame form, with results of EJ analysis.}
 
 \item{linkcolname}{Name of one column in the table that has links to some URL}
 
@@ -45,14 +46,5 @@ It provides raw scores (but not for EJ indexes) and US and State percentiles if 
 \item EJ Indexes
 \item web link(s) to map or report
 }
-}
-\examples{
-\dontrun{
-  out <- testoutput_ejscreenapi_plus_50
-  x <- popup_from_ejscreen(out)
-  popup_print(x[1])
-  mapfastej(out)
-}
-
 }
 \keyword{internal}

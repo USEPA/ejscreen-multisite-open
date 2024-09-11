@@ -111,6 +111,7 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
     report_every_n = report_every_n, save_when_report = save_when_report, 
     on_server_so_dont_save_files = on_server_so_dont_save_files,
     drop_redundant_indicators = TRUE,
+    verbose=verbose,
     getstatefromplacename = getstatefromplacename
   ) # possibly could add progress bar as a widget here 
   

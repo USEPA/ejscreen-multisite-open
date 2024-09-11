@@ -60,7 +60,7 @@ plot_barplot_sites <- function(results_bysite, varname = "pctlowinc", names.arg 
 
 #' barplot comparing groups of sites on 1 indicator, based on table of grouped site data
 #' 
-#' @param results_bytype table like from ejamit_compare_groups_of_places()$results_bytype,
+#' @param results_bytype table like from ejamit_compare_types_of_places()$results_bytype,
 #'  a table of site groups,
 #'  one row per type (group), column names at least varname (and "ejam_uniq_id" if names.arg not specified) 
 #' @param varname name of a column in results_bytype, bar height
@@ -85,7 +85,7 @@ plot_barplot_sitegroups = function(results_bytype, varname = "Demog.Index", name
                                    main = "Sites by Type", xlab = "Groups or Types of Sites", ylab = NULL, 
                                    sortby = NULL, topn = 10, ...) {
   if (missing(results_bytype) | !is.data.frame(results_bytype)) {
-    stop("results_bytype table required, such as from ejamit_compare_groups_of_places()$results_bytype")
+    stop("results_bytype table required, such as from ejamit_compare_types_of_places()$results_bytype")
   }
   if (!(varname %in% colnames(results_bytype))) {
     stop("varname must be in colnames(results_bytype)")
@@ -159,9 +159,9 @@ ejam2barplot_sites <- function(ejamitout, varname = "pctlowinc", names.arg = NUL
 ################################################################# #
 
 
-#' Barplot comparing groups of sites on 1 indicator, for output of ejamit_compare_groups_of_places()
+#' Barplot comparing groups of sites on 1 indicator, for output of ejamit_compare_types_of_places()
 #' easy high-level function for getting a quick look at top few groups of sites
-#' @param ejamitout list that is output of ejamit_compare_groups_of_places(), where one element is 
+#' @param ejamitout list that is output of ejamit_compare_types_of_places(), where one element is 
 #'   a table named results_bytype
 #' @param varname name of a column in results_bytype, bar height
 #' @param names.arg optional vector of labels on the bars, like the types of sites represented by each group
@@ -191,7 +191,7 @@ ejam2barplot_sitegroups <- function(ejamitout, varname = "pctlowinc", names.arg 
                                     sortby = NULL, topn = 10, ...) {
   
   if (!("results_bytype" %in% names(ejamitout))) {
-    stop("ejamitout must be a list such as from ejamit_compare_groups_of_places(), with one element of the list being a table named results_bytype")
+    stop("ejamitout must be a list such as from ejamit_compare_types_of_places(), with one element of the list being a table named results_bytype")
   }
   if (is.null(names.arg)) {names.arg <-  ejamitout$types}
   plot_barplot_sitegroups(

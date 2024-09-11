@@ -1,8 +1,14 @@
 # script to read the ACS 2018-2022 data
-# that will be used by EJScreen 2.3 in July 2024
+# that will be used by EJScreen 2.32 starting August 12 2024
 ################################################## #
 
 if (!exists("askquestions")) {askquestions <- FALSE}
+
+if (!exists("localfolder")) {
+  localfolder <- "~/../Downloads/EJAMbigfiles"
+  if (interactive()) {localfolder <- rstudioapi::selectDirectory("Confirm where to archive .arrow and other files locally", path = localfolder) }
+}
+if (!dir.exists(localfolder)) {stop(paste0("need valid localfolder - ", localfolder, " was not found"))}
 
 # 1. GOT "ACS2022_Transfer.gdb.zip" FROM EJSCREEN TEAM ####
 
@@ -22,8 +28,8 @@ if (file.exists("~/../EJ 2021/EJSCREEN 2024/acs2022header.csv")) {
   if (file.exists("./data-raw/datafile_acs22longnames.rda")) {
     load("./data-raw/datafile_acs22longnames.rda")
   } else {
-  acs22longnames = NA
-}}
+    acs22longnames = NA
+  }}
 # ~--------------------------- ####
 
 ################################################## ################################################### #
@@ -41,7 +47,10 @@ if (!file.exists(zfile)) {
   }
 }
 # tdir <- tempdir()
-acs22 <- shapefile_from_any(zfile)
+cat("\n   READING THIS FILE TAKES A VERY LONG TIME... \n\n")
+system.time({
+  acs22 <- shapefile_from_any(zfile)
+})
 # names(acs22)  # EJAM added these 2 columns at the end: "Shape" "ejam_uniq_id"
 ### These column names were not in map_headernames as csv or api names.
 acs22 <- data.frame(acs22)
@@ -181,11 +190,11 @@ names(acs22) <- fixcolnames(names(acs22), 'acsname', 'r')
 
 # DROP MOST COLUMNS ####
 
- # dim(acs22)
+# dim(acs22)
 # [1] 242336    676
 
 # acs22$bgfips <- acs22$STCNTRBG
- names(acs22) <- gsub("id", 'bgfips', names(acs22))
+names(acs22) <- gsub("id", 'bgfips', names(acs22))
 acs22 <- data.table(bgfips = acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
 
 # still need but not found: *** must get from  separate file(s)
@@ -197,22 +206,64 @@ acs22 <- data.table(bgfips = acs22$bgfips, acs22[, names(acs22) %in% map_headern
 # names_flag
 
 # > acs22 = data.table(acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
- dim(acs22)
+dim(acs22)
 # [1] 242336     88
 
 # get rid of redundant columns before merge with bg stats
 setDF(acs22)
 acs22 <- acs22[, c("bgfips", names(acs22)[!(names(acs22) %in% names(blockgroupstats_new))])]
 setDT(acs22)
- dim(acs22)
+dim(acs22)
 # [1] 242336     67
 ############################################################################ # 
 
-# ARCHIVE small acs22.arrow ####
 
-savehere <- TRUE
+
+
+
+
+############################################################################ # 
+
+# restore saved copy to go back and fix scaling that hadn't been done yet
+if (!exists("acs22")) {
+  acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22.arrow"))
+}
+# fix scaling of percentages to all be 0-1 not 0-100
+
+x100 = c(names_d_subgroups, names_d_subgroups_alone,
+         'pctunder18' , 'pctover17', 'pctmale', 'pctfemale', 'pctpoor',
+         'pctlan_nonenglish' ,     
+         'pctlan_spanish'   ,       
+         'pctlan_ie'       ,      
+         'pctlan_api'    ,          
+         'pctlan_other'    ,       
+         
+         # already scaled correctly  ? will be replaced later anyway when recalculated
+         # 'pctspanish_li'   , 
+         # 'pctie_li'  ,      
+         # 'pctapi_li'  ,        
+         # 'pctother_li'   ,      
+         
+         'pctownedunits'  ,
+         'pctnobroadband'  )
+x100 = intersect(x100, names(acs22))
+
+cbind( sapply(acs22[, ..x100], max))
+
+acs22[, (x100) := lapply(.SD, function(x) x/100), .SDcols = x100] 
+
+cbind( sapply(acs22[, ..x100], max))
+
+############################################################################ # 
+
+# ARCHIVE small acs22.arrow? ####
+##BUT THIS IS 
+# BEFORE WE FIX THE CALCULATION OF LANGUAGE INDICATORS that
+## has to be done after merge with blockgroupstats to get the lingiso count  
+
+savehere <- FALSE
 if (askquestions && interactive()) {
-  savehere = askYesNo("Save a local copy of key columns of acs22.arrow ? ")
+  savehere = askYesNo("Save a local copy of key columns of acs22.arrow ? (language as pct of lingiso not corrected yet!) ")
   if (!is.na(savehere) && savehere) {
     datawrite_to_local("acs22", fnames = "acs22.arrow", localfolder = localfolder)
     file.exists(file.path(localfolder, "acs22.arrow"))
@@ -222,70 +273,95 @@ rm(savehere)
 ############################################################################ # 
 ############################################################################ # 
 
-# cbind( intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r')), fixcolnames(intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r')), 'r', 'varlist'))
-# # [,1]              [,2]                           
-# [1,] "pctdisability"   "names_d"                      
-# [2,] "disability"      "names_d_count"                
-# [3,] "disab_universe"  "names_d_count"                
-# [4,] "pcthisp"         "names_d_subgroups_nh"         
-# [5,] "pctnhba"         "names_d_subgroups_nh"         
-# [6,] "pctnhaa"         "names_d_subgroups_nh"         
-# [7,] "pctnhaiana"      "names_d_subgroups_nh"         
-# [8,] "pctnhnhpia"      "names_d_subgroups_nh"         
-# [9,] "pctnhotheralone" "names_d_subgroups_nh"         
-# [10,] "pctnhmulti"      "names_d_subgroups_nh"         
-# [11,] "pctnhwa"         "names_d_subgroups_nh"         
-# [12,] "hisp"            "names_d_subgroups_nh_count"   
-# [13,] "nhba"            "names_d_subgroups_nh_count"   
-# [14,] "nhaa"            "names_d_subgroups_nh_count"   
-# [15,] "nhaiana"         "names_d_subgroups_nh_count"   
-# [16,] "nhnhpia"         "names_d_subgroups_nh_count"   
-# [17,] "nhotheralone"    "names_d_subgroups_nh_count"   
-# [18,] "nhmulti"         "names_d_subgroups_nh_count"   
-# [19,] "nhwa"            "names_d_subgroups_nh_count"   
-# [20,] "pctba"           "names_d_subgroups_alone"      
-# [21,] "pctaa"           "names_d_subgroups_alone"      
-# [22,] "pctaiana"        "names_d_subgroups_alone"      
-# [23,] "pctnhpia"        "names_d_subgroups_alone"      
-# [24,] "pctotheralone"   "names_d_subgroups_alone"      
-# [25,] "pctmulti"        "names_d_subgroups_alone"      
-# [26,] "pctwa"           "names_d_subgroups_alone"      
-# [27,] "ba"              "names_d_subgroups_alone_count"
-# [28,] "aa"              "names_d_subgroups_alone_count"
-# [29,] "aiana"           "names_d_subgroups_alone_count"
-# [30,] "nhpia"           "names_d_subgroups_alone_count"
-# [31,] "otheralone"      "names_d_subgroups_alone_count"
-# [32,] "multi"           "names_d_subgroups_alone_count"
-# [33,] "wa"              "names_d_subgroups_alone_count"
-# [34,] "lan_universe"    "names_d_extra_count"          
-# [35,] "lan_eng_na"      "names_d_extra_count"          
-# [36,] "lan_spanish"     "names_d_extra_count"          
-# [37,] "lan_ie"          "names_d_extra_count"          
-# [38,] "lan_api"         "names_d_extra_count"          
-# [39,] "spanish_li"      "names_d_extra_count"          
-# [40,] "ie_li"           "names_d_extra_count"          
-# [41,] "api_li"          "names_d_extra_count"          
-# [42,] "other_li"        "names_d_extra_count"          
-# [43,] "occupiedunits"   "names_d_extra_count"          
-# [44,] "pctownedunits"   "names_d_extra"                
-# [45,] "pctspanish_li"   "names_d_extra"                
-# [46,] "pctie_li"        "names_d_extra"                
-# [47,] "pctapi_li"       "names_d_extra"                
-# [48,] "pctother_li"     "names_d_extra"                
-# [49,] "pctpoor"         "names_d_extra"                
-# [50,] "ownedunits"      "names_d_extra_count"          
-# [51,] "poor"            "names_d_extra_count"          
-# [52,] "lifexyears"      "x_anyother"                   
-# [53,] "percapincome"    "x_anyother"                   
-# [54,] "pctmale"         "names_d_extra"                
-# [55,] "pctfemale"       "names_d_extra"                
-# [56,] "pctunder18"      "names_d_extra"                
-# [57,] "pctover17"       "names_d_extra"                
-# [58,] "female"          "names_d_extra_count"          
-# [59,] "male"            "names_d_extra_count"          
-# [60,] "over17"          "names_d_extra_count"          
-# [61,] "under18"         "names_d_extra_count"          
-# [62,] "Shape_Length"    "x_anyother"                   
+  cbind( intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r')), fixcolnames(intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r')), 'r', 'varlist'))
+  # [1,] "pctlowinc"         "names_d"                      
+  # [2,] "pctlingiso"        "names_d"                      
+  # [3,] "pctlths"           "names_d"                      
+  # [4,] "pctunder5"         "names_d"                      
+  # [5,] "pctover64"         "names_d"                      
+  # [6,] "pctmin"            "names_d"                      
+  # [7,] "lowinc"            "names_d_count"                
+  # [8,] "lingiso"           "names_d_count"                
+  # [9,] "lths"              "names_d_count"                
+  # [10,] "under5"            "names_d_count"                
+  # [11,] "over64"            "names_d_count"                
+  # [12,] "mins"              "names_d_count"                
+  # [13,] "pcthisp"           "names_d_subgroups_nh"         
+  # [14,] "pctnhba"           "names_d_subgroups_nh"         
+  # [15,] "pctnhaa"           "names_d_subgroups_nh"         
+  # [16,] "pctnhaiana"        "names_d_subgroups_nh"         
+  # [17,] "pctnhnhpia"        "names_d_subgroups_nh"         
+  # [18,] "pctnhotheralone"   "names_d_subgroups_nh"         
+  # [19,] "pctnhmulti"        "names_d_subgroups_nh"         
+  # [20,] "pctnhwa"           "names_d_subgroups_nh"         
+  # [21,] "hisp"              "names_d_subgroups_nh_count"   
+  # [22,] "nhba"              "names_d_subgroups_nh_count"   
+  # [23,] "nhaa"              "names_d_subgroups_nh_count"   
+  # [24,] "nhaiana"           "names_d_subgroups_nh_count"   
+  # [25,] "nhnhpia"           "names_d_subgroups_nh_count"   
+  # [26,] "nhotheralone"      "names_d_subgroups_nh_count"   
+  # [27,] "nhmulti"           "names_d_subgroups_nh_count"   
+  # [28,] "nhwa"              "names_d_subgroups_nh_count"   
+  # [29,] "pctba"             "names_d_subgroups_alone"      
+  # [30,] "pctaa"             "names_d_subgroups_alone"      
+  # [31,] "pctaiana"          "names_d_subgroups_alone"      
+  # [32,] "pctnhpia"          "names_d_subgroups_alone"      
+  # [33,] "pctotheralone"     "names_d_subgroups_alone"      
+  # [34,] "pctmulti"          "names_d_subgroups_alone"      
+  # [35,] "pctwa"             "names_d_subgroups_alone"      
+  # [36,] "ba"                "names_d_subgroups_alone_count"
+  # [37,] "aa"                "names_d_subgroups_alone_count"
+  # [38,] "aiana"             "names_d_subgroups_alone_count"
+  # [39,] "nhpia"             "names_d_subgroups_alone_count"
+  # [40,] "otheralone"        "names_d_subgroups_alone_count"
+  # [41,] "multi"             "names_d_subgroups_alone_count"
+  # [42,] "wa"                "names_d_subgroups_alone_count"
+  # [43,] "pctlan_nonenglish" "names_d_language"             
+  # [44,] "pctlan_ie"         "names_d_language"             
+  # [45,] "pctlan_api"        "names_d_language"             
+  # [46,] "pctlan_other"      "names_d_language"             
+  # [47,] "pctlan_spanish"    "names_d_language"             
+  # [48,] "lan_nonenglish"    "names_d_language_count"       
+  # [49,] "lan_ie"            "names_d_language_count"       
+  # [50,] "lan_api"           "names_d_language_count"       
+  # [51,] "lan_other"         "names_d_language_count"       
+  # [52,] "lan_universe"      "names_d_language_count"       
+  # [53,] "lan_eng_na"        "names_d_language_count"       
+  # [54,] "lan_spanish"       "names_d_language_count"       
+  # [55,] "pctspanish_li"     "names_d_languageli"           
+  # [56,] "pctie_li"          "names_d_languageli"           
+  # [57,] "pctapi_li"         "names_d_languageli"           
+  # [58,] "pctother_li"       "names_d_languageli"           
+  # [59,] "spanish_li"        "names_d_languageli_count"     
+  # [60,] "ie_li"             "names_d_languageli_count"     
+  # [61,] "api_li"            "names_d_languageli_count"     
+  # [62,] "other_li"          "names_d_languageli_count"     
+  # [63,] "pop"               "names_d_other_count"          
+  # [64,] "age25up"           "names_d_other_count"          
+  # [65,] "hhlds"             "names_d_other_count"          
+  # [66,] "pctdisability"     "names_health"                 
+  # [67,] "lowlifex"          "names_health"                 
+  # [68,] "pctnobroadband"    "names_criticalservice"        
+  # [69,] "disability"        "names_health_count"           
+  # [70,] "disab_universe"    "names_health_count"           
+  # [71,] "female"            "names_community_count"        
+  # [72,] "male"              "names_community_count"        
+  # [73,] "ownedunits"        "names_d_extra_count"          
+  # [74,] "poor"              "names_d_extra_count"          
+  # [75,] "pctpoor"           "names_d_extra"                
+  # [76,] "pctunder18"        "names_age"                    
+  # [77,] "pctover17"         "names_age"                    
+  # [78,] "over17"            "names_age_count"              
+  # [79,] "under18"           "names_age_count"              
+  # [80,] "occupiedunits"     "names_community"              
+  # [81,] "pctmale"           "names_community"              
+  # [82,] "pctfemale"         "names_community"              
+  # [83,] "lifexyears"        "names_community"              
+  # [84,] "percapincome"      "names_community"              
+  # [85,] "pctownedunits"     "names_community"              
+  # [86,] "id"                "names_geo"                    
+  # [87,] "Shape_Length"      "names_geo"                    
+  # [88,] "area"              "names_geo" 
 
 #################################################################################### #
 
@@ -321,6 +397,32 @@ print( dim(blockgroupstats) )
 # > could add QA/QC steps here? ####
 
 
+################################################## #
+# fix incorrect language variables from acs22
+
+blockgroupstats[, c( names_d_languageli, names_d_languageli_count, 'hhlds', 'lan_universe', 'lingiso'), with = F]
+
+recalculate_names_d_languageli(blockgroupstats)
+
+# that fixes it using data.table by reference
+
+## confirmed percentages are all 0-1 now
+cbind(sapply(blockgroupstats[, grep('pct', names(blockgroupstats), value = T), with = F],max))
+
+### all names_d_languageli are found here
+#   table(names_d_languageli %in% names(blockgroupstats))
+# 
+# TRUE 
+# 4 
+
+## not all the language ones are found here ***
+cat("Not all the language indicators are found in blockgroupstats... Missing from names_d_language: \n",
+paste0(setdiff(names_d_language, names(blockgroupstats)) , collapse = ", "), "\n")
+#   table(names_d_language %in% names(blockgroupstats))
+# 
+# FALSE  TRUE 
+# 10     5 
+
 
 # ~--------------------------- ####
 ################################################## #
@@ -343,14 +445,47 @@ print(ls())
 capture.output({
   rm(blockgroupstats_new)
   rm(acs22)
-  rm(i, savex, zfile, cols2drop, needgdb)
+  rm(i, savex, zfile, needgdb)
   rm("blockgroupstats_source_state.gdb",
      "blockgroupstats_source_state.gdb.zip" ,
      "blockgroupstats_source_usa.gdb",
      "blockgroupstats_source_usa.gdb.zip"  )
   rm("statestats_new_explained.xlsx" , "usastats_new_explained.xlsx")
-  rm("fnames"  )
+  rm("fnames" , "blockgroupstats_new_as_on_ftp" )
+  rm(x100, y, zurls, SAVEIMAGE, pinej, SAVELOCAL)
+  rm("acs22acsgdbnames","acs22acsgdbnames_r","acs22longnames"  )
 })
 #################################################################################### #
 
 
+### if fixing scaling after blockgroupstats had already been created:
+if (1 == 0 ) {
+
+  
+  x100 = c(names_d_subgroups, names_d_subgroups_alone,
+           'pctunder18' , 'pctover17', 'pctmale', 'pctfemale', 'pctpoor',
+           'pctlan_nonenglish' ,     
+           'pctlan_spanish'   ,       
+           'pctlan_ie'       ,      
+           'pctlan_api'    ,          
+           'pctlan_other'    ,       
+           
+           # already scaled correctly  
+           # 'pctspanish_li'   , 
+           # 'pctie_li'  ,      
+           # 'pctapi_li'  ,        
+           # 'pctother_li'   ,      
+           
+           'pctownedunits'  ,
+           'pctnobroadband'  )
+
+x100 = intersect(x100, names(blockgroupstats))
+
+blockgroupstats[, (x100) := lapply(.SD, function(x) x/100), .SDcols = x100] 
+
+# check it
+cbind(sort(sapply(blockgroupstats, max)))
+
+blockgroupstats    <- metadata_add(blockgroupstats)
+usethis::use_data(blockgroupstats, overwrite = T)
+}

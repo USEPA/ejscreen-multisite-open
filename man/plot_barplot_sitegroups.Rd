@@ -17,7 +17,7 @@ plot_barplot_sitegroups(
 )
 }
 \arguments{
-\item{results_bytype}{table like from ejamit_compare_groups_of_places()$results_bytype,
+\item{results_bytype}{table like from ejamit_compare_types_of_places()$results_bytype,
 a table of site groups,
 one row per type (group), column names at least varname (and "ejam_uniq_id" if names.arg not specified)}
 

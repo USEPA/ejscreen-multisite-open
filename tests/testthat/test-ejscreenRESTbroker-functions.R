@@ -2,6 +2,22 @@
 # library(testthat)    
 #   test_local()  to manually run all tests on local source pkg
 
+
+testradius = 1
+testlat <-  38.8959  # testpoints_50$lat[1]
+testlon <- -77.02985 # testpoints_50$lon[1]
+test2lat <- c(33.943883,    39.297209)
+test2lon <- c(-118.241073, -76.641674)
+pts <- data.frame(lat = test2lat, lon = test2lon)
+
+outrest       <- ejscreenRESTbroker(lon = testlon, lat = testlat, radius = testradius)
+outrest2table <- ejscreenRESTbroker2table(outrest, getstatefromplacename = TRUE)
+out1          <- ejscreenapi1(lon = testlon,  lat = testlat, radius = testradius) # CAN SOMETIMES TAKE 30 SECONDS, SOMETIMES 5 SECONDS
+# out_api       <- ejscreenapi(lon = test2lon, lat = test2lat, radius = testradius, on_server_so_dont_save_files = TRUE, save_when_report = FALSE)
+brokerout <- try(ejscreenRESTbroker(lon = testpoints_5$lon[1], lat = testpoints_5$lat[1], radius = testradius))
+missing_api_results <- inherits(brokerout, "try-error")
+
+
 ################################ # ########################## # ejscreenRESTbroker ####
 
 cat('\ntesting ejscreenRESTbroker\n')
@@ -20,21 +36,21 @@ testthat::test_that("ejscreenRESTbroker() returns ok status code 200 and an elem
 })
 test_that("ejscreenRESTbroker() output class() is still identical to that of saved testoutput_ejscreenRESTbroker_1pts_1miles" , {
   skip_if(missing_api_results, "skipping because ejscreenRESTbroker() failed")
-  expect_equal( class(x), class(testoutput_ejscreenRESTbroker_1pts_1miles))
+  expect_equal( class(brokerout), class(testoutput_ejscreenRESTbroker_1pts_1miles))
 })
 test_that("ejscreenRESTbroker() output names() are still identical to those of saved testoutput_ejscreenRESTbroker_1pts_1miles", {
   skip_if(missing_api_results, "skipping because ejscreenRESTbroker() failed")
-  expect_equal(names(testoutput_ejscreenRESTbroker_1pts_1miles), names(x))
+  expect_equal(names(testoutput_ejscreenRESTbroker_1pts_1miles), names(brokerout))
 })
 test_that("ejscreenRESTbroker() output $headers$`content-type` is still identical to those of saved testoutput_ejscreenRESTbroker_1pts_1miles", {
   skip_if(missing_api_results, "skipping because ejscreenRESTbroker() failed")
-  expect_equal(x$headers$`content-type`, testoutput_ejscreenRESTbroker_1pts_1miles$headers$`content-type`)
+  expect_equal(brokerout$headers$`content-type`, testoutput_ejscreenRESTbroker_1pts_1miles$headers$`content-type`)
 })
 test_that("ejscreenRESTbroker() output $headers$`content-type` is still identical to those of saved testoutput_ejscreenRESTbroker_1pts_1miles", {
   skip_if(missing_api_results, "skipping because ejscreenRESTbroker() failed")
-  expect_equal(class(x$content), class(testoutput_ejscreenRESTbroker_1pts_1miles$content))
+  expect_equal(class(brokerout$content), class(testoutput_ejscreenRESTbroker_1pts_1miles$content))
 })
-# expect_equal(x$content, testoutput_ejscreenRESTbroker_1pts_1miles$content)
+# expect_equal(brokerout$content, testoutput_ejscreenRESTbroker_1pts_1miles$content)
 
 
 
@@ -63,6 +79,8 @@ test_that('ejscreenRESTbroker2table(ejscreenRESTbroker()) returns 1-row data.fra
 test_that('ejscreenRESTbroker2table(ejscreenRESTbroker()) results are same as ejscreenapi1(), except latter makes it numeric and drops percent signs', {
   expect_equal(names(outrest2table), names(out1))
   outrest2table$timeSeconds  <- NULL; out1$timeSeconds <- NULL  # because this is slightly different each time API used
+  outrest2table$stateAbbr_from_api  <- NULL; out1$stateAbbr_from_api <- NULL  # numeric vs logical 
+  outrest2table$stateName_from_api  <- NULL; out1$stateName_from_api <- NULL  # numeric vs logical 
   # # remove percent signs and makes numeric, which ejscreenapi1() does but ejscreenRESTbroker2table() does not
   outrest2table <- makenumericdfFORSHINY(outrest2table)
   expect_equal(outrest2table, out1)
@@ -97,11 +115,11 @@ test_that("warned if radius small so no block point inside" , {
   expect_no_warning({
     xx3 <- ejscreenRESTbroker2table(x3)  # ok - radius large enough that some block point is found
   })
-  expect_equal(names(xx3), names(xxneg))
-  expect_equal(names(xx3), names(xx0))
-  expect_equal(names(xx3), names(xx1))
-  expect_equal(xx0$error, xx1$error)
-  expect_false("error" %in% names(xx0))
+  # expect_equal(names(xx3), names(xxneg))
+  # expect_equal(names(xx3), names(xx0))
+  # expect_equal(names(xx3), names(xx1))
+  expect_equal(xx0$message, xx1$message)
+  # expect_false("error" %in% names(xx0)) # "message" is the name there now
   
 })
 

@@ -53,7 +53,7 @@ distance_by_group_plot <- function(
     results_bybg_people = NULL,
     radius_miles=round(max(
       results_bybg_people$distance_min_avgperson[!is.infinite(
-        results_bybg_people$distance_min_avgperson)], na.rm = T), 1),
+        results_bybg_people$distance_min_avgperson)], na.rm = T), table_rounding_info("distance_min_avgperson")),
     subgroups_type = NULL, # e.g.
     demogvarname = NULL,  # e.g. namez$d # see note above about this param
     demoglabel = NULL,
@@ -258,7 +258,7 @@ distance_by_group_plot <- function(
 #' @export
 #'
 distance_cdf_by_group_plot <- function(results_bybg_people,
-                                       radius_miles=round(max(results_bybg_people$distance_min_avgperson, na.rm = T), 1),
+                                       radius_miles=round(max(results_bybg_people$distance_min_avgperson, na.rm = T), table_rounding_info("distance_min_avgperson")),
                                        demogvarname="Demog.Index", demoglabel=demogvarname,
                                        color1="red", color2="black") {
 

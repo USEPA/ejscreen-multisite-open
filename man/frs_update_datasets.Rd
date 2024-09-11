@@ -59,31 +59,31 @@ Creates saved copies of datasets for the R package, overwriting old ones, using
 Main function that updates several FRS datasets for use in EJAM
 }
 \details{
-**This takes several minutes** to download and clean data files,
-
-and is used by someone maintaining the EJAM package, to obtain updated 
+This takes several minutes to download and clean data files,
+and is used by someone maintaining the EJAM package, to obtain updated
 Facility Registry Service (FRS) data on EPA-regulated sites.
-  
-To update the datasets in the R package from local source code, 
-  use frs_update_datasets(), in conjunction with the EJAM package.
-  
- **This function is only for a package maintainer/updater or to update a local copy.**
 
-  For example to read back in a saved file, 
-  
-  #  frs <- arrow::read_ipc_file(file = file.path(folder_save_as_arrow, "frs.arrow"))
-  
-  Or, more generally,
-  
-  to assign to default, current environment: 
-  
-  # varname <- "frs"
-  
-  # fold <- folder_save_as_arrow # e.g., fold <- getwd()
-  
-  # fname <- paste0(varname, ".arrow")
-  
-  # assign(varname, value = arrow::read_ipc_file(file = file.path(fold, fname)))
+To update the datasets in the R package from local source code,
+use frs_update_datasets(), in conjunction with the EJAM package.
+
+This function is only for a package maintainer/updater or to update a local copy.
+
+For example to read back in a saved file,
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{frs <- arrow::read_ipc_file(file = file.path(folder_save_as_arrow, "frs.arrow"))
+}\if{html}{\out{</div>}}
+
+Or, more generally,
+
+to assign to default, current environment:
+
+varname <- "frs"
+
+fold <- folder_save_as_arrow # e.g., fold <- getwd()
+
+fname <- paste0(varname, ".arrow")
+
+assign(varname, value = arrow::read_ipc_file(file = file.path(fold, fname)))
 }
 \seealso{
 \code{\link[=frs_get]{frs_get()}} \code{\link[=frs_inactive_ids]{frs_inactive_ids()}} \code{\link[=frs_drop_inactive]{frs_drop_inactive()}}

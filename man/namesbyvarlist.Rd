@@ -20,7 +20,6 @@ a data.frame one row per indicator, one col per nametype and a column identifyin
 Get indicator names within a varlist like names_d
 }
 \details{
-  
 varlist2names() is a way to just get a vector of variable names even if the varlist is not stored as a separate data object
 and is only found in the map_headernames$varlist column:
 
@@ -42,6 +41,6 @@ c(names_d, names_d_subgroups)
    c('varlist', 'rname', 'apiname', 'csvname', 'shortlabel', 'longname'))
 }
 \seealso{
-\code{\link[=varlist2names]{varlist2names()}} \code{\link[=varin_map_headernames]{varin_map_headernames()}} \code{\link[=varinfo]{varinfo()}} \code{\link[=names_whichlist_multi_key]{names_whichlist_multi_key()}} \code{\link[=vnames]{vnames()}}
+\code{\link[=names_from_varlist]{names_from_varlist()}} \code{\link[=varlist2names]{varlist2names()}} \code{\link[=varin_map_headernames]{varin_map_headernames()}} \code{\link[=varinfo]{varinfo()}} \code{\link[=names_whichlist_multi_key]{names_whichlist_multi_key()}} \code{\link[=vnames]{vnames()}}
 }
 \keyword{internal}

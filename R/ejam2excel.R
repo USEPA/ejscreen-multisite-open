@@ -23,9 +23,10 @@
 #' @param react.v1_summary_plot optional - a plot object
 #' @param radius_or_buffer_description optional text phrase describing places analyzed
 #' @param hyperlink_colnames optional names of columns with URLs
+#' @param site_method optional site method parameter used to create a more specific title with create_filename
 #' @param ... optional additional parameters passed to [table_xls_format()], such as 
 #'   heatmap_colnames, heatmap_cuts, heatmap_colors, etc.
-#'
+#'   
 #' @export
 #'
 ejam2excel <- function(ejamitout,
@@ -47,22 +48,23 @@ ejam2excel <- function(ejamitout,
                        ...
 ) {
 
-  table_xls_from_ejam(
-    ejamitout,
-    fname,
-    save_now,
-    overwrite,
-    launchexcel,
-    interactive_console,
-    ok2plot,
-    in.testing,
-    in.analysis_title,
-    react.v1_summary_plot,
-    radius_or_buffer_in_miles,
-    buffer_desc,
-    radius_or_buffer_description,
-    hyperlink_colnames,
-    site_method,
+  x = table_xls_from_ejam(
+    ejamitout = ejamitout,
+    fname = fname,
+    save_now = save_now,
+    overwrite = overwrite,
+    launchexcel = launchexcel,
+    interactive_console = interactive_console,
+    ok2plot = ok2plot,
+    in.testing = in.testing,
+    in.analysis_title = in.analysis_title,
+    react.v1_summary_plot = react.v1_summary_plot,
+    radius_or_buffer_in_miles = radius_or_buffer_in_miles,
+    buffer_desc = buffer_desc,
+    radius_or_buffer_description = radius_or_buffer_description,
+    hyperlink_colnames = hyperlink_colnames,
+    site_method = site_method,
     ...
   )
+  invisible(x)
 }

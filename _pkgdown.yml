@@ -14,8 +14,8 @@ footer:
     left: [draftmsg]
     right: [package, versionmsg]
   components:
-    draftmsg: DRAFT/beta
-    versionmsg: Version 2.3.0 beta
+    draftmsg: DRAFT
+    versionmsg: Version 2.32.0
 home:
   title: EJAM Environmental Justice Analysis Multisite
   description: Webapp and tools summarizing demographic and environmental data for hundreds of places quickly and accurately
@@ -49,6 +49,7 @@ reference:
   - ejamit_compare_types_of_places
   - ejam2report
   - ejam2ratios
+  - ejam2tableviewer
   - ejam2table_tall
   - ejam2excel
   - ejam2map
@@ -174,8 +175,8 @@ reference:
   - fips2statename
   - fips2state_abbrev
   - fips2state_fips
-  - states_infer
-  - state_from_fips
+  - state_from_sitetable
+  - state_from_fips_bybg
   - state_from_latlon
 - subtitle: "Regions"
   contents:
@@ -291,6 +292,7 @@ reference:
   - ejam2report
   - ejam2excel
   - ejam2ratios
+  - ejam2tableviewer
   - ejam2table_tall
   - table_round
   - table_rounding_info
@@ -381,7 +383,7 @@ reference:
   - formula_varname
   - custom_doaggregate
   - custom_ejamit
-  - ST_by_site_from_sites2blocks
+  - state_from_s2b_bysite
   - table_tall_from_overall
   - table_tall_from_site
   - table_tall_from_bysite

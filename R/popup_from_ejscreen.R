@@ -1,4 +1,3 @@
-
 #' Map popups - Create the popup text for maps of EJ results
 #' 
 #' @description This creates the HTML text that appears in map popups.
@@ -17,33 +16,33 @@
 #'   - EJ Indexes
 #'   - web link(s) to map or report
 #'
-#' @param out raw data in data.frame form, with results of EJ buffer analysis
+#' @param out like ejamit()$results_bysite, not ejamit().
+#'   The table of raw data in data.frame form, with results of EJ analysis.
 #' @param linkcolname Name of one column in the table that has links to some URL
 #' @param linkcolname2 Another like linkcolname
 #' @param linkcolname3 another 
 #' @param verbose TRUE or FALSE, can see more details reported when function is used.
 #'
 #' @return HTML ready to be used for map popups
-#' @examples \dontrun{
-#'   out <- testoutput_ejscreenapi_plus_50
-#'   x <- popup_from_ejscreen(out)
-#'   popup_print(x[1])
-#'   mapfastej(out)
-#' }
 #' 
 #' @keywords internal
 #' @export
 #' 
 popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2='EJScreen Map', linkcolname3='EJScreenACS', verbose=FALSE) {
   
+  if ("results_bysite" %in% names(out)) {
+    # looks like not just 1 table was provided
+    out <- out$results_bysite
+  }
   if (data.table::is.data.table(out)) {out <- data.table::copy(out); data.table::setDF(out)}
   
   ############################################ #
   # SPECIFY indicators/VARIABLE NAMES  ####
-  
-  names_d_nice_pop      <- fixcolnames(names_d, 'r', 'shortlabel')
+  names_d_pop <- names_d
+  names_d_nice_pop      <- fixcolnames(names_d_pop, 'r', 'shortlabel')
   names_d_pctile_pop       <- names_d_pctile
   names_d_state_pctile_pop <- names_d_state_pctile
+  
   names_e_pop <- names_e
   names_e_nice_pop  <- fixcolnames(names_e_pop, 'r', 'shortlabel')
   names_e_pctile_pop       <- names_e_pctile
@@ -74,7 +73,7 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   colstofix <- c(
     names_e_pop, 
     names_e_pctile_pop, names_e_state_pctile_pop,
-    names_d, 
+    names_d_pop,
     names_d_pctile_pop, names_d_state_pctile_pop, # does not include  D subgroups
     names_ej_pctile_pop, names_ej_state_pctile_pop # includes  supplementary EJ indexes too
   )
@@ -240,28 +239,55 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   # possibly create a simple popup of all?? columns in out, if none of the expected column names are found?? 
   # handle case where some of names_d are not in out, and same for other variables
   # assume that pctile and nice versions are not missing if the base version is here!
-  dok <- which(names_d %in% names(out)) 
+  
+  dok <- which(names_d_pop %in% names(out)) 
   eok <- which(names_e_pop %in% names(out))
   pok <- which(names_ej_pctile_pop %in% names(out))
-  names_d <- names_d[dok] 
+  
+  if (length(dok) > 0) {
+    names_d_pop      <- names_d_pop[dok]
+    names_d_nice_pop <- names_d_nice_pop[dok]
+    names_d_pctile_pop       <- names_d_pctile_pop[names_d_pctile_pop %in% names(out)] #  there are state and US ones, so 2x as many as there are names_d
+    names_d_state_pctile_pop <- names_d_state_pctile_pop[names_d_state_pctile_pop %in% names(out)] # there are state and US ones, so 2x as many as there are names_d
+    if (length(names_d_pctile_pop) != length(names_d_state_pctile_pop) || length(names_d_pctile_pop) != length(names_d_pop)) {
+      warning("mismatch between numbers of names found in out for names_d_pop, names_d_pctile_pop, and names_d_state_pctile_pop")
+    }
+  }
+  if (length(eok) > 0) {
+    names_e_pop      <- names_e_pop[eok]
+    names_e_nice_pop <- names_e_nice_pop[eok]
+    names_e_pctile_pop       <- names_e_pctile_pop[names_e_pctile_pop %in% names(out)] #  there are state and US ones, so 2x as many as there are names_d
+    names_e_state_pctile_pop <- names_e_state_pctile_pop[names_e_state_pctile_pop %in% names(out)] #  there are state and US ones, so 2x as many as there are names_d
+    if (length(names_e_pctile_pop) != length(names_e_state_pctile_pop) || length(names_e_pop) != length(names_e_pctile_pop)) {
+      warning("mismatch between numbers of names found in out for names_e_pop, names_e_pctile_pop and names_e_state_pctile_pop")
+    }
+  }
+  if (length(pok) > 0) {
+    names_ej_pctile_pop <- names_ej_pctile_pop[pok]
+    names_ej_state_pctile_pop <- names_ej_state_pctile_pop[names_ej_state_pctile_pop %in% names(out)]
+    if (length(names_ej_pctile_pop) != length(names_ej_state_pctile_pop)) {
+      warning("mismatch between numbers of names found in out for names_ej_pctile_pop and names_ej_state_pctile_pop")
+    }
+  }
+  
+  # make popups text for DEMOGRAPHICS (US & STATE PCTILES) ####
   if (length(dok) == 0) {
     warning('none of names_d were found in out')
     poptext.d <- NULL
   } else {
-    names_d_nice_pop <- names_d_nice_pop[dok]
-    names_d_pctile_pop <- names_d_pctile_pop[names_d_pctile_pop %in% names(out)] #  there are state and US ones, so 2x as many as there are names_d
-    names_d_state_pctile_pop <- names_d_state_pctile_pop[names_d_state_pctile_pop %in% names(out)] # there are state and US ones, so 2x as many as there are names_d
-    poptext.d <-  make.popup.d.api(d = out[, names_d] / 100, pctile = out[, names_d_pctile_pop], state.pctile = out[, names_d_state_pctile_pop], prefix = '') # includes state pctiles too, now
+    poptext.d <-  make.popup.d.api(
+      d = out[, names_d_pop] / 100, 
+      pctile = out[, names_d_pctile_pop], 
+      state.pctile = out[, names_d_state_pctile_pop], 
+      prefix = '') # includes state pctiles too, now
     names(poptext.d) <- names_d_nice_pop
   }
+  
+  # make popups text for ENVIRONMENTAL INDICATORS (US & STATE PCTILES) ####
   if (length(eok) == 0) {
-    warning('none of names_e_pop were found in out')
+    warning('none of names_e were found in out')
     poptext.e <- NULL
   } else {
-    names_e_pop        <- names_e_pop[eok]
-    names_e_nice_pop   <- names_e_nice_pop[eok]
-    names_e_pctile_pop <- names_e_pctile_pop[names_e_pctile_pop %in% names(out)] #  there are state and US ones, so 2x as many as there are names_d
-    names_e_state_pctile_pop <- names_e_state_pctile_pop[names_e_state_pctile_pop %in% names(out)] #  there are state and US ones, so 2x as many as there are names_d
     poptext.e <-  make.popup.e.api(
       e = out[, names_e_pop],
       pctile = out[, names_e_pctile_pop], 
@@ -271,37 +297,35 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
     names(poptext.e) <- names_e_nice_pop  # ejscreen::names.e.nice  # longer form is   ejscreen::nicenames(names(poptext.e))
   }
   
-  # make popups text for the EJ INDEXES (US AND STATE PCTILES, FOR NORMAL AND SUPPLEMENTARY EJ INDEXES) ####
+  # make popups text for EJ INDEXES (US & STATE PCTILES, FOR NORMAL & SUPPLEMENTARY EJ INDEXES) ####
   if (length(pok) == 0) {
-    warning('none of names.ej.pctile.api found in out')
+    warning('none of names_ej_pctile found in out')
     poptext.ej <- NULL
   } else {
-    poptext.ej <-  make.popup.ej.api(pctile = out[, names_ej_pctile_pop], state.pctile = out[, names_ej_state_pctile_pop], labels = names_ej_pctile_pop_USORSTATE)
+    poptext.ej <-  make.popup.ej.api(
+      pctile = out[, names_ej_pctile_pop], 
+      state.pctile = out[, names_ej_state_pctile_pop], 
+      labels = names_ej_pctile_pop_USORSTATE
+    )
   }
   
-  # 'EJScreen Report', linkcolname2='EJScreen Map', linkcolname3='EJScreenACS'
-  # if (!(linkcolname %in% names(out)))  {linkcolname  <- 'EJScreen Report'} # needed for ejscreenapi_plus() but not sure if for server.R
-  # if (!(linkcolname2 %in% names(out))) {linkcolname2 <- 'EJScreen Map'} 
-  # if (!(linkcolname3 %in% names(out))) {linkcolname3 <- 'EJScreenACS'} 
-  if (linkcolname %in% names(out))  {pops_link1 <- paste0(out[ , linkcolname] ,           '<br>')}  else{ pops_link1 <- paste0(rep(NA, NROW(out)),'<br>')}
-  if (linkcolname2 %in% names(out)) {pops_link2 <- paste0(out[ , linkcolname2] ,           '<br>')} else{ pops_link2 <- paste0(rep(NA, NROW(out)),'<br>')}
-  if (linkcolname3 %in% names(out)) {pops_link3 <- paste0(out[ , linkcolname3] ,           '<br>')} else{ pops_link3 <- paste0(rep(NA, NROW(out)),'<br>')}
+  if (linkcolname  %in% names(out)) {pops_link1 <- paste0(out[ , linkcolname] , '<br>')} else {pops_link1 <- paste0(rep(NA, NROW(out)), '<br>')}
+  if (linkcolname2 %in% names(out)) {pops_link2 <- paste0(out[ , linkcolname2], '<br>')} else {pops_link2 <- paste0(rep(NA, NROW(out)), '<br>')}
+  if (linkcolname3 %in% names(out)) {pops_link3 <- paste0(out[ , linkcolname3], '<br>')} else {pops_link3 <- paste0(rep(NA, NROW(out)), '<br>')}
   
-  if ('ejam_uniq_id'   %in% names(out)) {pops_ejam_uniq_id <- paste0('ejam_uniq_id: ', out$ejam_uniq_id, '<br>')} else {pops_ejam_uniq_id <- ''}
-  if ('id'       %in% names(out)) {pops_id       <- paste0('id: ',       out$id,       '<br>')} else {pops_id       <- ''}
-  if ('siteid'   %in% names(out)) {pops_siteid   <- paste0('siteid: ',   out$siteid,   '<br>')} else {pops_siteid   <- ''}
-  if ('sitenumber'     %in% names(out)) {pops_sitenumber   <- paste0('sitenumber: ',   out$sitenumber,   '<br>')} else {pops_sitenumber <- ''}
-  if ('sitename' %in% names(out)) {pops_sitename <- paste0('sitename: ', out$sitename, '<br>')} else {pops_sitename <- ''}
-  if ('radius.miles' %in% names(out)) {pops_radmile <- paste0('Area within ', out$radius.miles, ' miles of site', '<br>')} else {
-    pops_radmile <- ''}
+  if ('ejam_uniq_id' %in% names(out)) {pops_ejam_uniq_id <- paste0('ejam_uniq_id: ', out$ejam_uniq_id, '<br>')} else {pops_ejam_uniq_id <- ''}
+  if ('id'           %in% names(out)) {pops_id           <- paste0('id: ',           out$id,           '<br>')} else {pops_id           <- ''}
+  if ('siteid'       %in% names(out)) {pops_siteid       <- paste0('siteid: ',       out$siteid,       '<br>')} else {pops_siteid       <- ''}
+  if ('sitenumber'   %in% names(out)) {pops_sitenumber   <- paste0('sitenumber: ',   out$sitenumber,   '<br>')} else {pops_sitenumber   <- ''}
+  if ('sitename'     %in% names(out)) {pops_sitename     <- paste0('sitename: ',     out$sitename,     '<br>')} else {pops_sitename     <- ''}
+  if ('radius.miles' %in% names(out)) {pops_radmile      <- paste0('Area within ',   out$radius.miles, ' miles of site', '<br>')} else {pops_radmile <- ''}
   
   if (length(poptext.d) > 0) {
-    pops_d <- 
-      paste0(
-        '<b>', 'Demographic Indicators: ', '</b>',                 '<br>',
-        'Population: ', prettyNum(out$pop, big.mark = ','),        '<br>',
-        apply(poptext.d, FUN = function(x) paste0(names(x), ': ', x, collapse = '<br>'), MARGIN = 1), '<br>'
-      )
+    pops_d <- paste0(
+      '<b>', 'Demographic Indicators: ', '</b>',                 '<br>',
+      'Population: ', prettyNum(out$pop, big.mark = ','),        '<br>',
+      apply(poptext.d, FUN = function(x) paste0(names(x), ': ', x, collapse = '<br>'), MARGIN = 1), '<br>'
+    )
   } else {
     pops_d <- ""
   }
@@ -317,7 +341,7 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   
   if (length(poptext.ej) > 0) {
     pops_ej <- paste0(
-      '<b>', 'EJ Indexes: ', '</b>',               '<br>',
+      '<b>', 'EJ Indexes: ',              '</b>',               '<br>',
       apply(poptext.ej, FUN = function(x) paste0(names(x), ': ', x, collapse = '<br>'), MARGIN = 1), '<br>'
     )
   } else {
@@ -340,10 +364,10 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
     pops_ej,
     
     # LINK IN POPUP
-    pops_link1, # out[ , linkcolname] ,           '<br>',
-    # url_linkify(out[ , linkcolname], 'EJScreen Report'),           '<br>',
-    pops_link2, # out[ , linkcolname2] ,    '<br>',
-    # url_linkify(out[ , linkcolname2], 'EJScreen Map'),  '<br>',
+    pops_link1,    # out[ , linkcolname] ,           '<br>',
+    #    url_linkify(out[ , linkcolname] , 'EJScreen Report'), '<br>',
+    pops_link2,    # out[ , linkcolname2],    '<br>',
+    #    url_linkify(out[ , linkcolname2], 'EJScreen Map'),  '<br>',
     pops_link3, 
     sep = '<br>'
   )
