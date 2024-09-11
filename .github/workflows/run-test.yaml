@@ -31,9 +31,13 @@ jobs:
         run: |
           sudo apt install libcurl4-openssl-dev
           
-      - name: Install Dependencies
+      - name: Install Shinytest2 Dependencies
         run: 
-          Rscript -e 'install.packages(c("curl", "chromote", "httr", "shinytest2"))'
+          Rscript -e 'install.packages(c("curl", "chromote", "httr", "shinytest2", "remotes"))'
+          
+      - name: Install App Dependencies
+        run: 
+          Rscript -e 'remotes::install_deps(dependencies = TRUE)'
           
       - name: Run Shiny Tests
         run: Rscript -e 'shinytest2::test_app(".", filter="app-functionality")'
