@@ -33,9 +33,7 @@ jobs:
           
       - name: Install Dependencies
         run: 
-          Rscript -e 'install.packages("curl")'
-          Rscript -e 'install.packages(c("chromote", "httr"))'
-          Rscript -e 'install.packages("shinytest2")'
+          Rscript -e 'install.packages(c("curl", "chromote", "httr", "shinytest2")))'
           
       - name: Run Shiny Tests
         run: Rscript -e 'shinytest2::test_app(".", filter="app-functionality")'
