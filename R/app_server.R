@@ -262,9 +262,19 @@ app_server <- function(input, output, session) {
   #   submitted_upload_method(current_upload_method())
   # })
   
-  ## Sanitize
+  ## Sanitize functions
   sanitize = function(text) {
     gsub("[^a-zA-Z0-9 ]", "", text)
+  }
+  
+  
+  escape_html <- function(text) {
+    text <- gsub("&", "&amp;", text)
+    text <- gsub("<", "&lt;", text)
+    text <- gsub(">", "&gt;", text)
+    text <- gsub("\"", "&quot;", text)
+    text <- gsub("'", "&#39;", text)
+    return(text)
   }
   
   
@@ -1979,11 +1989,13 @@ app_server <- function(input, output, session) {
         ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
         
         if ("REGISTRY_ID" %in% names(data_uploaded())) {
-          echolink = url_echo_facility_webpage( data_uploaded()$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
+          escaped_registry_id = escape_html(data_uploaded()$REGISTRY_ID)
+          echolink = url_echo_facility_webpage(escaped_registry_id, as_html = TRUE, linktext = 'ECHO Report')
         } else if ("RegistryID" %in% names(data_uploaded())) {
-          echolink = url_echo_facility_webpage( data_uploaded()$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
+          escaped_registry_id = escape_html(data_uploaded()$RegistryID)
+          echolink = url_echo_facility_webpage(escaped_registry_id, as_html = TRUE, linktext = 'ECHO Report')
         } else {
-          echolink = rep('N/A',nrow(out$results_bysite))
+          echolink = rep('N/A', nrow(out$results_bysite))
         }
         
         if (submitted_upload_method() != 'SHP') {
