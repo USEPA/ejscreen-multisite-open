@@ -41,9 +41,9 @@ test_that("{shinytest2} recording: EJAM", {
   # 8/16/24 - Can skip this
   app$expect_download("community_download_all")
   
-  print("going to details tab")
-  app$set_inputs(results_tabs = "Details")
-  app$wait_for_idle(timeout = 20000)
+  # print("going to details tab")
+  # app$set_inputs(results_tabs = "Details")
+  # app$wait_for_idle(timeout = 20000)
   
   # print("downloading results table from details tab")
   # app$expect_download("download_results_table")

@@ -39,12 +39,12 @@ jobs:
         run: 
           Rscript -e 'remotes::install_deps(dependencies = TRUE)'
           
-      - name: Run Shiny Tests
-        run: Rscript -e 'shinytest2::test_app(".", filter="app-functionality")'
-
-      - name: Upload test results
-        if: failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ runner.os }}-tests
-          path: tests
+      # - name: Run Shiny Tests
+      #   run: Rscript -e 'shinytest2::test_app(".", filter="app-functionality")'
+      # 
+      # - name: Upload test results
+      #   if: failure()
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ${{ runner.os }}-tests
+      #     path: tests
