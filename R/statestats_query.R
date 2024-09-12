@@ -1,4 +1,49 @@
 
+
+
+#' statestats_means - convenient way to see STATE MEANS of indicators for a list of states (that can have repeats)
+#' @description Given a vector of 2-char ST abbrevs, and vector of colnames in statestats table (indicator names),
+#'   return data.frame of state averages
+#' @param ST vector of 2-char ST abbrevs, or all values can be "USA" to get duplicate rows like found in ejamit()$results_bysite[, names_d_avg]
+#' @param varnames vector of colnames in statestats table (indicator names)
+#' @param PCTILES "mean"
+#'
+#' @return data.frame of state averages for those, one row per ST provided (can have repeats) and colnames are varnames.
+#' 
+#' @keywords internal
+#' @export
+#'
+statestats_means_bystates <- function(ST = unique(EJAM::statestats$REGION), varnames = names_these, PCTILES = "mean") {
+  
+  # Help add (to a table of info on multiple states) columns of a few indicators with averages of appropriate state for each row
+  # Given a vector of 2-char ST abbrevs, and vector of colnames in statestats table (indicator names),
+  # return data.frame of state averages for those, one row per ST provided (can have repeats) and colnames are varnames.
+  # see also [statestates_means()] and [statestats_query()]
+  if (length(PCTILES) > 1) {stop('PCTILES must be a single value like "mean"')}
+  ST <- toupper(ST)
+  if (all(ST %in% "USA")) {
+    
+    meansby  = usastats[usastats$PCTILE == PCTILES, c("REGION", varnames)]
+    x = meansby[match(ST, meansby$REGION), varnames] # drop = F ? 
+    rownames(x) <- NULL  
+    return(x)
+    
+  } else {
+    
+    if (!(all(ST %in% statestats$REGION))) {
+      warning('all of ST values must be in statestats$REGION - returning no averages for any, even matching states')
+      x = data.frame(matrix(NA, nrow = length(ST), ncol = length(varnames)))
+      colnames(x) <- varnames
+      return(x)
+    }
+    
+    meansbystate  = statestats[statestats$PCTILE == PCTILES, c("REGION", varnames)]
+    x = meansbystate[match(ST, meansbystate$REGION), varnames] # drop = F ? 
+    rownames(x) <- NULL
+    return(x)
+  }
+}
+
 ################################################################################ #
 
 

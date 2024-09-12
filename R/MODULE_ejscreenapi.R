@@ -893,42 +893,47 @@ mod_ejscreenapi_server <- function(id, session,
 
         ############################################################# #
         # # ratios section is almost identical to code in ejscreenapi_plus()
-        #
+        
         # ### Add Ratios to us or state averages ####
         #
         if (input$include_ratios ) {
 
-          names_e_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_e"]  # this should be identical to names_e or namez$e
-          names_d_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_d"]  # this should be identical to names_d or namez$d
-          names_d_subgroups_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups"]  # same as names_d_subgroups or namez$d_subgroups
-
-          ##  ratio to US avg -------------
-
-          # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT THE SORT ORDER IS OF THE VARIABLES !
-          usratios <- calc_ratios_to_avg(table_as_displayed,
-                                    evarnames = names_e_FOR_RATIOS,
-                                    dvarnames = names_d_FOR_RATIOS)   # lacks subgroups and supplementary ?
+          names_e_FOR_RATIOS <- names_e
+          names_d_FOR_RATIOS <- c(names_d, names_d_subgroups)
+          # but not c(names_d, names_d_subgroups) ?? #  AVERAGE IS NOT AN OUTPUT OF API - need to get means from usastats, statestats
+          
+          if (!all(paste0("ratio.to.avg.",       names_e_FOR_RATIOS) == names_e_ratio_to_avg)) {stop("names_e and names_e_ratio_to_avg are sorted differently")}
+          if (!all(paste0("ratio.to.avg.",       names_d_FOR_RATIOS) == c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg))) {stop("d-related names are sorted differently")}
+          if (!all(paste0("ratio.to.state.avg.", names_e_FOR_RATIOS) == names_e_ratio_to_state_avg)) {stop("names_e and names_e_ratio_to_state_avg are sorted differently")}
+          if (!all(paste0("ratio.to.state.avg.", names_d_FOR_RATIOS) == c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg))) {stop("d-related names are sorted differently")}
+          
+          ##  ratio to US avg ------------ -
+          
+          # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT IS THE SORT ORDER OF THE VARIABLES !
+          usratios <- calc_ratios_to_avg(table_as_displayed, 
+                                         zone.prefix = "", 
+                                         evarnames = names_e_FOR_RATIOS, 
+                                         dvarnames = names_d_FOR_RATIOS ) 
           eratios <- round(usratios$ratios_e, 4)
-          dratios <- round(usratios$ratios_d, 4)    # lacks subgroups and supplementary ?
-
-          # switch from names of indicators to names of the ratios of those indicators?
-          # a PROBLEM HERE IS LIST OF RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES:
-
-          names(eratios) <-   map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_e_FOR_RATIOS) # names_e_ratio_to_avg  # lacks state percentiles here ****
-          names(dratios) <-   map_headernames$rname[ map_headernames$varlist == "names_d_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_d_FOR_RATIOS) # names_d_ratio_to_avg  # lacks state percentiles here ****
+          dratios <- round(usratios$ratios_d, 4)
+          # calc_ratios_to_avg() colnames returned are same as input, not renamed to say "ratio"
+          names(eratios) <-   names_e_ratio_to_avg
+          names(dratios) <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg)
           table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
-
-          ##  ratio to STATE avg --------------
-
-          st_ratios <- calc_ratios_to_avg(table_as_displayed, zone.prefix = "state.", 
-                                          evarnames = names_e_FOR_RATIOS, 
-                                          dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
-          eratios <- round(st_ratios$ratios_e, 4)
-          dratios <- round(st_ratios$ratios_d, 4)    # lacks subgroups and supplementary ?
-          names(eratios) <- map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
-          names(dratios) <- map_headernames$rname[ map_headernames$varlist == "names_d_ratio_to_state_avg"]
-          table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
-
+          
+          ##  ratio to STATE avg ------------- -
+          
+          st_ratios <- calc_ratios_to_avg(table_as_displayed, 
+                                          zone.prefix = "state.", 
+                                          evarnames = names_e_FOR_RATIOS,
+                                          dvarnames = names_d_FOR_RATIOS ) 
+          st_eratios <- round(st_ratios$ratios_e, 4)
+          st_dratios <- round(st_ratios$ratios_d, 4)
+          # calc_ratios_to_avg() colnames returned are same as input, not renamed to say "ratio"
+          names(st_eratios) <-   names_e_ratio_to_state_avg  # but RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES as checked above
+          names(st_dratios) <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg)
+          table_as_displayed <- cbind(table_as_displayed, dratios, eratios, st_dratios, st_eratios)
+          
         } # end of ratio calculations
 
 
