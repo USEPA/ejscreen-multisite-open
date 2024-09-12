@@ -6,12 +6,14 @@
 \title{Get lat/lon flexibly - from file, data.frame, data.table, or lat/lon vectors
 Like latlon_from_anything() but this also adds a ejam_uniq_id column}
 \usage{
-sitepoints_from_any(anything, lon_if_used)
+sitepoints_from_any(anything, lon_if_used, interactiveprompt = TRUE)
 }
 \arguments{
 \item{anything}{see \code{\link[=latlon_from_anything]{latlon_from_anything()}}, which this is passed to}
 
 \item{lon_if_used}{see \code{\link[=latlon_from_anything]{latlon_from_anything()}}, which this is passed to}
+
+\item{interactiveprompt}{passed to \code{\link[=latlon_from_any]{latlon_from_any()}}}
 }
 \value{
 data.frame with lat,lon, and ejam_uniq_id as colnames, one row per point

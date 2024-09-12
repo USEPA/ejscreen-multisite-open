@@ -1,9 +1,11 @@
 
 #' get ratios of each site's scores to US means (using output of batch buffering)
 #' 
-#' Used to create input to[ boxplots_ratios()]
+#' Used to create input to[ boxplots_ratios()] and can be used elsewhere now
 #' 
-#' @details Should recode to use variable name defaults from package not hardcoded here.
+#' @details  Note that colnames returned are same as input, not renamed to say "ratio"
+#'   If names_d_subgroups are included, those means are not in API output from EJScreen
+#'   so it gets the means from usastats or statestats
 #' @param out data.frame output from [ejscreenapi_plus()] or from [ejscreenapi()] or doaggregate(),
 #'   one row per buffer or site, and 
 #'   columns for indicators named in evarnames, dvarnames, avg.evarnames, avg.dvarnames
@@ -61,7 +63,29 @@ calc_ratios_to_avg <- function(out,
   ##   ratios of nearby indicator score to US overall, 
   ##  to get quick barplot(s) or PDF(density) or CDF
   ## at one site or average site or all in one graphic. 
-   
+  
+  ## API did not provide averages for demog subgroups, so try to get from usastats, statestats, if missing from API output 
+  
+  if (all(names_d_subgroups %in% dvarnames)) {
+    if (zone.prefix == "") {
+      if (!(all(names_d_subgroups_avg %in%  names(out)) & all(names_d_subgroups %in%  names(usastats)))) {
+        out[, names_d_subgroups_avg] <- usastats[usastats$PCTILE == "mean", names_d_subgroups]
+      }
+    }
+    if (zone.prefix == "state.") {
+      if (!all(names_d_subgroups_state_avg %in% names(out)) && all(names_d_subgroups %in% names(statestats))) {
+        # check if ST is in colnames of out
+        if ("ST" %in% names(out)) {
+        # if it is, use it to look up mean by ST for each of names_d_subgroups and put into out[, names_d_subgroups_state_avg]
+          out[, names_d_subgroups_state_avg] <- statestats_means_bystates(out$ST, names_d_subgroups)
+        } else {
+            warning("state averages of demog subgroups were not found in out, but cannot look up those averages since ST not found in colnames of out")
+          out[, names_d_subgroups_state_avg] <- NA
+          }
+        }
+    }
+  }
+  
   # confirm those colnames are there
   d_haveboth <- (avg.dvarnames %in% names(out)) & (dvarnames %in% names(out))
   e_haveboth <- (avg.evarnames %in% names(out)) & (evarnames %in% names(out))
