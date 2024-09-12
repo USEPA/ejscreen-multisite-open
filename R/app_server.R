@@ -1481,7 +1481,7 @@ app_server <- function(input, output, session) {
                        label = "",  ## label is updated in server  # htmltools::h5('Within what distance of a site?'),
                        min = current_slider_min[[current_upload_method()]] , # minradius, # from global.R, is min user can pick but also is min the default can be. also see minradius_shapefile
                        max = input$max_miles,  ## default_max_miles from global.R, or else a cap user sets in advanced tab. cannot use input$ in ui, only server
-                       value = input$default_miles, ## from advanced tab that uses global.R default_default_miles unless changed in adv tab. have to do in server-- cannot use input$ in ui, only in server
+                       value = sanitize(input$default_miles), ## from advanced tab that uses global.R default_default_miles unless changed in adv tab. have to do in server-- cannot use input$ in ui, only in server
                        step = stepradius, # from global.R
                        post = ' miles'
     )
@@ -1523,13 +1523,23 @@ app_server <- function(input, output, session) {
   observeEvent(
     input$default_miles,
     {
+      # Sanitize the input: Convert to numeric or set a default value
+      sanitized_miles <- as.numeric(input$default_miles)
+      
+      # Handle cases where the input cannot be converted to a numeric value
+      if (is.na(sanitized_miles)) {
+        sanitized_miles <- 0
+      }
+      
       these <- c(
         'latlon', 'NAICS', 'SIC', 
         'FRS', 'MACT',
         'EPA_PROGRAM_up', 'EPA_PROGRAM_sel'
         # note   FIPS and SHP types handled separately
       )
-      for (this in  these) {current_slider_val[[this]] <- input$default_miles}  
+      for (this in these) {
+        current_slider_val[[this]] <- sanitized_miles
+      }   
     }
   )
   # set/update based on advanced tab set by global.R and then might be changed by a user
