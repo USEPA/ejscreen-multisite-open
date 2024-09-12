@@ -6,21 +6,14 @@
 \title{Get lat/lon flexibly - from file, data.frame, data.table, or lat/lon vectors
 Like latlon_from_anything() but this also adds a ejam_uniq_id column}
 \usage{
-sitepoints_from_any(
-  anything,
-  lon_if_used,
-  invalid_msg_table = FALSE,
-  set_invalid_to_na = TRUE
-)
+sitepoints_from_any(anything, lon_if_used, interactiveprompt = TRUE)
 }
 \arguments{
 \item{anything}{see \code{\link[=latlon_from_anything]{latlon_from_anything()}}, which this is passed to}
 
 \item{lon_if_used}{see \code{\link[=latlon_from_anything]{latlon_from_anything()}}, which this is passed to}
 
-\item{invalid_msg_table}{set to TRUE if you want columns "valid" and "invalid_msg" also}
-
-\item{set_invalid_to_na}{used by latlon_df_clean()}
+\item{interactiveprompt}{passed to \code{\link[=latlon_from_any]{latlon_from_any()}}}
 }
 \value{
 data.frame with lat,lon, and ejam_uniq_id as colnames, one row per point
@@ -39,9 +32,6 @@ Like latlon_from_anything() but this also adds a ejam_uniq_id column
  sitepoints_from_any(pts)
  pts = data.table(Lat = testpoints_10$lat, Long = testpoints_10$lon)
  sitepoints_from_any(pts)
- 
- sitepoints_from_anything(testpoints_bad, set_invalid_to_na = F, invalid_msg_table = T)
- 
  \dontrun{
  if (interactive()) {
    pts <- sitepoints_from_any()

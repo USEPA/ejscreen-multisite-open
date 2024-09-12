@@ -17,7 +17,7 @@ url_ejscreen_report(
   wkid = 4326,
   unit = 9035,
   f = "report",
-  interactiveprompt = TRUE
+  interactiveprompt = FALSE
 )
 }
 \arguments{
@@ -45,7 +45,7 @@ url_ejscreen_report(
 
 \item{f}{can be "report" or "pjson" or "json"}
 
-\item{interactiveprompt}{passed to sitepoints_from_anything()}
+\item{interactiveprompt}{passed to \code{\link[=sitepoints_from_any]{sitepoints_from_any()}}}
 }
 \value{
 URL(s)

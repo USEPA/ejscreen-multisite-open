@@ -7,6 +7,8 @@
 #' @param lon_if_used see [latlon_from_anything()], which this is passed to
 #' @param invalid_msg_table set to TRUE if you want columns "valid" and "invalid_msg" also 
 #' @param set_invalid_to_na used by latlon_df_clean()
+#' @param interactiveprompt passed to [latlon_from_any()]
+#' 
 #' @return data.frame with lat,lon, and ejam_uniq_id as colnames, one row per point
 #' @examples
 #'  sitepoints_from_any(testpoints_10)
@@ -31,8 +33,8 @@
 #'  }
 #' @export
 #'
-sitepoints_from_any <- function(anything, lon_if_used, invalid_msg_table = FALSE, set_invalid_to_na = TRUE) {
-  
+sitepoints_from_any <- function(anything, lon_if_used, invalid_msg_table = FALSE, set_invalid_to_na = TRUE, interactiveprompt = TRUE) {
+
   # note this overlaps or duplicates code in ejamit() and app_server.R
   #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
   
@@ -45,9 +47,10 @@ sitepoints_from_any <- function(anything, lon_if_used, invalid_msg_table = FALSE
   # If user entered a table, path to a file (csv, xlsx), or whatever can be handled -- see latlon_from_anything() --
   # read it to get the lat lon values from there
   #  by using sitepoints <- latlon_from_anything() which also gets done by getblocksnearby()
-  
+
   # can add columns "valid" and "invalid_msg" 
-  sitepoints <- latlon_from_anything(anything, lon_if_used, invalid_msg_table = invalid_msg_table, set_invalid_to_na = set_invalid_to_na)
+  sitepoints <- latlon_from_anything(anything, lon_if_used, invalid_msg_table = invalid_msg_table, set_invalid_to_na = set_invalid_to_na, interactiveprompt = interactiveprompt)
+
   stopifnot(
     is.data.frame(sitepoints), 
     "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), 
@@ -74,6 +77,6 @@ sitepoints_from_any <- function(anything, lon_if_used, invalid_msg_table = FALSE
 
 #' @export
 #' @inherit sitepoints_from_any
-sitepoints_from_anything <- function(anything, lon_if_used, invalid_msg_table = FALSE, set_invalid_to_na = TRUE) {
-  sitepoints_from_any(anything, lon_if_used, invalid_msg_table = invalid_msg_table, set_invalid_to_na = set_invalid_to_na)
+sitepoints_from_anything <- function(anything, lon_if_used, invalid_msg_table = FALSE, set_invalid_to_na = TRUE, interactiveprompt = TRUE) {
+  sitepoints_from_any(anything, lon_if_used, invalid_msg_table = invalid_msg_table, set_invalid_to_na = set_invalid_to_na,  interactiveprompt = interactiveprompt)
 }

@@ -65,6 +65,9 @@ run_renaming_tests = function(tlist, oldnames, testname="test", fun2test = fixco
   ###################################### # 
   ## THIS TEST IS ONLY RIGHT FOR when you want to pick the best 1 match instead of renaming all
   if (identical(fixcolnames_infer,  fun2test)  | identical(fun2test , EJAM:::latlon_infer))  {
+    if (identical(fun2test , EJAM:::latlon_infer)) {
+      cat("installed version of latlon_infer() being used, which may differ from latest source version!\n")
+    }
     testthat::test_that(paste(testname, "-among synonyms of 1 terms, renames 1 and only 1"), {
       best1 = names(tlist)[[1]]
       synonyms_of_1 = as.vector(unlist(tlist[[1]]))
@@ -127,10 +130,11 @@ mylist = eval(formals(fixmapheadernamescolname)$alias_list)
   # names(eval(formals(fixmapheadernamescolname)$alias_list))
   # as.vector(unlist(eval(formals(fixmapheadernamescolname)$alias_list)))
 
+# cat("installed version of latlon_infer() being used, which may differ from latest source version!\n")
 run_renaming_tests(tlist = mylist, 
                    oldnames = as.vector(unlist(mylist)), 
                    testname = "latlon_infer", 
-                   fun2test = EJAM:::latlon_infer
+                   fun2test = EJAM:::latlon_infer    ####### # 
 )
 ######################################################## # 
 
