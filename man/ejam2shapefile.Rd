@@ -6,25 +6,31 @@
 \usage{
 ejam2shapefile(
   ejamitout,
-  fname = "bysite.shp",
+  fname = "EJAM_results_bysite_date_time.shp",
   folder = ".",
   crs = 4269,
   shortcolnames = TRUE,
-  save = TRUE
+  save = TRUE,
+  varnames = "basic250"
 )
 }
 \arguments{
 \item{ejamitout}{output of EJAM such as from \code{\link[=ejamit]{ejamit()}}}
 
-\item{fname}{a filename no path and must be .shp extension}
+\item{fname}{optional filename with no path and must be .shp extension}
 
-\item{folder}{optional folder (directory), path to where it should be saved}
+\item{folder}{optional - If omitted (and not running in shiny and if interactive() mode),
+this function prompts you to specify the folder, path to where the .zip should be saved.}
 
 \item{crs}{optional coord ref system}
 
 \item{shortcolnames}{Whether to cut colnames to 10 characters for .shp format}
 
 \item{save}{whether to save file - if FALSE, it returns the object not the file path}
+
+\item{varnames}{optional vector of which colnames of ejamitout$results_bysite
+to include in shapefile. DJefault is all other than averages, ratios, and raw EJ scores.
+Can be "all" or NULL to include all columns.}
 }
 \value{
 path to saved .zip file
@@ -33,6 +39,8 @@ path to saved .zip file
 DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.
 }
 \details{
+FIELD NAMES (indicator names) CURRENTLY ARE TRUNCATED AND NUMBERED TO BE ONLY 10 CHARACTERS MAX.
+
 see
 \href{https://doc.arcgis.com/en/arcgis-online/reference/shapefiles.htm}{Shapefile format basics from arcgis.com}
 }

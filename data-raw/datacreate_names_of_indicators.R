@@ -116,6 +116,10 @@ datacreate_names_of_indicators <- function() {
   # assign all the lists of variable names to the global environment
   for (i in seq_along(vlists)) {
     vns <- varlist2names(vlists[i])
+    if (anyDuplicated(vns)) {
+      warning(paste0("check order of indicators in ", vlists[i], " because duplicates had to be removed from it." ))
+      vns = unique(vns)
+    }
     assign(vlists[i], vns)
   }
   # assign metadata to all those lists
@@ -275,26 +279,7 @@ datacreate_names_of_indicators <- function() {
     # map_headernames[map_headernames$varlist == 'names_e' | grepl("names_e_", map_headernames$varlist), c('varlist', 'rname', 'names_friendly')]
     # unique(map_headernames$varlist)
     
-    
-    # for example...
-    #
-    # cbind( xlsnames = map_headernames['names_ej' == map_headernames$varlist, c( 'names_friendly')],  names_ej_friendly )
-    # xlsnames                              names_ej_friendly     
-    # [1 ,] "EJ: PM2.5 (raw)"                     "EJ: PM2.5"           
-    # [2, ] "EJ: Ozone (raw)"                     "EJ: Ozone"           
-    # [3, ] "EJ: Cancer risk (raw)"               "EJ: Cancer risk"     
-    # [4, ] "EJ: Respiratory (raw)"               "EJ: Respiratory"     
-    # [5, ] "EJ: Diesel PM (raw)"                 "EJ: Diesel PM"       
-    # [6, ] "EJ: % built pre-1960 (raw)"          "EJ: % built pre-1960"
-    # [7, ] "EJ: Traffic (raw)"                   "EJ: Traffic"         
-    # [8, ] "EJ: NPL (raw)"                       "EJ: NPL"             
-    # [9, ] "EJ: RMP (raw)"                       "EJ: RMP"             
-    # [10,] "EJ: TSDF (raw)"                      "EJ: TSDF"            
-    # [11,] "EJ: NPDES (raw)"                     "EJ: NPDES"           
-    # [12,] "EJ: Underground storage tanks (raw)" "EJ: UST" 
-    #      RSEI  
-    
-    ############################################################################## #
+     ############################################################################## #
     
     # FOR NOW I AM putting these all in one list called namez, 
     #  and also lists in the varlist column of  map_headernames

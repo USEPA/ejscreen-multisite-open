@@ -4,17 +4,16 @@
 \alias{ejam2tableviewer}
 \title{See ejamit()$results_bysite in interactive table in RStudio viewer pane}
 \usage{
-ejam2tableviewer(
-  out,
-  fname = file.path(tempdir(), "ejamtable.html"),
-  maxrows = 1000
-)
+ejam2tableviewer(out, fname, maxrows = 1000, launch_browser = TRUE)
 }
 \arguments{
-\item{fname}{path and filename of the html file to save the table to,
-or it uses tempdir() if not specified. Set it to NULL to not save to file.}
+\item{fname}{optional. path and filename of the html file to save the table to,
+or it uses tempdir() if not specified. Set it to NULL to prevent saving a file.}
 
 \item{maxrows}{only load/ try to show this many rows max.}
+
+\item{launch_browser}{set TRUE to have it launch browser and show report.
+Ignored if not interactive() or if fname is set to NULL.}
 
 \item{x}{output of ejamit(), or one table like ejamit()$results_overall,
 or subset like ejamit()$results_bysite\link{7,}}

@@ -160,6 +160,35 @@ url_linkify <- function(url, text) {
 } 
 ################################################### #################################################### #
 
+# convert EJAM html versions of weblinks back to simple URLs
+# in the output tables from ejamit or doaggregate
+
+unlinkify = function(x) {
+  
+  unlinkify_column <- function(z) {gsub('.*https', 'https', gsub('=report.*', '=report', gsub('., target.*', '', as.vector(unlist(z))))) }
+  if (NCOL(x) > 1) {
+    fixed = lapply(x, unlinkify_column)
+  } else {
+    fixed = unlinkify_column(x)
+  }
+  if (is.data.table(x)) {return(as.data.table(fixed))}
+  if (is.data.frame(x)) {return(data.frame(fixed))}
+  return(fixed)
+}
+# test_vec = testoutput_ejamit_10pts_1miles$results_bysite$`EJScreen Report`
+# test_df1 = as.data.frame(testoutput_ejamit_10pts_1miles$results_bysite[ , 1])
+# test_df2 = as.data.frame(testoutput_ejamit_10pts_1miles$results_bysite[ , 1:2])
+# test_dt1 = testoutput_ejamit_10pts_1miles$results_bysite[ , 1]
+# test_dt2 = testoutput_ejamit_10pts_1miles$results_bysite[ , 1:2]
+# 
+# unlinkify(test_df1[1,1])
+# unlinkify(test_vec); class(unlinkify(test_vec))
+# unlinkify(test_df1); class(unlinkify(test_df1))
+# unlinkify(test_dt1); class(unlinkify(test_dt1))
+# unlinkify(test_df2); class(unlinkify(test_df2))
+# unlinkify(test_dt2); class(unlinkify(test_dt2))  
+################################################### #################################################### #
+
 
 #' Get URLs of EJScreen reports
 #' 

@@ -33,11 +33,15 @@
 ############################################# #
 
 #    SCRIPT  TO  REBUILD  vignettes  (articles) using pkgdown
-#
+
 # Probably does not require all these steps, though
 # setup ####
 require(devtools)
 require(pkgdown)
+
+#################### #
+#                          Preview your site locally before publishing
+pkgdown::build_site()
 
 #################### # 
 # README ####
@@ -55,26 +59,9 @@ system.time({
   
   ############################################# #
   # pins available? (to build vignettes) ####
-  dataload_pin_available <- function(boardfolder = "Mark",
-                                     auth = "auto",
-                                     server = "https://rstudio-connect.dmap-stage.aws.epa.gov", 
-                                     silent = FALSE) {
-    board <- tryCatch(pins::board_connect(server = server, auth = auth),
-                      error = function(e) e)
-    if (inherits(board, "error")) {
-      board_available <- FALSE
-      if (!silent) {cat("Failed trying to connect to pins board server.\n\n")}
-    } else {
-      board_available <- TRUE
-      if (!silent) {cat("Successfully connected to Posit Connect pins board.\n\n")}
-    }
-    return(board_available)
-  }
-  ############################################# #
+  if (!EJAM:::dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
   # dataload_from_pins("all") ####
-  # just in case 
-  if (!dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
-  EJAM::dataload_from_pins("all") #
+  EJAM::dataload_from_pins("all") #  # just in case 
   ############################################# #
   
   # RUN TESTS OR CHECK ?

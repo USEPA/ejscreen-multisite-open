@@ -66,11 +66,22 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
   
   # test cases:  see unit tests file
   
+  # if already a shapefile object, just return it as-is but use cleanit and crs (and layer??)
+  if ("sf" %in% class(path)) {
+    if (cleanit) {
+      path <- shapefile_clean(path, crs = crs)  # includes st_transform(path, crs)
+    } else {
+      path <- sf::st_transform(path, crs = crs)
+    }
+    return(path)
+  }
+  
+  # if path invalid/not provided, ask RStudio user to specify a file or folder
   if (any(is.null(path)) || any(is.na(path)) || any(length(path)) == 0 || any(!is.character(path)) || !is.atomic(path)) {
     if (interactive() && !shiny::isRunning()) {
       
       # This lets RStudio user point to file OR folder
-      path <- rstudioapi::selectFile(caption = "Select a file (zip, shp, dbf, etc.) [or Cancel to specify a whole folder]", path = getwd(), existing = TRUE)
+      path <- rstudioapi::selectFile(caption = "Select a file (zip, shp, dbf, json, etc.) [or Cancel to specify a whole folder]", path = getwd(), existing = TRUE)
       if (is.null(path)) {
         path <- rstudioapi::selectDirectory(caption = "Select Folder", path = getwd())
       }
@@ -689,8 +700,15 @@ shape_buffered_from_shapefile <- function(shapefile, radius.miles, crs = 4269, .
 #'
 shape_buffered_from_shapefile_points <- function(shapefile_points, radius.miles, crs = 4269, ...) {
   
-  # add error checking ***
-  
+  if (!("sf" %in% class(shapefile_points)) ) {
+    warning("input was not a simple feature object, but will convert to one")
+    shapefile_points <- try({
+      shapefile_from_sitepoints(shapefile_points, crs = crs)  
+    })
+    if (inherits(shapefile_points, "try-error")) {
+      stop("could not convert to simple feature object")
+    }
+  }
   return(sf::st_buffer(shapefile_points %>%  sf::st_transform(crs = crs), #
                        dist = units::set_units(radius.miles, "mi"), ...))
 }
