@@ -86,7 +86,7 @@ if (testing_ejscreenapi_module) {
   }
   ######################### #
 
-  shinyApp(ui = TEST_UI, server = TEST_SERVER) # Try module in mini/test app
+  shinyApp(ui = TEST_UI, server = TEST_SERVER) # This is how you can try the module as a mini/test app
 
 
   # note you cannot wrap ui and server code in a single function when using modules
@@ -101,11 +101,14 @@ if (testing_ejscreenapi_module) {
 ################################################ ################################################# #
 
 # NOTE  ####
-# If a module needs to use a reactive expression, the outer function should take the reactive expression as a parameter.
-# If a module wants to return reactive expressions to the calling app, then return a list of reactive expressions from the function.
-# If a module needs to access an input that isn’t part of the module, the
-#   containing app should pass the input value wrapped in a reactive expression (i.e. reactive(...)):
+# If a module needs to USE a reactive expression, the 
+#   outer function should take the reactive expression as a parameter. 
+#
+# If a module needs to access an input$ that isn’t part of the module, the
+#   containing app should pass the input$ value wrapped in a reactive expression (i.e. reactive(...)):
 #   myModule("myModule1", reactive(input$checkbox1))
+#
+# If a module wants to return reactive expressions to the calling app, then return a list of reactive expressions from the function.
 
 # ____________________________ ### #
 # ________________________________________________________ ####
@@ -415,7 +418,7 @@ mod_ejscreenapi_ui <- function(id,
 #' mod_ejscreenapi_server
 #'
 #' @noRd
-mod_ejscreenapi_server <- function(id,
+mod_ejscreenapi_server <- function(id, session,
                                    # default_radius_react,
                                    # default_points_react = NULL, # do we wrap NULL in reactive() in this case?
                                    default_points_shown_at_startup_react,
@@ -438,10 +441,25 @@ mod_ejscreenapi_server <- function(id,
   shiny::moduleServer( id, function(input, output, session) {
     ns <- session$ns
 
-
-    ## from here on it was initially based on code from ejscreenapi package app_server.R, starting from
-    ##   app_server <- function(input, output, session) {
-
+# Compare and consolidate/ merge these - unclear which is newer, and they may each have some updates others dont:
+    #  - mod_ejscreenapi_server()      in MODULE_ejscreenapi.R 
+    #  - app_server_EJAMejscreenapi()  in app_server_EJAMejscreenapi.R  - was deployable server code
+    #  - "standalone" branch of the old EJAMejscreenapi package/ repo, that was the deployed app.
+    #
+    ## Code in EJAM:::mod_ejscreenapi_server() was initially based on 
+    ##  EJAMejscreenapi:::app_server(), which was also the starting point for 
+    ##  EJAM:::app_server_EJAMejscreenapi()
+    ##
+    ##  So the code below was copied from the app server body, right after this line:
+    ##       app_server <- function(input, output, session) {
+     
+    ###       or....
+    ### To use that non-module server function here wrapped as a module, try this: 
+    #
+    # app_server_EJAMejscreenapi(input = input, output = output, session = session) 
+    # stop()
+    
+    
     output$testinfo_sessionuser <- renderPrint(session$user)
 
     asynchronous <- FALSE
@@ -902,7 +920,9 @@ mod_ejscreenapi_server <- function(id,
 
           ##  ratio to STATE avg --------------
 
-          st_ratios <- calc_ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
+          st_ratios <- calc_ratios_to_avg(table_as_displayed, zone.prefix = "state.", 
+                                          evarnames = names_e_FOR_RATIOS, 
+                                          dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
           eratios <- round(st_ratios$ratios_e, 4)
           dratios <- round(st_ratios$ratios_d, 4)    # lacks subgroups and supplementary ?
           names(eratios) <- map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
