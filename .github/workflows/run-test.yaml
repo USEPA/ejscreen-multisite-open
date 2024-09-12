@@ -46,6 +46,8 @@ jobs:
         run: sudo apt-get install gh
   
       - name: Download Arrow Files
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release download --repo USEPA/EJAM --pattern "EJAM_v2.32_arrow_datasets.zip"
   
