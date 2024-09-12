@@ -875,7 +875,7 @@ mod_ejscreenapi_server <- function(id,
 
         ############################################################# #
         # # ratios section is almost identical to code in ejscreenapi_plus()
-        #
+        stop("need to update module with newer code from ejscreenapi_plus() ")
         # ### Add Ratios to us or state averages ####
         #
         if (input$include_ratios ) {
@@ -900,15 +900,16 @@ mod_ejscreenapi_server <- function(id,
           names(dratios) <-   map_headernames$rname[ map_headernames$varlist == "names_d_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_d_FOR_RATIOS) # names_d_ratio_to_avg  # lacks state percentiles here ****
           table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
 
-          ##  ratio to STATE avg --------------
-
+           ##  ratio to STATE avg ------------- -
+          
           st_ratios <- calc_ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
-          eratios <- round(st_ratios$ratios_e, 4)
-          dratios <- round(st_ratios$ratios_d, 4)    # lacks subgroups and supplementary ?
-          names(eratios) <- map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
-          names(dratios) <- map_headernames$rname[ map_headernames$varlist == "names_d_ratio_to_state_avg"]
-          table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
-
+          st_eratios <- round(st_ratios$ratios_e, 4)
+          st_dratios <- round(st_ratios$ratios_d, 4)
+          
+          names(st_eratios) <- names_e_ratio_to_state_avg # but RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES as checked above
+          names(st_dratios) <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg)  
+          table_as_displayed <- cbind(table_as_displayed, dratios, eratios, st_dratios, st_eratios)
+          
         } # end of ratio calculations
 
 
