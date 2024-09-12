@@ -31,13 +31,16 @@ jobs:
         run: |
           sudo apt install libcurl4-openssl-dev
           
-      - name: Install Shinytest2 Dependencies
-        run: 
+      - name: Install Devtools
+        run: |
           Rscript -e 'install.packages("devtools")'
+         
+      - name: Install Shinytest2 Dependencies
+        run: |
           Rscript -e 'install.packages(c("curl", "chromote", "httr", "shinytest2"))'
           
       - name: Install App Dependencies
-        run: 
+        run: |
           Rscript -e 'devtools::install_deps(dependencies = TRUE)'
       
       # - name: Install EJAM
