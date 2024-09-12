@@ -322,10 +322,10 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   EJSCREEN_shown <- table_round(apisite)  # SLOW! ***
   EJAM_shown     <- table_round(ejamsite)  # SLOW! ***
   
-  apisite <- data.frame(sapply(apisite, as.numeric))
-  ejamsite <- data.frame(sapply(ejamsite, as.numeric))
-  EJSCREEN_shown <- data.frame(sapply(EJSCREEN_shown, as.character))
-  EJAM_shown <- data.frame(sapply(EJAM_shown, as.character))
+  apisite <- apply(apisite, MARGIN = 2, as.numeric)
+  ejamsite <- apply(ejamsite, MARGIN = 2, as.numeric)
+  EJSCREEN_shown <- apply(EJSCREEN_shown, MARGIN = 2, as.character)
+  EJAM_shown <- apply(EJAM_shown, MARGIN = 2, as.character)
   
   z <- list(
     EJSCREEN = apisite,
