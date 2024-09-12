@@ -1,4 +1,4 @@
-## unit tests for EJAM:::naics_webscrape
+## unit tests for EJAM unexported function naics_webscrape
 ## Author: Sara Sokolinski
 
 
