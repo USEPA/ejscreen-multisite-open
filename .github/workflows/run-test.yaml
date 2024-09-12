@@ -35,7 +35,7 @@ jobs:
          
       - name: Install Shinytest2 Dependencies
         run: |
-          Rscript -e 'install.packages(c("curl", "chromote", "httr", "shinytest2", "arrow"))'
+          Rscript -e 'install.packages(c("curl", "chromote", "httr", "shinytest2")'
           
       - name: Install App Dependencies
         run: |
@@ -47,7 +47,7 @@ jobs:
   
       - name: Download Arrow Files
         run: |
-          gh release download --repo USEPA/EJAM --latest --pattern "EJAM_v2.32_arrow_datasets.zip"
+          gh release download --repo USEPA/EJAM --latest "EJAM_v2.32_arrow_datasets.zip"
   
       - name: Unzip the file into data folder
         run: unzip -o EJAM_v2.32_arrow_datasets.zip -d ./data
