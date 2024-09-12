@@ -47,7 +47,7 @@ jobs:
   
       - name: Download Arrow Files
         run: |
-          gh release download --repo USEPA/EJAM --latest "EJAM_v2.32_arrow_datasets.zip"
+          gh release download --repo USEPA/EJAM --pattern "EJAM_v2.32_arrow_datasets.zip"
   
       - name: Unzip the file into data folder
         run: unzip -o EJAM_v2.32_arrow_datasets.zip -d ./data
