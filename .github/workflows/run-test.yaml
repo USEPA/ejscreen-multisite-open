@@ -42,10 +42,18 @@ jobs:
           Rscript -e 'install.packages("devtools")'
           Rscript -e 'devtools::install_deps(dependencies = TRUE)'
       
-      - name: Install EJAM Packages
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh
+  
+      - name: Download Arrow Files
         run: |
-          Rscript -e 'devtools::install_github("USEPA/EJAMejscreenapi")'
-          Rscript -e 'devtools::install_github("USEPA/EJAMbatch.summarizer")'
+          gh release download --repo USEPA/EJAM --latest --pattern "EJAM_v2.32_arrow_datasets.zip"
+  
+      - name: Unzip the file into data folder
+        run: unzip -o EJAM_v2.32_arrow_datasets.zip -d ./data
+      
+      - name: Install EJAM
+        run: |
           Rscript -e 'devtools::install_local(".", force=T)'
 
       - name: Run Shiny Tests
