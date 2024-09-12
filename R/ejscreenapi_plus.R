@@ -145,7 +145,7 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
   
   ############################################################# #
   
-  # ratios section is identical to (duplicating) code in app_server_EJAMejscreenapi ############################################################# #
+  # ratios section is identical to (duplicating) code in app_server_EJAMejscreenapi and MODULE ############################################################# #
   
   ### Add Ratios to us or state averages ####
   
