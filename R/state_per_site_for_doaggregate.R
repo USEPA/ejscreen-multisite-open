@@ -83,7 +83,7 @@ state_per_site_for_doaggregate <- function(s2b, s2st) {
   setkey(idst, ejam_uniq_id)
   id_gotten <- idst$ejam_uniq_id[!is.na(idst$ST)]
   
-  sites2states$ST[sites2states$ejam_uniq_id %in% id_gotten] <- idst[ejam_uniq_id %in% id_gotten, ST] 
+  sites2states$ST[sites2states$ejam_uniq_id %in% id_gotten] <- idst[ejam_uniq_id %in% id_gotten, ST]  # to be safer, should use a join on id?
   sites2states[idst, in_how_many_states := in_how_many_states, on = "ejam_uniq_id"]
   
   if (!all(idst$ejam_uniq_id %in% id_gotten)) {
@@ -99,7 +99,7 @@ state_per_site_for_doaggregate <- function(s2b, s2st) {
       id_gotten <- idst$ejam_uniq_id[!is.na(idst$ST)] # ids just added, not ever added
       
       # setDF(sites2states)
-      sites2states$ST[sites2states$ejam_uniq_id %in% id_gotten] <- idst[ejam_uniq_id %in% id_gotten, ST] 
+      sites2states$ST[sites2states$ejam_uniq_id %in% id_gotten] <- idst[ejam_uniq_id %in% id_gotten, ST]  # to be safer, should use a join on id?
     })
     })
   }

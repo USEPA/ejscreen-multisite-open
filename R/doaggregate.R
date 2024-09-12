@@ -1062,11 +1062,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # *** popwtd avg of sites state pctiles (not raw scores) will be used as the overall state pctiles.
   #  (Because each site has a different site, you cannot just convert overall raw scores to state pctiles).
   
+
   #  ##################################################### #
   
   if (missing( sites2states_or_latlon)) {
     
-    # This case never arises if using shiny app or ejamit() !! 
+    # This case never arises if using shiny app  or ejamit( at least for latlon, not fips or shp cases ) !! 
     
     # This is only an edge case where RStudio user had run getblocksnearby() and has sites2blocks but 
     # then tried to run doaggregate() without providing the original points (or fips or shp) that had been used to create sites2blocks.
@@ -1076,18 +1077,32 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     #       - first get the latlon values of the nearby blocks
     #       - use the block latlon values and distances from site to estimate where the site latlon must have been.
     
-    cat('TEMPORARILY ASSUMING A PLACEHOLDER  ! work in progress on state identification if not in shiny app and not using ejamit(), if sites2states_or_latlon is not provided to doaggregate() \n')
-    # placeholder until done
+    ## But For now, Approximate for multistate sites by using the nearest block's state:  
+    # use nearest 1 block's state, which is often but not always right if near state line,
+    # but in shapefiles case of a polygon covering 2 states has no distance so just whatever happens to be 1st block in list there.
+    # and never arises for FIPS case (fips is always just a single state).
+    cat(' *** For now, if sites2states_or_latlon is not provided to doaggregate(),
+        for circles covering 2 states, it will use state of nearest block,
+        and for Shapefiles spanning 2 States, will just use 1 of the States -
+        not selected by area or population, but just whatever happens to be first in the table.
+        This should only arise if not in shiny app and not using ejamit() and 
+        sites2states_or_latlon was not provided to doaggregate() \n')
+    # single-state case
     sites2states <- state_from_s2b_bysite(sites2blocks) # works for single-state sites only, NA otherwise
     setDT(sites2states)
     
-    ## and could approximate for multistate sites by using the nearest block's state:  
-    # multistate_ids = sites2states$ejam_uniq_id[is.na(sites2states$ST)]
-    # others <- state_from_nearest_block_bysite(sites2blocks[ejam_uniq_id %in% multistate_ids, ])
-    ## join those but should replace only one with multistate_ids 
-    ##  NOT RIGHT: 
-    # sites2states$ST[is.na(sites2states$ST)] <- others$ST[match(sites2states$ejam_uniq_id[is.na(sites2states$ST)], others$ejam_uniq_id)]
+    # if ("confirmed this works" == "done?") {
+      # multistate case
+      multistate_ids <- sites2states$ejam_uniq_id[is.na(sites2states$ST)]
+      others <- state_from_nearest_block_bysite(sites2blocks[ejam_uniq_id %in% multistate_ids, ])
+      # returns data.table with cols ejam_uniq_id,ST and one row per unique id
+      ## join those but should replace only one with multistate_ids 
+      ##  ???  xxx
+      sites2states$ST[is.na(sites2states$ST)] <- others$ST[match(sites2states$ejam_uniq_id[is.na(sites2states$ST)], others$ejam_uniq_id)]
+    # }
+    
   }
+
   
   if (!missing( sites2states_or_latlon)) {
     sites2states <- state_per_site_for_doaggregate(s2b = sites2blocks, s2st = sites2states_or_latlon)
@@ -1095,17 +1110,22 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #  ##################################################### #
   
   results_bysite[sites2states, ST := ST, on = "ejam_uniq_id"] # check this, including when ST is NA ***
-  results_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  #  results_bysite[, statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  # results_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  
+  results_bysite[ , statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  results_bysite[ , REGION := fips_st2eparegion(fips_state_from_state_abbrev(ST))]
   results_bysite[sites2states, in_how_many_states := in_how_many_states, on = "ejam_uniq_id"]
   
   results_overall$ST <- NA
   results_overall$statename <- NA
+  results_overall$REGION <- NA
   results_overall$ejam_uniq_id <- NA  ## adds blank ejam_uniq_id column to results_overall (no longer tied to include_ejindexes)
   results_overall$in_how_many_states <- length(unique(na.omit(results_bysite$ST)))
   
   # results_bybg_people$ST is created from sites2bgs_plusblockgroupdata_bysite$ST and ST is already in that table 
   # since ST was joined from blockgroupstats around line 569, for each bg, but that is not always 1 state for a given site.
-  sites2bgs_plusblockgroupdata_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  # same as the very slightly slower... fips2statename(fips_state_from_state_abbrev(ST))
+  # sites2bgs_plusblockgroupdata_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  # same as the very slightly slower... fips2statename(fips_state_from_state_abbrev(ST))
+  sites2bgs_plusblockgroupdata_bysite[, statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  sites2bgs_plusblockgroupdata_bysite[, REGION := fips_st2eparegion(fips_state_from_state_abbrev(ST))]
   sites2bgs_plusblockgroupdata_bysite$in_how_many_states <- 1 # since a single blockgroup can only be in one state
   #  ##################################################### #  ##################################################### #
   
@@ -1471,7 +1491,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       'pop',           # '[or names_wts]',
       'sitename',
       'lon', 'lat', # do we want to make consistently lat,lon not lon,lat ??? ***
-      'ST', 'statename', 'REGION',
+      'ST', 'statename', 'in_how_many_states', 'REGION',
       
       
       ## RATIOS to AVG (DEMOG and ENVT) ----------------------------------------\
@@ -1524,17 +1544,22 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       ### D US PCTILE ###
       names_d_pctile,
       names_d_subgroups_nh_pctile,       names_d_subgroups_alone_pctile,
+      names_health_pctile, 
+      
       ### D US AVERAGES ###
       names_d_avg,
       names_d_subgroups_nh_avg,          names_d_subgroups_alone_avg,
+      names_health_avg,
       
       ### D STATE PCTILE ##
       names_d_state_pctile,
       names_d_subgroups_nh_state_pctile, names_d_subgroups_alone_state_pctile,
+      names_health_state_pctile,
+      
       ### D STATE AVERAGES ###
       names_d_state_avg,
       names_d_subgroups_nh_state_avg ,   names_d_subgroups_alone_state_avg,
-      
+      names_health_state_avg,
       
       ## ENVIRONMENTAL ----------------------------------------\
       
@@ -1667,7 +1692,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       print(x) # print to console, 125 rows
       
       ## datatable by site in RStudio viewer pane
-      print(structure.of.output.list(x))
+      print(structure.of.output.list(x, objectname = "Output of doaggregate()"))
     }
   }
   invisible(results)
