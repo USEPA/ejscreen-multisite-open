@@ -2,6 +2,8 @@
 # system libraries:
 #   libcurl -- needed to complete setup-renv
 #   libharfbuzz-dev libfribidi-dev -- needed for the textshaping package
+#   libudunits2-dev -- needed for package "units"
+#   libgdal-dev -- needed for gdal config to configure package terra
 #   Also using shinytest2 action to try running test -
 # https://cran.r-project.org/web/packages/shinytest2/vignettes/use-ci.html
 on:
@@ -29,7 +31,7 @@ jobs:
       - name: install needed system libs
         shell: bash
         run: |
-          sudo apt install libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev
+          sudo apt install libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev libudunits2-dev libgdal-dev
          
       - name: Install Shinytest2 Dependencies
         run: |
