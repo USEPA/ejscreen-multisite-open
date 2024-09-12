@@ -40,11 +40,10 @@ jobs:
           Rscript -e 'install.packages("devtools")'
           Rscript -e 'devtools::install_deps(dependencies = TRUE)'
       
-      # - name: Install EJAM
-      #   run: 
-      #     Rscript -e 'devtools::install_local('.', force=T)'
-      #     
-      #      
+      - name: Install EJAM
+        run:
+          Rscript -e 'devtools::install_local('.', force=T)'
+
       # - name: Run Shiny Tests
       #   run: Rscript -e 'shinytest2::test_app(".", filter="app-functionality")'
       # 
