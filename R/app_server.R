@@ -1900,7 +1900,7 @@ app_server <- function(input, output, session) {
         ## note which places dropped by doaggregate() as invalid
         dup <- data_uploaded() # includes invalid ones too
         dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
-        dup$invalid_msg[!(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'dropped from doaggregate'
+        dup$invalid_msg[!(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
         data_uploaded <- dup
         
         # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
@@ -1915,12 +1915,12 @@ app_server <- function(input, output, session) {
         ################################################################ #
         
         ## Handle sites dropped during getblocksnearby or doaggregate steps
-        dup <- data_uploaded()
-        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
-        dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
-        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
-        dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
-        
+        # dup <- data_uploaded()
+        # dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
+        # dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
+        # dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
+        # dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
+        # dup$invalid_msg[dup$valid & is.na(dup$ST)] <- 'Invalid State - no state %iles'
         if (submitted_upload_method() %in% c('MACT','FRS','latlon','EPA_PROGRAM_up',
                                              'EPA_PROGRAM_sel','NAICS','SIC')) {
           
