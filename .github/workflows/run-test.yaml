@@ -37,6 +37,11 @@ jobs:
         run: |
           Rscript -e 'install.packages(c("curl", "chromote", "httr", "shinytest2"))'
           
+      - name: Set up Pandoc (for Rmarkdown downloads)
+        uses: r-lib/actions/setup-pandoc@v2
+        with:
+          pandoc-version: '3.1.11'
+    
       - name: Install App Dependencies
         run: |
           Rscript -e 'install.packages("devtools")'
