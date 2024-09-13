@@ -66,6 +66,7 @@ Suggests:
     jsonlite,
     leaflet.extras,
     leaflet.extras2,
+    mapview,
     rnaturalearth,
     rvest,
     terra,
