@@ -356,10 +356,8 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
     #
     # NOTE THAT these ratios are already available as columns in the out table, now, via updated ejscreenapi_plus()  :
     
-    
-    
-    names_e_FOR_RATIOS <-  map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e"]
-    names_d_FOR_RATIOS <-  map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d"] # c(names_d, names_d_subgroups) # map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d"]
+    names_e_FOR_RATIOS <- names_e
+    names_d_FOR_RATIOS <- c(names_d, names_d_subgroups) # c(names_d, names_d_subgroups) # map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d"]
     names_d_FOR_RATIOS <- intersect(names_d_FOR_RATIOS, names(out)) # in case subgroups missing for ratios since average was needed to calculate that
     
     us.ratios <- list(
@@ -390,24 +388,13 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
         dev.off()
       }
     }
-    # us.ratios <- us.ratios
-    # boxplots_ratios(state.ratios$ratios_d[ , 'pctlowinc', drop=FALSE], 'pctlowinc', '% low income', towhat_nicename="State averages")
-    # stop('pause here in script')
-    # png(filename = file.path(folder, 'sample_boxplot.png')) # to save graphic as file
-    # boxplots_ratios(state.ratios$ratios_d, 'pctlowinc', '% low income', towhat_nicename="State averages")
-    # dev.off()
   }
-  
   
   names(out) <- fixcolnames(names(out), 'r', usewhichnames)
   
   ################################################### #
   # SAVE as csv OR EXCEL SPREADSHEET ####
   if (save_table) {
-    # write.csv(out, row.names = FALSE, file = file.path(folder, 'testoutput1.csv'))
-    # excelhyperlinks <- paste0('=HYPERLINK("',URLencode(out$pdfurl) ,'","View Report")') # unclear how to force them to evaluate to show as links - can just hit F2 Enter in each Excel cell in that column to fix it, e.g.
-    # Replace that with working code from server.R which prepares excel table correctly ***
-    # openxlsx::write.xlsx(cbind(link=excelhyperlinks, out), file = file.path(folder, 'testout.xlsx'))
     if (interactive()) {
       openxlsx::write.xlsx(out, file = rstudioapi::selectFile(caption = "Save Spreadsheet", path = folder, filter = "*.xlsx", existing = FALSE)) # file.choose())  
     } else {
@@ -431,4 +418,3 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
   if (!exists("outplot")) {outplot <- NULL} # if calculate_ratios = FALSE then plot not created
   return(list(table = out, map = outmap, plot = outplot))
 }
-

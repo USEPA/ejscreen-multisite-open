@@ -1,72 +1,88 @@
 
+
+cat("\n NEED MORE UNIT TESTS OF SHINY APP IN test-ui_and_server.R \n\n")
+
+
 # Configure   to fit your need.
 # testServer() function makes it possible to test code in server functions and modules, without needing to run the full Shiny application
 
 
-# # attempting to be able to test a module... not working?
-#
-# mypackage_server <- EJAM:::mod_ejscreenapi_server
-# server <- function(id) {
-#   moduleServer(id, mypackage_server)
-# }
-# test_that("The module receives its input", {
-#   shiny::testServer(server, {
-#     session$setInputs(some_input = 100)
-#     expect_equal(output$some_output, 50)
-#   })
-# })
-
-
 # NOTE THIS WOULD READ THE INSTALLED NOT SOURCE PACKAGE VERSION WHICH MAY DIFFER
+cat("NOTE: global.R is required, and installed version will be used by tests in test-ui_and_server.R but if it differs from local source version 
+    test results will not reflect those changes\n")
 source(system.file("global.R", package = "EJAM"))
 ## not sure if we want to / can read this due to conflicts:
 # source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))
 
 
+if (!exists("app_ui")) {
+  cat("app_ui() is an unexported function -- cannot be tested without devtools::load_all() to test the local source version,
+      or using ::: to test the installed version")
+}
 test_that("app ui", {
-  ui <- EJAM:::app_ui()
+  skip_if_not(exists("app_ui"))
+  ui <- app_ui() # unexported function, so would require using ::: or devtools::load_all()
   golem::expect_shinytaglist(ui)
   # Check that formals have not been removed
-  fmls <- formals(EJAM:::app_ui)
+  fmls <- formals(app_ui)
   for (i in c("request")) {
     expect_true(i %in% names(fmls))
   }
 })
 
-test_that("app server", {
-  server <- EJAM:::app_server
+
+if (!exists("app_server")) {
+  cat("app_server() is an unexported function -- cannot be tested without devtools::load_all() to test the local source version,
+      or using ::: to test the installed version")
+}
+test_that("app server is a function", {
+  skip_if_not(exists("app_server"))
+  server <- app_server # unexported function, so would require using ::: or devtools::load_all()
   expect_type(server, "closure")
   # Check that formals have not been removed
-  fmls <- formals(EJAM:::app_server)
+  fmls <- formals( app_server) # unexported function, so would require using ::: or devtools::load_all()
   for (i in c("input", "output", "session")) {
     expect_true(i %in% names(fmls))
   }
 })
 
+if (!exists("app_sys")) {
+  cat("app_sys() is an unexported function -- cannot be tested without devtools::load_all() to test the local source version,
+      or using ::: to test the installed version")
+}
 test_that(
-  "EJAM:::app_sys works",
-  {
+  "app_sys works and finds golem-config.yml", {
+    skip_if_not(exists("app_sys"))
     expect_true(
-      EJAM:::app_sys("golem-config.yml") != ""   #  source/EJAM/inst/golem-config.yml = installed/EJAM/golem-config.yml
+      file.exists(
+      app_sys("golem-config.yml") # this gets path to source version of .yml ## unexported function, so would require using ::: or devtools::load_all() 
+      )
+      # != ""   #  source/EJAM/inst/golem-config.yml = installed/EJAM/golem-config.yml
     )
   }
 )
 
+if (!exists("get_golem_config")) {
+  cat("get_golem_config() is an unexported function -- cannot be tested without devtools::load_all() to test the local source version,
+      or using ::: to test the installed version")
+}
 test_that(
-  "golem-config works",
-  {
-    config_file <- EJAM:::app_sys("golem-config.yml") #  source/EJAM/inst/golem-config.yml = installed/EJAM/golem-config.yml
+  "golem-config works and app is set as 'production' not  'dev' ", {
+    skip_if_not(exists("app_sys"))
+    config_file <- app_sys("golem-config.yml") # this gets path to source version of .yml # unexported function, so would require using ::: or devtools::load_all()
+    #  source/EJAM/inst/golem-config.yml = installed/EJAM/golem-config.yml
     skip_if(config_file == "")
 
+    skip_if_not(exists("get_golem_config"))
     expect_true(
-      EJAM:::get_golem_config(
+     get_golem_config( # unexported function, so would require using ::: or devtools::load_all()
         "app_prod",
         config = "production",
         file = config_file
       )
     )
     expect_false(
-      EJAM:::get_golem_config(
+     get_golem_config( # unexported function, so would require using ::: or devtools::load_all()
         "app_prod",
         config = "dev",
         file = config_file
@@ -76,39 +92,75 @@ test_that(
 )
 
 ################################################# # 
-# Configure this test to fit your need.
-# testServer() function makes it possible to test code in server functions and modules, without needing to run the full Shiny application
-# but seems to throw an error when running this test file via  test_file("./tests/testthat/test-ui_and_server.R")
-#   app_server() is not exported 
-#  #  cannot get this testServer to work without an error when running the test in console interactively
+### Configure this test to fit your need.
+### testServer() function makes it possible to test code in server functions and modules, without needing to run the full Shiny application
+### but seems to throw an error when running this test file via  test_file("./tests/testthat/test-ui_and_server.R")
+###  cannot get this testServer to work without an error when running the test in console interactively
 # 
-# testServer(app = EJAM:::app_server, expr = {
+# testServer(app = app_server, expr = {  # unexported function, so would require using ::: or devtools::load_all()
 #   
-# # suppressWarnings({
-#   # Set and test an input
-#    session$setInputs(bt_rad_buff = 1, max_miles = 10, default_miles = 3.14, ss_choose_method = "upload", ss_choose_method_upload = "latlon")
-#   # stopifnot(input$bt_rad_buff == 1)
-#   # expect_equal(input$bt_rad_buff, 1)
-# # })
+#   suppressWarnings({
+#   ## Set and test an input
+#    session$setInputs(bt_rad_buff = 1, max_miles = 10, default_miles = 3.14,
+#        ss_choose_method = "upload", ss_choose_method_upload = "latlon")
+#   ### stopifnot(input$bt_rad_buff == 1)
+#     expect_equal(input$bt_rad_buff, 1)
+#   })
 #   
-#   # cat("\n NEED MORE UNIT TESTS OF SHINY APP IN test-ui_and_server.R \n\n")
+#   ### Example of tests you can do on the server:
+#   ### - Checking reactiveValues
 #   
-#   # Example of tests you can do on the server:
-#   # - Checking reactiveValues
-#   # expect_equal(r$lg, 'EN')
-#   # - Checking output
-#   # expect_equal(output$txt, "Text")
+ #   expect_equal(r$lg, 'EN')
+#   
+  ### - Checking output
+  # 
+#   expect_equal(output$txt, "Text")
 # 
-#   
 #   
 # })
 ################################################# # 
+# 
+# ## this is not finished yet
+# # https://shiny.posit.co/r/reference/shiny/1.7.2/testserver
+# # Configure this test to fit your need
+# test_that(
+#   "app can start and inputs can be set",
+#   {
+#     testServer(app = app_server, expr = {
+#       
+#       golem::expect_running(sleep = 5)
+#       print(current_upload_method())
+#       
+#         suppressWarnings({
+#         ## Set and test an input
+#          session$setInputs(bt_rad_buff = 3.14, max_miles = 10, default_miles = 3.14,
+#              ss_choose_method = "upload", ss_choose_method_upload = "latlon")
+#         ### stopifnot(input$bt_rad_buff == 1)
+#           # expect_equal(input$bt_rad_buff, 1)
+#           # expect_equal(input$max_miles, 10)
+#         })
+#       
+#     })
+#    
+#   }
+# )
+################################################# # 
 
-# Configure this test to fit your need
-test_that(
-  "app launches",
-  {
+# # TESTING A MODULE ####
+# 
+# if (!exists("mod_ejscreenapi_server")) {
+#   cat("mod_ejscreenapi_server() is an unexported function -- cannot be tested without devtools::load_all() to test the local source version,
+#       or using ::: to test the installed version")
+# }
+# # # attempting to be able to test a module... not working yet... need session, etc.
+# 
+# test_that("mod_ejscreenapi_server  receives its input", {
+#   skip_if_not(exists("mod_ejscreenapi_server"))
+#    # unexported function, so would require using ::: or devtools::load_all()
+#  
+#   shiny::testServer(mod_ejscreenapi_server, {
+#     session$setInputs(pointsfile = list(datapath= system.file("testdata/latlon/"testpoints_5.xlsx")     )
+#     expect_equal( output$count, 3)
+#   })
+# })
 
-    golem::expect_running(sleep = 5)
-  }
-)

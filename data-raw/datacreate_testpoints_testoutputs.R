@@ -21,6 +21,7 @@ nvalues <-   c(10, 100, 1000, 10000) # numbers of point locations, picked from F
 
 myrad <- 1 # radius in miles. Larger would create MUCH larger versions of sites2blocks example objects
 
+resaving_testpoints_overlap3 <- FALSE # DONE
 creatingnew_testpoints_data   <- FALSE  #done. TO REPLACE THE ACTUAL TEST POINTS (can be false and still do other steps below)
 resaving_testpoints_rda       <- FALSE
 resaving_testpoints_excel     <- FALSE
@@ -48,9 +49,51 @@ redoing_ejscreenit_10_for_ejam_to_have  <- FALSE
 if (basename(getwd()) != "EJAM") {stop('do this from EJAM source package folder')}
 # library(EJAM) # does this need to be here? will it possibly be a problem in some situation like before the package is installed but source can be loaded, or while changes are being made and not yet reinstalled with updates, etc.?
 #  EJAM package must be loaded or at least the functions available
+###################################################### #
 
 # Create and save datasets  ####
 # _ ####
+###################################################### #
+if (resaving_testpoints_overlap3) {
+  
+testpoints_overlap3 = structure(list(
+  lat = c(41.765963, 41.750688, 41.7507), 
+  lon = c(-87.663831, -87.682865, -87.67), 
+  sitenumber = c(1, 2, 3), 
+  sitename = c("was Example Site 21",   "was Example Site 48", "a third nearby")), 
+  row.names = c(1L, 2L, 3L), 
+  class = "data.frame")
+# mapfast(pts,radius = 1)
+# plotblocksnearby(pts,radius = 1)
+
+text_to_do <- paste0(
+  "", "testpoints_overlap3", " = metadata_add(", "testpoints_overlap3", ")"
+)
+eval(parse(text = text_to_do))
+usethis::use_data(testpoints_overlap3, overwrite = TRUE)     ############# #
+## save as DOCUMENTATION 
+filecontents <- "
+#' @name testpoints_overlap3
+#' @docType data
+#' @title test points data.frame with columns note, lat, lon
+#' @details examples of test points for testing functions that need lat lon,
+#'   with 3 overlapping 1-mile radius circles. To view these points:
+#'
+#'   pts <- testpoints_overlap3
+#'
+#'   mapfast(pts, radius = 1)  
+#'     
+#'   plotblocksnearby(pts, radius = 1)
+#'
+NULL"
+# prefix documentation file names with "data_"
+writeChar(filecontents, con = paste0("./R/data_", "testpoints_overlap3", ".R"))       ############# #
+## save as  EXCEL   ###   #
+writexl::write_xlsx(list(testpoints = testpoints_overlap3),
+                    path = paste0("./inst/testdata/latlon/", "testpoints_overlap3", ".xlsx"))    ############# #
+
+}
+###################################################### #
 if (resaving_testpoints_bad) {
   
   testpoints_bad <- data.frame(

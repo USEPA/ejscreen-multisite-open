@@ -489,26 +489,6 @@ nacounts(blockgroupstats_new)
 
 # dataload_from_pins("bgej")
 # > names( bgej) 
-# [1] "OBJECTID"                                "bgfips"                                  "bgid"
-# [4] "ST"                                      "pop"                                     
-#      "EJ.DISPARITY.pm.eo"                     
-# [7] "EJ.DISPARITY.pm.supp"                    "EJ.DISPARITY.o3.eo"                      "EJ.DISPARITY.o3.supp"
-# [10] "EJ.DISPARITY.dpm.eo"                     "EJ.DISPARITY.dpm.supp"                   "EJ.DISPARITY.cancer.eo"
-# [13] "EJ.DISPARITY.cancer.supp"                "EJ.DISPARITY.resp.eo"                    "EJ.DISPARITY.resp.supp"
-# [16] "EJ.DISPARITY.rsei.eo"                    "EJ.DISPARITY.rsei.supp"                  "EJ.DISPARITY.traffic.score.eo"
-# [19] "EJ.DISPARITY.traffic.score.supp"         "EJ.DISPARITY.pctpre1960.eo"              "EJ.DISPARITY.pctpre1960.supp"
-# [22] "EJ.DISPARITY.proximity.npl.eo"           "EJ.DISPARITY.proximity.npl.supp"         "EJ.DISPARITY.proximity.rmp.eo"
-# [25] "EJ.DISPARITY.proximity.rmp.supp"         "EJ.DISPARITY.proximity.tsdf.eo" "EJ.DISPARITY.proximity.tsdf.supp"     
-# [28] "EJ.DISPARITY.ust.eo"                     "EJ.DISPARITY.ust.supp"                   "EJ.DISPARITY.proximity.npdes.eo"
-# [31] "EJ.DISPARITY.proximity.npdes.supp"       "state.EJ.DISPARITY.pm.eo"                "state.EJ.DISPARITY.pm.supp"
-# [34] "state.EJ.DISPARITY.o3.eo"                "state.EJ.DISPARITY.o3.supp"              "state.EJ.DISPARITY.dpm.eo"
-# [37] "state.EJ.DISPARITY.dpm.supp"             "state.EJ.DISPARITY.cancer.eo"            "state.EJ.DISPARITY.cancer.supp"
-# [40] "state.EJ.DISPARITY.resp.eo"              "state.EJ.DISPARITY.resp.supp"            "state.EJ.DISPARITY.rsei.eo"
-# [43] "state.EJ.DISPARITY.rsei.supp"       "state.EJ.DISPARITY.traffic.score.eo"  "state.EJ.DISPARITY.traffic.score.supp"  
-# [46] "state.EJ.DISPARITY.pctpre1960.eo"    "state.EJ.DISPARITY.pctpre1960.supp"  "state.EJ.DISPARITY.proximity.npl.eo"    
-# [49] "state.EJ.DISPARITY.proximity.npl.supp" "state.EJ.DISPARITY.proximity.rmp.eo" "state.EJ.DISPARITY.proximity.rmp.supp"
-# [52] "state.EJ.DISPARITY.proximity.tsdf.eo"    "state.EJ.DISPARITY.proximity.tsdf.supp"  "state.EJ.DISPARITY.ust.eo"
-# [55] "state.EJ.DISPARITY.ust.supp"  "state.EJ.DISPARITY.proximity.npdes.eo" "state.EJ.DISPARITY.proximity.npdes.supp"
 
 blockgroupstats_new_state <- blockgroupstats_new_state[, c("bgid", "bgfips", names_ej, names_ej_supp)]
 data.table::setDT(blockgroupstats_new_state)

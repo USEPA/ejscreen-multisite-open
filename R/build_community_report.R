@@ -38,9 +38,9 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
   #r100x <- colnames(output_df_rounded) %in% setdiff(c(names_d, names_d_avg, names_d_state_avg), names_demog_index) # units were 0-1 not 0-100
   #r100x <- setdiff(r100x, names_demog_index)
   #output_df_rounded[, r100x] <- 100 * (output_df_rounded[, r100x])
-  
-  
+
   #output_df_rounded <- fix_pctcols_x100(output_df_rounded, cnames = names_pct_as_fraction_ejamit) #No need for this iwth format_ejamit_col
+
   expandedVarlist <- c()
 
   for (var in varlist){

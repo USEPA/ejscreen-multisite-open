@@ -106,7 +106,7 @@ fixnames_aliases <- function(x, na_if_no_match = FALSE, alias_list = NULL, ignor
          ),
       
       # had been used in fixcolnames("pctlowinc", "rname", "long") etc. but "friendly" is ambiguous and should be phased out
-      rname = c("r", "friendly", "newnames_ejscreenapi"),
+      rname = c("r", "friendly"),
       
       longname = c(
         # "long",  # *** problem! we already interpret "long" as "lon" (longitude)
