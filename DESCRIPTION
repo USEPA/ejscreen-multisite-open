@@ -65,6 +65,7 @@ Suggests:
     htmlwidgets, 
     jsonlite,
     leaflet.extras,
+    leaflet.extras2,
     rnaturalearth,
     rvest,
     terra,
