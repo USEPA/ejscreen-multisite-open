@@ -1903,6 +1903,16 @@ app_server <- function(input, output, session) {
         dup$invalid_msg[!(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
         data_uploaded <- dup
         
+        ## stop and return NULL if no valid sites left after doaggregate
+        if(all(dup$valid == FALSE)){
+         message('No valid sites remaining. Quitting analysis')
+          data_processed(NULL)
+          
+          progress_doagg$close()
+          progress_all$close()
+          shiny::showNotification('No valid site remaining, so the analysis was stopped. Please try a larger buffer radius or different dataset.',type = 'error',duration=5)
+          validate('No valid sites remaining - analysis stopped')
+        }
         # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
         # and doaggregate() decides where to pull ST info from -
         # ideally from ST column,
