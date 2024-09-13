@@ -56,7 +56,7 @@ table_tall_from_overall <- function(results_overall, longnames = NULL) {
   }
   
   x <- copy(results_overall)
-  x <- fix_pctcols_x100(x)
+  x <- fix_pctcols_x100(x, cnames = names_pct_as_fraction_ejamit)
   x <- table_round(x)
   
   x <- as.vector(unlist(x))

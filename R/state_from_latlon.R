@@ -34,7 +34,12 @@ state_from_nearest_block_bysite <- function(s2b) {
   if (sitetype == "latlon") {
     s2b[, .(ST = state_from_blockid(blockid[which.min(distance)])), keyby = ejam_uniq_id]
   } else {
-    s2b[, .(ST = state_from_blockid(blockid[1])), keyby = ejam_uniq_id]    
+    if ("ST" %in% names(s2b)) {
+     # already there sometimes? 
+      s2b
+    } else {
+    s2b[, .(ST = state_from_blockid(blockid[1])), keyby = ejam_uniq_id]
+    }
   }
 }
 ########################################### #

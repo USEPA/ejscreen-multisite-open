@@ -9,14 +9,12 @@ ejscreen_vs_ejam(
   radius = 3,
   nadrop = FALSE,
   save_ejscreen_output = "ejscreenapi_plus_out.rda",
-  save_when_report = TRUE,
+  save_when_report = FALSE,
   report_every_n = 250,
   calculate_ratios = FALSE,
   include_ejindexes = TRUE,
   x100fix = TRUE,
-  x100varnames = c(names_d, names_d_avg, names_d_state_avg, names_d_subgroups,
-    names_d_subgroups_avg, names_d_subgroups_state_avg, "pctdisability", "pctownedunits",
-    "pctunder18", "pctover17", "pctmale", "pctfemale"),
+  x100varnames = names_pct_as_fraction_ejscreenit,
   ...
 )
 }
@@ -30,7 +28,7 @@ and one row per site}
 If set to a filename, function will prompt in interactive R session
 for a folder to use for saving the .rda results of ejscreenapi_plus()}
 
-\item{save_when_report}{see ejscreenapi_plus()}
+\item{save_when_report}{see \code{\link[=ejscreenapi_plus]{ejscreenapi_plus()}}, to save progress every so often just in case.}
 
 \item{report_every_n}{see ejscreenapi_plus()}
 

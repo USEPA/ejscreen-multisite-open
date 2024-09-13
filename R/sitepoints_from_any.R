@@ -5,7 +5,8 @@
 #' @aliases sitepoints_from_anything
 #' @param anything see [latlon_from_anything()], which this is passed to
 #' @param lon_if_used see [latlon_from_anything()], which this is passed to
-#' @param ... passed to latlon_from_anything()
+#' @param interactiveprompt passed to [latlon_from_any()]
+#' 
 #' @return data.frame with lat,lon, and ejam_uniq_id as colnames, one row per point
 #' @examples
 #'  sitepoints_from_any(testpoints_10)
@@ -27,7 +28,7 @@
 #'  }
 #' @export
 #'
-sitepoints_from_any <- function(anything, lon_if_used, ...) {
+sitepoints_from_any <- function(anything, lon_if_used, interactiveprompt = TRUE) {
   
   # note this overlaps or duplicates code in ejamit() and app_server.R
   #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
@@ -41,7 +42,9 @@ sitepoints_from_any <- function(anything, lon_if_used, ...) {
   # If user entered a table, path to a file (csv, xlsx), or whatever can be handled -- see latlon_from_anything() --
   # read it to get the lat lon values from there
   #  by using sitepoints <- latlon_from_anything() which also gets done by getblocksnearby()
-  sitepoints <- latlon_from_anything(anything, lon_if_used, ...)
+
+  sitepoints <- latlon_from_anything(anything, lon_if_used, interactiveprompt = interactiveprompt)
+
   stopifnot(
     is.data.frame(sitepoints), 
     "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), 
@@ -65,6 +68,7 @@ sitepoints_from_any <- function(anything, lon_if_used, ...) {
 
 #' @export
 #' @inherit sitepoints_from_any
-sitepoints_from_anything <- function(anything, lon_if_used, ...) {
-  sitepoints_from_any(anything, lon_if_used, ...)
+sitepoints_from_anything <- function(anything, lon_if_used, interactiveprompt = TRUE) {
+  sitepoints_from_any(anything, lon_if_used,  interactiveprompt = interactiveprompt)
+
   }

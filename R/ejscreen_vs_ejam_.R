@@ -59,7 +59,7 @@
 #' @param x100varnames optional, if x100fix=T, a vector of colnames of x$EJAM to convert from 
 #'   being scaled as 0 to 1 into rescaled values of 0 to 100, because some 
 #'   outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.
-#' @param save_when_report see ejscreenapi_plus()
+#' @param save_when_report see [ejscreenapi_plus()], to save progress every so often just in case.
 #' @param save_ejscreen_output set to NULL to avoid saving ejscreen results locally.
 #'   If set to a filename, function will prompt in interactive R session
 #'   for a folder to use for saving the .rda results of ejscreenapi_plus()
@@ -126,16 +126,12 @@
 #' 
 ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
                              save_ejscreen_output = "ejscreenapi_plus_out.rda",
-                                save_when_report = TRUE, report_every_n = 250, # save every 10 minutes or so
+                                save_when_report = FALSE, report_every_n = 250, # save every 10 minutes or so
                                 calculate_ratios = FALSE, include_ejindexes = TRUE,
                                 x100fix = TRUE, 
-                                x100varnames = c(
-                                  names_d, names_d_avg, names_d_state_avg,
-                                  names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
-                                  "pctdisability",  "pctownedunits", 
-                                  "pctunder18", "pctover17", "pctmale", "pctfemale"), ...) {
+                                x100varnames = names_pct_as_fraction_ejscreenit, ...) {
   
-  if (!is.null(save_ejscreen_output)) {
+  if ((!is.null(save_ejscreen_output) && !(FALSE %in% save_ejscreen_output))  ) {
     if (interactive()) {
       mydir = rstudioapi::selectDirectory("save ejscreen results in what folder?")
     } else {
@@ -148,6 +144,7 @@ ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
   # or api1 <- ejscreenit(latlon, radius = radius)$table
   if (missing(latlon)) {latlon <- api1[ , c('id', 'lat', 'lon')]} # in case provided interactively above
   ejam1 <- ejamit(latlon, radius = radius, calculate_ratios = calculate_ratios, include_ejindexes = include_ejindexes, ...)$results_bysite
+
   if (!is.null(save_ejscreen_output)) {
      save(api1, file = file.path(mydir, save_ejscreen_output))
   }
@@ -275,11 +272,7 @@ ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 #' 
 ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE, 
                                            x100fix = TRUE, 
-                                           x100varnames = c(
-                                             names_d, names_d_avg, names_d_state_avg,
-                                             names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
-                                             "pctdisability",  "pctownedunits", 
-                                             "pctunder18", "pctover17", "pctmale", "pctfemale")) {
+                                           x100varnames = names_pct_as_fraction_ejscreenit) {
   
   # requires data.table
   # radius <- 1
@@ -321,17 +314,18 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   ejamsite <- ejamsite[ , !(names(ejamsite) %in% c('ST', 'statename', "REGION", "EJScreen Report", "EJScreen Map", "ECHO report"))]
   
   if (x100fix) {
-    fixable = x100varnames[x100varnames %in% names(ejamsite)]
-    ejamsite[ , fixable] <- 100 * ejamsite[ , fixable]
+    ejamsite <- fix_pctcols_x100(ejamsite, cnames = x100varnames) # need to check/ finish this
+    # fixable = x100varnames[x100varnames %in% names(ejamsite)] 
+    # ejamsite[ , fixable] <- 100 * ejamsite[ , fixable]
   }
   
   EJSCREEN_shown <- table_round(apisite)  # SLOW! ***
   EJAM_shown     <- table_round(ejamsite)  # SLOW! ***
   
-  apisite <- data.frame(sapply(apisite, as.numeric))
-  ejamsite <- data.frame(sapply(ejamsite, as.numeric))
-  EJSCREEN_shown <- data.frame(sapply(EJSCREEN_shown, as.character))
-  EJAM_shown <- data.frame(sapply(EJAM_shown, as.character))
+  apisite <- apply(apisite, MARGIN = 2, as.numeric)
+  ejamsite <- apply(ejamsite, MARGIN = 2, as.numeric)
+  EJSCREEN_shown <- apply(EJSCREEN_shown, MARGIN = 2, as.character)
+  EJAM_shown <- apply(EJAM_shown, MARGIN = 2, as.character)
   
   z <- list(
     EJSCREEN = apisite,

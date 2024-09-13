@@ -1,3 +1,8 @@
+
+# Now see probably-newer full app server (not module) code here:
+#   app_server_EJAMejscreenapi()
+
+
 ################################################ ################################################# #
 ################################################ ################################################# #
 #
@@ -30,7 +35,7 @@ if (testing_ejscreenapi_module) {
           # shiny::textOutput("testinfo2"),
  # EJAM:::mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2),
 
-          mod_ejscreenapi_ui("TESTID",
+ EJAM:::mod_ejscreenapi_ui("TESTID",  # since it is not exported and this test is a script not a function, you have to use ::: to access it
 
                              simpleradius_default_for_ui = 2
                              ),
@@ -51,8 +56,8 @@ if (testing_ejscreenapi_module) {
   ######################### #
   TEST_SERVER <- function(input, output, session) {
 
-  # x <- EJAM:::mod_ejscreenapi_server(
-    x <-        mod_ejscreenapi_server(
+  x <- EJAM:::mod_ejscreenapi_server(  # since it is not exported and this test is a script not a function, you have to use ::: to access it
+    # x <-        mod_ejscreenapi_server(
                   "TESTID",
 
                   default_points_shown_at_startup_react = reactive(testpoints_5[1:2,]),
@@ -81,7 +86,7 @@ if (testing_ejscreenapi_module) {
   }
   ######################### #
 
-  shinyApp(ui = TEST_UI, server = TEST_SERVER) # Try module in mini/test app
+  shinyApp(ui = TEST_UI, server = TEST_SERVER) # This is how you can try the module as a mini/test app
 
 
   # note you cannot wrap ui and server code in a single function when using modules
@@ -96,11 +101,14 @@ if (testing_ejscreenapi_module) {
 ################################################ ################################################# #
 
 # NOTE  ####
-# If a module needs to use a reactive expression, the outer function should take the reactive expression as a parameter.
-# If a module wants to return reactive expressions to the calling app, then return a list of reactive expressions from the function.
-# If a module needs to access an input that isn’t part of the module, the
-#   containing app should pass the input value wrapped in a reactive expression (i.e. reactive(...)):
+# If a module needs to USE a reactive expression, the 
+#   outer function should take the reactive expression as a parameter. 
+#
+# If a module needs to access an input$ that isn’t part of the module, the
+#   containing app should pass the input$ value wrapped in a reactive expression (i.e. reactive(...)):
 #   myModule("myModule1", reactive(input$checkbox1))
+#
+# If a module wants to return reactive expressions to the calling app, then return a list of reactive expressions from the function.
 
 # ____________________________ ### #
 # ________________________________________________________ ####
@@ -410,7 +418,7 @@ mod_ejscreenapi_ui <- function(id,
 #' mod_ejscreenapi_server
 #'
 #' @noRd
-mod_ejscreenapi_server <- function(id,
+mod_ejscreenapi_server <- function(id, session,
                                    # default_radius_react,
                                    # default_points_react = NULL, # do we wrap NULL in reactive() in this case?
                                    default_points_shown_at_startup_react,
@@ -433,10 +441,25 @@ mod_ejscreenapi_server <- function(id,
   shiny::moduleServer( id, function(input, output, session) {
     ns <- session$ns
 
-
-    ## from here on it was initially based on code from ejscreenapi package app_server.R, starting from
-    ##   app_server <- function(input, output, session) {
-
+# Compare and consolidate/ merge these - unclear which is newer, and they may each have some updates others dont:
+    #  - mod_ejscreenapi_server()      in MODULE_ejscreenapi.R 
+    #  - app_server_EJAMejscreenapi()  in app_server_EJAMejscreenapi.R  - was deployable server code
+    #  - "standalone" branch of the old EJAMejscreenapi package/ repo, that was the deployed app.
+    #
+    ## Code in EJAM:::mod_ejscreenapi_server() was initially based on 
+    ##  EJAMejscreenapi:::app_server(), which was also the starting point for 
+    ##  EJAM:::app_server_EJAMejscreenapi()
+    ##
+    ##  So the code below was copied from the app server body, right after this line:
+    ##       app_server <- function(input, output, session) {
+     
+    ###       or....
+    ### To use that non-module server function here wrapped as a module, try this: 
+    #
+    # app_server_EJAMejscreenapi(input = input, output = output, session = session) 
+    # stop()
+    
+    
     output$testinfo_sessionuser <- renderPrint(session$user)
 
     asynchronous <- FALSE
@@ -870,40 +893,47 @@ mod_ejscreenapi_server <- function(id,
 
         ############################################################# #
         # # ratios section is almost identical to code in ejscreenapi_plus()
-        #
+        
         # ### Add Ratios to us or state averages ####
         #
         if (input$include_ratios ) {
 
-          names_e_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_e"]  # this should be identical to names_e or namez$e
-          names_d_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_d"]  # this should be identical to names_d or namez$d
-          names_d_subgroups_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups"]  # same as names_d_subgroups or namez$d_subgroups
-
-          ##  ratio to US avg -------------
-
-          # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT THE SORT ORDER IS OF THE VARIABLES !
-          usratios <- calc_ratios_to_avg(table_as_displayed,
-                                    evarnames = names_e_FOR_RATIOS,
-                                    dvarnames = names_d_FOR_RATIOS)   # lacks subgroups and supplementary ?
+          names_e_FOR_RATIOS <- names_e
+          names_d_FOR_RATIOS <- c(names_d, names_d_subgroups)
+          # but not c(names_d, names_d_subgroups) ?? #  AVERAGE IS NOT AN OUTPUT OF API - need to get means from usastats, statestats
+          
+          if (!all(paste0("ratio.to.avg.",       names_e_FOR_RATIOS) == names_e_ratio_to_avg)) {stop("names_e and names_e_ratio_to_avg are sorted differently")}
+          if (!all(paste0("ratio.to.avg.",       names_d_FOR_RATIOS) == c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg))) {stop("d-related names are sorted differently")}
+          if (!all(paste0("ratio.to.state.avg.", names_e_FOR_RATIOS) == names_e_ratio_to_state_avg)) {stop("names_e and names_e_ratio_to_state_avg are sorted differently")}
+          if (!all(paste0("ratio.to.state.avg.", names_d_FOR_RATIOS) == c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg))) {stop("d-related names are sorted differently")}
+          
+          ##  ratio to US avg ------------ -
+          
+          # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT IS THE SORT ORDER OF THE VARIABLES !
+          usratios <- calc_ratios_to_avg(table_as_displayed, 
+                                         zone.prefix = "", 
+                                         evarnames = names_e_FOR_RATIOS, 
+                                         dvarnames = names_d_FOR_RATIOS ) 
           eratios <- round(usratios$ratios_e, 4)
-          dratios <- round(usratios$ratios_d, 4)    # lacks subgroups and supplementary ?
-
-          # switch from names of indicators to names of the ratios of those indicators?
-          # a PROBLEM HERE IS LIST OF RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES:
-
-          names(eratios) <-   map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_e_FOR_RATIOS) # names_e_ratio_to_avg  # lacks state percentiles here ****
-          names(dratios) <-   map_headernames$rname[ map_headernames$varlist == "names_d_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_d_FOR_RATIOS) # names_d_ratio_to_avg  # lacks state percentiles here ****
+          dratios <- round(usratios$ratios_d, 4)
+          # calc_ratios_to_avg() colnames returned are same as input, not renamed to say "ratio"
+          names(eratios) <-   names_e_ratio_to_avg
+          names(dratios) <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg)
           table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
-
-          ##  ratio to STATE avg --------------
-
-          st_ratios <- calc_ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
-          eratios <- round(st_ratios$ratios_e, 4)
-          dratios <- round(st_ratios$ratios_d, 4)    # lacks subgroups and supplementary ?
-          names(eratios) <- map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
-          names(dratios) <- map_headernames$rname[ map_headernames$varlist == "names_d_ratio_to_state_avg"]
-          table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
-
+          
+          ##  ratio to STATE avg ------------- -
+          
+          st_ratios <- calc_ratios_to_avg(table_as_displayed, 
+                                          zone.prefix = "state.", 
+                                          evarnames = names_e_FOR_RATIOS,
+                                          dvarnames = names_d_FOR_RATIOS ) 
+          st_eratios <- round(st_ratios$ratios_e, 4)
+          st_dratios <- round(st_ratios$ratios_d, 4)
+          # calc_ratios_to_avg() colnames returned are same as input, not renamed to say "ratio"
+          names(st_eratios) <-   names_e_ratio_to_state_avg  # but RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES as checked above
+          names(st_dratios) <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg)
+          table_as_displayed <- cbind(table_as_displayed, dratios, eratios, st_dratios, st_eratios)
+          
         } # end of ratio calculations
 
 

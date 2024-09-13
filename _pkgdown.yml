@@ -1,4 +1,4 @@
-url: "usepa.github.io/EJAM/"
+url: https://usepa.github.io/EJAM/
 template:
   bootstrap: 5
 deploy:
@@ -16,6 +16,13 @@ footer:
   components:
     draftmsg: DRAFT
     versionmsg: Version 2.32.0
+development:
+  mode: devel
+  destination: 
+  version_label: warning
+template:
+  params:
+    noindex: true
 home:
   title: EJAM Environmental Justice Analysis Multisite
   description: Webapp and tools summarizing demographic and environmental data for hundreds of places quickly and accurately
@@ -36,8 +43,8 @@ articles:
   - '`2_quickstart`'
   - '`3_analyzing`'
   - '`4_advanced`'
-  # - '`5_ejscreenapi`'
-  # - '`6_future_plans`'
+  - '`5_ejscreenapi`'
+  - '`6_future_plans`'
 reference:
 - title: "Key Functions"
   desc: "The Main High-Level Functions in EJAM"
@@ -350,8 +357,28 @@ reference:
   desc: "EJAM-EJScreen and using the EJScreen API"
   contents:
   - ejscreenit_for_ejam
+  - ejscreenit
+  - app_run_EJAMejscreenapi
 - title: internal
   contents:
+  - bgid2fips
+  - blockid2fips
+  - blockpoints
+  - blockwts
+  - colcounter
+  - custom
+  - datawrite_to_pins
+  - distances.all
+  - ejscreenit_see_table
+  - ejscreen_vscript
+  - ejscreen_vs_ejam_1var
+  - fixnames_aliases
+  - formulas_all
+  - formulas_d
+  - frs_active_ids
+  - frs_clean
+  - testpoints_bad
+  - testpoints_overlap3
   - latlon_any_format
   - fixcolnames_infer
   - namez
@@ -385,8 +412,6 @@ reference:
   - custom_ejamit
   - state_from_s2b_bysite
   - table_tall_from_overall
-  - table_tall_from_site
-  - table_tall_from_bysite
   - tablefixed
   - table_validated_ejamit_row
   - table_xls_from_ejam
