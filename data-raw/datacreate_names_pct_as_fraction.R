@@ -11,6 +11,8 @@ datacreate_names_pct_as_fraction <- function(map_headernames)   {
 # map_headernames$pct_as_fraction_ejscreenit      is TRUE when  map_headernames$rname %in% names_pct_as_fraction_ejscreenit
 
 names_pct_as_fraction_blockgroupstats <- map_headernames$rname[map_headernames$pct_as_fraction_blockgroupstats]
+
+names_pct_as_fraction_blockgroupstats <- names_pct_as_fraction_blockgroupstats[names_pct_as_fraction_blockgroupstats %in% names(blockgroupstats)]
 # names_pct_as_fraction_blockgroupstats <- names_d
 
 names_pct_as_fraction_ejamit <- map_headernames$rname[map_headernames$pct_as_fraction_ejamit]
