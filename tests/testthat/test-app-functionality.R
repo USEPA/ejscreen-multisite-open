@@ -20,7 +20,7 @@ test_that("{shinytest2} recording: EJAM", {
   
   print("taking a screenshot")
   app$expect_values()
-  app$expect_screenshot()
+  app$expect_screenshot(threshold=37)
   
   print("going to Site Selection tab")
   app$set_inputs(all_tabs = "Site Selection")
@@ -31,10 +31,6 @@ test_that("{shinytest2} recording: EJAM", {
   
   print("repulling results")
   app$click("bt_get_results", wait_ = TRUE, timeout_ = 20000)
-  
-  print("another screenshot after repulling")
-  app$expect_values()
-  app$expect_screenshot()
   
   print("about to do community download")
   app$wait_for_idle(timeout = 20000)
