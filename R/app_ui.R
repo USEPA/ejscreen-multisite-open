@@ -8,7 +8,6 @@
 #'
 #'
 #'
-library(desc)
 app_ui  <- function(request) {
   
   

@@ -6,7 +6,7 @@
 \usage{
 distance_by_group1(
   results_bybg_people,
-  demogvarname = "Demog.Index",
+  demogvarname = varlist2names("names_d")[1],
   demoglabel = fixcolnames(demogvarname, "r", "shortlabel")
 )
 }
