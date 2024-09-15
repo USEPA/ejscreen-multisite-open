@@ -245,7 +245,7 @@ ejamit <- function(sitepoints,
     mysites2blocks <- getblocksnearby_from_fips(
       
       fips = fips,
-      inshiny = inshiny,
+      inshiny = in_shiny,
       need_blockwt = need_blockwt
     )
     if (nrow(mysites2blocks) == 0) {
