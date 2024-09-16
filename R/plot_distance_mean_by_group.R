@@ -218,7 +218,7 @@ distance_by_group     <- function(results_bybg_people,
 #' @keywords internal
 #'
 distance_by_group1 <- function(results_bybg_people,
-                               demogvarname="Demog.Index",
+                               demogvarname=varlist2names('names_d')[1],
                                demoglabel=fixcolnames(demogvarname, "r", "shortlabel")) {
 
   if (is.list(results_bybg_people) & ("results_bybg_people" %in% names(results_bybg_people))) {

@@ -6,7 +6,7 @@
 \usage{
 boxplots_ratios(
   x,
-  selected_dvar_colname = "Demog.Index",
+  selected_dvar_colname = varlist2names("names_d")[1],
   selected_dvar_nicename = selected_dvar_colname,
   towhat_nicename = "US average",
   wheretext = "Near"
