@@ -11,10 +11,9 @@
 #' @seealso [colcounter_summary_all()] [colcounter_summary()] [colcounter_summary_cum()] [colcounter_summary_pct()] [colcounter_summary_cum_pct()]
 #' 
 #' @examples \dontrun{
-#'  pdata <- data.frame(a=rep(80,4),b=rep(93,4), col3=c(49,98,100,100))
-#'   ### pdata <- EJAM::blockgroupstats[ , names_e_pctile]
-#'   ## or ## pdata <- ejscreen package file bg22[ , ejscreen package file names.e.pctile]
-#'  pcuts <-  5 * (0:20)  # <- as.vector(keystats_e['highcut', ])
+#'   pdata <- data.frame(a=rep(80,4),b=rep(93,4), col3=c(49,98,100,100))
+#'  # pdata <- data.frame(testoutput_ejamit_10pts_1miles$results_bysite)[ , names_e_pctile]
+#'  pcuts <-  5 * (0:20) 
 #' colcounter_summary(        pdata, pcuts)
 #' colcounter_summary_pct(    pdata, pcuts)
 #' colcounter_summary_cum(    pdata, pcuts)
@@ -111,7 +110,7 @@ colcounter <- function(x, threshold, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.
 #' @examples
 #'  pdata <- data.frame(a=rep(80,4),b=rep(93,4), col3=c(49,98,100,100))
 #'   ### pdata <- EJAM::blockgroupstats[ , names_e_pctile]
-#'  pcuts <-  5 * (0:20)  # <- as.vector(keystats_e['highcut', ])
+#'  pcuts <-  5 * (0:20)  
 #' colcounter_summary(        pdata, pcuts)
 #' colcounter_summary_pct(    pdata, pcuts)
 #' colcounter_summary_cum(    pdata, pcuts)

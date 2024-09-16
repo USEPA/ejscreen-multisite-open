@@ -42,9 +42,6 @@ names_d_subgroups_both <- c(names_d_subgroups_nh, names_d_subgroups_alone)
 # # compare to current names
 # setdiff(names(  usastats), c(names_e, names_d, names_ej  ,     names_ej_supp      ))
 # setdiff(names(statestats), c(names_e, names_d, names_ej_state, names_ej_supp_state))
-# # each lookup now has lookup info for
-# lowlifex, old cancer and resp  indicators, extra demo like asthma, and subgroups_alone
-# not in names_ lists here. ok
 
 # missing from usastats right now: ***
 
