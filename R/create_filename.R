@@ -43,7 +43,7 @@ create_filename <- function(file_desc = '', title = '',
   }
   
   ## add date and time of download
-  if (with_datetime & !isTRUE(getOption("shiny.testmode"))) {
+  if (with_datetime && !isTRUE(getOption("shiny.testmode"))) {
   fname <- paste(fname, format(Sys.time(),'%Y%m%d_%H%M%S'),
                  sep = sep)
   }
