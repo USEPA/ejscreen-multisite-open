@@ -54,6 +54,7 @@ overall_has_changed <- !isTRUE(identical(
   testoutput_doaggregate_10pts_1miles$results_overall,
   x$results_overall))
 })
+
 # overall_has_changed
 
   expect_equal(
