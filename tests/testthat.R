@@ -8,7 +8,6 @@
 library(shinytest2)
 library(testthat)
 library(EJAM)
-dataload_from_pins("all")
 
 # test_check("EJAM")
 test_app(".", filter="app-functionality")

@@ -16,6 +16,7 @@ URL: https://usepa.github.io/EJAM/, https://github.com/USEPA/EJAM
 Depends: 
     R (>= 2.10)
 Imports:
+    arrow,
     attempt,
     collapse,
     config (>= 0.3.1),
@@ -64,6 +65,8 @@ Suggests:
     htmlwidgets, 
     jsonlite,
     leaflet.extras,
+    leaflet.extras2,
+    mapview,
     rnaturalearth,
     rvest,
     terra,
