@@ -70,20 +70,19 @@ if (y) {
   usethis::edit_file('DESCRIPTION')
 }
 #   metadata_mapping() uses DESCRIPTION info and gets done via devtools::load_all() or library(EJAM)
-
-golem::detach_all_attached()
-
-require(devtools)
-require(rstudioapi)
-
-load_all()
-
-## load_all() ####
+## loadall() and requires ####
 # Get latest source functions and data: 
 # from  EJAM/R/*.R and EJAM/data/*.rda 
 # Attaches exported + internal functions & data 
 # like metadata_add(), newly saved .rda files, etc.
 #  Otherwise internal functions don't work in scripts, and it would use installed not new source versions.
+golem::detach_all_attached()
+
+require(devtools)
+require(rstudioapi)
+
+loadall()
+
 ######################################### ########################################## #
 #
 ## List of datacreate_ files ####

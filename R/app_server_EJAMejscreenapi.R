@@ -1,3 +1,34 @@
+
+# can the app_server_EJAMejscreenapi() be wrapped inside moduleServer() to use as a module in EJAM
+# and was that already drafted somewhere? 
+# R/MODULE_ejscreenapi.R  had older approach where all of the code was in that one file?
+
+# mod_ejscreenapi_server <- function(id,
+#                                    # default_radius_react,
+#                                    # default_points_react = NULL, # do we wrap NULL in reactive() in this case?
+#                                    default_points_shown_at_startup_react,
+#                                    # default_points = NULL,  #
+#                                    use_ejscreenit = FALSE  #  use_ejscreenit = FALSE # SWITCH TO TRUE WHEN CONFIRM IT WORKS ***
+# ) {
+#   # figure out what default points to show at startup, which could be a reactive passed here from the parent server/overall app.
+#   # if (!missing(default_points)) default_points_shown_at_startup <- default_points # stop using this and use reactive input only
+#   # if (!missing(default_points_react)) {
+#   #   # ?
+#   #   stopifnot(is.reactive(default_points_react))
+#   # }
+#   # stopifnot(!is.reactive(default_points_shown_at_startup)) # currently this is not supposed to be reactive but would be if we wanted app-controlled default not just passed when calling function
+#   # stopifnot(!is.reactive(parameter2))
+#   
+#   source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))  ### IMPORTANTLY THESE MUST STAY WITHIN THE MODULE NAMESPACE, AND NOT BE AVAILABLE TO OR INTERFERE WITH MAIN APP'S DEFAULTS/ETC.
+#   
+#   # moduleServer ####
+#   
+#   shiny::moduleServer( id, function(input, output, session) {
+#     ns <- session$ns
+#     
+#      then the server code would go here
+########################################### # 
+
 #' app_server for ejscreenapi app
 #'
 #' @param input dont change
@@ -103,7 +134,7 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
                                 "perhourfast", "perhourguess", "perhourslow", "stepradius", "tabletips_message", "whichip")))
   })
   
-  # 1__ MODULE__ * SPECIFY PLACES ######################### 
+  # 1__ should be made into a MODULE__ * SPECIFY PLACES ######################### 
   # ###################   #####################   #####################   #################### # 
   
   # If ECHO search button clicked, Show popup window ####
@@ -474,37 +505,42 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
     
     ############################################################# #
     
-    # ratios section is almost identical to code in ejscreenapi_plus() ############################################################# #
+    # ratios section is identical to code in ejscreenapi_plus() ############################################################# #
     
     ### Add Ratios to us or state averages ####
     
     if (input$include_ratios) {
       
-      names_e_FOR_RATIOS <- map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e"]
-      names_d_FOR_RATIOS <- map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d"]
+      names_e_FOR_RATIOS <- names_e
+      names_d_FOR_RATIOS <- names_d
+      # but not c(names_d, names_d_subgroups) ? #  AVERAGE IS NOT AN OUTPUT OF API - would need to get means from usastats, statestats
       
-      ##  ratio to US avg -------------
+      if (!all(paste0("ratio.to.avg.",       names_e) == names_e_ratio_to_avg))       {stop("names_e and names_e_ratio_to_avg are sorted differently")}
+      if (!all(paste0("ratio.to.avg.",       names_d) == names_d_ratio_to_avg))       {stop("names_d and names_d_ratio_to_avg are sorted differently")}
+      if (!all(paste0("ratio.to.state.avg.", names_e) == names_e_ratio_to_state_avg)) {stop("names_e and names_e_ratio_to_state_avg are sorted differently")}
+      if (!all(paste0("ratio.to.state.avg.", names_d) == names_d_ratio_to_state_avg)) {stop("names_d and names_d_ratio_to_state_avg are sorted differently")}
       
-      # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT THE SORT ORDER IS OF THE VARIABLES !
-      usratios <- calc_ratios_to_avg(table_as_displayed, evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS) # this was not designed to analyze state percentiles ?
+      ##  ratio to US avg ------------ -
+      
+      # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT IS THE SORT ORDER OF THE VARIABLES !
+      usratios <- calc_ratios_to_avg(table_as_displayed, evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # not subgroups # this was not designed to analyze state percentiles ?
       eratios <- round(usratios$ratios_e, 4)
-      dratios <- round(usratios$ratios_d, 4)    # lacks subgroups and supplementary ? 
+      dratios <- round(usratios$ratios_d, 4)
       
-      # a PROBLEM HERE IS LIST OF RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES:
-      
-      names(eratios) <-   map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_e_FOR_RATIOS) # names_e_ratio_to_avg  # lacks state percentiles here ****
-      names(dratios) <-   map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_d_FOR_RATIOS) # names_d_ratio_to_avg  # lacks state percentiles here ****
+      names(eratios) <- names_e_ratio_to_avg
+      names(dratios) <- names_d_ratio_to_avg
       table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
       
-      ##  ratio to STATE avg --------------
+      ##  ratio to STATE avg ------------- -
       
       st_ratios <- calc_ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
       eratios <- round(st_ratios$ratios_e, 4)
-      dratios <- round(st_ratios$ratios_d, 4)    # lacks subgroups and supplementary ? 
-      names(eratios) <- map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
-      names(dratios) <- map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d_ratio_to_state_avg"]
-      table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
+      dratios <- round(st_ratios$ratios_d, 4)
       
+      names(eratios) <- names_e_ratio_to_state_avg # but RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES as checked above
+      names(dratios) <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg)  
+      table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
+     
     } # end of ratio calculations   
     
     ############################################################## #
@@ -515,7 +551,7 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
       namesnow = names(table_as_displayed), 
       oldtype = 'r' ,  # had temporarily renamed to r type
       newtype = usewhichnames,  # now will be named using headers user wanted
-      mapping_for_names=map_headernames
+      mapping_for_names = map_headernames
     )
     
     ############################################################## #
@@ -883,7 +919,7 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
   
   # ____________________________________________________________________ ####### 
   #
-  # 4__ MODULE?__ * GRAPHICS #### ####################
+  # 4__ could become a MODULE?__ * GRAPHICS #### ####################
   
   ## Boxplots ####
   # 

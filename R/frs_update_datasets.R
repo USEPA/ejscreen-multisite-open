@@ -163,12 +163,13 @@ frs_update_datasets <- function (folder = NULL, folder_save_as_arrow = getwd(), 
 
 # This takes a *LONG* time to download, unzip, and read the large files! Please wait!
 #   [1] "2023-12-11 10:33:36 EST"
-# Downloading... Trying to download from  https://ordsext.epa.gov/FLA/www3/state_files//national_single.zip  to save as  C:\Users\mcorrale\AppData\Local\Temp\RtmpQHgVhc/national_single.zip 
+# Downloading... Trying to download from  https://ordsext.epa.gov/FLA/www3/state_files//national_single.zip
+#   to save as    \AppData\Local\Temp\RtmpQHgVhc/national_single.zip 
 # trying URL 'https://ordsext.epa.gov/FLA/www3/state_files//national_single.zip'
 # Content type 'application/zip' length 312820183 bytes (298.3 MB)
 # downloaded 298.3 MB
 # 
-# Finished download to  C:\Users\mcorrale\AppData\Local\Temp\RtmpQHgVhc/national_single.zip 
+# Finished download to  AppData\Local\Temp\RtmpQHgVhc/national_single.zip 
 # [1] "2023-12-11 10:34:05 EST"
 # Unzipping...done unzipping
 # [1] "2023-12-11 10:34:25 EST"
@@ -185,12 +186,13 @@ frs_update_datasets <- function (folder = NULL, folder_save_as_arrow = getwd(), 
 # To use in package,  usethis::use_data(frs, overwrite=TRUE)  
 # Also see frs_make_naics_lookup() and frs_make_programid_lookup()
 # Downloading national dataset to temp folder... Takes a couple of minutes! 
-#   Trying to download from  https://ordsext.epa.gov/FLA/www3/state_files/national_combined.zip  to save as  C:\Users\mcorrale\AppData\Local\Temp\RtmpQHgVhc/national_combined.zip 
+#   Trying to download from  https://ordsext.epa.gov/FLA/www3/state_files/national_combined.zip 
+# to save as  AppData\Local\Temp\RtmpQHgVhc/national_combined.zip 
 # trying URL 'https://ordsext.epa.gov/FLA/www3/state_files/national_combined.zip'
 # Content type 'application/zip' length 1320371459 bytes (1259.2 MB)
 # downloaded 1259.2 MB
 # 
-# Finished download to  C:\Users\mcorrale\AppData\Local\Temp\RtmpQHgVhc/national_combined.zip 
+# Finished download to   AppData\Local\Temp\RtmpQHgVhc/national_combined.zip 
 # Reading unzipped file...
 # |--------------------------------------------------|
 #   |==================================================|

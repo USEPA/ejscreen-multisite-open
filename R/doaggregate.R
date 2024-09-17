@@ -1081,22 +1081,25 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     # use nearest 1 block's state, which is often but not always right if near state line,
     # but in shapefiles case of a polygon covering 2 states has no distance so just whatever happens to be 1st block in list there.
     # and never arises for FIPS case (fips is always just a single state).
-    cat(' *** TEMPORARILY, for circles covering 2 states, using state of nearest block,
-        and for Shapefiles spanning 2 States,  JUST USING 1 OF THE STATES - 
-        work in progress on state identification if not in shiny app and not using ejamit(), 
-        if sites2states_or_latlon is not provided to doaggregate() \n')
+    cat(' *** For now, if sites2states_or_latlon is not provided to doaggregate(),
+        for circles covering 2 states, it will use state of nearest block,
+        and for Shapefiles spanning 2 States, will just use 1 of the States -
+        not selected by area or population, but just whatever happens to be first in the table.
+        This should only arise if not in shiny app and not using ejamit() and 
+        sites2states_or_latlon was not provided to doaggregate() \n')
     # single-state case
     sites2states <- state_from_s2b_bysite(sites2blocks) # works for single-state sites only, NA otherwise
     setDT(sites2states)
     
-    if ("confirmed this works" == "done?") {
+    # if ("confirmed this works" == "done?") {
       # multistate case
       multistate_ids <- sites2states$ejam_uniq_id[is.na(sites2states$ST)]
       others <- state_from_nearest_block_bysite(sites2blocks[ejam_uniq_id %in% multistate_ids, ])
+      # returns data.table with cols ejam_uniq_id,ST and one row per unique id
       ## join those but should replace only one with multistate_ids 
-      ##  NOT RIGHT ???  xxx
+      ##  ???  xxx
       sites2states$ST[is.na(sites2states$ST)] <- others$ST[match(sites2states$ejam_uniq_id[is.na(sites2states$ST)], others$ejam_uniq_id)]
-    }
+    # }
     
   }
 
@@ -1107,17 +1110,22 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #  ##################################################### #
   
   results_bysite[sites2states, ST := ST, on = "ejam_uniq_id"] # check this, including when ST is NA ***
-  results_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  #  results_bysite[, statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  # results_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  
+  results_bysite[ , statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  results_bysite[ , REGION := fips_st2eparegion(fips_state_from_state_abbrev(ST))]
   results_bysite[sites2states, in_how_many_states := in_how_many_states, on = "ejam_uniq_id"]
   
   results_overall$ST <- NA
   results_overall$statename <- NA
+  results_overall$REGION <- NA
   results_overall$ejam_uniq_id <- NA  ## adds blank ejam_uniq_id column to results_overall (no longer tied to include_ejindexes)
   results_overall$in_how_many_states <- length(unique(na.omit(results_bysite$ST)))
   
   # results_bybg_people$ST is created from sites2bgs_plusblockgroupdata_bysite$ST and ST is already in that table 
   # since ST was joined from blockgroupstats around line 569, for each bg, but that is not always 1 state for a given site.
-  sites2bgs_plusblockgroupdata_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  # same as the very slightly slower... fips2statename(fips_state_from_state_abbrev(ST))
+  # sites2bgs_plusblockgroupdata_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  # same as the very slightly slower... fips2statename(fips_state_from_state_abbrev(ST))
+  sites2bgs_plusblockgroupdata_bysite[, statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  sites2bgs_plusblockgroupdata_bysite[, REGION := fips_st2eparegion(fips_state_from_state_abbrev(ST))]
   sites2bgs_plusblockgroupdata_bysite$in_how_many_states <- 1 # since a single blockgroup can only be in one state
   #  ##################################################### #  ##################################################### #
   
@@ -1189,9 +1197,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     
     if ((myvar %in% names(statestats)) && (myvar_to_use %in% names(results_bysite)) ) {
       
-      state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
-        unlist(results_bysite[  , ..myvar_to_use]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST
+      ## check if state assignment is NA, only look for %iles if it is present
+      state.pctile.cols_bysite[!is.na(results_bysite$ST) , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
+        unlist(results_bysite[!is.na(results_bysite$ST)  , ..myvar_to_use]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST[!is.na(results_bysite$ST)]
       )
+      state.pctile.cols_bysite[is.na(results_bysite$ST) , varnames.state.pctile[[i]]] <- NA
+      
       ## These must be done later, as avg of sites:
       # state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
     } else {
@@ -1267,10 +1278,17 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         # us.pctile.cols_overall[   , ejnames_pctile[i]] <- NA
       }
       if (myvar %in% names(statestats)) { # e.g., "state.EJ.DISPARITY.proximity.rmp.supp"
-        state.pctile.cols_bysite[ , ejnames_pctile[i]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
-          unlist(results_bysite[  , ..myvar]),
-          # unlist(cbind(ej_bysite, ej_supp_bysite)[  , ..myvar]),
-          varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST) # should be same count of rows in results_bysite$ST and ej_bysite !
+        
+        ## check if state assignment is NA, only look for %iles if it is present
+        state.pctile.cols_bysite[!is.na(results_bysite$ST) , ejnames_pctile[i]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
+          unlist(results_bysite[!is.na(results_bysite$ST)  , ..myvar_to_use]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST[!is.na(results_bysite$ST)]
+        )
+        state.pctile.cols_bysite[is.na(results_bysite$ST) , ejnames_pctile[i]] <- NA
+        
+        # state.pctile.cols_bysite[ , ejnames_pctile[i]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
+        #   unlist(results_bysite[  , ..myvar]),
+        #   # unlist(cbind(ej_bysite, ej_supp_bysite)[  , ..myvar]),
+        #   varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST) # should be same count of rows in results_bysite$ST and ej_bysite !
         ##  must be done later, as avg of sites:
         # state.pctile.cols_overall[, ejnames_pctile[i]] <- pctile_from_raw_lookup(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
       } else {
@@ -1483,7 +1501,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       'pop',           # '[or names_wts]',
       'sitename',
       'lon', 'lat', # do we want to make consistently lat,lon not lon,lat ??? ***
-      'ST', 'statename', 'REGION',
+      'ST', 'statename', 'in_how_many_states', 'REGION',
       
       
       ## RATIOS to AVG (DEMOG and ENVT) ----------------------------------------\
@@ -1536,17 +1554,22 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       ### D US PCTILE ###
       names_d_pctile,
       names_d_subgroups_nh_pctile,       names_d_subgroups_alone_pctile,
+      names_health_pctile, 
+      
       ### D US AVERAGES ###
       names_d_avg,
       names_d_subgroups_nh_avg,          names_d_subgroups_alone_avg,
+      names_health_avg,
       
       ### D STATE PCTILE ##
       names_d_state_pctile,
       names_d_subgroups_nh_state_pctile, names_d_subgroups_alone_state_pctile,
+      names_health_state_pctile,
+      
       ### D STATE AVERAGES ###
       names_d_state_avg,
       names_d_subgroups_nh_state_avg ,   names_d_subgroups_alone_state_avg,
-      
+      names_health_state_avg,
       
       ## ENVIRONMENTAL ----------------------------------------\
       

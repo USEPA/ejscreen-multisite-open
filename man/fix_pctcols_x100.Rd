@@ -4,7 +4,11 @@
 \alias{fix_pctcols_x100}
 \title{utility to multiply certain percentage columns by 100 to convert 0-1.00 into 0-100}
 \usage{
-fix_pctcols_x100(df, cnames = NULL)
+fix_pctcols_x100(
+  df,
+  cnames = c(names_pct_as_fraction_blockgroupstats, names_pct_as_fraction_ejamit,
+    names_pct_as_fraction_ejscreenit)[2]
+)
 }
 \arguments{
 \item{df}{data.frame but can be data.table}
@@ -25,7 +29,7 @@ multiplies some data to rescale percentages stored as 0 to 1, into 0-100
 }
 \examples{
  y = data.frame(pctlowinc = 1:2, pctpre1960 = 1:2, avg.pctunemployed = 1:2, avg.pctpre1960 = 1:2)
- fix_pctcols_x100(y)
+ 
  fix_pctcols_x100(y, names_pct_as_fraction_ejscreenit)
  fix_pctcols_x100(y, names_pct_as_fraction_blockgroupstats)
  fix_pctcols_x100(y, names_pct_as_fraction_ejamit)
@@ -35,7 +39,7 @@ multiplies some data to rescale percentages stored as 0 to 1, into 0-100
  names_pct_as_fraction_ejamit
  cat("\n\n")
  ytable = data.table(pctlowinc = 1:2, pctpre1960 = 1:2, avg.pctunemployed = 1:2, avg.pctpre1960 = 1:2)
- fix_pctcols_x100(ytable)
+ 
  fix_pctcols_x100(ytable, names_pct_as_fraction_blockgroupstats) 
  fix_pctcols_x100(ytable, names_pct_as_fraction_ejamit)
  cat("\n\n")

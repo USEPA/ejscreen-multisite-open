@@ -1,8 +1,10 @@
 # system.time({
-#   #    ABOUT 7 MINUTES TO RUN TESTS (if large datasets had not yet been loaded)
-#   source("./tests/manual_nonalphabetical.R") # answering Yes to running ALL tests
+#   ##    ABOUT 7 MINUTES TO RUN TESTS (if large datasets had not yet been loaded)
+#   source("./tests/manual_nonalphabetical.R") #####
+#     ## answering Yes to running ALL tests
 # })
 ######################################################## #
+# load_all() if iterating ####
 if (1 == 0) { # do this part manually if needed
   
   # TO RELOAD / ITERATE WHILE DEBUGGING:
@@ -20,60 +22,76 @@ if (1 == 0) { # do this part manually if needed
   # rstudioapi::navigateToFile("./tests/testthat/test-latlon_df_clean.R")
   
 }
-
 ######################################################## #
-# simple checks for easy/basic case, main functions, without actually running unit tests with testthat
-
-if (1 == 0) { # do this part manually if needed
+y_basic = askYesNo("Do ONLY basic quick checks (not unit tests?)", default = FALSE)
+if (is.na(y_basic)) {stop("cancelled")}
+# just do basic quick checks? (not unit tests) ####
+# for easy/basic case, main functions, without actually running unit tests with testthat
+if (y_basic) { # do this part manually if needed
   
-  # latlon
-  x <- ejamit(testpoints_5[1:2,], radius = 1)
-  # names(x)
-  ejam2table_tall(x)
-  ejam2barplot(x)
-  ejam2barplot_sites(x)
-  ejam2tableviewer(x)
-  junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
-  # ejam2report(x)   #  report not yet working if not in shiny app
-  ejam2map(x)
-  fname = ejam2shapefile(x, folder = tempdir())
-  shpin = shapefile_from_any(fname)
-  map_shapes_leaflet(shpin)
+  y_latlon = askYesNo("quick tests for latlon?", default = TRUE)
+  if (is.na(y_latlon)) {stop("cancelled")}
+  y_shp = askYesNo("quick tests for shp?", default = TRUE)
+  if (is.na(y_shp)) {stop("cancelled")}
+  y_fips = askYesNo("quick tests for fips?", default = TRUE)
+  if (is.na(y_fips)) {stop("cancelled")}
   
-  # shapefile
+  if (y_latlon) {
+    # latlon
+    x <- ejamit(testpoints_5[1:2,], radius = 1)
+    # names(x)
+    ejam2table_tall(x)
+    ejam2barplot(x)
+    ejam2barplot_sites(x)
+    ejam2tableviewer(x)
+    junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
+    # ejam2report(x)   #  report not yet working if not in shiny app
+    ejam2map(x)
+    fname = ejam2shapefile(x, folder = tempdir())
+    shpin = shapefile_from_any(fname)
+    map_shapes_leaflet(shpin)
+    cat("\n\n DONE WITH latlon CHECKS \n\n")
+  }
   
-  shp <- shape_buffered_from_shapefile( shapefile_from_sitepoints(testpoints_5[1:2,]), radius.miles = 1)
-  # or use test data  shp <- shapefile_from_any()
-  shp <- shapefile_from_any(system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp", package = "EJAM"))[1:3, ]  
-  # x <- ejamit( shapefile = shp )  ## NOT WORKING RIGHT NOW
-  # names(x)
-  # ejam2table_tall(x)
-  # ejam2barplot(x)
-  # ejam2barplot_sites(x)
-  # ejam2tableviewer(x)
-  # junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
-  # ejam2report(x)   #  report not yet working if not in shiny app
-  ## ejam2map(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
-  ## ejam2shapefile(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
-  # map_shapes_leaflet(x)  
+  if (y_shp) {
+    # shapefile
+    
+    shp <- shape_buffered_from_shapefile( shapefile_from_sitepoints(testpoints_5[1:2,]), radius.miles = 1)
+    # or use test data  shp <- shapefile_from_any()
+    shp <- shapefile_from_any(system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp", package = "EJAM"))[1:3, ]  
+    x <- ejamit( shapefile = shp )  ## NOT WORKING RIGHT NOW?
+    names(x)
+    ejam2table_tall(x)
+    ejam2barplot(x)
+    ejam2barplot_sites(x)
+    ejam2tableviewer(x)
+    junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
+    ejam2report(x)   #  report not yet working if not in shiny app
+    ejam2map(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
+    ejam2shapefile(x, folder = tempdir()) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
+    map_shapes_leaflet(x)
+    cat("\n\n DONE WITH shp CHECKS \n\n")
+  }
   
+  if (y_fips) {
+    # fips
+    x <- ejamit(fips = fips_bg_from_anyfips(fips_counties_from_state_abbrev("DE")[1])[1:2]) # just 2 blockgroups
+    names(x)
+    ejam2table_tall(x)
+    ejam2barplot(x)
+    ejam2barplot_sites(x)
+    ejam2tableviewer(x)
+    junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
+    ejam2report(x)   #  report not yet working if not in shiny app
+    ejam2map(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
+    ejam2shapefile(x, folder = tempdir()) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
+    
+    x <- ejamit(fips = fips_counties_from_state_abbrev("DE"))  #   3 Counties
+    mapfastej_counties(x$results_bysite) # not (x)
+    cat("\n\n DONE WITH fips CHECKS \n\n")
+  }
   
-  # fips
-  x <- ejamit(fips = fips_bg_from_anyfips(fips_counties_from_state_abbrev("DE")[1])[1:2]) # just 2 blockgroups
-  names(x)
-  ejam2table_tall(x)
-  ejam2barplot(x)
-  ejam2barplot_sites(x)
-  ejam2tableviewer(x)
-  junk = ejam2excel(x, save_now = F, launchexcel = T) # map and report were missing if not in shiny app
-  # ejam2report(x)   #  report not yet working if not in shiny app
-  # ejam2map(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
-  # ejam2shapefile(x) # no latlon or geometry is in output of ejamit() here so this is not working for FIPS or shapefile analysis cases yet, except see  mapfastej_counties()
-  
-  x <- ejamit(fips = fips_counties_from_state_abbrev("DE"))  #   3 Counties
-  mapfastej_counties(x$results_bysite) # not (x)
-  
-  
+  stop("done with basic checks.")
 }
 ####################### #
 
@@ -90,23 +108,9 @@ library(testthat)
 library(data.table) # used in functions here
 library(magrittr)
 library(dplyr)
-consoleclear <- function() if (interactive() & rstudioapi::isAvailable()) {rstudioapi::executeCommand("consoleClear")}
+consoleclear <- function() {if (interactive() & rstudioapi::isAvailable()) {rstudioapi::executeCommand("consoleClear")}}
 consoleclear()
-# if (interactive()) {
-#   useloadall <- askYesNo(msg = "Do you want to load and test the current source code files version of EJAM (via devtools::load_all() etc.,
-#                       rather than testing the installed version)?", default = TRUE)
-#   if (useloadall) {devtools::load_all()} else {suppressPackageStartupMessages({   library(EJAM) }) } #??
-# } else {suppressPackageStartupMessages({   library(EJAM)   }) } #??
-dataload_from_pins("all")
-
-if (file.exists("./tests/testthat/setup.R")) {
-  # rstudioapi::navigateToFile("./tests/testthat/setup.R")
-  source("./tests/testthat/setup.R") #   asks if need load_all or library
-} else {
-  cat("Need to source the setup.R file first \n")    
-}
 ########################################## #
-
 ## Find the tests ####
 update_list_of_tests <- TRUE
 if (update_list_of_tests) {
@@ -306,23 +310,63 @@ if (update_list_of_tests) {
     return(xtable)
   }
 }   #   done defining functions
+#################################################### # 
+########################### #  ########################################## #
+# >>Ask what to do<< ####
+useloadall = TRUE
+y_runsome = FALSE # if T, need to also create partial_testlist
+y_runall = TRUE
+y_seeresults = TRUE
+y_save = TRUE
+
+if (interactive()) {
+  useloadall <- askYesNo(msg = "Do you want to load and test the current source code files version of EJAM (via devtools::load_all() etc.,
+                      rather than testing the installed version)?", default = TRUE)
+  
+  y_runsome = askYesNo("Run only some tests now?")
+  if (is.na(y_runsome)) {y_runsome = FALSE}
+  if (y_runsome) {
+    fnames = unlist(testlist)
+    shortgroupnames = gsub("^test_(.*)","\\1", names((testlist)))
+    tname = rstudioapi::showPrompt(
+      "WHICH TEST OR GROUPS COMMA-SEP LIST",
+      paste0(shortgroupnames, collapse = ","),
+      # "fips,naics,frs,latlon,maps,shape,getblocks,fixcolnames,doag,ejamit,ejscreenapi,mod,app"
+    )
+    tname <- unlist(strsplit(gsub(" ", "", tname), ","))
+    tname = paste0("test_", tname)
+    #    test_file("./tests/testthat/test-MAP_FUNCTIONS.R" )
+    partial_testlist <-  testlist[names(testlist) %in% tname] 
+  }
+  
+  y_runall = askYesNo("RUN ALL TESTS NOW?"); if (is.na(y_runall)) {y_runall <- FALSE}
+  y_seeresults = askYesNo("View results of unit testing?"); if (is.na(y_seeresults)) {y_seeresults <- FALSE}
+  y_save = askYesNo("Save results of unit testing?"); if (is.na(y_save)) {y_save <- FALSE}
+}
+############ # 
+if (y_runall == FALSE && y_runsome == FALSE) {
+  stop('no tests run')
+} 
+
+if (useloadall) {
+  devtools::load_all()
+} else {
+  suppressPackageStartupMessages({   library(EJAM)   }) 
+}
+dataload_from_pins("all")
+if (file.exists("./tests/testthat/setup.R")) {
+  # rstudioapi::navigateToFile("./tests/testthat/setup.R")
+  source("./tests/testthat/setup.R") #   asks if need load_all or library
+} else {
+  cat("Need to source the setup.R file first \n")    
+}
+
 ########################### #  ########################################## #
 # RUN JUST 1 FILE OR GROUP? ####
 
-y = askYesNo("Run only some tests now?")
-if (is.na(y)) {y = FALSE}
-if (y) {
-  fnames = unlist(testlist)
-  shortgroupnames = gsub("^test_(.*)","\\1", names((testlist)))
-  tname = rstudioapi::showPrompt(
-    "WHICH TEST OR GROUPS COMMA-SEP LIST",
-    paste0(shortgroupnames, collapse = ","),
-    # "fips,naics,frs,latlon,maps,shape,getblocks,fixcolnames,doag,ejamit,ejscreenapi,mod,app"
-  )
-  tname <- unlist(strsplit(gsub(" ", "", tname), ","))
-  tname = paste0("test_", tname)
-  #    test_file("./tests/testthat/test-MAP_FUNCTIONS.R" )
-  partial_testlist <-  testlist[names(testlist) %in% tname] 
+# y_runsome = askYesNo("Run only some tests now?")
+# if (is.na(y_runsome)) {y_runsome = FALSE}
+if (y_runsome) {
   
   consoleclear()
   
@@ -335,9 +379,9 @@ if (y) {
 
 # RUN ALL TESTS (slow)  ####
 
-y = askYesNo("RUN ALL TESTS NOW?")
-if (is.na(y)) {y = FALSE}
-if (y) {
+# y_runall = askYesNo("RUN ALL TESTS NOW?")
+if (is.na(y_runall)) {y_runall = FALSE}
+if (y_runall) {
   ## takes almost 5 minutes 
   consoleclear()
   
@@ -351,9 +395,9 @@ if (y) {
   x <- testall
   ## save results of testing ####
   
-  y = askYesNo("Save results of unit testing?") 
-  if (is.na(y)) {y = FALSE}
-  if (y) {
+  # y_save = askYesNo("Save results of unit testing?") 
+  if (is.na(y_save)) {y_save = FALSE}
+  if (y_save) {
     fname <- paste0("./tests/results_of_unit_testing_", as.character(Sys.Date()), ".rda")
     save(testall, file = fname)
   } # end if - save
@@ -363,9 +407,9 @@ if (y) {
 
 # SEE WHAT PASSED / FAILED ####
 
-y = askYesNo("View results of unit testing?") 
-if (is.na(y)) {y = FALSE}
-if (y) {
+# y_seeresults = askYesNo("View results of unit testing?") 
+if (is.na(y_seeresults)) {y_seeresults = FALSE}
+if (y_seeresults) {
   consoleclear()
   ########################### #  ########################### #
   

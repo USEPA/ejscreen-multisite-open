@@ -194,7 +194,7 @@ ejamit <- function(sitepoints,
     
     
 
-    if (!missing(radius)) {
+    if (!missing(radius) && radius > 0) {
       if (!silentinteractive) {cat('Adding buffer around each polygon.\n')}
       shp <- shape_buffered_from_shapefile(shapefile = shp, radius.miles = radius) # default crs
     }
@@ -245,7 +245,7 @@ ejamit <- function(sitepoints,
     mysites2blocks <- getblocksnearby_from_fips(
       
       fips = fips,
-      inshiny = inshiny,
+      inshiny = in_shiny,
       need_blockwt = need_blockwt
     )
     if (nrow(mysites2blocks) == 0) {

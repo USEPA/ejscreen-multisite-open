@@ -270,7 +270,7 @@ fill_tbl_row_subgroups <- function(output_df, Rname, longname) {
   
   txt <-  paste0(txt, '\n', paste0('<td headers=\"data-indicators-table-',
                                    hdr_names,'\">',
-                                   cur_val,'%','</td>'))
+                                   cur_val,'</td>'))
   
   
   txt <- paste0(txt, '\n','</tr>')
