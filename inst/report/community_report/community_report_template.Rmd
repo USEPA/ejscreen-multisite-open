@@ -52,7 +52,7 @@ params$map
 ```{r}
 library(desc)
 library(golem)
-desc <- desc::desc(file = app_sys('../DESCRIPTION'))
+desc <- desc::desc(file = EJAM:::app_sys('../DESCRIPTION'))
 version <- desc$get("Version")
 ## trim version number shown in report to Major.Minor
 version <- substr(version, start = 1, stop = gregexpr('\\.',version)[[1]][2]-1)

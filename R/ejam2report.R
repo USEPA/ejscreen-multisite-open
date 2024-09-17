@@ -84,17 +84,17 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
     }
     
     if (!('main.css' %in% list.files(tempdir()))) {
-      file.copy(from = app_sys('report/community_report/main.css'),
+      file.copy(from = EJAM:::app_sys('report/community_report/main.css'),
                 to = file.path(tempdir(), 'main.css'), overwrite = TRUE)          
     }
     if (!('communityreport.css' %in% list.files(tempdir()))) {
-      file.copy(from = app_sys('report/community_report/communityreport.css'),
+      file.copy(from = EJAM:::app_sys('report/community_report/communityreport.css'),
                 to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)          
     }
     
     if (!('EPA_logo_white_2.png') %in% list.files(file.path(tempdir(), 'www'))) {
       dir.create(file.path(tempdir(), 'www'))
-      file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
+      file.copy(from = EJAM:::app_sys('report/community_report/EPA_logo_white_2.png'),
                 to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
     }
     
@@ -103,7 +103,7 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
     tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
     
     ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
-    file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),  # treats EJAM/inst/ as root
+    file.copy(from = EJAM:::app_sys('report/community_report/community_report_template.Rmd'),  # treats EJAM/inst/ as root
               to = tempReport, overwrite = TRUE)
     if (return_html) {
       temp_comm_report_or_null <- NULL

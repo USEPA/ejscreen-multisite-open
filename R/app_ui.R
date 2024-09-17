@@ -33,7 +33,7 @@ app_ui  <- function(request) {
       #  we use golem app_sys() to ensure it points to the right folder,
       #  which in source pkg is EJAM/inst/app/www/ejam_styling.css
       # but in installed pkg is EJAM/app/www/ejam_styling.css
-      includeCSS(app_sys('app/www/ejam_styling.css')), #
+      includeCSS(EJAM:::app_sys('app/www/ejam_styling.css')), #
       
       # use friendlier message if user gets disconnected from server
       shinydisconnect::disconnectMessage(
@@ -488,8 +488,8 @@ app_ui  <- function(request) {
                              tabPanel(
                                title = "Community Report",
                                
-                               includeCSS(app_sys('report/community_report/communityreport.css')),
-                               includeCSS(app_sys('report/community_report/main.css')),
+                               includeCSS(EJAM:::app_sys('report/community_report/communityreport.css')),
+                               includeCSS(EJAM:::app_sys('report/community_report/main.css')),
                                #includeCSS('inst/report/community_report/communityreport.css'),
                                #includeCSS('inst/report/community_report/main.css'),
                                
@@ -1358,13 +1358,13 @@ golem_add_external_resources <- function() {
   
   golem::add_resource_path(
     "www",
-    app_sys("app/www") #   points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www
+    EJAM:::app_sys("app/www") #   points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www
   )
   tags$head(
     
     # app title ####
     golem::bundle_resources(
-      path = app_sys("app/www"),   #  points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www
+      path = EJAM:::app_sys("app/www"),   #  points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www
       app_title = "EJAM"
     ),
     
