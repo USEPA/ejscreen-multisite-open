@@ -8,9 +8,7 @@
 # https://cran.r-project.org/web/packages/shinytest2/vignettes/use-ci.html
 on:
   pull_request:
-    branches: [development, dev_ejscreen2.3_shinytest2]
-  push:
-    branches: [dev_ejscreen2.3_shinytest2]
+    branches: [development]
   
 name: Test
 
