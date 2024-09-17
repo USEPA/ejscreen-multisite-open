@@ -542,26 +542,25 @@ ejscreen_vs_ejam_summary <- function(z = NULL,
     sites.agree.rounded    = sites.agree.rounded,
     sites.agree.within.tol = sites.agree.within.tol,
     
-    pct.of.sites.agree.rounded    = round(100 * sites.agree.rounded    / sites.with.data.both, 6),
-    pct.of.sites.agree.within.tol = round(100 * sites.agree.within.tol / sites.with.data.both, 6), 
+    pct.of.sites.agree.rounded    = round(100 * sites.agree.rounded    / sites.with.data.both, 1),
+    pct.of.sites.agree.within.tol = round(100 * sites.agree.within.tol / sites.with.data.both, 1), 
     # test/check NA handling there ***
     
-    median.abs.diff       = sapply(z$absdiff,     median, na.rm = TRUE),
-    max.abs.diff          = sapply(z$absdiff,     max,    na.rm = TRUE), 
+    median.abs.diff       =  apply(z$absdiff,   MARGIN = 2, FUN = median, na.rm = TRUE),
+    max.abs.diff          =  apply(z$absdiff,   MARGIN = 2, FUN = max,    na.rm = TRUE), 
     
-    mean.pct.diff   = 100 * sapply(z$abspctdiff,  mean,   na.rm = TRUE),
-    median.pct.diff = 100 * sapply(z$abspctdiff,  median, na.rm = TRUE),
-    max.pct.diff    = 100 * sapply(z$abspctdiff,  max,    na.rm = TRUE),
+    mean.pct.diff   = 100 * apply(z$abspctdiff, MARGIN = 2, FUN = mean,   na.rm = TRUE),
+    median.pct.diff = 100 * apply(z$abspctdiff, MARGIN = 2, FUN = median, na.rm = TRUE),
+    max.pct.diff    = 100 * apply(z$abspctdiff, MARGIN = 2, FUN = max,    na.rm = TRUE),
     
-    within.x.pct.at.p.pct.of.sites = 100 * sapply(z$abspctdiff, quantile, type = 1, probs = prob, na.rm = TRUE)
+    within.x.pct.at.p.pct.of.sites = round(100 * apply(z$abspctdiff, MARGIN = 2, FUN = quantile, type = 1, probs = prob, na.rm = TRUE), 1)
   )
-  pct_agree$median.pct.diff <- round(pct_agree$median.pct.diff, 2)
-  pct_agree$within.x.pct.at.p.pct.of.sites <- round(pct_agree$within.x.pct.at.p.pct.of.sites, 2)
-  pct_agree$max.pct.diff <- round(pct_agree$max.pct.diff, 2)
+  pct_agree$median.pct.diff <- round(pct_agree$median.pct.diff, 0)
+  pct_agree$within.x.pct.at.p.pct.of.sites <- round(pct_agree$within.x.pct.at.p.pct.of.sites, 0)
+  pct_agree$max.pct.diff <- round(pct_agree$max.pct.diff, 0)
   rownames(pct_agree) <- NULL
   pct_agree <- pct_agree[order(pct_agree$pct.of.sites.agree.rounded, -pct_agree$within.x.pct.at.p.pct.of.sites, decreasing = T), ]
   
-  # if (!missing(z)) {
   usefulvars <- c('blockcount_near_site', 'pop', names_e, names_d, 
                   #names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile,
                   names_d_subgroups
@@ -570,21 +569,29 @@ ejscreen_vs_ejam_summary <- function(z = NULL,
                    #  "sites.with.data.both",
                    #  "sites.agree.rounded", "sites.agree.within.tol",
                    'pct.of.sites.agree.rounded', 'pct.of.sites.agree.within.tol',
-                   'median.pct.diff', 'max.pct.diff', 'within.x.pct.at.p.pct.of.sites')
+                   # 'median.pct.diff', 'max.pct.diff', 
+                   'within.x.pct.at.p.pct.of.sites')
   
   # if (!is.null(decimals)) {
   #   pct_agree[, names(pct_agree) != "indicator"] <- round(pct_agree[, names(pct_agree) != "indicator"], decimals)
   #   }
   # rownames(pct_agree) <- pct_agree$indicator  # right now they have original rownum but prints sorted by largest disagreement
   
-  cat("\n\n")
+  cat("\n\nComparison of results for", NROW(z$EJAM), "sites.\n")
+  print(z$EJAM[1,'radius.miles'])
+  cat("\n")
   print(pct_agree[pct_agree$indicator %in% usefulvars, usefulstats])
+  
   cat("\n\n")
   print(pct_agree[pct_agree$indicator %in% c("pop", "blockcount_near_site"), usefulstats])
-  cat(paste0("\n\n Tolerance of ", tol, " was used, so difference of <", tol * 100, "% is within tolerance.\n\n"))
-  cat(paste0("Probs (p) used was ", prob, ", so ", prob * 100, "% of sites are within absolute percentage difference reported in output of this function.\n\n" ))
-  # }
   
+  cat(paste0("\n\n Tolerance of ", tol, " was used, so 'agree.within.tol' means a difference of <", tol * 100, "%.\n"))
+  cat(paste0(" Probs (p) used was ", prob, ", so 'at.p.pct.of.sites' means at ", round(prob * 100, 0), "% of sites.\n\n" ))
+  cat("\n\n")
+  
+  # see all sites for one indicator like "pop"
+  print(head(ejscreen_vs_ejam_1var(z), 25))
+  cat("\n\n")
   
   invisible(pct_agree)
 }
@@ -627,7 +634,7 @@ ejscreen_vs_ejam_summary_quantiles <- function(z,
 ######################################################################### # 
 
 
-#' EJAM/EJSCREEN comparisons - see results for 1 INDICATOR after using ejscreen_vs_ejam()
+#' EJAM/EJSCREEN comparisons - see results at every site, for 1 INDICATOR after using ejscreen_vs_ejam()
 #'
 #' @param vs output of ejscreen_vs_ejam() or ejscreen_vscript()
 #' @param varname 
@@ -640,13 +647,16 @@ ejscreen_vs_ejam_summary_quantiles <- function(z,
 #'   and rows represent sites analyzed.
 #'  
 #'
-ejscreen_vs_ejam_1var = function(vs, varname = names_these[4], # "pctlingiso" 
+ejscreen_vs_ejam_1var = function(vs, varname = 'pop', # names_these[4], # "pctlingiso" 
                                  info = c("EJSCREEN", "EJAM", 
                                           "ratio", 
                                           "diff", "absdiff", 
-                                          "pctdiff", "abspctdiff")[c(1,2,5)]) {
-  
-  data.frame(sapply(vs100[info], function(x) x[,varname]))
+                                          "pctdiff", "abspctdiff")[c(1,2,5,6)]) {
+  cat("\nAlso try, e.g.,  ejscreen_vs_ejam_1var(vs, 'blockcount_near_site')")
+  cat('\n\nComparison of results at a few sites, for the indicator', varname, paste0(' (', fixcolnames(varname, 'r', 'long'), ')\n\n'))
+  y = data.frame(sapply(vs[info], function(x) x[,varname]))
+  if ("pctdiff" %in% names(y)) {y$pctdiff = round(100 * y$pctdiff, 0)}
+  y
 }
 ######################################################################### # 
 
@@ -681,7 +691,7 @@ ejscreen_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
   if (length(mysite) > 1 | mysite > NROW(z$EJAM)) {stop('mysite must be the row number of 1 site in the table z$EJAM')}
   if (!all(myvars %in% colnames(z$EJAM))) {stop('myvars must be among colnames of z$EJAM')}
   
-  z = sapply(z, function(x) x[mysite, ])[myvars, ]
+  z = sapply(z, function(x) x[mysite, ])[myvars, , drop = FALSE]
   # z = data.frame(z)
   # z = sapply(z, unlist)
   return(z)
@@ -712,13 +722,14 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
   # x is from x <- ejscreen_vs_ejam(pts, radius = radius, include_ejindexes = TRUE)
   
   if (is.null(radius)) {radius = x$EJAM[1, "radius.miles"]}  
-  px <- plotblocksnearby(x$EJAM[n, 1:10], 
+  datf = data.frame(x$EJAM[n, 1:10, drop = FALSE], lat = x$EJAM[n, 'lat'], lon = x$EJAM[n, 'lon'])
+  px <- plotblocksnearby(datf, 
                          radius = radius, 
                          overlay_blockgroups = overlay_blockgroups, 
                          ...)
   px[blockgroupstats, bgpop := pop, on = 'bgid']
   px[, blockpop := bgpop * blockwt]
-  these <- tail(px[order(distance), .(blockid, distance, blockpop)], 10) # see the 10 furthest sites
+  these <- tail(px[order(-distance), .(blockid, distance, blockpop)], 10) # see the 10 furthest sites
   these$cumpop = round(rev(cumsum(rev(these$blockpop))), 1) # cumulative starting from furthest site
   print(these)
   
@@ -767,7 +778,7 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
 #' 
 #' @export
 #' 
-ejscreen_vscript <- function(defdir = getwd(),
+ejscreen_vscript <- function(defdir = '.',
                              n, newpts, pts, radius, savedejscreentableoutput,
                              x100fix = TRUE, 
                              x100varnames = names_pct_as_fraction_ejamit
@@ -789,7 +800,7 @@ ejscreen_vscript <- function(defdir = getwd(),
   on.exit(setwd(oldir))
   
   if ((missing(defdir) | !dir.exists(defdir))) {
-    if (!exists(defdir)) {message("specified defdir not found - please specify a valid folder")}
+    if (!dir.exists(defdir)) {message("specified defdir not found - please specify a valid folder")}
     defdir = ifelse(dir.exists(defdir), defdir, getwd())
     mydir = rstudioapi::selectDirectory("Folder for saving files?", path = defdir)
     if (is.na(mydir)) {stop('cancelled')}
@@ -850,9 +861,9 @@ ejscreen_vscript <- function(defdir = getwd(),
       # savedejscreentableoutput should be the data.frame that is the output of ejscreenapi_plus() 
     }
     if (!is.data.frame(savedejscreentableoutput)) {stop("savedejscreentableoutput should be a data.frame output from ejscreenit()$table or similar")}
-    
+    cat("Using saved ejscreen results and running new EJAM results to compare them... \n")
     vs <- ejscreen_vs_ejam_alreadyrun(apisite = savedejscreentableoutput,
-                                      ejamsite = ejamit(pts, radius = radius, include_ejindexes = TRUE),
+                                      ejamsite = ejamit(pts, radius = radius, include_ejindexes = TRUE)$results_bysite,
                                       x100fix = x100fix, 
                                       x100varnames = x100varnames
     )
