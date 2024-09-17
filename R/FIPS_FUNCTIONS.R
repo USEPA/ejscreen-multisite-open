@@ -427,11 +427,11 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
 #' @export
 #'
 name2fips = function(x) {
-  
+  suppressWarnings({ # do not need to get warned that x is not a ST abbrev here
   # figure out if x is ST, statename, countyname.
   fips = fips_state_from_state_abbrev(x) # NA if not a state abbrev. ignores case.
+  })
   fips[is.na(fips)] <- fips_state_from_statename(x[is.na(fips)]) # only tries for those that were not a ST abbrev
-  
   fips[is.na(fips)] <- fips_counties_from_countynamefull(x[is.na(fips)])
   # fips[is.na(fips)] = substr(blockgroupstats$bgfips,1,5)[match(x[is.na(fips)]), blockgroupstats$countyname]
   # only tries for those that were neither ST nor statename
@@ -964,8 +964,12 @@ fips2name  <- function(fips, ...) {
   out <- rep(NA, length(fips))
   
   ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
+  if (any(!is.na(fips) & fipstype(fips) == "state")) {
   out[!is.na(fips) & fipstype(fips) == "state"]  <- fips2statename(fips = fips[!is.na(fips) & fipstype(fips) == "state"])
+  }
+  if (any(!is.na(fips) & fipstype(fips) == "county")) { # this prevents irrelevant warning "this function should only be used to convert county fips to county name..."
   out[!is.na(fips) & fipstype(fips) == "county"] <- fips2countyname(fips = fips[!is.na(fips) & fipstype(fips) == "county"], ...)
+  }
   if (anyNA(out)) {
     howmanyna = sum(is.na(out))
     warning("NA returned for ", howmanyna," values that failed to match")
