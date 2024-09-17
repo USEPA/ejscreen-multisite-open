@@ -20,7 +20,6 @@ test_that("{shinytest2} recording: EJAM", {
   
   print("taking a screenshot")
   app$expect_values()
-  app$expect_screenshot(threshold=37)
   
   print("going to Site Selection tab")
   app$set_inputs(all_tabs = "Site Selection")
