@@ -39,7 +39,12 @@ jobs:
       #   uses: r-lib/actions/setup-pandoc@v2
       #   with:
       #     pandoc-version: '3.1.11'
-    
+      # 
+      # - name: Install App Dependencies
+      #   run: |
+      #     Rscript -e 'install.packages("devtools")'
+      #     Rscript -e 'devtools::install_deps(dependencies = TRUE)'
+      
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: |
@@ -48,12 +53,7 @@ jobs:
             curl
             chromote
             httr
-        
-      # - name: Install App Dependencies
-      #   run: |
-      #     Rscript -e 'install.packages("devtools")'
-      #     Rscript -e 'devtools::install_deps(dependencies = TRUE)'
-      
+            
       - name: Install GitHub CLI
         run: sudo apt-get install gh
   
@@ -68,7 +68,7 @@ jobs:
       
       - name: Install EJAM
         run: |
-          Rscript -e 'devtools::install_local(".", force=T)'
+          Rscript -e 'devtools::install_local(".", force=T, quiet=FALSE)'
 
       - name: Run Shiny Tests
         run: Rscript -e 'source("tests/testthat.R")'
