@@ -9,7 +9,7 @@ distance_by_group_plot(
   results_bybg_people = NULL,
   radius_miles =
     round(max(results_bybg_people$distance_min_avgperson[!is.infinite(results_bybg_people$distance_min_avgperson)],
-    na.rm = T), 1),
+    na.rm = T), table_rounding_info("distance_min_avgperson")),
   subgroups_type = NULL,
   demogvarname = NULL,
   demoglabel = NULL,

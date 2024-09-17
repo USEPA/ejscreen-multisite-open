@@ -539,37 +539,8 @@ app_server <- function(input, output, session) {
     
     # ideally would quickly check file size here before actually trying to read the entire file in case it is > cap.
     
-    sitepoints <- switch(ext,
-                         csv = {tryCatch({data.table::fread(input$ss_upload_latlon$datapath)}, error = function(e){
-                           shiny::validate(paste("This csv file caused an error:", e$message))
-                           NULL
-                         })
-                         },
-                         
-                         xls  = {tryCatch({readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table()}, error = function(e){
-                           sheets<-readxl::excel_sheets(input$ss_upload_latlon$datapath)
-                           if (length(sheets) > 1){
-                             shiny::validate('This excel file contains multiple sheets, EJAM only looks at the first sheet which may result in an error')
-                           }else{
-                             shiny::validate(paste("This excel file caused an error:", e$message))
-                           }
-                           NULL
-                         })
-                         },
-                           
-                         xlsx = {tryCatch({readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table()}, error = function(e){
-                           sheets<-readxl::excel_sheets(input$ss_upload_latlon$datapath)
-                           if (length(sheets) > 1){
-                             shiny::validate('This excel file contains multiple sheets, EJAM only looks at the first sheet which may result in an error')
-                           }else{
-                             shiny::validate(paste("This excel file caused an error:", e$message))
-                           }
-                           NULL
-                         })
-                         },
-                         shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
-    )
-    
+    sitepoints <- handle_file_upload(input$ss_upload_latlon, ext)
+                  
     # DO NOT USE THE UPLOAD IF IT HAS MORE THAN MAX POINTS ALLOWED FOR UPLOAD
     #
     if (NROW(sitepoints) > input$max_pts_upload) {
@@ -620,36 +591,8 @@ app_server <- function(input, output, session) {
     ext <- tolower(tools::file_ext(input$ss_upload_frs$name))
     ## if acceptable file type, read in; if not, send warning text
     
-    read_frs <- switch(ext,
-                       csv = {tryCatch({read.csv(input$ss_upload_frs$datapath)}, error = function(e){
-                         shiny::validate(paste("This csv file caused an error:", e$message))
-                         NULL
-                       })
-                       },
-                       
-                       xls  = {tryCatch({readxl::read_excel(input$ss_upload_frs$datapath) %>% data.table::as.data.table()}, error = function(e){
-                         sheets<-readxl::excel_sheets(input$ss_upload_frs$datapath)
-                         if (length(sheets) > 1){
-                           shiny::validate('This excel file contains multiple sheets, EJAM only looks at the first sheet which may result in an error')
-                         }else{
-                           shiny::validate(paste("This excel file caused an error:", e$message))
-                         }
-                         NULL
-                       })
-                       },
-                       
-                       xlsx = {tryCatch({readxl::read_excel(input$ss_upload_frs$datapath) %>% data.table::as.data.table()}, error = function(e){
-                         sheets<-readxl::excel_sheets(input$ss_upload_frs$datapath)
-                         if (length(sheets) > 1){
-                           shiny::validate('This excel file contains multiple sheets, EJAM only looks at the first sheet which may result in an error')
-                         }else{
-                           shiny::validate(paste("This excel file caused an error:", e$message))
-                         }
-                         NULL
-                       })
-                       },
-                       shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
-    ) # returns a data.frame
+    read_frs <- handle_file_upload(input$ss_upload_frs,ext)
+      # returns a data.frame
     cat("ROW COUNT IN FILE THAT SHOULD provide FRS REGISTRY_ID: ", NROW(read_frs), "\n")
     #include frs_is_valid verification check function, must have colname REGISTRY_ID
     if (frs_is_valid(read_frs)) {
@@ -778,36 +721,9 @@ app_server <- function(input, output, session) {
     ## if acceptable file type, read in; if not, send warning text
     
     
-    read_pgm <-  switch(ext,
-                        csv = {tryCatch({read.csv(input$ss_upload_program$datapath)}, error = function(e){
-                          shiny::validate(paste("This csv file caused an error:", e$message))
-                          NULL
-                        })
-                        },
-                        
-                        xls  = {tryCatch({readxl::read_excel(input$ss_upload_program$datapath) %>% data.table::as.data.table()}, error = function(e){
-                          sheets<-readxl::excel_sheets(input$ss_upload_program$datapath)
-                          if (length(sheets) > 1){
-                            shiny::validate('This excel file contains multiple sheets, EJAM only looks at the first sheet which may result in an error')
-                          }else{
-                            shiny::validate(paste("This excel file caused an error:", e$message))
-                          }
-                          NULL
-                        })
-                        },
-                        
-                        xlsx = {tryCatch({readxl::read_excel(input$ss_upload_program$datapath) %>% data.table::as.data.table()}, error = function(e){
-                          sheets<-readxl::excel_sheets(input$ss_upload_program$datapath)
-                          if (length(sheets) > 1){
-                            shiny::validate('This excel file contains multiple sheets, EJAM only looks at the first sheet which may result in an error')
-                          }else{
-                            shiny::validate(paste("This excel file caused an error:", e$message))
-                          }
-                          NULL
-                        })
-                        },
-                        shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
-    )# returns a data.frame
+    read_pgm <- handle_file_upload(input$ss_upload_program, ext)
+                   
+             # returns a data.frame
     cat("ROW COUNT IN file that should have program, pgm_sys_id: ", NROW(read_pgm), "\n")
     ## error if no columns provided
     if (!any(c('program','pgm_sys_id') %in% tolower(colnames(read_pgm)))) {
@@ -979,36 +895,7 @@ app_server <- function(input, output, session) {
     
     
     ## if acceptable file type, read in; if not, send warning text
-    fips_dt <- switch(ext,
-                      csv = {tryCatch({data.table::fread(input$ss_upload_fips$datapath)}, error = function(e){
-                        shiny::validate(paste("This csv file caused an error:", e$message))
-                        NULL
-                      })
-                      },
-                      
-                      xls  = {tryCatch({readxl::read_excel(input$ss_upload_fips$datapath) %>% data.table::as.data.table()}, error = function(e){
-                        sheets<-readxl::excel_sheets(input$ss_upload_fips$datapath)
-                        if (length(sheets) > 1){
-                          shiny::validate('This excel file contains multiple sheets, EJAM only looks at the first sheet which may result in an error')
-                        }else{
-                          shiny::validate(paste("This excel file caused an error:", e$message))
-                        }
-                        NULL
-                      })
-                      },
-                      
-                      xlsx = {tryCatch({readxl::read_excel(input$ss_upload_fips$datapath) %>% data.table::as.data.table()}, error = function(e){
-                        sheets<-readxl::excel_sheets(input$ss_upload_fips$datapath)
-                        if (length(sheets) > 1){
-                          shiny::validate('This excel file contains multiple sheets, EJAM only looks at the first sheet which may result in an error')
-                        }else{
-                          shiny::validate(paste("This excel file caused an error:", e$message))
-                        }
-                        NULL
-                      })
-                      },
-                      shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
-    )
+    fips_dt <- handle_file_upload(input$ss_upload_fips, ext)
     cat("COUNT OF ROWS IN FIPS FILE: ", NROW(fips_dt),"\n")
     
     ################################################################################### #

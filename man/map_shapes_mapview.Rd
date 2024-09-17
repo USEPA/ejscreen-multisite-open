@@ -16,10 +16,10 @@ map_shapes_mapview(
 
 \item{col.regions}{passed to \code{\link[mapview:mapview]{mapview::mapview()}}}
 
-\item{map.types}{passed to  \code{\link[mapview:mapView]{mapview::mapview()}}}
+\item{map.types}{passed to  \code{\link[mapview:mapview]{mapview::mapview()}}}
 
 \item{...}{passed to mapview}
-
+}
 \value{
 like output of mapview function \code{\link[mapview:mapview]{mapview::mapview()}},
 if mapview package is installed,
