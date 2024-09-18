@@ -160,9 +160,8 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
   on.exit({if (!finished_without_crashing) {
     if (!on_server_so_dont_save_files) {
       save(outlist, file = file.path(tdir, 'saved_this_before_crash.rdata'))
-      if (verbose) {
-        cat("see ", file.path(tdir, 'saved_this_before_crash.rdata'), "\n")
-      }}
+      cat("see ", file.path(tdir, 'saved_this_before_crash.rdata'), "\n")
+    }
   } })
   
   # emptyresults will let us return empty row if no valid result near a point ####
@@ -370,9 +369,14 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
   # if (drop_redundant_indicators) { # already done above
   #   results <- results[, !(names(results) %in% map_headernames$api_synonym)] # this was removing P_HISP with no copy by another name!
   # }
-  
+  # drop this synonym still here
+  if (all(c("RAW_D_LIFEEXP", "RAW_HI_LIFEEXP")) %in% names(results)) {results$RAW_HI_LIFEEXP <- NULL}
   if (nicenames) {
     names(results) <- fixcolnames(names(results) , "api", 'long') # but downstream functions mostly expect rname format
+  }
+  if (anyDuplicated(names(results))) {
+    warning("These column names are duplicates - possibly an error renaming them:", 
+            paste0(sort(names(results)[names(results) %in% names(results)[duplicated(names(results))]]), collapse = ","))
   }
   # Return results invisibly ####
   invisible(results)

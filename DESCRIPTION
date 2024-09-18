@@ -12,7 +12,7 @@ Description: Web app and R tools to easily summarize
     Very fast identification of nearby blocks and distances, and 
     aggregation of indicators within each distance by site and overall.
     EJScreen indicators are included.
-URL: https://usepa.github.io/EJAM/, https://github.com/USEPA/EJAM
+URL: https://usepa.github.io/EJAM, https://github.com/USEPA/EJAM
 Depends: 
     R (>= 2.10)
 Imports:

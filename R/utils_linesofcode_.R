@@ -33,7 +33,7 @@
 #' 
 #' @keywords internal
 #' 
-linesofcode2 <- function(folder=getwd(), packages, recursive=TRUE, sums=FALSE, rfolderonly=FALSE, cropfilename=40, croppath=20, showrows=NULL) {
+linesofcode2 <- function(folder='.', packages, recursive=TRUE, sums=FALSE, rfolderonly=FALSE, cropfilename=40, croppath=20, showrows=NULL) {
 
   dir2 <- function(x, ignore.case = TRUE, ...) {
     if (missing(x)) {x <- '*.*'}

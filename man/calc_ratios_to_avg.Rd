@@ -35,10 +35,12 @@ a list with ratios_d and ratios_e which are
 vectors of numbers the lengths of dvarnames and evarnames
 }
 \description{
-Used to create input to\code{\link[= boxplots_ratios]{ boxplots_ratios()}}
+Used to create input to\code{\link[= boxplots_ratios]{ boxplots_ratios()}} and can be used elsewhere now
 }
 \details{
-Should recode to use variable name defaults from package not hardcoded here.
+Note that colnames returned are same as input, not renamed to say "ratio"
+If names_d_subgroups are included, those means are not in API output from EJScreen
+so it gets the means from usastats or statestats
 }
 \examples{
  out <- testoutput_ejscreenit_5$table # has long names

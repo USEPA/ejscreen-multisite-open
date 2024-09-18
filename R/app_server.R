@@ -930,6 +930,24 @@ app_server <- function(input, output, session) {
         fips_vec
       }
       
+      fips_is_valid <- fips_valid(fips_vec)
+      
+      if (sum(fips_is_valid) > 0) {
+
+        numna <- sum(!fips_is_valid)
+        num_notna <- length(fips_vec) - sum(!fips_is_valid)
+        num_valid_pts_uploaded[['FIPS']] <- num_notna
+        invalid_alert[['FIPS']] <- numna # this updates the value of the reactive invalid_alert()
+        cat("Number of FIPS codes:  "); cat(length(fips_vec), 'total,', num_notna, 'valid,', numna, ' invalid \n')
+        
+        fips_vec
+      } else {
+        invalid_alert[['FIPS']] <- 0 # hides the invalid site warning
+        an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites/shapes
+        disable_buttons[['FIPS']] <- TRUE
+        ## if not matched, return this message
+        shiny::validate('No valid FIPS codes found in this file.')
+      }
     } else {  # OLDER VERSION NOT USING FUNCTIONS
       
       # ## create named vector of FIPS codes
@@ -1713,14 +1731,6 @@ app_server <- function(input, output, session) {
     
     if (submitted_upload_method() == 'FIPS') {  # if FIPS, do everything in 1 step right here.
       
-      d_upload <- data_uploaded()
-      fips_valid <- sapply(d_upload, function(x) !all(is.na(fips_bg_from_anyfips(x))))
-      d_upload <- data.table(ejam_uniq_id = d_upload, valid = fips_valid)  # NOTE ejam_uniq_id is FIPS not 1:N here
-      #d_upload[, ejam_uniq_id := .I]
-      #setcolorder(d_upload, 'ejam_uniq_id')
-      d_upload$invalid_msg <- NA
-      d_upload$invalid_msg[!d_upload$valid] <- 'bad FIPS code'
-      
       out <- ejamit(fips = data_uploaded(),              # unlike for SHP or latlon cases, this could include invalid FIPS!
                     radius = 999, # because FIPS analysis
                     maxradius = input$maxradius,
@@ -1754,10 +1764,9 @@ app_server <- function(input, output, session) {
       if (is.null(out)) {
         validate('No valid blockgroups found matching these FIPS codes.')
       } else {
-        out$results_bysite <- merge(d_upload[, .(ejam_uniq_id, valid, invalid_msg)],
-                                    out$results_bysite,
-                                    by = 'ejam_uniq_id', all = T)
-        
+        # out$results_bysite <- merge(d_upload[, .(ejam_uniq_id, valid, invalid_msg)],
+        #                             out$results_bysite,
+        #                             by = 'ejam_uniq_id', all = T)
         #incorporate new longnames into FIPS data
         newcolnames <- c(
           "valid",
@@ -1900,9 +1909,19 @@ app_server <- function(input, output, session) {
         ## note which places dropped by doaggregate() as invalid
         dup <- data_uploaded() # includes invalid ones too
         dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
-        dup$invalid_msg[!(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'dropped from doaggregate'
+        dup$invalid_msg[!(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
         data_uploaded <- dup
         
+        ## stop and return NULL if no valid sites left after doaggregate
+        if(all(dup$valid == FALSE)){
+         message('No valid sites remaining. Quitting analysis')
+          data_processed(NULL)
+          
+          progress_doagg$close()
+          progress_all$close()
+          shiny::showNotification('No valid site remaining, so the analysis was stopped. Please try a larger buffer radius or different dataset.',type = 'error',duration=5)
+          validate('No valid sites remaining - analysis stopped')
+        }
         # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
         # and doaggregate() decides where to pull ST info from -
         # ideally from ST column,
@@ -1915,12 +1934,12 @@ app_server <- function(input, output, session) {
         ################################################################ #
         
         ## Handle sites dropped during getblocksnearby or doaggregate steps
-        dup <- data_uploaded()
-        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
-        dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
-        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
-        dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
-        
+        # dup <- data_uploaded()
+        # dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
+        # dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
+        # dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
+        # dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
+        # dup$invalid_msg[dup$valid & is.na(dup$ST)] <- 'Invalid State - no state %iles'
         if (submitted_upload_method() %in% c('MACT','FRS','latlon','EPA_PROGRAM_up',
                                              'EPA_PROGRAM_sel','NAICS','SIC')) {
           

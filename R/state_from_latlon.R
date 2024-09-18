@@ -120,7 +120,8 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
 #'
 state_from_blockid_table <- function(dt_with_blockid) {
   
-   blockgroupstats[sites2blocks, ST, on = "bgid"]
+  # 1 way to get ST of every block in the entire blockwts table:
+  # blockwts[bgid2fips, substr(bgfips,1,2), on = "bgid"]
   
   # if (!exists('blockid2fips')) {
   #   dataload_from_pins(varnames = 'blockid2fips')
@@ -128,30 +129,41 @@ state_from_blockid_table <- function(dt_with_blockid) {
   # if (!exists('blockid2fips')) {return(rep(NA, NROW(dt_with_blockid)))}
   # stateinfo$ST[match(blockid2fips[dt_with_blockid, substr(blockfips,1,2), on = "blockid"], stateinfo$FIPS.ST)]
 
+    ST <- blockgroupstats[dt_with_bgid, ST, on = "bgid"]
+  } else {
+    # dt_with_bgid <- blockwts[dt_with_blockid, .(bgid, blockid), on = "blockid"] 
+    # or all in one step, 
+    # use blockid to get bgid from blockwts table, then use bgid to get ST from blockgroupstats table
+    ST <- blockgroupstats[blockwts[dt_with_blockid_ONLY, .(bgid, blockid), on = "blockid"], ST, on = "bgid"]
+  }
+  
+  return(ST)
 }
 ##################################################################################################### #
 
 
 #' given vector of blockids, get state abbreviation of each
-#'
+#' unused. Not needed if you have sites2blocks table that includes a bgid column
+#' 
+#' 1.59    0.07    2.74 
+#' 
 #' @param blockid vector of blockid values as from EJAM in a table called blockpoints
-#'
+#' @seealso unexported state_from_blockid_table() 
 #' @return vector of ST info like AK, CA, DE, etc.
 #'
-#' @examples EJAM:::state_from_blockid(c(8174952, blockpoints$blockid[5:6]))
-#'
+#' @examples \dontrun{
+#' 
+#'  mapfast(test1000, color = "green") %>% 
+#'      color = "red")
+#' }
+#' 
 #' @keywords internal
 #'
 state_from_blockid <- function(blockid) {
   
-  if (!exists('blockid2fips')) {
-    dataload_from_pins(varnames = 'blockid2fips')
-  }
-  if (!exists('blockid2fips')) {return(rep(NA, length(blockid)))}
   stateinfo$ST[match(blockid2fips[blockid, substr(blockfips,1,2)], stateinfo$FIPS.ST)]
 }
 ##################################################################################################### #
-
 
 
 #' Get FIPS of ALL BLOCKGROUPS in the States or Counties specified

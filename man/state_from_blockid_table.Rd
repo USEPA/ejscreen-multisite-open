@@ -2,7 +2,8 @@
 % Please edit documentation in R/state_from_latlon.R
 \name{state_from_blockid_table}
 \alias{state_from_blockid_table}
-\title{state_from_blockid_table was used in some special cases e.g., in testpoints_n()}
+\title{given data.table with blockid column, get state abbreviation of each block
+unused. If, as in sites2blocks tables, bgid is a column, it uses that.}
 \usage{
 state_from_blockid_table(dt_with_blockid)
 }
@@ -13,10 +14,14 @@ state_from_blockid_table(dt_with_blockid)
 vector of ST info like AK, CA, DE, etc.
 }
 \description{
-given data.table with blockid column, get state abbreviation of each - not used?
+given data.table with blockid column, get state abbreviation of each block
+unused. If, as in sites2blocks tables, bgid is a column, it uses that.
 }
-\examples{
-EJAM:::state_from_blockid_table(blockpoints[45:49,])
-
+\details{
+It is much faster than using latlon to identify state.
+see examples for unexported  state_from_blockid()
+}
+\seealso{
+unexported state_from_blockid() and \code{\link[=state_from_s2b_bysite]{state_from_s2b_bysite()}}
 }
 \keyword{internal}
