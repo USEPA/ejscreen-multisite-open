@@ -267,14 +267,27 @@ probs.default.selected <- c(   0.25,            0.80,     0.95)   #   CHECK IF T
 probs.default.values   <- c(0, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99, 1)  #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
 probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', zero.print = '0')
 
-
-
-
-
-
 ################################################################# #
 # END OF DEFAULTS / OPTIONS / SETUP
 ################################################################# #
+
+## Sanitize functions
+sanitize = function(text) {
+  gsub("[^a-zA-Z0-9 ]", "", text)
+}
+
+
+escape_html <- function(text) {
+  text <- gsub("&", "&amp;", text)
+  text <- gsub("<", "&lt;", text)
+  text <- gsub(">", "&gt;", text)
+  text <- gsub("\"", "&quot;", text)
+  text <- gsub("'", "&#39;", text)
+  return(text)
+}
+
+
+
 # ~ ####
 # ------------------------ ____ HELP TEXT ------------------------  ####
 

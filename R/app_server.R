@@ -262,20 +262,7 @@ app_server <- function(input, output, session) {
   #   submitted_upload_method(current_upload_method())
   # })
   
-  ## Sanitize functions
-  sanitize = function(text) {
-    gsub("[^a-zA-Z0-9 ]", "", text)
-  }
-  
-  
-  escape_html <- function(text) {
-    text <- gsub("&", "&amp;", text)
-    text <- gsub("<", "&lt;", text)
-    text <- gsub(">", "&gt;", text)
-    text <- gsub("\"", "&quot;", text)
-    text <- gsub("'", "&#39;", text)
-    return(text)
-  }
+
   
   
   observeEvent(input$show_data_preview,
