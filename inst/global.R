@@ -276,6 +276,23 @@ sanitize = function(text) {
   gsub("[^a-zA-Z0-9 -]", "", text)
 }
 
+sanitize_numeric <- function(text) {
+  cleaned_text <- gsub("[^0-9.-]", "", as.character(text))
+  
+  # Ensure only one decimal point
+  cleaned_text <- sub("([0-9]*[.][0-9]*).*", "\\1", cleaned_text)
+  
+  cleaned_text <- sub("(.)-(.)", "\\1\\2", cleaned_text)
+  cleaned_text <- sub("^(-?).*?(-?.*)$", "\\1\\2", cleaned_text)
+  
+  numeric_value <- as.numeric(cleaned_text)
+  
+  if (is.na(numeric_value)) {
+    return(NA)
+  } else {
+    return(numeric_value)
+  }
+}
 
 escape_html <- function(text) {
   text <- gsub("&", "&amp;", text)
