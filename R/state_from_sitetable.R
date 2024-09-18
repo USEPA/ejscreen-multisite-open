@@ -108,7 +108,7 @@ state_from_sitetable <- function(sites, ignorelatlon = FALSE) {
     
     suppressWarnings({x = fips_from_table(sites2states)}) # returns NULL if no column could be interpreted as fips column name, and returns vector of values otherwise
     if (!is.null(x) && (sum(fips_valid(x), na.rm = TRUE) > 0)) {
-      sites2states$ST <- fips2state_abbrev(fips2state_fips(x))       # fips2state_abbrev() is similar to  state_from_fips_bybg(sites2states$fips) 
+      sites2states$ST <- fips2state_abbrev(fips2state_fips(x))       # fips2state_abbrev() is NOT the same as state_from_fips_bybg(sites2states$fips)
     } else {
       
       if (!ignorelatlon) {
@@ -148,7 +148,13 @@ state_from_sitetable <- function(sites, ignorelatlon = FALSE) {
     sites2states <- data.frame(ejam_uniq_id = 1:length(unique(sites2states$ejam_uniq_id)), ST = NA)
   }
   # confirm quality of ST info found or looked up
+  # note that 
+  # > setdiff(stateinfo2$ST,  stateinfo$ST)
+  # [1] "AS" "GU" "MP" "UM" "VI" "US"
   if (!all(sites2states$ST %in% stateinfo$ST)) {
+    if (any(sites2states$ST %in% c("AS", "GU", "MP", "UM", "VI"))) {
+      warning("Some ST values appear to be referring to Island Areas, which are not counted as States here")
+    }
     sites2states$ST[(!(sites2states$ST %in% stateinfo$ST))] <- NA
     if (all(is.na(sites2states$ST))) {
       message("no valid states could be determined by state_from_sitetable() -- based on ST, fips (or lat,lon if ignorelatlon is FALSE) -- so we cannot lookup state percentiles, etc.")

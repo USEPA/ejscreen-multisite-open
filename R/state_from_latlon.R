@@ -93,10 +93,13 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
   pts <- data.frame(lat = lat, lon = lon) |>
     sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(states_shapefile))  # st_as_sf wants lon,lat not lat,lon
   pts <- pts |> sf::st_join(states_shapefile)
+  # note setdiff(stateinfo2$ST, sort(unique(states_shapefile$STUSPS)))
+  # [1] "UM" "US"  but has PR,GU,AS,VI,MP
   
   pts <- as.data.frame(pts)[,c("STUSPS", "NAME", "STATEFP")]
   colnames(pts) <- c("ST", "statename", "FIPS.ST")
-  pts$REGION <- EJAM::stateinfo$REGION[match(pts$statename, stateinfo$statename)]
+  pts$REGION <- fips_st2eparegion(pts$FIPS.ST) # this is not sensitive to exact spelling of statename and can handle Island Areas 
+  # EJAM::stateinfo$REGION[match(pts$statename, stateinfo$statename)] 
   pts$n <- 1:NROW(pts)
   
   if (suppressWarnings({
