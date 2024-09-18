@@ -273,7 +273,7 @@ probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', z
 
 ## Sanitize functions
 sanitize = function(text) {
-  gsub("[^a-zA-Z0-9 ]", "", text)
+  gsub("[^a-zA-Z0-9 -]", "", text)
 }
 
 
