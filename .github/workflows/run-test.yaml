@@ -25,28 +25,28 @@ jobs:
 
       - uses: r-lib/actions/setup-r@v2
       
-      # - name: install needed system libs
-      #   shell: bash
-      #   run: |
-      #     sudo apt install libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev libudunits2-dev libgdal-dev
-      # 
-      # - name: Install Shinytest2 Dependencies
-      #   run: |
-      #     Rscript -e 'install.packages(c("curl", "chromote", "httr", "shinytest2"))'
-      # 
-      # - name: Set up Pandoc (for Rmarkdown downloads)
-      #   uses: r-lib/actions/setup-pandoc@v2
-      #   with:
-      #     pandoc-version: '3.1.11'
-      # 
-      # - name: Install App Dependencies
-      #   run: |
-      #     Rscript -e 'install.packages("devtools")'
-      #     Rscript -e 'devtools::install_deps(dependencies = TRUE)'
-      # 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - name: install needed system libs
+        shell: bash
+        run: |
+          sudo apt install libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev libudunits2-dev libgdal-dev
+
+      - name: Install Shinytest2 Dependencies
+        run: |
+          Rscript -e 'install.packages(c("curl", "chromote", "httr", "shinytest2"))'
+
+      - name: Set up Pandoc (for Rmarkdown downloads)
+        uses: r-lib/actions/setup-pandoc@v2
         with:
-          extra-packages: shinytest2
+          pandoc-version: '3.1.11'
+
+      - name: Install App Dependencies
+        run: |
+          Rscript -e 'install.packages("devtools")'
+          Rscript -e 'devtools::install_deps(dependencies = TRUE)'
+
+      # - uses: r-lib/actions/setup-r-dependencies@v2
+      #   with:
+      #     extra-packages: shinytest2
             
       - name: Install GitHub CLI
         run: sudo apt-get install gh
