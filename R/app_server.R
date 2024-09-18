@@ -52,6 +52,16 @@ app_server <- function(input, output, session) {
   ##  Note that  ejamit(points)  would do all of those steps in one function, essentially.
   data_processed <-  reactiveVal(NULL) # initialized so it can be set later in reaction to an event, using data_processed(newvalue)
   data_summarized <- reactiveVal(NULL) # initialized so it can be set later in reaction to an event, using
+  
+  sanitized_standard_analysis_title <- reactive({
+    sanitize(input$standard_analysis_title)
+  })
+  
+  sanitized_analysis_title <- reactive({
+    sanitize(input$analysis_title)
+  })
+
+  
   #
   # provide nice message if disconnected, via shinydisconnect package
   observeEvent(input$disconnect, {session$close()})
@@ -2162,11 +2172,11 @@ app_server <- function(input, output, session) {
   
   ### ( Title of analysis ) ####
   # Unless user changes it here, use a standard title that has been determined by global.R but then optionally modified by advanced settings tab
+  
   output$analysis_title_ui <- renderUI({
     shiny::textInput('analysis_title',
                      label = 'Name of Your Analysis',
-                     #placeholder = 'EJ Analysis of My List of Places',
-                     value = sanitize(input$standard_analysis_title))
+                     value = sanitized_standard_analysis_title())
   })
   
   ### summary header is stored in a reactive
@@ -2178,12 +2188,12 @@ app_server <- function(input, output, session) {
     ## allow title to update when either of these inputs change
     eventExpr = {
       input$bt_get_results
-      input$analysis_title
+      sanitized_analysis_title()
     }, handlerExpr = {
       req(data_processed())
       ## paste header information together
       title_text <- paste0('<div style="font-weight: bold; font-size: 11pt; text-align: center;">',
-                           input$analysis_title, '<br>')
+                           sanitized_analysis_title(), '<br>')
       
       ## exclude radius info from header text when using FIPS
       if (current_upload_method() != 'FIPS') {
@@ -2721,7 +2731,7 @@ app_server <- function(input, output, session) {
     
     params <- list(
       output_df = output_df,
-      analysis_title = input$analysis_title,
+      analysis_title =  sanitized_analysis_title(),
       totalpop = popstr,
       locationstr = locationstr,
       include_ejindexes = (input$include_ejindexes == 'TRUE'),
@@ -2747,7 +2757,7 @@ app_server <- function(input, output, session) {
     filename = function() {
       create_filename(
         file_desc = 'community report',
-        title = input$analysis_title,
+        title =  sanitized_analysis_title(),
         buffer_dist = submitted_radius_val(),
         site_method = submitted_upload_method(),
         with_datetime = TRUE,
@@ -2769,7 +2779,7 @@ app_server <- function(input, output, session) {
       }
       create_filename(
         file_desc = paste0('community report', location_suffix),
-        title = input$analysis_title,
+        title =  sanitized_analysis_title(),
         buffer_dist = submitted_radius_val(),
         site_method = submitted_upload_method(),
         with_datetime = TRUE,
@@ -3033,7 +3043,7 @@ app_server <- function(input, output, session) {
     filename = function() {
       
       create_filename(file_desc = 'results table',
-                      title = input$analysis_title,
+                      title =  sanitized_analysis_title(),
                       buffer_dist = submitted_radius_val(),
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
@@ -3128,7 +3138,7 @@ app_server <- function(input, output, session) {
           ok2plot = input$ok2plot,
           plot_distance_by_group = TRUE,
           bybg = data_processed()$results_bybg_people,
-          analysis_title = input$analysis_title,
+          analysis_title =  sanitized_analysis_title(),
           buffer_desc    = "Selected Locations",
           radius_or_buffer_in_miles = input$bt_rad_buff,
           radius_or_buffer_description = radius_or_buffer_description,
@@ -3649,7 +3659,7 @@ app_server <- function(input, output, session) {
   output$rg_download <- downloadHandler(
     filename = function(){
       create_filename(file_desc = 'full report',
-                      title = input$analysis_title,
+                      title = sanitized_analysis_title(),
                       buffer_dist = submitted_radius_val(),
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
@@ -3686,7 +3696,7 @@ app_server <- function(input, output, session) {
           
           #------- WHERE was analyzed? (where/ what sector/zones/types of places)
           
-          analysis_title =  input$analysis_title,
+          analysis_title =   sanitized_analysis_title(),
           zonetype =  input$rg_zonetype,
           where = input$rg_enter_miles,
           distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
@@ -3791,7 +3801,7 @@ app_server <- function(input, output, session) {
     ## generate full HTML using external functions
     full_page <- build_community_report(
       output_df = data_processed()$results_overall,
-      analysis_title = input$analysis_title,
+      analysis_title =  sanitized_analysis_title(),
       totalpop = popstr,
       locationstr = locationstr,
       include_ejindexes = (input$include_ejindexes == 'TRUE'),

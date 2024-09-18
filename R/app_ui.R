@@ -1248,7 +1248,7 @@ app_ui  <- function(request) {
                  
                  shiny::textInput("standard_analysis_title",
                                   label = "Default title to show on each short report",
-                                  value = sanitize(default_standard_analysis_title)),
+                                  value = default_standard_analysis_title),
                  
                  ## input: Type of plot for 1page report
                  shiny::radioButtons(inputId = "plotkind_1pager",
