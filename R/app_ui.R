@@ -1227,7 +1227,7 @@ app_ui  <- function(request) {
                  ## input: GROUP NAME for 2d set of comparisons
                  shiny::textInput(inputId = 'an_threshgroup2',
                                   label = 'Name for 2nd set of comparisons',
-                                  value = sanitize(default.an_threshgroup2)
+                                  value = default.an_threshgroup2
                  ),
                  ## input: variable names for 2d set of comparisons
                  shiny::selectizeInput(inputId = 'an_threshnames2',
