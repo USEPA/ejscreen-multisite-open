@@ -1127,7 +1127,7 @@ app_ui  <- function(request) {
                  ## Viewing maps, saving results ####
                  h2("Viewing maps, saving results"),
                  
-                 textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", sanitize("")),
+                 textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", ""),
                  
                  ## Map colors, weights, opacity ####
                  ### in ejscreenapi:
