@@ -42,8 +42,13 @@ options(spinner.color = "#005ea2", spinner.type = 4)
 
 ## app title & version   ###########################################
 # apptitle <- "EJAM v2.2"
-acs_version_global = as.vector(metadata_mapping$blockgroupstats[['acs_version']]) # "2017-2021"
-ejscreen_version_global = as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']])
+desc <- desc::desc(file = "DESCRIPTION")
+ejam_app_version  <- desc$get("Version")
+## trim version number to Major.Minor
+ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ejam_app_version)[[1]][2]-1)
+
+acs_version_global = desc$get("ACSVersion")#as.vector(metadata_mapping$blockgroupstats[['acs_version']]) # "2017-2021"
+ejscreen_version_global = desc$get("EJScreenVersion")#as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']])
 
 ## (IP address  for ejscreenapi module) ###########################################
 # ips <- c('10.147.194.116', 'awsgeopub.epa.gov', '204.47.252.51', 'ejscreen.epa.gov')
