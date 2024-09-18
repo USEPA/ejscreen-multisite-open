@@ -61,9 +61,16 @@ getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE
   all_bgs <- stack(sapply(fips_vec, fips_bg_from_anyfips)) # Slow:  1.4 seconds for all counties in region 6, e.g.
   })
   names(all_bgs) <- c('bgfips', 'ejam_uniq_id')
+  
   # *** It actually could be more efficient to replace the above fips_bg_from_anyfips() 
   # or make a new func to provide bgid_from_anyfips() 
-  # instead of 1st getting bgfips and then needing to look up bgid by bgfips
+  # instead of 1st getting bgfips and then needing to look up bgid by bgfips - 
+  #
+  #    Can we just change to this?... 
+  #      use fips_bgs_in_fips() to get all bg fips values
+  #      use join to blockgroupstats on bgfips, to get all bgid values
+  #      use join to blockwts on bgid, to get all the blockid values.
+  #
   # Get bgid:
   all_bgs$bgid <- bgid2fips[match(all_bgs$bgfips, bgfips), bgid]
 
