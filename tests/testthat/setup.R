@@ -27,7 +27,7 @@ require(mapview)
 ## so those tests fail unless you use load_all() or if test were changed to say EJAM:::latlon_infer() but that would ONLY test installed version, never the source version if it differs
 
 suppressMessages({suppressWarnings({
-  dataload_from_pins("all", silent = TRUE) # needs frs, etc.
+  dataload_from_pins("all", silent = TRUE, folder_local_source=file.path(.libPaths()[1],'EJAM','data')) # needs frs, etc.
 })})
 if (!exists("frs")) {stop('needs frs etc.')}
 suppressMessages({suppressWarnings({
@@ -109,6 +109,16 @@ test2lon <- c(-118.241073, -76.641674)
 pts <- data.frame(lat = test2lat, lon = test2lon)
 
  
+## some test output from ejscreenit 
+# SLOW FOR API to run several points
+apiref_list <- testoutput_ejscreenit_5 # 5 points, 1 mile radius
+apinow_list <- ejscreenit(testpoints_5, radius = 1, nosave = T, nosee = T, interactiveprompt = F, calculate_ratios = T)
+apiref = apiref_list$table
+apinow = apinow_list$table
+apiref$timeSeconds <- NULL # these vary
+apinow$timeSeconds <- NULL # these vary
+apiref$`Seconds elapsed obtaining data` <- NULL
+apinow$`Seconds elapsed obtaining data` <- NULL
 
 # 
 # 
