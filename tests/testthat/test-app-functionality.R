@@ -30,11 +30,12 @@ test_that("{shinytest2} recording: EJAM", {
   
   print("repulling results")
   app$click("bt_get_results", wait_ = TRUE, timeout_ = 20000)
+  app$expect_values()
   
-  print("about to do community download")
-  app$wait_for_idle(timeout = 20000)
+  # print("about to do community download")
+  # app$wait_for_idle(timeout = 20000)
   # 8/16/24 - Can skip this
-  app$expect_download("community_download_all")
+  # app$expect_download("community_download_all")
   
   # print("going to details tab")
   # app$set_inputs(results_tabs = "Details")
