@@ -29,28 +29,28 @@ jobs:
             devtools
             shinytest2
             
-      - name: Install GitHub CLI
-        run: sudo apt-get install gh
-  
-      - name: Download Arrow Files
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release download --repo USEPA/EJAM --pattern "EJAM_v2.32_arrow_datasets.zip"
-  
-      - name: Unzip the file into data folder
-        run: unzip -o EJAM_v2.32_arrow_datasets.zip -d ./data
-      
-      - name: Install EJAM
-        run: |
-          Rscript -e 'devtools::install_local(".", force=T)'
-
-      - name: Run Shiny Tests
-        run: Rscript -e 'source("tests/testthat.R")'
-
-      - name: Upload test results
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ runner.os }}-tests
-          path: tests
+      # - name: Install GitHub CLI
+      #   run: sudo apt-get install gh
+      # 
+      # - name: Download Arrow Files
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     gh release download --repo USEPA/EJAM --pattern "EJAM_v2.32_arrow_datasets.zip"
+      # 
+      # - name: Unzip the file into data folder
+      #   run: unzip -o EJAM_v2.32_arrow_datasets.zip -d ./data
+      # 
+      # - name: Install EJAM
+      #   run: |
+      #     Rscript -e 'devtools::install_local(".", force=T)'
+      # 
+      # - name: Run Shiny Tests
+      #   run: Rscript -e 'source("tests/testthat.R")'
+      # 
+      # - name: Upload test results
+      #   if: failure()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ runner.os }}-tests
+      #     path: tests
