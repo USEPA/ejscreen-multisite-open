@@ -1208,7 +1208,7 @@ app_ui  <- function(request) {
                  ## input: GROUP NAME for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
                  shiny::textInput(inputId = 'an_threshgroup1',
                                   label = 'Name for 1st set of comparisons',
-                                  value = sanitize(default.an_threshgroup1)
+                                  value = default.an_threshgroup1
                  ),
                  ## input: variable names for 1st set of comparisons
                  shiny::selectizeInput(inputId = 'an_threshnames1',

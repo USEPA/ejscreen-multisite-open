@@ -60,6 +60,10 @@ app_server <- function(input, output, session) {
   sanitized_analysis_title <- reactive({
     sanitize(input$analysis_title)
   })
+  
+  sanitized_an_threshgroup1 <- reactive({
+    sanitize(input$an_threshgroup1)
+  })
 
   
   #
@@ -1779,7 +1783,7 @@ app_server <- function(input, output, session) {
                     
                     thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
                     threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
-                    threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
+                    threshgroups = list(sanitized_an_threshgroup1(), input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
       
       ## note which FIPS dropped by ejamit() (i.e., in getting step or doagg step) as invalid,
@@ -2090,7 +2094,7 @@ app_server <- function(input, output, session) {
         quiet = TRUE,
         thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
         threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
-        threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
+        threshgroups = list(sanitized_an_threshgroup1(), input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
     } else {
       outsum <- batch.summarize(
@@ -2102,7 +2106,7 @@ app_server <- function(input, output, session) {
         quiet = TRUE,
         thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
         threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
-        threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
+        threshgroups = list(sanitized_an_threshgroup1(), input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
     }
     ## update overall progress bar
