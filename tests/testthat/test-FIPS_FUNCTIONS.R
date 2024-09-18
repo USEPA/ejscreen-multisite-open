@@ -37,7 +37,7 @@
 
 ####  if fips is the INPUT, names are like   x <- fips2x(fips) 
 #
-# fips_st2eparegion()  # but not eparegion2statefips() ?? or
+# fips_st2eparegion()  # and see fips_states_in_eparegion() 
 #    fips2state_fips(    )     #  fips2statefips would be a more consistent name?
 #    fips2state_abbrev(  )
 #    fips2statename(     ) # should it be statename or state_name

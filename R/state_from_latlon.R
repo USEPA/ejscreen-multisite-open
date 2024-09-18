@@ -107,30 +107,33 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
 ##################################################################################################### #
 
 
-#' state_from_blockid_table was used in some special cases e.g., in testpoints_n()
+#' given data.table with blockid column, get state abbreviation of each block
+#' unused. If, as in sites2blocks tables, bgid is a column, it uses that.
 #'
-#' given data.table with blockid column, get state abbreviation of each - not used?
 #' @param dt_with_blockid
 #'
 #' @return vector of ST info like AK, CA, DE, etc.
-#'
-#' @examples EJAM:::state_from_blockid_table(blockpoints[45:49,])
-#'
+#' @details
+#'  It is much faster than using latlon to identify state.
+#'  see examples for unexported  state_from_blockid() 
+#' 
+#' @seealso unexported state_from_blockid() and [state_from_s2b_bysite()]
+#' 
 #' @keywords internal
 #'
 state_from_blockid_table <- function(dt_with_blockid) {
   
   # 1 way to get ST of every block in the entire blockwts table:
+  # if (!exists("bgid2fips")) dataload_from_pins("bgid2fips")
   # blockwts[bgid2fips, substr(bgfips,1,2), on = "bgid"]
   
-  # if (!exists('blockid2fips')) {
-  #   dataload_from_pins(varnames = 'blockid2fips')
-  # }
-  # if (!exists('blockid2fips')) {return(rep(NA, NROW(dt_with_blockid)))}
-  # stateinfo$ST[match(blockid2fips[dt_with_blockid, substr(blockfips,1,2), on = "blockid"], stateinfo$FIPS.ST)]
-
+  if ("bgid" %in% names(dt_with_blockid)) {
+    dt_with_bgid <- dt_with_blockid
+    message("found bgid column and assuming it is valid so we do not have to use blockid to get ST")
     ST <- blockgroupstats[dt_with_bgid, ST, on = "bgid"]
   } else {
+    dt_with_blockid_ONLY <- dt_with_blockid
+    # use blockid just to get bgid from blockwts table
     # dt_with_bgid <- blockwts[dt_with_blockid, .(bgid, blockid), on = "blockid"] 
     # or all in one step, 
     # use blockid to get bgid from blockwts table, then use bgid to get ST from blockgroupstats table
@@ -145,6 +148,16 @@ state_from_blockid_table <- function(dt_with_blockid) {
 #' given vector of blockids, get state abbreviation of each
 #' unused. Not needed if you have sites2blocks table that includes a bgid column
 #' 
+#' @details It is much faster than using latlon to identify state
+#' 
+#'  test1000 = blockpoints[sample(seq_len(NROW(blockpoints)), 1000), ]
+#' 
+#'  system.time({ state_from_blockid(test1000$blockid) })
+#' user  system elapsed 
+#' 0.00    0.00    0.03
+#'  
+#'  system.time({ state_from_latlon(lat = test1000$lat, lon = test1000$lon) })
+#' user  system elapsed 
 #' 1.59    0.07    2.74 
 #' 
 #' @param blockid vector of blockid values as from EJAM in a table called blockpoints
@@ -152,8 +165,16 @@ state_from_blockid_table <- function(dt_with_blockid) {
 #' @return vector of ST info like AK, CA, DE, etc.
 #'
 #' @examples \dontrun{
+#' # How many of the 8 million+ blockpoints are in each state?
+#' data.table(ST = state_from_blockid(blockpoints$blockid))[, .(blockcount = .N), by = "ST"]
 #' 
+#' test1000 = blockpoints[sample(seq_len(NROW(blockpoints)), 999), ]
+#' test1000 = rbind(test1000, blockpoints[blockid == 915525, ]) # at least 1 from CA
+#' test1000$ST = state_from_blockid(test1000$blockid) 
 #'  mapfast(test1000, color = "green") %>% 
+#'    addCircles(
+#'      lat = test1000$lat[test1000$ST == "CA"], 
+#'      lng = test1000$lon[test1000$ST == "CA"], 
 #'      color = "red")
 #' }
 #' 
@@ -161,7 +182,11 @@ state_from_blockid_table <- function(dt_with_blockid) {
 #'
 state_from_blockid <- function(blockid) {
   
-  stateinfo$ST[match(blockid2fips[blockid, substr(blockfips,1,2)], stateinfo$FIPS.ST)]
+  dt_with_blockid_ONLY <- data.table(blockid)
+  # all in one step, 
+  # use blockid to get bgid from blockwts table, then use bgid to get ST from blockgroupstats table
+  ST <- blockgroupstats[blockwts[dt_with_blockid_ONLY, .(bgid, blockid), on = "blockid"], ST, on = "bgid"]
+  return(ST)
 }
 ##################################################################################################### #
 

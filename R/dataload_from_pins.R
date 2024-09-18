@@ -54,11 +54,11 @@
 #' @export
 #'
 dataload_from_pins <- function(
-    varnames = c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
+    varnames = c('blockwts', 'blockpoints', "quaddata",
                  # load only if /when needed:
                  'bgej',
-                 'bgid2fips',
-                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")[1:4],
+                 'bgid2fips', 'blockid2fips',
+                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")[1:3],
     boardfolder = "Mark",
     auth = "auto",
     server = "https://rstudio-connect.dmap-stage.aws.epa.gov",

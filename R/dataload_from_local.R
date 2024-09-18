@@ -27,11 +27,12 @@
 #'
 #' @export
 #'
-dataload_from_local <- function(varnames = c(c('blockwts', 'blockpoints', 'blockid2fips', "quaddata"),
+dataload_from_local <- function(varnames = c(c('blockwts', 'blockpoints', "quaddata"),
                                              # load only if /when needed:
                                              'bgej',
-                                             'bgid2fips',
-                                             c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"))[1:4],
+                                             'bgid2fips', 'blockid2fips', 
+                                             c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
+                                             )[1:3],
                                 ext = c(".arrow", ".rda")[1],
                                 fun = c("arrow::read_ipc_file", "load")[1],
                                 envir = globalenv(),  # should it be parent or global or package EJAM envt ??

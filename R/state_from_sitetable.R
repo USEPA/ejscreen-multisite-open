@@ -109,6 +109,7 @@ state_from_sitetable <- function(sites, ignorelatlon = FALSE) {
     suppressWarnings({x = fips_from_table(sites2states)}) # returns NULL if no column could be interpreted as fips column name, and returns vector of values otherwise
     if (!is.null(x) && (sum(fips_valid(x), na.rm = TRUE) > 0)) {
       sites2states$ST <- fips2state_abbrev(fips2state_fips(x))       # fips2state_abbrev() is similar to  state_from_fips_bybg(sites2states$fips) 
+      sites2states$ST <- fips2state_abbrev(fips2state_fips(x))       # fips2state_abbrev() is NOT the same as state_from_fips_bybg(sites2states$fips)
     } else {
       
       if (!ignorelatlon) {
