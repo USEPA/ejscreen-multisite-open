@@ -179,6 +179,7 @@ reference:
   - states_as_sites
   - fips_state_from_state_abbrev
   - fips_state_from_statename
+  - fips_states_in_eparegion
   - fips2statename
   - fips2state_abbrev
   - fips2state_fips
