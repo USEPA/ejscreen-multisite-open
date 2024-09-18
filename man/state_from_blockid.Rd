@@ -2,7 +2,8 @@
 % Please edit documentation in R/state_from_latlon.R
 \name{state_from_blockid}
 \alias{state_from_blockid}
-\title{given vector of blockids, get state abbreviation of each}
+\title{given vector of blockids, get state abbreviation of each
+unused. Not needed if you have sites2blocks table that includes a bgid column}
 \usage{
 state_from_blockid(blockid)
 }
@@ -14,9 +15,38 @@ vector of ST info like AK, CA, DE, etc.
 }
 \description{
 given vector of blockids, get state abbreviation of each
+unused. Not needed if you have sites2blocks table that includes a bgid column
+}
+\details{
+It is much faster than using latlon to identify state
+
+test1000 = blockpoints\link{sample(seq_len(NROW(blockpoints)), 1000), }
+
+system.time({ state_from_blockid(test1000$blockid) })
+user  system elapsed
+0.00    0.00    0.03
+
+system.time({ state_from_latlon(lat = test1000$lat, lon = test1000$lon) })
+user  system elapsed
+1.59    0.07    2.74
 }
 \examples{
-EJAM:::state_from_blockid(c(8174952, blockpoints$blockid[5:6]))
+\dontrun{
+# How many of the 8 million+ blockpoints are in each state?
+data.table(ST = state_from_blockid(blockpoints$blockid))[, .(blockcount = .N), by = "ST"]
 
+test1000 = blockpoints[sample(seq_len(NROW(blockpoints)), 999), ]
+test1000 = rbind(test1000, blockpoints[blockid == 915525, ]) # at least 1 from CA
+test1000$ST = state_from_blockid(test1000$blockid) 
+ mapfast(test1000, color = "green") \%>\% 
+   addCircles(
+     lat = test1000$lat[test1000$ST == "CA"], 
+     lng = test1000$lon[test1000$ST == "CA"], 
+     color = "red")
+}
+
+}
+\seealso{
+unexported state_from_blockid_table()
 }
 \keyword{internal}

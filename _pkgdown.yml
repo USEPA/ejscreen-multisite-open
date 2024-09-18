@@ -412,6 +412,8 @@ reference:
   - custom_doaggregate
   - custom_ejamit
   - state_from_s2b_bysite
+  - state_from_blockid_table
+  - state_from_blockid
   - table_tall_from_overall
   - tablefixed
   - table_validated_ejamit_row
