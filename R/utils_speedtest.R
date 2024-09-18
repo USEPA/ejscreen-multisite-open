@@ -61,7 +61,7 @@
 speedtest <- function(n=10, sitepoints=NULL, weighting='frs', 
                       radii=c(1, 3.106856, 5, 10, 31.06856)[1:3], avoidorphans=FALSE,
                       test_ejamit = FALSE, test_getblocksnearby=TRUE, test_doaggregate=TRUE, test_batch.summarize=FALSE, 
-                      logging=FALSE, logfolder=getwd(), logfilename="log_n_datetime.txt", honk_when_ready=TRUE, 
+                      logging=FALSE, logfolder='.', logfilename="log_n_datetime.txt", honk_when_ready=TRUE, 
                       saveoutput=FALSE, plot=TRUE, getblocks_diagnostics_shown=FALSE, ...) {
   
   n <- sort(n, decreasing = TRUE) # just to keep organized
