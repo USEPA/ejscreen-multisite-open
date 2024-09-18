@@ -35,6 +35,8 @@ default_print_uploaded_points_to_log <- TRUE
 
 ## disable autoloading of .R files
 options(shiny.autoload.r = FALSE)
+# show generalized errors in the UI
+options(shiny.sanitize.errors = TRUE)
 
 ## Loading/wait spinners (color, type) ####
 ## note: was set at type = 1, but this caused screen to "bounce"
