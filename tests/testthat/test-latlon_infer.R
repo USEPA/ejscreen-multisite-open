@@ -1,4 +1,4 @@
-## example unit tests for EJAM:::latlon_infer
+## example unit tests for EJAM unexported function latlon_infer()
 # Author: Marschall Furman
 
 ## these examples are designed to produce warnings - for now, they only check for any

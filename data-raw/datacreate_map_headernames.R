@@ -5,7 +5,7 @@ if (!exists("rawdir")) {rawdir <- './data-raw'}
 #variablenames(e.g.,long,clearerones)
 #toanother(e.g.,shortereasierforanalysisorprogramminginR,etc.)
 
-datacreate_map_headernames <- function(rawdir = "./data-raw", fname = 'map_headernames_2.3.xlsx') {
+datacreate_map_headernames <- function(rawdir = "./data-raw", fname = 'map_headernames_2.32.xlsx') {
   
   fpath <- file.path(rawdir, fname)
   if (!file.exists(fpath)) {stop("did not find (but this requires) ", fpath)}
@@ -25,7 +25,7 @@ datacreate_map_headernames <- function(rawdir = "./data-raw", fname = 'map_heade
 }
 ################################################################################# #
 
-#  UPDATE map_headernames_2.3.xlsx MANUALLY, 
+#  UPDATE map_headernames_2.32.xlsx MANUALLY, 
 #  then read .xlsx and save as dataset for package
 if (askquestions && interactive()) {
   y <- askYesNo("Want to open .xlsx to edit it now?")
@@ -41,11 +41,6 @@ if (!exists("fpath")) {
 } else {
   map_headernames <- datacreate_map_headernames(fpath)
 }
-
-# patch to fill in some missing info, used by batch.summarize()
-# but should make names_r_all more complete
-map_headernames$calculation_type[map_headernames$rname %in% setdiff(map_headernames$rname[calctype(map_headernames$rname) == "sum of counts"], names_all_r[calctype(names_all_r) == "sum of counts"])] <- "sum of counts"
-
 
 map_headernames <- metadata_add(map_headernames)
 usethis::use_data(map_headernames, overwrite = TRUE)

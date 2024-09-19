@@ -16,8 +16,9 @@ vector same length as varnames, like c("sum of counts", "wtdmean")
 utility - what type of formula is used to aggregate this variable?
 }
 \examples{
-calctype(
-)
-
+ calctype("pop")
+ calctype(names_d)
+ x = names(testoutput_ejamit_10pts_1miles$results_overall)
+ cbind(x, calctype(x))
 }
 \keyword{internal}

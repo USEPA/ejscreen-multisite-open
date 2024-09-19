@@ -36,15 +36,15 @@ table_xls_from_ejam <- function(ejamitout,
     radius_or_buffer_in_miles  <- ejamitout$results_overall$radius.miles
   } 
   
+  #changed the way the filename path was generated
+  default_pathname <- create_filename(file_desc = "results_table",
+                                      title = in.analysis_title,
+                                      buffer_dist = radius_or_buffer_in_miles,
+                                      site_method = site_method,
+                                      with_datetime = TRUE, 
+                                      ext = ".xlsx")
   if (is.null(fname)) {
     fname_was_provided <- FALSE
-    #changed the way the filename path was generated
-    default_pathname <- create_filename(file_desc = "results_table",
-                                        title = in.analysis_title,
-                                        buffer_dist = radius_or_buffer_in_miles,
-                                        site_method = site_method,
-                                        with_datetime = TRUE, 
-                                        ext = ".xlsx")
     pathname <- default_pathname
   } else {
     fname_was_provided <- TRUE
@@ -137,15 +137,17 @@ table_xls_from_ejam <- function(ejamitout,
             next
           }
           if (grepl("[<>:\"/\\?*]", pathname)) {
-            stop("Filename ocntains invalid characters: <>:\"/\\|?*. Please provide a valid name. \n")
+            stop("Filename contains invalid characters: <>:\"/\\|?*. Please provide a valid name. \n")
             next
           }
           break
         }
       }
     }
-    if (is.null(pathname) || pathname == "" || grepl("[<>:\"/\\?*]", pathname)) { #perform a more robust check of the pathname here. 
-      cat('Invalid path/file, so using default: ', default_pathname, '\n')
+    # if (is.null(pathname) || pathname == "" || grepl("[<>:\"/\\?*]", pathname)) { #perform a more robust check of the pathname here. 
+    if (is.null(pathname) || pathname == "" || !dir.exists(dirname(pathname))) { #perform a more robust check of the pathname here. 
+      
+      cat('Invalid path/file,', pathname, ',so using default instead: ', default_pathname, '\n')
       pathname <- default_pathname
     }
 
@@ -154,6 +156,6 @@ table_xls_from_ejam <- function(ejamitout,
     openxlsx::saveWorkbook(wb_out, pathname, overwrite = overwrite)
     return(pathname)
   } else {
-    return(wb_out)
+    invisible(wb_out)
   }
 }

@@ -7,16 +7,15 @@
 ejscreen_vs_ejam(
   latlon,
   radius = 3,
+  fips = NULL,
   nadrop = FALSE,
   save_ejscreen_output = "ejscreenapi_plus_out.rda",
-  save_when_report = TRUE,
+  save_when_report = FALSE,
   report_every_n = 250,
   calculate_ratios = FALSE,
   include_ejindexes = TRUE,
   x100fix = TRUE,
-  x100varnames = c(names_d, names_d_avg, names_d_state_avg, names_d_subgroups,
-    names_d_subgroups_avg, names_d_subgroups_state_avg, "pctdisability", "pctownedunits",
-    "pctunder18", "pctover17", "pctmale", "pctfemale"),
+  x100varnames = names_pct_as_fraction_ejamit,
   ...
 )
 }
@@ -26,21 +25,24 @@ and one row per site}
 
 \item{radius}{in miles, used in ejamit() and ejscreenapi_plus()}
 
-\item{save_ejscreen_output}{set to NULL to avoid saving ejscreen results locally.
-If set to a filename, function will prompt in interactive R session
-for a folder to use for saving the .rda results of ejscreenapi_plus()}
+\item{fips}{FIPS code(s) of counties or blockgroups, if not using latlon and radius.}
 
-\item{save_when_report}{see ejscreenapi_plus()}
+\item{save_ejscreen_output}{set to NULL to avoid saving ejscreen results locally.
+If specified as a valid path and filename ending in .rda, it saves there.
+If missing, function will prompt in interactive R session
+for a folder to use for saving the .rda results of ejscreenapi_plus().}
+
+\item{save_when_report}{see \code{\link[=ejscreenapi_plus]{ejscreenapi_plus()}}, to save progress every so often just in case.}
 
 \item{report_every_n}{see ejscreenapi_plus()}
 
 \item{calculate_ratios}{passed to ejscreenapi_plus() and \code{\link[=ejamit]{ejamit()}}}
 
-\item{x100fix}{whether to multiply x100 the names_d and names_d_subgroups
+\item{x100fix}{whether to multiply x100 in ejamit() outputs the names_d and names_d_subgroups
 indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,
 prior to rounding and reporting EJAM results here.}
 
-\item{x100varnames}{optional, if x100fix=T, a vector of colnames of x$EJAM to convert from
+\item{x100varnames}{optional, if x100fix = TRUE, a vector of colnames of x$EJAM to convert from
 being scaled as 0 to 1 into rescaled values of 0 to 100, because some
 outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.}
 
@@ -94,13 +96,18 @@ how ties are treated in percentile lookup tables, etc.), or
 }
 \examples{
  \dontrun{
-   pts <- testpoints_100[1:5, ]
+ # in RStudio, interactive:
+ vs <- ejscreen_vscript()
+ 
+ pts <- testpoints_100[1:5, ]
    
   # This step can take a long time, 
   # almost 1 minute / 20 points, as it uses the EJScreen API:
   #z <- ejscreen_vs_ejam(
     testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
   z <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
+  
+  EJAM:::ejscreen_vs_ejam_summary(z)
   
   # see one site
   ejscreen_vs_ejam_see1(z, mysite = 1)

@@ -25,9 +25,9 @@ This utility would be used in scripts in EJAM/data-raw/ to
 add metadata to objects like x before use_data(x, overwrite=T)
 }
 \examples{
-  metadata_check()
+  # metadata_check() # internal function
   x <- data.frame(a=1:10,b=1001:1010)
-  x <- metadata_add(x)
+  # x <- metadata_add(x) # internal function
   attributes(x)
 
 }

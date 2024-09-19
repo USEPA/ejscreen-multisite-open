@@ -41,7 +41,19 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
                         return_html = FALSE, 
                         launch_browser = TRUE) {
   
-  if (!interactive()) {launch_browser <- FALSE}
+  if (missing(submitted_upload_method)) {
+    if (all(is.na(ejamitout$results_bysite$radius.miles)) &&  # radius from ejamit() is NA in FIPS case, not zero 
+        all(is.na(ejamitout$results_bysite$lat)) &&
+        all(fips_valid(ejamitout$results_bysite$ejam_uniq_id))) {
+      submitted_upload_method <- "FIPS"
+    } else {
+      if (all(is.na(ejamitout$results_bysite$lat))) {   #    to be finished later
+        submitted_upload_method <- "SHP"
+      }
+    }
+  }
+  
+  if (!interactive()) {launch_browser <- FALSE} # but that means other functions cannot override this while not interactive.
   if (is.null(sitenumber)) {
     ejamout1 <- ejamitout$results_overall
   } else {
@@ -97,7 +109,18 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
       temp_comm_report_or_null <- NULL
     } else {
     temp_comm_report_or_null <- temp_comm_report
-}
+    }
+    
+    ## as used in community_report_template.Rmd it is this:
+    # build_community_report(
+    #   output_df = params$output_df,
+    #   analysis_title = params$analysis_title,
+    #   totalpop = params$totalpop,
+    #   locationstr = params$locationstr,
+    #   include_ejindexes = params$include_ejindexes,
+    #   in_shiny = params$in_shiny,
+    #   filename = params$filename
+    # )
     
     x <- build_community_report(
       output_df = ejamout1,
@@ -105,9 +128,10 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
       totalpop = popstr,
       locationstr = locationstr,
       include_ejindexes = include_ejindexes,
-      in_shiny = F,
+      in_shiny = FALSE,
       filename = temp_comm_report_or_null # passing NULL should make it return the html object
     )
+    cat(x, file = temp_comm_report)
     if (launch_browser) {
       browseURL(temp_comm_report)
     }

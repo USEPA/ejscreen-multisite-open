@@ -41,6 +41,6 @@ c(names_d, names_d_subgroups)
    c('varlist', 'rname', 'apiname', 'csvname', 'shortlabel', 'longname'))
 }
 \seealso{
-\code{\link[=varlist2names]{varlist2names()}} \code{\link[=varin_map_headernames]{varin_map_headernames()}} \code{\link[=varinfo]{varinfo()}} \code{\link[=names_whichlist_multi_key]{names_whichlist_multi_key()}} \code{\link[=vnames]{vnames()}}
+\code{\link[=names_from_varlist]{names_from_varlist()}} \code{\link[=varlist2names]{varlist2names()}} \code{\link[=varin_map_headernames]{varin_map_headernames()}} \code{\link[=varinfo]{varinfo()}} \code{\link[=names_whichlist_multi_key]{names_whichlist_multi_key()}} \code{\link[=vnames]{vnames()}}
 }
 \keyword{internal}

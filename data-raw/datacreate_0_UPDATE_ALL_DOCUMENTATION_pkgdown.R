@@ -33,114 +33,94 @@
 ############################################# #
 
 #    SCRIPT  TO  REBUILD  vignettes  (articles) using pkgdown
-#
+
 # Probably does not require all these steps, though
-# library() ####
+# setup ####
 require(devtools)
 require(pkgdown)
 
-#################### # 
+#################### #
+#                          Preview your site locally before publishing
+pkgdown::build_site()
 
-# build_rmd() takes a couple minutes as it installs the package in a temporary library
-# build_rmd() is a wrapper around rmarkdown::render() that first installs a temporary copy of the package, and then renders each .Rmd in a clean R session.
+#################### # 
+# README ####
+# build_rmd() would take a couple minutes as it installs the package in a temporary library
+# build_rmd() would just be a wrapper around rmarkdown::render() that 1st installs a temp copy of pkg, then renders each .Rmd in a clean R session.
 rmarkdown::render("README.Rmd")  # renders .Rmd to create a  .md file that works in github as a webpage
 
 # Usually just using devtools::load_all()  during development, not reinstalling every time you edit source.
-# You could build/install using RStudio buttons, 
-#  but 1st confirm you already turned off traditional vignette-building...  see   help(vignette_roclet, package = "roxygen2")
-# That button includes a step that is the same as   devtools::document()
+#   You could build/install using RStudio buttons, but
+#   1st confirm you already turned off traditional vignette-building...  see   help(vignette_roclet, package = "roxygen2")
+#   That button includes a step that is the same as   devtools::document()
 
-Sys.time()   # about 4 minutes for steps below
-
-############################################# #
-# check if can reach pins or cant build vignettes correctly ####
-dataload_pin_available <- function(boardfolder = "Mark",
-                                   auth = "auto",
-                                   server = "https://rstudio-connect.dmap-stage.aws.epa.gov", 
-                                   silent = FALSE) {
-  board <- tryCatch(pins::board_connect(server = server, auth = auth),
-                    error = function(e) e)
+system.time({
+  # 4+ minutes for steps below
   
-  if (inherits(board, "error")) {
-    board_available <- FALSE
-    if (!silent) {cat("Failed trying to connect to pins board server.\n\n")}
-  } else {
-    board_available <- TRUE
-    if (!silent) {cat("Successfully connected to Posit Connect pins board.\n\n")}
-  }
-  return(board_available)
-}
-############################################# #
-if (!dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
-############################################# #
-# dataload all ####
-# just in case 
-
-EJAM::dataload_from_pins("all") #
-############################################# #
-
-# RUN TESTS OR CHECK ?
-
-# check() ?? ####
-# devtools::check() 
-##   automatically builds and checks a source package, using all known best practices.
-# devtools::check_man()
-# devtools::check_built() checks an already-built package.
-
-# devtools::test()
-
-## [ FAIL 7 | WARN 7 | SKIP 1 | PASS 617 ] as of 5/13/24
-############################################# #
-# install() ####
-
-devtools::install(
+  ############################################# #
+  # pins available? (to build vignettes) ####
+  if (!EJAM:::dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
+  # dataload_from_pins("all") ####
+  EJAM::dataload_from_pins("all") #  # just in case 
+  ############################################# #
   
-  quick = TRUE,   # USUALLY LEAVE IT AS TRUE
-  # # quick=T is MUCH faster but skips docs, vignettes, etc., building 'EJAM_2.2.2.tar.gz' or the .zip binary, etc.
-  # # quick=F is SLOW!  takes a few minutes! 
+  # RUN TESTS OR CHECK ?
   
-  upgrade = FALSE, 
+  # ? check() ? ####
+  # devtools::check() 
+  ##   automatically builds and checks a source package, using all known best practices.
+  # devtools::check_man()
+  # devtools::check_built() checks an already-built package.
   
-  # build_vignettes = FALSE,  
-  ## old-style vignetters were in  doc folder, but pkgdown-style are in   docs folder, 
+  # ? devtools::test() ####
   
-  build = FALSE,
-  ## build = TRUE means it converts a package source directory into a single bundled file...
-  ##   If binary = FALSE this creates a tar.gz package that can be installed on any platform, provided they have a full development environment (although packages without source code can typically be installed out of the box). 
-  ##   If binary = TRUE, the package will have a platform specific extension (e.g. .zip for windows), and will only be installable on the current platform, but no development environment is needed.
+  ## [ FAIL 7 | WARN 7 | SKIP 1 | PASS 617 ] as of 5/13/24
+  ############################################# #
+  # install() ####
   
-  quiet = FALSE
-)
+  devtools::install(
+    
+    quick = TRUE,   # USUALLY LEAVE IT AS TRUE
+    # # quick=T is MUCH faster but skips docs, vignettes, etc., building 'EJAM_2.2.2.tar.gz' or the .zip binary, etc.
+    # # quick=F is SLOW!  takes a few minutes! 
+    
+    upgrade = FALSE, 
+    
+    # build_vignettes = FALSE,  
+    ## old-style vignetters were in  doc folder, but pkgdown-style are in   docs folder, 
+    
+    build = FALSE,
+    ## build = TRUE means it converts a package source directory into a single bundled file...
+    ##   If binary = FALSE this creates a tar.gz package that can be installed on any platform, provided they have a full development environment (although packages without source code can typically be installed out of the box). 
+    ##   If binary = TRUE, the package will have a platform specific extension (e.g. .zip for windows), and will only be installable on the current platform, but no development environment is needed.
+    
+    quiet = FALSE
+  )
+  
+  #################### # 
+  # library(EJAM) ####
+  
+  library(EJAM)  #
+  # that had been causing an error that quitting / restarting RStudio seemed tfix(Error in `poll(list(self), ms)`:
+  # ! Native call to `processx_poll` failed
+  # Caused by error in `chain_call(c_processx_poll, pollables, type, as.integer(ms))`:
+  #   ! lazy-load database 'C:/Users/... .. . ./EJAM/R/EJAM.rdb' is corrupt
+  
+  # rmost() ####
+  ########### but rstudio build button makes it try to load data and it connects to pins but does not use those yet-
+  # tries to use local copies and fails to get .arrow files from local path supposed to be ~/../Downloads/......
+  # so it loads the .rda from aws that are older and not all files are there. 
+  ## why did it not use the pins versions since it did connect? and why not found in that local path???
+  ## so did rm(list=ls()) and tried to continue from library( ) above .
+  EJAM:::rmost(notremove = "dataload_pin_available")
+  # dataload again ####
+  if (!dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
+  EJAM::dataload_from_pins("all") # not sure this helps with building vignettes though, which need access to frs file etc. in whatever environment they are built in
+  
+})
 
-Sys.time()
-
-#################### # 
-# but that seems to case an error that quitting / restarting RStudio seemed tfix(Error in `poll(list(self), ms)`:
-# ! Native call to `processx_poll` failed
-# Caused by error in `chain_call(c_processx_poll, pollables, type, as.integer(ms))`:
-#   ! lazy-load database 'C:/Users/... .. . ./EJAM/R/EJAM.rdb' is corrupt
-# Type .Last.error to see the more details.
-# Warning message:
-#   In do.call(".Call", list(.NAME, ...)) : internal error -3 in R_decompress1)
-
-#################### # 
-# library(EJAM) ####
-
-library(EJAM)  #
-EJAM:::rmost(notremove = "dataload_pin_available")
-
-# dataload again ####
-if (!dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
-EJAM::dataload_from_pins("all") # not sure this helps with building vignettes though, which need access to frs file etc. in whatever environment they are built in
-
-########### but rstudio build button makes it try to load data and it connects to pins but does not use those yet-
-# tries to use local copies and fails to get .arrow files from local path supposed to be ~/../Downloads/......
-# so it loads the .rda from aws that are older and not all files are there. 
-## why did it not use the pins versions since it did connect? and why not found in that local path???
-## so did rm(list=ls()) and tried to continue from library( ) above .
-
-#################### # 
-# Build Articles #### 
+#################### # #################### # 
+# BUILD ARTICLES #### 
 # (web based vignettes) for pkgdown website.  in /docs/ ? not /doc/ 
 # knit button might not work in some cases?
 

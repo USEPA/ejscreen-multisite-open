@@ -31,7 +31,7 @@
 #' 
 #' and the various related data objects like map_headernames and namez
 #' 
-#' @param var vector of variable names such as c("pctlowinc", "cancer") or c(names_d, names_d_subgroups)
+#' @param var vector of variable names such as c("pctlowinc", "pm") or c(names_d, names_d_subgroups)
 #'   (and must be found in the column of map_headernames indicated by varnametype parameter below).
 #'
 #' @param info types of metadata/info needed, such as "decimals", "long", etc.

@@ -1,9 +1,11 @@
 
 #' get ratios of each site's scores to US means (using output of batch buffering)
 #' 
-#' Used to create input to[ boxplots_ratios()]
+#' Used to create input to[ boxplots_ratios()] and can be used elsewhere now
 #' 
-#' @details Should recode to use variable name defaults from package not hardcoded here.
+#' @details  Note that colnames returned are same as input, not renamed to say "ratio"
+#'   If names_d_subgroups are included, those means are not in API output from EJScreen
+#'   so it gets the means from usastats or statestats
 #' @param out data.frame output from [ejscreenapi_plus()] or from [ejscreenapi()] or doaggregate(),
 #'   one row per buffer or site, and 
 #'   columns for indicators named in evarnames, dvarnames, avg.evarnames, avg.dvarnames
@@ -34,32 +36,73 @@
 #'   
 #' @keywords internal
 #' @export
-#'   
+#'
 calc_ratios_to_avg <- function(out, 
-                          evarnames = map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_e"], #EJAM ::names_e, 
-                          dvarnames = map_headernames$newnames_ejscreenapi[map_headernames$varlist %in% c("names_d", "names_d_subgroups" )], #EJAM ::names_d and names_d_subgroups
-                          zone.prefix='', # can just specify "state." if the 
-                          # indicators use state.avg.indicator (and blank if  avg.indicator as variable names)
+                          evarnames = names_e, 
+                          dvarnames = c(names_d, names_d_subgroups), # could add  names_health[1:2] i.e., "pctdisability"    "lowlifex" ?
+                          zone.prefix = c('', 'state.')[1], 
+                          # specify "state." for state.avg.indicator and blank for avg.indicator as variable names
                           avg.evarnames=paste0(zone.prefix, 'avg.', evarnames), 
                           avg.dvarnames=paste0(zone.prefix, 'avg.', dvarnames)) {
   
-  ##   ratios of nearby indicator score to US overall, 
-  ## try to get quick barplot(s) or PDF(density) or CDF
-  ## at one site or average site or all in one graphic. 
-   
-  # # for examples, see non_shiny_example_script.R
- 
-  ## tedious part is specifying the variable names, ideally flexibly.
-  ## And  this app uses Demog.Index instead of VSI.eo
-   
-  # just do some error checking here:
+  if (is.list(out) && !is.data.frame(out)) {
+    if ("results_bysite" %in% names(out)) {
+      # looks like it is the output of ejamit()
+      out <- out$results_bysite
+    } else {
+      if ("table" %in% names(out)) {
+        # looks like it is the output of ejscreenit()
+        out <- out$table
+      } else {
+        stop("parameter out is invalid")
+      }
+    }
+  }
    if (is.data.table(out)) {setDF(out)}
+  
+  ##   ratios of nearby indicator score to US overall, 
+  ##  to get quick barplot(s) or PDF(density) or CDF
+  ## at one site or average site or all in one graphic. 
+  
+  ## API did not provide averages for demog subgroups, so try to get from usastats, statestats, if missing from API output 
+  
+  
+  # could do the same for names_health[1:2] i.e., "pctdisability"    "lowlifex"  but not "rateheartdisease" "rateasthma"       "ratecancer" 
+  warning("averages and ratios are not provided for pctdisability and lowlifex indicators")
+  
+  
+  if (all(names_d_subgroups %in% dvarnames)) {
+    if (zone.prefix == "") {
+      if (!(all(names_d_subgroups_avg %in%  names(out)) & all(names_d_subgroups %in%  names(usastats)))) {
+        warning("Not found in out (e.g., API outputs), so looking up and adding US averages for demog subgroups, 
+                and rescaling as 0-100, which is how ejscreen tables store percentages but not how ejamit does")
+        
+        out[, names_d_subgroups_avg] <-  100 * usastats[usastats$PCTILE == "mean", names_d_subgroups]
+      }
+    }
+    if (zone.prefix == "state.") {
+      if (!all(names_d_subgroups_state_avg %in% names(out)) && all(names_d_subgroups %in% names(statestats))) {
+        # check if ST is in colnames of out
+        if ("ST" %in% names(out)) {
+        # if it is, use it to look up mean by ST for each of names_d_subgroups and put into out[, names_d_subgroups_state_avg]
+          warning("Not found in out (e.g., API outputs), so looking up and adding State averages for demog subgroups, 
+                  and rescaling as 0-100, which is how ejscreen tables store percentages but not how ejamit does")
+          
+          out[, names_d_subgroups_state_avg] <- 100 * statestats_means_bystates(out$ST, names_d_subgroups)
+        } else {
+            warning("state averages of demog subgroups were not found in out, but cannot look up those averages since ST not found in colnames of out")
+          out[, names_d_subgroups_state_avg] <- NA
+          }
+        }
+    }
+  }
+  
   # confirm those colnames are there
   d_haveboth <- (avg.dvarnames %in% names(out)) & (dvarnames %in% names(out))
   e_haveboth <- (avg.evarnames %in% names(out)) & (evarnames %in% names(out))
   if (any(!e_haveboth, !d_haveboth)) {
     warning('some variable names are not found in out - ignoring those')
-    cat('Missing from outputs of API, but expected to see here: \n\n')
+    cat('Missing from table provided, but expected to see here: \n\n')
     if (any(!d_haveboth)) cat("Demog: ", paste(setdiff(c(dvarnames, avg.dvarnames), names(out)), collapse = ", "), '\n\n')
     if (any(!e_haveboth)) cat("Envt: " , paste(setdiff(c(evarnames, avg.evarnames), names(out)), collapse = ", "), '\n\n')
     }
@@ -72,9 +115,8 @@ calc_ratios_to_avg <- function(out,
   if (length( allnames) == 0) {stop("None of the specified (or expected default if not specified) Variable names were found in the provided dataset")}
   if (length(evarnames) == 0) {stop("None of the specified (or expected default if not specified) evarnames were found in the provided dataset")}
   if (length(dvarnames) == 0) {stop("None of the specified (or expected default if not specified) dvarnames were found in the provided dataset")}
-  
-  
-  # blanks crashed it - make any non numeric into NA # ejscreenapi_plus() ADDS COMMAS AND MAKES NUMERIC pop COUNTS INTO A CHARACTER FIELD
+
+  # so blanks wont cause error, make any non numeric into NA # ejscreenapi_plus() ADDS COMMAS AND MAKES NUMERIC pop COUNTS INTO A CHARACTER FIELD
   if (any(!is.numeric(out[ , allnames]))) {
     # warning('some values are not numeric - replacing those with NA')
     out[ , allnames] <- suppressWarnings(sapply(out[ , allnames], as.numeric))

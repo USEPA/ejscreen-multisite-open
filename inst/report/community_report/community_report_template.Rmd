@@ -21,8 +21,10 @@ params:
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
 
-```{r}
+```{r build_community_report}
 library(EJAM)
+
+
 build_community_report(
             output_df = params$output_df,
             analysis_title = params$analysis_title,
@@ -34,7 +36,7 @@ build_community_report(
           )
 ```
 
-```{r, fig.align='center'}
+```{r map, fig.align='center'}
 
 params$map
 
@@ -48,10 +50,17 @@ params$map
 
 
 ```{r}
+library(desc)
+library(golem)
+desc <- desc::desc(file = app_sys('../DESCRIPTION'))
+version <- desc$get("Version")
+## trim version number shown in report to Major.Minor
+version <- substr(version, start = 1, stop = gregexpr('\\.',version)[[1]][2]-1)
+
 current_date <- format(Sys.Date(), "%B %d, %Y")
 
 HTML('<div style="background-color: #edeff0; color: black; width: 100%; padding: 10px 20px; text-align: right; margin: 10px 0;">
-                   <p style="margin-bottom: 0;">Version 2.2 | Report created on ', current_date, '</p>
+                   <p style="margin-bottom: 0;">Version ',version, '| Report created on ', current_date, '</p>
                  </div>')
 ```
 

@@ -42,7 +42,7 @@ information about updates and changes here:
 The American Community Survey 5-year summary file data are updated by
 the United States Census Bureau annually, after which EJScreen and EJAM are updated.
 \itemize{
-\item The mid 2024 releases are called version 2.3 (EJAM/EJScreen) and use ACS 2018-2022.
+\item The August 2024 releases are called version 2.32 (EJAM/EJScreen) and use ACS 2018-2022.
 }
 }
 
@@ -148,7 +148,7 @@ the Decennial census blocks can provide, such as a dasymetric map approach.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://usepa.github.io/EJAM/}
+  \item \url{https://usepa.github.io/EJAM}
   \item \url{https://github.com/USEPA/EJAM}
 }
 

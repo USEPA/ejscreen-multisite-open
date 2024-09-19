@@ -1,5 +1,9 @@
 # global.R defines variables needed in global environment
 
+# if not already done in .onAttach() step, do this now as app launches
+dataload_from_pins(varnames = c("blockpoints", "blockwts", "quaddata"))
+indexblocks()
+                   
 # Note: Do not set defaults for a module UNTIL INSIDE THE MODULE 
 #    EJAMejscreenapi module uses its own global.R file:
 #   source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))
@@ -38,8 +42,13 @@ options(spinner.color = "#005ea2", spinner.type = 4)
 
 ## app title & version   ###########################################
 # apptitle <- "EJAM v2.2"
-acs_version_global =  "2017-2021" #
-ejscreen_version_global =  "2.2"
+desc <- desc::desc(file = "DESCRIPTION")
+ejam_app_version  <- desc$get("Version")
+## trim version number to Major.Minor
+ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ejam_app_version)[[1]][2]-1)
+
+acs_version_global = desc$get("ACSVersion")#as.vector(metadata_mapping$blockgroupstats[['acs_version']]) # "2017-2021"
+ejscreen_version_global = desc$get("EJScreenVersion")#as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']])
 
 ## (IP address  for ejscreenapi module) ###########################################
 # ips <- c('10.147.194.116', 'awsgeopub.epa.gov', '204.47.252.51', 'ejscreen.epa.gov')
@@ -80,6 +89,8 @@ maxmax_pts_map       <- 15 * 1000 # max we will show on map
   default_max_shapes_map <- 159 # TX has 254 counties, but no other state exceeds 159. EJAM::blockgroupstats[ , data.table::uniqueN(substr(bgfips, 1,5)), by = ST][order(V1), ]
  maxmax_shapes_map <- 254  # TX has 254 counties
 
+ use_shapefile_from_any <-  FALSE # newer code when ready will handle more spatial formats like .json etc.
+ 
  ## ------------------------ Radius options  #####
 
 #   radius miles for slider input where user specifies radius. Note 5 km is 3.1 miles, 10 km is 6.2 miles ; and 10 miles is 16 kilometers (10 * meters_per_mile/1000). 50 km is too much/ too slow.

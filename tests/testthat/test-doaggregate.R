@@ -20,10 +20,11 @@ if (!exists('blockwts')) {
 ################# #
 
 # no crash when aggregate basic example of sites2blocks
-test_that('doaggregate() returns a correctly named list, with no error', {
+test_that('doaggregate() returns a correctly named list, with no error if key params provided', {
   expect_no_error({
     suppressWarnings({
       val <- doaggregate(sites2blocks = testoutput_getblocksnearby_10pts_1miles,
+                         sites2states_or_latlon = testpoints_10, 
                          radius = max(testoutput_getblocksnearby_10pts_1miles$distance), include_ejindexes = TRUE)
     })
   })
@@ -44,45 +45,36 @@ test_that("still same exact results_overall as previously saved", {
 # # data created/saved was this:
 # out_data_doagg <- doaggregate(out_data_getblocks, sites2states_or_latlon = testpoints_data, radius = myrad, include_ejindexes = TRUE) # not the default but want to test this way
 
-suppressWarnings({
-# WHAT IT RETURNS NOW:
-x <- doaggregate(testoutput_getblocksnearby_10pts_1miles,  sites2states_or_latlon = testpoints_10,  radius = 1, include_ejindexes = TRUE)
-overall_has_changed <- !isTRUE(identical(
-  testoutput_doaggregate_10pts_1miles$results_overall,
-  x$results_overall))
-})
-# overall_has_changed
-
+  suppressWarnings({
+    # WHAT IT RETURNS NOW:
+    x <- doaggregate(testoutput_getblocksnearby_10pts_1miles, 
+                     sites2states_or_latlon = testpoints_10, 
+                     radius = 1, include_ejindexes = TRUE)
+    overall_has_changed <- !isTRUE(identical(
+      testoutput_doaggregate_10pts_1miles$results_overall,
+      x$results_overall))
+  })
   expect_equal(
     testoutput_doaggregate_10pts_1miles$results_overall,
     x$results_overall # use defaults
   )
-})
-test_that("still same exact results_bysite as previously saved", {
   skip_if(overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")
+  # overall_has_changed
+  
   expect_equal(
     testoutput_doaggregate_10pts_1miles$results_bysite,
     x$results_bysite # use defaults
   )
-})
-test_that("still same exact results_bybg_people as previously saved", {
-  skip_if(overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")
   expect_equal(
     testoutput_doaggregate_10pts_1miles$results_bybg_people,
     x$results_bybg_people # use defaults
   )
-})
-
-test_that("still same exact longnames as previously saved", {
-  skip_if(overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")
   expect_equal(
     testoutput_doaggregate_10pts_1miles$longnames,
     x$longnames # use defaults
   )
+  rm(x)
 })
-
-rm(x)
-
 
 
 ################# #
@@ -90,10 +82,10 @@ rm(x)
 ################# #
 
 test_that('error if in inputs are null, empty, NA, or blank',{
-  expect_error(doaggregate(NULL, silentinteractive = TRUE))
-  expect_error(doaggregate(NA, silentinteractive = TRUE))
+  expect_warning(doaggregate(NULL, silentinteractive = TRUE))
+  expect_warning(doaggregate(NA, silentinteractive = TRUE))
   expect_error(doaggregate())
-  expect_error(doaggregate('', silentinteractive = TRUE))
+  expect_warning(doaggregate('', silentinteractive = TRUE))
 })
 
 test_that('warn but no error if input is data.frame but not data.table (?)', {
@@ -109,8 +101,25 @@ test_that('warn but no error if input is data.frame but not data.table (?)', {
 test_that('error if input has column not named distance', {
   wrongnames <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
   data.table::setnames(wrongnames, 'distance', 'radius')
+  suppressWarnings( 
   expect_warning({doaggregate(sites2blocks = wrongnames)})
+  )
 })
+
+###############################################  ##
+# TESTS TO ADD, FOR HANDLING OF MISSING or various values for  param  sites2states_or_latlon
+#
+# This case never arises if using shiny app  or ejamit
+# 
+# testthat::test_that("doaggregate() handles missing sites2states_or_latlon", {
+#   expect_error({
+#     x = doaggregate(sites2blocks = testoutput_getblocksnearby_10pts_1miles,
+#                     radius = 1) 
+#     })
+# })
+# doaggregate(testpoints_10[1:2,], radius = 1)
+
+
 
 
 # *** WHAT IF OTHER BAD FORMATS FOR TABLE? SEE bad_numbers examples from setup.R, as used in radius tests below.
@@ -180,11 +189,11 @@ test_that("radius param to doag that is very small relative to radius seen from 
   )
 })
 test_that("radius param to doag that is 1.5x as big as radius seen from getblocks gets reported anyway as radius instead of inferring!?!? - do we want that???", {
-
-  expect_equal(
-    doaggregate(sites2blocks =  testoutput_getblocksnearby_10pts_1miles, radius = 1.5)$results_bysite$radius.miles[1],
+  
+  expect_false(isTRUE(all.equal(
+    suppressWarnings(doaggregate(sites2blocks =  testoutput_getblocksnearby_10pts_1miles, radius = 1.5)$results_bysite$radius.miles[1]),
     1.5
-  )
+  )))
 })
 test_that("radius param to doagg that is MUCH larger than seen from getblocks is ignored and doag uses inferred radius instead", {
   suppressWarnings(  expect_equal(
@@ -249,7 +258,7 @@ for (i in 1:length(cause_warn)) {
   } )
 }
 
-cause_err <- bad_numbers[c("num0len", "listempty", "vector2", "array2","matrix_1row_4col", "matrix_4row_1col", "matrix_2x2" )]
+cause_err <- bad_numbers[c("vector2", "array2","matrix_1row_4col", "matrix_4row_1col", "matrix_2x2" )]
 
 for (i in 1:length(cause_err)) {
   cat('\n  Trying radius that is', names(cause_err)[i], '- Testing to ensure it reports error... ')

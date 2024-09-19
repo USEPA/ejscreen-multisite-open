@@ -1,7 +1,7 @@
 
 #' How many decimal places to round to for given variable(s)
 #'
-#' @param var vector of variable names such as c("pctlowinc", "cancer") or c(names_d, names_d_subgroups)
+#' @param var vector of variable names such as c("pctlowinc", "pm") or c(names_d, names_d_subgroups)
 #' @param varnametype which column of map_headernames to use when looking for var, like "rname" or "api" or "long"
 #' @seealso [varinfo()] [table_round()]
 #' @return named vector same size as var, with var as names.

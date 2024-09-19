@@ -50,19 +50,7 @@ print(ls())
 ################################################################################ #
 
 if (1 == 0) {
-  
-  # names_these
-  #
-  # [1] "Demog.Index"      "Demog.Index.Supp" "pctlowinc"        "pctlingiso"       "pctunemployed"    "pctlths"         
-  # [7] "lowlifex"         "pctunder5"        "pctover64"        "pctmin"        
-  #
-  # "pcthisp"          "pctnhba"         
-  # [13] "pctnhaa"          "pctnhaiana"       "pctnhnhpia"       "pctnhotheralone"  "pctnhmulti"       "pctnhwa"    
-  # 
-  # [19] "pm"               "o3"               "cancer"           "resp"             "dpm"              "pctpre1960"      
-  # [25] "traffic.score"    "proximity.npl"    "proximity.rmp"    "proximity.tsdf"   "proximity.npdes"  "ust"             
-  # [31] "rsei"      
-  
+
   print(
     setdiff(names_these, names(usastats))
   )

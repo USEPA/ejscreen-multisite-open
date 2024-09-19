@@ -85,7 +85,7 @@ metadata4pins <- list(
 metadata4pins <- do.call(rbind, args = metadata4pins)
 metadata4pins = data.frame(metadata4pins)
 
-attr(metadata4pins, "date_saved_in_package") <- as.character(Sys.Date())
+# attr(metadata4pins, "date_saved_in_package") <- as.character(Sys.Date()) # this should be a date assigned only when datacreate_ script is run for a specific dataset to create it.
 usethis::use_data(metadata4pins, overwrite = TRUE)
 
 #################################################################### #

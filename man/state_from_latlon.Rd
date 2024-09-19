@@ -30,5 +30,5 @@ Takes 3 seconds to find state for 1k points, so a faster alternative would be us
 
 }
 \seealso{
-\link{states_shapefile} \code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}} \code{\link[=states_infer]{states_infer()}}
+\link{states_shapefile} \code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}} \code{\link[=state_from_sitetable]{state_from_sitetable()}}
 }

@@ -29,9 +29,9 @@ attributes2 = function(x) {
 #'
 #' @return returns x but with new or altered attributes
 #' @examples
-#'   metadata_check()
+#'   # metadata_check() # internal function
 #'   x <- data.frame(a=1:10,b=1001:1010)
-#'   x <- metadata_add(x)
+#'   # x <- metadata_add(x) # internal function
 #'   attributes(x)
 #' 
 #' @keywords internal
@@ -104,12 +104,16 @@ metadata_check <- function(packages = EJAM::ejampackages,
                            ),
                            grepdatasets = FALSE,
                            loadifnotloaded = TRUE) {
-  
-  # ejscreen_version =  '2.3',
-  # ejscreen_releasedate = "2024-07-01",
-  # acs_releasedate =      "2023-12-07",
-  # acs_version =          "2018-2022",
-  # census_version        = 2020
+
+  # > dput(default_metadata)
+  # list(
+  #   ejam_package_version = c(Version = "2.32.0"), 
+  #   ejscreen_version     = c(EJScreenVersion = "2.32"),
+  #   ejscreen_releasedate = c(EJScreenReleaseDate = "2024-08-12"),
+  #   acs_releasedate      = c(ACSReleaseDate = "2023-12-07"), 
+  #   acs_version          = c(ACSVersion = "2018-2022"),
+  #   census_version       = c(CensusVersion = "2020")
+  # )
   
   # utility to check if year attribute is set on each data file
   # does it really need to lazy load all these to check their attributes? that would be slow for big datasets, right?
