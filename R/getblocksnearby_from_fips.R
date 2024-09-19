@@ -58,7 +58,9 @@ getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE
   suppressWarnings({ # because if length was 1 and added NA at end, this reports irrelevant warning
   ## create two-column dataframe with bgs (values) and original fips (ind)
   # fips_bg_from_anyfips() returns all blockgroup fips codes contained within each fips provided
-  all_bgs <- stack(sapply(fips_vec, fips_bg_from_anyfips)) # Slow:  1.4 seconds for all counties in region 6, e.g.
+  # fips_bgs_in_fips() replaces fips_bg_from_anyfips()
+    all_bgs <- stack(sapply(fips_vec, fips_bgs_in_fips))
+  # all_bgs <- stack(sapply(fips_vec, fips_bg_from_anyfips)) # Slow:  1.4 seconds for all counties in region 6, e.g.
   })
   names(all_bgs) <- c('bgfips', 'ejam_uniq_id')
   
