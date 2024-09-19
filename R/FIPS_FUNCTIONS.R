@@ -881,6 +881,7 @@ fips_bgs_in_fips <- function(fips) {
   # add all blockgroups contained in larger census units
   # if nchar<12, census unit is bigger than bg (i.e., tract, county, state), so return ALL the child bgs
   lens <- unique(len)
+  lens <- lens[lens < 12] # because we already got those with nchar 12 or 15 (blockgroups or blocks)
   for (lenx in lens) {
     bgs <- c(bgs, blockgroupstats[substr(bgfips, 1, lenx) %in% fips[len == lenx], bgfips])
   }
