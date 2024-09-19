@@ -119,25 +119,21 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
 #' @keywords internal
 #'
 state_from_blockid_table <- function(dt_with_blockid) {
-  blockgroupstats[sites2blocks, ST, on = "bgid"]
+  
   # 1 way to get ST of every block in the entire blockwts table:
   # blockwts[bgid2fips, substr(bgfips,1,2), on = "bgid"]
   
-  # if (!exists('blockid2fips')) {
-  #   dataload_from_pins(varnames = 'blockid2fips')
-  # }
-  # if (!exists('blockid2fips')) {return(rep(NA, NROW(dt_with_blockid)))}
-  # stateinfo$ST[match(blockid2fips[dt_with_blockid, substr(blockfips,1,2), on = "blockid"], stateinfo$FIPS.ST)]
-
-  #   ST <- blockgroupstats[dt_with_bgid, ST, on = "bgid"]
-  # } else {
-  #   # dt_with_bgid <- blockwts[dt_with_blockid, .(bgid, blockid), on = "blockid"] 
-  #   # or all in one step, 
-  #   # use blockid to get bgid from blockwts table, then use bgid to get ST from blockgroupstats table
-  #   ST <- blockgroupstats[blockwts[dt_with_blockid_ONLY, .(bgid, blockid), on = "blockid"], ST, on = "bgid"]
-  # }
+  if ("bgid" %in% names(dt_with_blockid)) {
+    dt_with_bgid <- dt_with_blockid
+    message("found bgid column and assuming it is valid so we do not have to use blockid to get ST")
+    ST <- blockgroupstats[dt_with_bgid, ST, on = "bgid"]
+  } else {
+    dt_with_blockid_ONLY <- dt_with_blockid
+    # use blockid just to get bgid from blockwts table
+    ST <- blockgroupstats[blockwts[dt_with_blockid_ONLY, .(bgid, blockid), on = "blockid"], ST, on = "bgid"]
+  }
   
-  # return(ST)
+  return(ST)
 }
 ##################################################################################################### #
 
