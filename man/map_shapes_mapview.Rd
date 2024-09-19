@@ -16,7 +16,7 @@ map_shapes_mapview(
 
 \item{col.regions}{passed to \code{\link[mapview:mapView]{mapview::mapview()}}}
 
-\item{map.types}{passed to  \code{\link[mapview:mapView]{mapview::mapview()}}}
+\item{map.types}{passed to  \code{\link[mapview:mapview]{mapview::mapview()}}}
 
 \item{...}{passed to mapview}
 }
