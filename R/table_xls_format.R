@@ -537,6 +537,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   is.percentage_eachsite  <- 1 == fixcolnames(headers_eachsite, oldtype = "r", newtype = "percentage")
   percentage_colnums_eachsite <- which(is.percentage_eachsite)
   
+  is.dollar_overall  <- 1 == fixcolnames(headers_overall, oldtype = "r", newtype = "dollar")
+  dollar_colnums_overall <- which(is.dollar_overall)
+  is.dollar_eachsite  <- 1 == fixcolnames(headers_eachsite, oldtype = "r", newtype = "dollar")
+  dollar_colnums_eachsite <- which(is.dollar_eachsite)
+  
   ## ROW 1 STYLE ####
   
   headstyle_basic <- openxlsx::createStyle(
@@ -699,16 +704,27 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     # 
 
     # sigfigs_table <-  map_headernames[ "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsname",	"csvname")]
-    digitstable <- map_headernames[ "" != (map_headernames$decimals) | "" != (map_headernames$sigfigs), c("sigfigs", "decimals", "rname", "acsname",	"csvname", "apiname")]
-    decimals_cols <- names(eachsite)[names(eachsite) %in% digitstable$rname[digitstable$decimals != ""]]
-    decimals_colnum <- match(decimals_cols, names(eachsite)) # and overall has same exact names and sort order of names
-    decimals_tosee <- digitstable$decimals[match(decimals_cols, digitstable$rname)]
+    digitstable <- map_headernames[ "" != (map_headernames$decimals) | "" != (map_headernames$sigfigs), c("sigfigs", "decimals","dollar", "rname", "acsname",	"csvname", "apiname")]
+    decimals_cols_es <- names(eachsite)[names(eachsite) %in% digitstable$rname[digitstable$decimals != ""]]
+    decimals_colnum_es <- match(decimals_cols_es, names(eachsite)) # and overall has same exact names and sort order of names
+    decimals_tosee_es <- digitstable$decimals[match(decimals_cols_es, digitstable$rname)]
+    
+    decimals_cols_oa <- names(overall)[names(overall) %in% digitstable$rname[digitstable$decimals != ""]]
+    decimals_colnum_oa <- match(decimals_cols_oa, names(overall)) # and overall has same exact names and sort order of names
+    decimals_tosee_oa <- digitstable$decimals[match(decimals_cols_oa, digitstable$rname)]
+    
     dec2format <- function(decimalscount) ifelse(decimalscount == 0, "#,###,###", paste0("#,###,##0.", paste0(rep("0", decimalscount), collapse = '')))
     # dec2formats <- Vectorize(dec2format)
     ## only loop over unique values
-    for (i in unique(decimals_tosee)) {
-      perc_cols <- decimals_colnum[which(decimals_tosee == i & decimals_colnum %in%  percentage_colnums_eachsite)]
-      non_perc_cols <- decimals_colnum[which(decimals_tosee == i & !(decimals_colnum %in%  percentage_colnums_eachsite))]
+    for (i in unique(c(decimals_tosee_es, decimals_tosee_oa))) {
+      perc_cols_es <- decimals_colnum_es[which(decimals_tosee_es == i & decimals_colnum_es %in%  percentage_colnums_eachsite)]
+      dollar_cols_es <- decimals_colnum_es[which(decimals_tosee_es == i & decimals_colnum_es %in%  dollar_colnums_eachsite)]
+      non_perc_cols_es <- decimals_colnum_es[which(decimals_tosee_es == i & !(decimals_colnum_es %in%  percentage_colnums_eachsite | 
+                                                                       decimals_colnum_es %in% dollar_colnums_eachsite))]
+      perc_cols_oa <- decimals_colnum_oa[which(decimals_tosee_oa == i & decimals_colnum_oa %in%  percentage_colnums_overall)]
+      dollar_cols_oa <- decimals_colnum_oa[which(decimals_tosee_oa == i & decimals_colnum_oa %in%  dollar_colnums_overall)]
+      non_perc_cols_oa <- decimals_colnum_oa[which(decimals_tosee_oa == i & !(decimals_colnum_oa %in%  percentage_colnums_overall | 
+                                                                          decimals_colnum_oa %in% dollar_colnums_overall))]
       if (testing) {
         print(i); print(paste0(dec2format(i),"%")) 
         print("percentages:"); print(names(eachsite)[perc_cols])
@@ -717,12 +733,16 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       }
       style_cur <- openxlsx::createStyle(numFmt = dec2format(i))
       style_perc <- openxlsx::createStyle(numFmt = paste0(dec2format(i),"%"))
+      style_dollar <- openxlsx::createStyle(numFmt = paste0("$", dec2format(i)))
       
-      openxlsx::addStyle(wb, 'Overall',   cols = perc_cols, rows = 2                    ,  style = style_perc, stack = TRUE)
-      openxlsx::addStyle(wb, 'Each Site', cols = perc_cols, rows = 2:(1 + NROW(eachsite)), style = style_perc, stack = TRUE, gridExpand = TRUE)
+      openxlsx::addStyle(wb, 'Overall',   cols = perc_cols_oa, rows = 2                    ,  style = style_perc, stack = TRUE)
+      openxlsx::addStyle(wb, 'Each Site', cols = perc_cols_es, rows = 2:(1 + NROW(eachsite)), style = style_perc, stack = TRUE, gridExpand = TRUE)
       
-      openxlsx::addStyle(wb, 'Overall',   cols = non_perc_cols, rows = 2                    ,  style = style_cur, stack = TRUE)
-      openxlsx::addStyle(wb, 'Each Site', cols = non_perc_cols, rows = 2:(1 + NROW(eachsite)), style = style_cur, stack = TRUE, gridExpand = TRUE)
+      openxlsx::addStyle(wb, 'Overall',   cols = dollar_cols_oa, rows = 2                    ,  style = style_dollar, stack = TRUE)
+      openxlsx::addStyle(wb, 'Each Site', cols = dollar_cols_es, rows = 2:(1 + NROW(eachsite)), style = style_dollar, stack = TRUE, gridExpand = TRUE)
+      
+      openxlsx::addStyle(wb, 'Overall',   cols = non_perc_cols_oa, rows = 2                    ,  style = style_cur, stack = TRUE)
+      openxlsx::addStyle(wb, 'Each Site', cols = non_perc_cols_es, rows = 2:(1 + NROW(eachsite)), style = style_cur, stack = TRUE, gridExpand = TRUE)
     }
    # openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = percentage_colnums, style=openxlsx::createStyle(numFmt = '#0'), stack = TRUE)
     # openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:((1 + NROW(eachsite)), cols = percentage_colnums, style=openxlsx::createStyle(numFmt = '#0'), stack = TRUE, gridExpand = TRUE)  
@@ -814,38 +834,38 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
 #   
   ### distances should only have about 2 decimal places ####
   
-  distance_colnums <- which(grepl("distance_", names(eachsite)))
-  openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = distance_colnums, style = openxlsx::createStyle(numFmt = '#,##0.00'), stack = TRUE)
-  openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = distance_colnums, style = openxlsx::createStyle(numFmt = '#,##0.00'), stack = TRUE, gridExpand = TRUE)
+  #distance_colnums <- which(grepl("distance_", names(eachsite)))
+  #openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = distance_colnums, style = openxlsx::createStyle(numFmt = '#,##0.00'), stack = TRUE)
+  #openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = distance_colnums, style = openxlsx::createStyle(numFmt = '#,##0.00'), stack = TRUE, gridExpand = TRUE)
   
   ### RATIO - rounded to one decimal place    ####
-  ratio_var_style <- openxlsx::createStyle(numFmt = '#,##0.0')
-  openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = ratio_colnums_overall,  style = ratio_var_style, stack = TRUE)
-  openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = ratio_colnums_eachsite, style = ratio_var_style, stack = TRUE, gridExpand = TRUE)
+  #ratio_var_style <- openxlsx::createStyle(numFmt = '#,##0.0')
+  #openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = ratio_colnums_overall,  style = ratio_var_style, stack = TRUE)
+  #openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = ratio_colnums_eachsite, style = ratio_var_style, stack = TRUE, gridExpand = TRUE)
   
   
   ### PERCENTILE - rounded, integer 0-100 format    ####
   
-  pctile_var_style <- openxlsx::createStyle(numFmt = '#0')
-  openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = pctile_colnums_overall,  style = pctile_var_style, stack = TRUE)
-  openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = pctile_colnums_eachsite, style = pctile_var_style, stack = TRUE, gridExpand = TRUE)
+  #pctile_var_style <- openxlsx::createStyle(numFmt = '#0')
+  #openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = pctile_colnums_overall,  style = pctile_var_style, stack = TRUE)
+  #openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = pctile_colnums_eachsite, style = pctile_var_style, stack = TRUE, gridExpand = TRUE)
   
   ### PERCENTAGE format for Demog percentages columns####
   
-  percentage_style <- openxlsx::createStyle(numFmt = "PERCENTAGE")   # specify 0 decimal places plus percentage style
-  percentage_style <- openxlsx::createStyle(numFmt = "0%")   # specify 0 decimal places plus percentage style
-  openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = percentage_colnums_overall, style = percentage_style, stack = TRUE)
-  openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = percentage_colnums_eachsite, style = percentage_style, stack = TRUE, gridExpand = TRUE)
+  #percentage_style <- openxlsx::createStyle(numFmt = "PERCENTAGE")   # specify 0 decimal places plus percentage style
+  #percentage_style <- openxlsx::createStyle(numFmt = "0%")   # specify 0 decimal places plus percentage style
+  #openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = percentage_colnums_overall, style = percentage_style, stack = TRUE)
+  #openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = percentage_colnums_eachsite, style = percentage_style, stack = TRUE, gridExpand = TRUE)
   # openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = percentage_colnums, style=openxlsx::createStyle(numFmt = '#0'), stack = TRUE)
   # openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:((1 + NROW(eachsite)), cols = percentage_colnums, style=openxlsx::createStyle(numFmt = '#0'), stack = TRUE, gridExpand = TRUE)  
   
   ### Number format total count columns  ####
   
-  count_colnums_overall  <- c(which(headers_overall == 'pop'), which(vartypes_overall  == 'count demog'))
-  count_colnums_eachsite <- c(which(headers_overall == 'pop'), which(vartypes_eachsite == 'count demog'))
-  count_var_style <- openxlsx::createStyle(numFmt = "#,###,###" )
-  openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = count_colnums_overall,  style = count_var_style, stack = TRUE)
-  openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = count_colnums_eachsite, style = count_var_style, stack = TRUE, gridExpand = TRUE)
+  #count_colnums_overall  <- c(which(headers_overall == 'pop'), which(vartypes_overall  == 'count demog'))
+  #count_colnums_eachsite <- c(which(headers_overall == 'pop'), which(vartypes_eachsite == 'count demog'))
+  #count_var_style <- openxlsx::createStyle(numFmt = "#,###,###" )
+  #openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = count_colnums_overall,  style = count_var_style, stack = TRUE)
+  #openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = count_colnums_eachsite, style = count_var_style, stack = TRUE, gridExpand = TRUE)
   
   ### apply a default general number format to all OTHER columns ? or just assume all were already covered above  ***  ####
   # 
@@ -858,8 +878,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   
   # can group columns too, to help user hide some of them
 
-  average_colnums_eachsite <- which(vartypes_eachsite %in% c('usavg', 'stateavg'))
-  openxlsx::groupColumns(wb, "Each Site", cols = average_colnums_eachsite, hidden = TRUE)
+  #average_colnums_eachsite <- which(vartypes_eachsite %in% c('usavg', 'stateavg'))
+  #openxlsx::groupColumns(wb, "Each Site", cols = average_colnums_eachsite, hidden = TRUE)
   
   ###########################################  ###########################################  ########################################## #
   
