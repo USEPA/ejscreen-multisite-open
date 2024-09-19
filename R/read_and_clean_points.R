@@ -59,7 +59,7 @@ read_and_clean_points <- function(filepath, default_points=NULL) {
   # if uploaded with zero length somehow, return default points or NULL ####
   if (0 == length(pts_filecontents)) {
     pts_filecontents <- default_points  # was defined in global.R  
-  } else {f
+  } else {
     
     # LAT/LON: if any columns seem to be lat/lon, use those ####
     

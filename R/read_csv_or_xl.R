@@ -1,7 +1,7 @@
 
 #' Read table of data from .csv or .xlsx Excel file
 #' 
-#' If in RStudio, interactively can select file from local drive. Used by app etc 
+#' If in RStudio, interactively can select file from local drive. Also used by EJAM shiny app for file uploads.
 #' 
 #' @description Read simple table from csv or xls or xlsx.
 #' For excel format, must be simple table on first tab, 
