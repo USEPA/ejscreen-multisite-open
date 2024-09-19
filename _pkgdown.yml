@@ -160,7 +160,6 @@ reference:
   - fipstype
   - fips_lead_zero
   - fips_counties_from_countyname
-  - fips_bg_from_anyfips
   - fips_bgs_in_fips
   - fips_from_table
   - censusplaces
@@ -185,7 +184,6 @@ reference:
   - fips2state_abbrev
   - fips2state_fips
   - state_from_sitetable
-  - state_from_fips_bybg
   - state_from_latlon
 - subtitle: "Regions"
   contents:
@@ -374,6 +372,7 @@ reference:
   - ejscreenit_see_table
   - ejscreen_vscript
   - ejscreen_vs_ejam_1var
+  - state_from_fips_bybg
   - fixnames_aliases
   - formulas_all
   - formulas_d

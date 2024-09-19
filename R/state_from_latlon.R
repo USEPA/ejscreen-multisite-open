@@ -212,11 +212,11 @@ state_from_blockid <- function(blockid) {
 #' @seealso [fips2state_abbrev()] to get just one state per FIPS
 #' @return vector of 2-character state abbreviations like CA,CA,CA,MD,MD,TX
 #'
-#' @export
+#' @keywords internal
 #'
 state_from_fips_bybg <- function(fips, uniqueonly=FALSE) {
   warning("This function provides the states of ALL blockgroups within the FIPS, not just one state per fips. see also fips2state_abbrev() ")
-  fips <- fips_bg_from_anyfips(fips) # returns all the blockgroups fips codes that match, such as all bg in the state or county
+  fips <- fips_bgs_in_fips(fips) # returns all the blockgroups fips codes that match, such as all bg in the state or county
   x <- stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
   if (uniqueonly) {return(unique(x))} else {return(x)}
 }

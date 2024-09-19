@@ -75,7 +75,13 @@ if (y_basic) { # do this part manually if needed
   
   if (y_fips) {
     # fips
-    x <- ejamit(fips = fips_bg_from_anyfips(fips_counties_from_state_abbrev("DE")[1])[1:2]) # just 2 blockgroups
+    tracts2 = c("01015001102", "01047956102")
+    bg2 = fips_bgs_in_fips(fips_counties_from_state_abbrev("DE")[1])[1:2]
+    counties2 = fips_counties_from_state_abbrev("DE")[1:2]
+    x <- ejamit(fips = tracts2) #  2 tracts
+    x <- ejamit(fips = bg2) # just 2 blockgroups
+    x <- ejamit(fips = counties2) # just 2 counties
+    x <- ejamit(fips = fips_state_from_state_abbrev("RI")) # 1 state
     names(x)
     ejam2table_tall(x)
     ejam2barplot(x)
@@ -124,7 +130,7 @@ if (update_list_of_tests) {
     
     test_fips = c(
       # "test-fips_lead_zero.R",   
-      # "test-fips_bg_from_anyfips.R",    #   test_file("tests/testthat/test-fips_bg_from_anyfips.R")
+      
       "test-FIPS_FUNCTIONS.R",
       "test-state_from_fips_bybg.R",  
       "test-state_from_latlon.R"   

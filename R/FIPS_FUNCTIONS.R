@@ -25,9 +25,9 @@
 # fips_counties_from_statename(   )  # should it be statename or state_name
 # fips_counties_from_countyname() 
 # fips_counties_from_countynamefull()  internal helper
-#       fips_bg_from_anyfips()
+#       fips_bgs_in_fips()
 ### and
-###   see   getblocksnearby_from_fips() which uses  fips_bg_from_anyfips()
+###   see   getblocksnearby_from_fips() which uses  fips_bgs_in_fips()
 
 ##NOT  cities_as_sites()  would be a name that makes sense but not used.
 ##NOT regions_as_sites()  would be a name that makes sense but not used.
@@ -369,7 +369,7 @@ is.island <- function(ST=NULL, statename=NULL, fips=NULL) {
 #' @param inshiny used by server during shiny app
 #'
 #' @return vector of fips codes
-#' @seealso [fips_bg_from_anyfips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
+#' @seealso [fips_bgs_in_fips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
 #' @examples
 #'  fips_from_table( data.frame(countyfips=0, FIPS=1, bgfips=2, other=3, fips=4))
 #' 
@@ -729,90 +729,6 @@ fips_counties_from_countynamefull <- function(fullname) {
 #'
 #' @details  This is a way to get a list of blockgroups, specified by state/county/tract or even block.
 #' 
-#'  This function is not optimized for speed -- it is slow for large queries.
-#'
-#' Takes a vector of one or more FIPS that could be State (2-digit), County (5-digit),
-#'   Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).
-#'
-#'   Returns unique vector of FIPS of all US blockgroups (including DC and Puerto Rico)
-#'   that contain any specified blocks, are equal to any specified blockgroup fips,
-#'   or are contained within any provided tract/county/state FIPS.
-#'
-#' @param fips vector of US FIPS codes, as character or numeric,
-#'   with or without their leading zeroes, each with as many characters
-#' @seealso [fips_lead_zero()] [fips_bgs_in_fips()]
-#' @return vector of blockgroup FIPS (or NA values) that may be much longer than the
-#'   vector of fips passed to this function.
-#'
-#' @examples
-#'
-#'   # all blockgroups in one state
-#'   fips_counties_from_state_abbrev("DE")
-#'   fips_bg_from_anyfips( fips_counties_from_state_abbrev("DE") )
-#'
-#'   blockgroupstats[,.N,by=substr(bgfips,1,2)]
-#'   length(fips_bg_from_anyfips("72"))
-#'
-#'   # all blockgroups in this one county
-#'   fips_bg_from_anyfips(30001)
-#'   fips_bg_from_anyfips("30001")
-#'   fips_bg_from_anyfips(fips_counties_from_statename("Rhode Island")[1])
-#'
-#'   # all blockgroups that contain any of these 6 blocks (i.e., just one bg)
-#'   ## x = blockid2fips$blockfips[1:6]
-#'   x = c("010010201001000", "010010201001001", "010010201001002",
-#'    "010010201001003", "010010201001004", "010010201001005")
-#'   fips_bg_from_anyfips(x)
-#'
-#'   # 2 counties
-#'   fips_bg_from_anyfips(c(36009,36011))
-#'
-#' @export
-#'
-fips_bg_from_anyfips <- function(fips) {
-  
-  x <- fips_lead_zero(fips)
-  
-  if (anyNA(x)) {
-    howmanyna = sum(is.na(x))
-    warning("NA returned for ", howmanyna," values that failed to match")
-  }
-  fips <- x[!is.na(x)]
-  
-  # if smaller than bg (i.e., block fips), return just the parent bgs
-  fips <- unique(substr(fips,1,12))
-  
-  # if bigger than bg, return all the child bgs
-  all_us_bgfips <- blockgroupstats$bgfips
-  
-  # if nchar==2, state, so get all bg starting with that
-  # if nchar is N, get all bg starting with those N characters
-  
-  len <- nchar(fips)
-  bgfips <- fips[len == 12]
-  nonbg <- fips[len !=  12]
-  
-  extrabgs <- sapply(nonbg, FUN = function(z) all_us_bgfips[startsWith(all_us_bgfips, z)])
-  # extrabgs <- list(rep(NA, length(nonbg)))
-  # for (thisone in nonbg) {
-  #   extrabgs[[i]] <-   all_us_bgfips[startsWith(all_us_bgfips, thisone)]
-  # }
-  # extrabgs <- do.call(c,extrabgs)
-  
-  return(unlist(union(bgfips, extrabgs)))
-}
-############################################################################# #
-
-
-#' FIPS - Get unique blockgroup fips in or containing specified fips of any type
-#'
-#' Convert any FIPS codes to the FIPS of all the blockgroups that are
-#'   among or within or containing those FIPS
-#'
-#' @details  This is a way to get a list of blockgroups, specified by state/county/tract or even block.
-#' 
-#' This was drafted to replace fips_bg_from_anyfips()
-#' 
 #' Takes a vector of one or more FIPS that could be State (2-digit), County (5-digit),
 #'   Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).
 #'
@@ -841,10 +757,11 @@ fips_bg_from_anyfips <- function(fips) {
 #'   fips_bgs_in_fips(fips_counties_from_statename("Rhode Island")[1])
 #'
 #'   # all blockgroups that contain any of these 6 blocks (i.e., just one bg)
-#'   ## x = blockid2fips$blockfips[1:6]
+#'   ## dataload_from_pins("blockid2fips") # very large file to avoid using unless essential
+#'   ## x = blockid2fips$blockfips[1:6] 
 #'   x = c("010010201001000", "010010201001001", "010010201001002",
 #'    "010010201001003", "010010201001004", "010010201001005")
-#'   fips_bg_from_anyfips(x)
+#'   fips_bgs_in_fips(x)
 #'
 #'   # 2 counties
 #'   fips_bgs_in_fips(c(36009,36011))
@@ -874,6 +791,7 @@ fips_bgs_in_fips <- function(fips) {
   if (any(len > 12)) {
     # if len >12 it is a block, so just retain it as the parent blockgroup fips of 12 characters
     fips[len > 12] <- substr(fips[len > 12], 1, 12)
+    len <- nchar(fips) # redo this so we recognize as bgs any blocks we just converted to bgs
   }
   # start with the ones that were blocks or blockgroups
   bgs <- unique(fips[len == 12])

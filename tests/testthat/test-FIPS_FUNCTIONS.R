@@ -25,9 +25,9 @@
 # fips_counties_from_statename(   )  # should it be statename or state_name
 # fips_counties_from_countyname() 
 # fips_counties_from_countynamefull()  internal helper
-#       fips_bg_from_anyfips()
+#       fips_bgs_in_fips()
 ### and
-###   see   getblocksnearby_from_fips() which uses  fips_bg_from_anyfips()
+###   see   getblocksnearby_from_fips() which uses  fips_bgs_in_fips()
 
 ##NOT  cities_as_sites()  would be a name that makes sense but not used.
 ##NOT regions_as_sites()  would be a name that makes sense but not used.
@@ -328,13 +328,13 @@ test_that("fips_from_table() works", {
     expect_identical(x, y)
     
     # uses acceptable names in order or preference picking best one
-    # uses statefips as first choice here and ignores countyfips
+    # now uses countyfips as 1st choice vs statefips
     mydat_z <- data.frame(
       countyfips = "01001",
       statefips = "10"
     )
     expect_true(
-      fips_from_table(mydat_z) == "10"
+      fips_from_table(mydat_z) ==  "01001"
     )
     expect_warning(
       # no suitable colname found
@@ -496,17 +496,23 @@ test_that("fips_counties_from_state_abbrev() works", {
         ) %in% c("DE", "RI"))
       })
       expect_true(
+        setequal(unique(substr(blockgroupstats$bgfips[substr(blockgroupstats$bgfips,1,2) == "37"], 1, 5) ), 
+                 fips_counties_from_state_abbrev("NC"))
+      )
+      
+      expect_true(
         unique(fips2state_abbrev( fips_counties_from_state_abbrev("pr") )) == "PR"
       )
-      expect_true(
-        unique(fips2state_abbrev( fips_counties_from_state_abbrev("vi") )) == "VI"
-      )
-      expect_true(
-        unique(fips2state_abbrev( fips_counties_from_state_abbrev("GU") )) == "GU"
-      )
-      expect_true(
-        unique(fips2state_abbrev( fips_counties_from_state_abbrev("MP") )) == "MP"
-      )    
+      cat("ISLAND AREAS HAVE BEEN REMOVED FROM blockgroupstats so not testing to find those\n")
+      # expect_true(
+      #   unique(fips2state_abbrev( fips_counties_from_state_abbrev("vi") )) == "VI"
+      # )
+      # expect_true(
+      #   unique(fips2state_abbrev( fips_counties_from_state_abbrev("GU") )) == "GU"
+      # )
+      # expect_true(
+      #   unique(fips2state_abbrev( fips_counties_from_state_abbrev("MP") )) == "MP"
+      # )    
       
       expect_true(
         is.na(fips_counties_from_state_abbrev("UM"))#  NO data for U.S. Minor Outlying Islands 
@@ -542,15 +548,18 @@ test_that("fips_counties_from_statename() works", {
         expect_true(
           unique(fips2state_abbrev( fips_counties_from_statename("PUERto rico") )) == "PR"
         )
-        expect_true(
-          unique(fips2state_abbrev( fips_counties_from_statename("U.S. Virgin Islands") )) == "VI"
-        )
-        expect_true(
-          unique(fips2state_abbrev( fips_counties_from_statename("GUAM") )) == "GU"
-        )
-        expect_true(
-          unique(fips2state_abbrev( fips_counties_from_statename("Northern Mariana Islands") )) == "MP"
-        )    
+        
+        cat("ISLAND AREAS HAVE BEEN REMOVED FROM blockgroupstats so not testing to find those\n")
+        # 
+        # expect_true(
+        #   unique(fips2state_abbrev( fips_counties_from_statename("U.S. Virgin Islands") )) == "VI"
+        # )
+        # expect_true(
+        #   unique(fips2state_abbrev( fips_counties_from_statename("GUAM") )) == "GU"
+        # )
+        # expect_true(
+        #   unique(fips2state_abbrev( fips_counties_from_statename("Northern Mariana Islands") )) == "MP"
+        # )    
         
         expect_true(
           is.na(fips_counties_from_statename("U.S. Minor Outlying Islands"))  #  NO data for U.S. Minor Outlying Islands 
@@ -597,7 +606,7 @@ test_that("fips_counties_from_countyname() works", {
 })
 
 ############################################################################# #
-### fips_bg_from_anyfips() ####
+### fips_bgs_in_fips() ####
 
 ############################################################################# #
 # convert any FIPS codes to the FIPS of all the blockgroups that are
@@ -619,46 +628,46 @@ test_that("fips_counties_from_countyname() works", {
 # @   examples
 #   # all blockgroups in one state
 #   blockgroupstats[,.N,by=substr(bgfips,1,2)]
-#   length(fips_bg_from_anyfips("72"))
+#   length(fips_bgs_in_fips("72"))
 #   # all blockgroups in this one county
-#   fips_bg_from_anyfips(30001)
+#   fips_bgs_in_fips(30001)
 #   # all blockgroups that contain any of these 6 blocks (just one bg)
-#   fips_bg_from_anyfips( blockid2fips$blockfips[1:6])
+#   fips_bgs_in_fips( blockid2fips$blockfips[1:6])
 #   # 2 counties
-#   fips_bg_from_anyfips(c(36009,36011))
+#   fips_bgs_in_fips(c(36009,36011))
 ############################################################################# #
 test_that('by state', {
-  expect_no_warning({val <- fips_bg_from_anyfips(36)})
-  expect_no_warning({val <- fips_bg_from_anyfips("36")})
+  expect_no_warning({val <- fips_bgs_in_fips(36)})
+  expect_no_warning({val <- fips_bgs_in_fips("36")})
   expect_equal(length(val), 16070)
 })
 ################## #
 test_that('by county', {
-  expect_no_warning({val <- fips_bg_from_anyfips(36071)})
-  expect_no_warning({val <- fips_bg_from_anyfips("36071")})
+  expect_no_warning({val <- fips_bgs_in_fips(36071)})
+  expect_no_warning({val <- fips_bgs_in_fips("36071")})
   expect_equal(length(val), 292)
   # check it's the same as the subset of state codes
-  x <- fips_bg_from_anyfips("36")
+  x <- fips_bgs_in_fips("36")
   y <- x[which(startsWith(x, "36071"))]
   expect_equal(y, val)
 })
 ################## #
 test_that('by  tract', {
-  expect_no_warning({val <- fips_bg_from_anyfips(36071000100)})
-  expect_no_warning({val <- fips_bg_from_anyfips("36071000100")})
+  expect_no_warning({val <- fips_bgs_in_fips(36071000100)})
+  expect_no_warning({val <- fips_bgs_in_fips("36071000100")})
   expect_equal(length(val), 4)
   # check it's the same as the subset of state codes
-  x <- fips_bg_from_anyfips("36")
+  x <- fips_bgs_in_fips("36")
   y <- x[which(startsWith(x, "36071000100"))]
   expect_equal(y, val)
 })
 ################## #
 test_that('by  block group', {
-  expect_no_warning({val <- fips_bg_from_anyfips(360710001001)})
-  expect_no_warning({val <- fips_bg_from_anyfips("360710001001")})
+  expect_no_warning({val <- fips_bgs_in_fips(360710001001)})
+  expect_no_warning({val <- fips_bgs_in_fips("360710001001")})
   expect_equal(length(val), 1)
   # check it's the same as the subset of state codes
-  x <- fips_bg_from_anyfips("36")
+  x <- fips_bgs_in_fips("36")
   y <- x[which(startsWith(x, "360710001001"))]
   expect_equal(y, val)
 })
@@ -669,46 +678,46 @@ test_that('by  block group', {
 
 test_that("returns only UNIQUE bgs in and/or containing the(se) fips", {
   expect_true({
-    length(fips_bg_from_anyfips(c("36071010801"))) == 3 # contains 3 unique blockgroups
+    length(fips_bgs_in_fips(c("36071010801"))) == 3 # contains 3 unique blockgroups
   })
   expect_true({
-    length(fips_bg_from_anyfips(rep("36071010801", 5))) == 3 # will not return more matches than just unique
+    length(fips_bgs_in_fips(rep("36071010801", 5))) == 3 # will not return more matches than just unique
   })
   expect_true({
-    length(fips_bg_from_anyfips(rep("360710108011", 5))) == 1 # will not return more matches than just unique
+    length(fips_bgs_in_fips(rep("360710108011", 5))) == 1 # will not return more matches than just unique
   })
   expect_true({
-    length(fips_bg_from_anyfips(c(360710108011012, 360710108011006, 360710108011023))) == 1 # one unique bg returned even if it contains multiple blocks provided as query terms
+    length(fips_bgs_in_fips(c(360710108011012, 360710108011006, 360710108011023))) == 1 # one unique bg returned even if it contains multiple blocks provided as query terms
   })
 })
 test_that('by  block - uniques only - is that behavior we want?', {
   expect_true( {
-    length(fips_bg_from_anyfips(rep("360710108011", 5))) == 1
+    length(fips_bgs_in_fips(rep("360710108011", 5))) == 1
   })
-  expect_no_warning({val <- fips_bg_from_anyfips(c(360710108011012, 360710108011006, 360710108011023))})
-  expect_no_warning({val <- fips_bg_from_anyfips(c("360710108011012", "360710108011006", "360710108011023"))})
+  expect_no_warning({val <- fips_bgs_in_fips(c(360710108011012, 360710108011006, 360710108011023))})
+  expect_no_warning({val <- fips_bgs_in_fips(c("360710108011012", "360710108011006", "360710108011023"))})
   expect_equal(length(val), 1)
 })
 ################## #
 test_that('test leading zero addition', {
   
-  expect_no_warning({val <- fips_bg_from_anyfips("1055")}) # county
-  expect_no_warning({val <- fips_bg_from_anyfips(1055)})
+  expect_no_warning({val <- fips_bgs_in_fips("1055")}) # county
+  expect_no_warning({val <- fips_bgs_in_fips(1055)})
   expect_equal(length(val), 90)
   expect_equal(substr(val[1], 1,2) , "01")
   
-  expect_no_warning({val <- fips_bg_from_anyfips("1")}) # state
-  expect_no_warning({val <- fips_bg_from_anyfips(1)})
+  expect_no_warning({val <- fips_bgs_in_fips("1")}) # state
+  expect_no_warning({val <- fips_bgs_in_fips(1)})
   expect_equal(length(val), 3925)
   expect_equal(substr(val[1], 1,2) , "01")
   
-  expect_no_warning({val <- fips_bg_from_anyfips("1055011002")}) # tract
-  expect_no_warning({val <- fips_bg_from_anyfips(1055011002)})
+  expect_no_warning({val <- fips_bgs_in_fips("1055011002")}) # tract
+  expect_no_warning({val <- fips_bgs_in_fips(1055011002)})
   expect_equal(length(val), 3)
   expect_equal(substr(val[1], 1,2) , "01")
   
-  expect_no_warning({val <- fips_bg_from_anyfips(10690401001010)}) # not a bg
-  expect_no_warning({val <- fips_bg_from_anyfips("10690401001010")})
+  expect_no_warning({val <- fips_bgs_in_fips(10690401001010)}) # not a bg
+  expect_no_warning({val <- fips_bgs_in_fips("10690401001010")})
   expect_equal(length(val), 1) #
   expect_equal(substr(val[1], 1,2) , "01")
 })
@@ -716,8 +725,8 @@ test_that('test leading zero addition', {
 test_that('returns bgs inside given tract(s)', {
   tractfips1 <- "10005051900"
   expect_true(fipstype(tractfips1) == "tract") # tract as input,
-  expect_true(all(fips_bg_from_anyfips(tractfips1) %in% blockgroupstats$bgfips)) # returns actual bg fips
-  expect_no_condition({val <- fips_bg_from_anyfips(tractfips1)}) # tract that contains 3 bgs
+  expect_true(all(fips_bgs_in_fips(tractfips1) %in% blockgroupstats$bgfips)) # returns actual bg fips
+  expect_no_condition({val <- fips_bgs_in_fips(tractfips1)}) # tract that contains 3 bgs
   expect_equal(length(val), 3)
   expect_true(all(substr(val, 1, 11) == tractfips1))
   rm(tractfips1)
@@ -728,28 +737,28 @@ test_that('returns bgs inside given tract(s)', {
 # > fipstype("sdfsdfsdfasdf0")
 # [1] "block"
 ### THESE RETURNED NULL, not NA:
-# fips_bg_from_anyfips("blue")
-# fips_bg_from_anyfips("36-071")
-# fips_bg_from_anyfips("36-07")
-# fips_bg_from_anyfips("$1001")
+# fips_bgs_in_fips("blue")
+# fips_bgs_in_fips("36-071")
+# fips_bgs_in_fips("36-07")
+# fips_bgs_in_fips("$1001")
 
 #  NO ERROR for invalid strings, no string cleaning (dashes/dots not removed)
 test_that('NO ERROR if inputs are invalid text strings', {
   suppressWarnings({
-    expect_no_error({val <- fips_bg_from_anyfips("blue")})
-    expect_no_error({val <- fips_bg_from_anyfips("36-071")})
-    expect_no_error({val <- fips_bg_from_anyfips("36-07")})
-    expect_no_error({val <- fips_bg_from_anyfips("$1001")})
+    expect_no_error({val <- fips_bgs_in_fips("blue")})
+    expect_no_error({val <- fips_bgs_in_fips("36-071")})
+    expect_no_error({val <- fips_bgs_in_fips("36-07")})
+    expect_no_error({val <- fips_bgs_in_fips("$1001")})
   })
 })
 
 #  warnings for invalid strings, no string cleaning (dashes/dots not removed)
 test_that('WARN if inputs are invalid text strings', {
   suppressWarnings({
-    expect_warning({val <- fips_bg_from_anyfips("blue")})
-    expect_warning({val <- fips_bg_from_anyfips("36-071")})
-    expect_warning({val <- fips_bg_from_anyfips("36-07")})
-    expect_warning({val <- fips_bg_from_anyfips("$1001")})
+    expect_warning({val <- fips_bgs_in_fips("blue")})
+    expect_warning({val <- fips_bgs_in_fips("36-071")})
+    expect_warning({val <- fips_bgs_in_fips("36-07")})
+    expect_warning({val <- fips_bgs_in_fips("$1001")})
   })
 })
 ################## #

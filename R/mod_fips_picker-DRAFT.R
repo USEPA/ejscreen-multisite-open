@@ -270,7 +270,7 @@ if (1 == 0) {
           stateinfo2[stateinfo2$ST %in% input$statepicker, varnames]
         )
         # bgstable(
-          # EJAM::fips_bg_from_anyfips(fips = displaytable()$FIPS.ST)
+          # fips_bgs_in_fips(fips = displaytable()$FIPS.ST)
         # )
       }
       
@@ -302,7 +302,7 @@ if (1 == 0) {
         )
         # bgstable(
         #   # ??? 
-        #   # EJAM::fips_bg_from_anyfips(fips = NA) # NOT SURE PLACES FIPS NEATLY FALL INTO BLOCKGROUPS
+        #   # fips_bgs_in_fips(fips = NA) # NOT SURE PLACES FIPS NEATLY FALL INTO BLOCKGROUPS
         # )
       }
       

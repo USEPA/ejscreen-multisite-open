@@ -27,7 +27,7 @@ require(mapview)
 ## so those tests fail unless you use load_all() or if test were changed to say EJAM:::latlon_infer() but that would ONLY test installed version, never the source version if it differs
 
 suppressMessages({suppressWarnings({
-  dataload_from_pins("all", silent = TRUE, folder_local_source=file.path(.libPaths()[1],'EJAM','data')) # needs frs, etc.
+  dataload_from_pins("all", silent = TRUE, folder_local_source = file.path(.libPaths()[1],'EJAM','data')) # needs frs, etc.
 })})
 if (!exists("frs")) {stop('needs frs etc.')}
 suppressMessages({suppressWarnings({
@@ -43,8 +43,8 @@ suppressMessages({suppressWarnings({
 # Create ejamoutnow here in setup.R, since some tests are using it.
 
 if (exists("ejamit") & exists("blockgroupstats") & exists("testpoints_10")) {
-  cat("creating ejamoutnow in setup.R\n")
   if (!exists("ejamoutnow")) {
+  cat("creating ejamoutnow in setup.R\n")
     suppressMessages(  suppressWarnings({  ejamoutnow <- try(
       ejamit(testpoints_10, radius = 1,
              quiet = TRUE, silentinteractive = TRUE,

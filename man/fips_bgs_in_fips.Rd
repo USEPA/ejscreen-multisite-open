@@ -21,8 +21,6 @@ among or within or containing those FIPS
 \details{
 This is a way to get a list of blockgroups, specified by state/county/tract or even block.
 
-This was drafted to replace fips_bg_from_anyfips()
-
 Takes a vector of one or more FIPS that could be State (2-digit), County (5-digit),
 Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).
 
@@ -45,10 +43,11 @@ or are contained within any provided tract/county/state FIPS.
   fips_bgs_in_fips(fips_counties_from_statename("Rhode Island")[1])
 
   # all blockgroups that contain any of these 6 blocks (i.e., just one bg)
-  ## x = blockid2fips$blockfips[1:6]
+  ## dataload_from_pins("blockid2fips") # very large file to avoid using unless essential
+  ## x = blockid2fips$blockfips[1:6] 
   x = c("010010201001000", "010010201001001", "010010201001002",
    "010010201001003", "010010201001004", "010010201001005")
-  fips_bg_from_anyfips(x)
+  fips_bgs_in_fips(x)
 
   # 2 counties
   fips_bgs_in_fips(c(36009,36011))
