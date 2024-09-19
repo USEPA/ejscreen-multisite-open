@@ -911,8 +911,7 @@ app_server <- function(input, output, session) {
     cat("COUNT OF ROWS IN FIPS FILE: ", NROW(fips_dt),"\n")
     
     ################################################################################### #
-    if (1 == 1) {
-      
+
       fips_vec <- fips_from_table(fips_table = fips_dt, addleadzeroes = TRUE, inshiny = TRUE)
       #fips_vec <- fips_out$vec
       
@@ -926,7 +925,7 @@ app_server <- function(input, output, session) {
       } else{
         disable_buttons[['FIPS']] <- FALSE
         cat("COUNT OF FIPS via fips_from_table(): ", length(fips_vec), '\n')
-        # now let ejamit() do the rest for the FIPS case (and ejamit relies on getblocksnearby_from_fips etc.)
+        # now let ejamit() do the rest for the FIPS case
         fips_vec
       }
       
@@ -948,54 +947,7 @@ app_server <- function(input, output, session) {
         ## if not matched, return this message
         shiny::validate('No valid FIPS codes found in this file.')
       }
-    } else {  # OLDER VERSION NOT USING FUNCTIONS
-      
-      # ## create named vector of FIPS codes
-      # #  *** (names used as unique id ...
-      # # note some code assumes ejam_uniq_id is 1:N)
-      #
-      # fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST', 'FIPS.COUNTY', 'FIPS.TRACT')
-      # if (any(tolower(colnames(fips_dt)) %in% fips_alias)) {
-      #   firstmatch <- intersect(fips_alias, colnames(fips_dt))[1]
-      #   fips_vec <- fips_lead_zero(as.character(fips_dt[[firstmatch]]))
-      #   names(fips_vec) <- as.character(fips_vec)
-      # } else {
-      #   invalid_alert[['FIPS']] <- 0  # hides the invalid site warning
-      #   an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
-      #   disable_buttons[['FIPS']] <- TRUE
-      #   validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
-      # }
-      # ## create two-column dataframe with bgs (values) and original fips (ind)
-      # all_bgs <- stack(sapply(fips_vec, fips_bg_from_anyfips))
-      # names(all_bgs) <- c('bgfips', firstmatch) ### is that right??? not sure
-      # all_bgs$ejam_uniq_id <- as.character(all_bgs$ejam_uniq_id) # because stack() always creates a factor column. data.table might have a faster reshaping approach? ***
-      #
-      # ## only process blockgroups exist for uploaded data
-      #
-      # # **** find a way to avoid using blockid2fips if possible, since it is so huge in memory
-      #
-      # if (nrow(all_bgs) > 0) {
-      #   fips_blockpoints <- dplyr::left_join(all_bgs,
-      #                                        ## create 12-digit column inline (original table not altered)
-      #                                        blockid2fips[, .(blockid, blockfips, blockfips12 = substr(blockfips,1,12))],
-      #                                        by = c('bgfips' = 'blockfips12'), multiple = 'all') |>
-      #     dplyr::left_join(blockpoints) |>
-      #     dplyr::mutate(distance = 0) |>
-      #     data.table::as.data.table()
-      #   ## remove any invalid latlon values
-      #   cat("COUNT OF blocks BASED ON FIPS: ", NROW(fips_blockpoints), '\n')
-      #   disable_buttons[['FIPS']] <- FALSE
-      #
-      #    return(fips_blockpoints)
-      # } else {
-      #   invalid_alert[['FIPS']] <- 0 # hides the invalid site warning
-      #   an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
-      #   disable_buttons[['FIPS']] <- TRUE
-      #
-      #   ## if not matched, return this message
-      #   shiny::validate('No blockgroups found for these FIP codes.')
-      # }
-    }
+  
   }) # END OF FIPS UPLOAD
   ################################################################################### #
   
