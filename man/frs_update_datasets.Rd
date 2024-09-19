@@ -6,7 +6,7 @@
 \usage{
 frs_update_datasets(
   folder = NULL,
-  folder_save_as_arrow = getwd(),
+  folder_save_as_arrow = ".",
   downloaded_and_unzipped_already = FALSE,
   csvname = "NATIONAL_SINGLE.CSV",
   save_as_arrow_frs = TRUE,

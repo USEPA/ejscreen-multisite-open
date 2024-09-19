@@ -5,7 +5,7 @@
 \title{EJAM/EJSCREEN comparisons - see summary stats after using ejscreen_vs_ejam()}
 \usage{
 ejscreen_vs_ejam_summary(
-  z = ejscreen_vs_ejam(),
+  z = NULL,
   myvars = colnames(z$EJAM),
   tol = 0.01,
   prob = 0.95,
