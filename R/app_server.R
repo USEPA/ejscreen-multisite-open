@@ -54,19 +54,19 @@ app_server <- function(input, output, session) {
   data_summarized <- reactiveVal(NULL) # initialized so it can be set later in reaction to an event, using
   
   sanitized_standard_analysis_title <- reactive({
-    sanitize(input$standard_analysis_title)
+    sanitize_text(input$standard_analysis_title)
   })
   
   sanitized_analysis_title <- reactive({
-    sanitize(input$analysis_title)
+    sanitize_text(input$analysis_title)
   })
   
   sanitized_an_threshgroup1 <- reactive({
-    sanitize(input$an_threshgroup1)
+    sanitize_text(input$an_threshgroup1)
   })
   
   sanitized_an_threshgroup2 <- reactive({
-    sanitize(input$an_threshgroup2)
+    sanitize_text(input$an_threshgroup2)
   })
   
   sanitized_bt_rad_buff <- reactive({
@@ -1491,7 +1491,7 @@ app_server <- function(input, output, session) {
                        label = "",  ## label is updated in server  # htmltools::h5('Within what distance of a site?'),
                        min = current_slider_min[[current_upload_method()]] , # minradius, # from global.R, is min user can pick but also is min the default can be. also see minradius_shapefile
                        max = input$max_miles,  ## default_max_miles from global.R, or else a cap user sets in advanced tab. cannot use input$ in ui, only server
-                       value = sanitize(input$default_miles), ## from advanced tab that uses global.R default_default_miles unless changed in adv tab. have to do in server-- cannot use input$ in ui, only in server
+                       value = input$default_miles, ## from advanced tab that uses global.R default_default_miles unless changed in adv tab. have to do in server-- cannot use input$ in ui, only in server
                        step = stepradius, # from global.R
                        post = ' miles'
     )
