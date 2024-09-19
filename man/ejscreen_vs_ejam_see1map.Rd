@@ -4,7 +4,13 @@
 \alias{ejscreen_vs_ejam_see1map}
 \title{EJAM/EJSCREEN comparisons - see map and tables of blocks near a site to explain discrepancy in pop and blocks}
 \usage{
-ejscreen_vs_ejam_see1map(n = 1, x, overlay_blockgroups = FALSE, ...)
+ejscreen_vs_ejam_see1map(
+  n = 1,
+  x,
+  overlay_blockgroups = FALSE,
+  radius = NULL,
+  ...
+)
 }
 \arguments{
 \item{n}{row number in x$EJAM of site to check}
