@@ -4,7 +4,7 @@
 \alias{latlon_is.valid}
 \title{Check if lat lon are OK -- validate latitudes and longitudes}
 \usage{
-latlon_is.valid(lat, lon, quiet = TRUE)
+latlon_is.valid(lat, lon, quiet = TRUE, exact_but_slow_islandareas = FALSE)
 }
 \arguments{
 \item{lat}{vector of latitudes
@@ -13,6 +13,8 @@ latlon_is.valid(lat, lon, quiet = TRUE)
 \item{lon}{vector of longitudes}
 
 \item{quiet}{optional logical, if TRUE, show list of bad values in console}
+
+\item{exact_but_slow_islandareas}{see \code{\link[=latlon_is.islandareas]{latlon_is.islandareas()}}}
 }
 \value{
 logical vector, one element per lat lon pair (location)
@@ -25,8 +27,14 @@ NA or outside expected numeric ranges
 
 (based on approx ranges of lat lon seen among block internal points dataset)
 
-But note Guam, American Samoa, Northern Mariana Islands, and U.S. Virgin Islands are outside these ranges!
-EJScreen 2.2 did not provide demographic data in those locations anyway, but can map sites there.
+But note Guam, American Samoa, Northern Mariana Islands, and U.S. Virgin Islands ranges are approximated!
+EJScreen has not had demographic data in those locations anyway, but can map sites there.
+see latlon_is.islandareas()
+and note details at https://www.britannica.com/place/Trust-Territory-of-the-Pacific-Islands
+on areas no longer part of the US but still with some sites in FRS,
+ids "110009291462" "110013804678" "110067353429" "110067377430" "110070929074"
+e.g., https://echo.epa.gov/detailed-facility-report?fid=110067353429
+or https://echo.epa.gov/detailed-facility-report?fid=110013804678
 
 lat must be between 17.5 and 71.5, and
 
