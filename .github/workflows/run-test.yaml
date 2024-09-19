@@ -38,19 +38,19 @@ jobs:
         run: |
           gh release download --repo USEPA/EJAM --pattern "EJAM_v2.32_arrow_datasets.zip"
 
-      # - name: Unzip the file into data folder
-      #   run: unzip -o EJAM_v2.32_arrow_datasets.zip -d ./data
-      # 
-      # - name: Install EJAM
-      #   run: |
-      #     Rscript -e 'devtools::install_local(".", force=T)'
-      # 
-      # - name: Run Shiny Tests
-      #   run: Rscript -e 'source("tests/testthat.R")'
-      # 
-      # - name: Upload test results
-      #   if: failure()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: ${{ runner.os }}-tests
-      #     path: tests
+      - name: Unzip the file into data folder
+        run: unzip -o EJAM_v2.32_arrow_datasets.zip -d ./data
+
+      - name: Install EJAM
+        run: |
+          Rscript -e 'devtools::install_local(".", force=T)'
+
+      - name: Run Shiny Tests
+        run: Rscript -e 'source("tests/testthat.R")'
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ runner.os }}-tests
+          path: tests
