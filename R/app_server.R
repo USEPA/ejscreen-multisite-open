@@ -533,13 +533,12 @@ app_server <- function(input, output, session) {
     ## wait for file to be uploaded
     req(input$ss_upload_latlon)
     
-    ## check if file extension is appropriate
-    ext <- tolower(tools::file_ext(input$ss_upload_latlon$name))
+    
     ## if acceptable file type, read in; if not, send warning text
-    
+    input_file_path <- input$ss_upload_latlon$datapath
     # ideally would quickly check file size here before actually trying to read the entire file in case it is > cap.
-    
-    sitepoints <- handle_file_upload(input$ss_upload_latlon, ext)
+   
+    sitepoints <- as.data.table(read_csv_or_xl(fname= input_file_path))
                   
     # DO NOT USE THE UPLOAD IF IT HAS MORE THAN MAX POINTS ALLOWED FOR UPLOAD
     #
@@ -587,11 +586,10 @@ app_server <- function(input, output, session) {
     ##  >this part could be replaced by  latlon_from_anything() *** and each time it is repeated below
     # ext <- latlon_from_anything(input$ss_upload_latlon$datapath)
     
-    ## check if file extension is appropriate
-    ext <- tolower(tools::file_ext(input$ss_upload_frs$name))
+    input_file_path <- input$ss_upload_frs$datapath
     ## if acceptable file type, read in; if not, send warning text
     
-    read_frs <- handle_file_upload(input$ss_upload_frs,ext)
+    read_frs <- as.data.table(read_csv_or_xl(fname= input_file_path))
       # returns a data.frame
     cat("ROW COUNT IN FILE THAT SHOULD provide FRS REGISTRY_ID: ", NROW(read_frs), "\n")
     #include frs_is_valid verification check function, must have colname REGISTRY_ID
@@ -717,11 +715,11 @@ app_server <- function(input, output, session) {
     req(input$ss_upload_program)
     
     ## check if file extension is appropriate
-    ext <- tolower(tools::file_ext(input$ss_upload_program$name))
+    input_file_path <- input$ss_upload_program$datapath
     ## if acceptable file type, read in; if not, send warning text
     
     
-    read_pgm <- handle_file_upload(input$ss_upload_program, ext)
+    read_pgm <- as.data.table(read_csv_or_xl(fname= input_file_path))
                    
              # returns a data.frame
     cat("ROW COUNT IN file that should have program, pgm_sys_id: ", NROW(read_pgm), "\n")
@@ -890,12 +888,11 @@ app_server <- function(input, output, session) {
   data_up_fips <- reactive({
     req(input$ss_upload_fips)
     
-    ## check if file extension is appropriate
-    ext <- tolower(tools::file_ext(input$ss_upload_fips$name))
+  
     
-    
+    input_file_path <- input$ss_upload_fips$datapath
     ## if acceptable file type, read in; if not, send warning text
-    fips_dt <- handle_file_upload(input$ss_upload_fips, ext)
+    fips_dt <- as.data.table(read_csv_or_xl(fname= input_file_path))
     cat("COUNT OF ROWS IN FIPS FILE: ", NROW(fips_dt),"\n")
     
     ################################################################################### #
