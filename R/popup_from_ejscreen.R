@@ -38,6 +38,7 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   
   ############################################ #
   # SPECIFY indicators/VARIABLE NAMES  ####
+ 
   names_d_pop <- names_d
   names_d_nice_pop      <- fixcolnames(names_d_pop, 'r', 'shortlabel')
   names_d_pctile_pop       <- names_d_pctile

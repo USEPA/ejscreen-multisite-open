@@ -142,7 +142,21 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
     newtype = 'r',  
     mapping_for_names = mapping_for_names
   )
-  
+  # remove duplicate columns since pts had lat,lon and renamed geometry.x,.y become second versions of lat,lon
+  if (anyDuplicated(names(table_as_displayed))) {
+    table_as_displayed <- table_as_displayed[, !duplicated(names(table_as_displayed))]
+  }
+  # maybe obsolete but had also been needed:
+  if (('lat' %in% names(table_as_displayed)) & ('lat.1' %in% names(table_as_displayed)) ) {
+    if (all.equal(table_as_displayed$lat, table_as_displayed$lat.1)) {
+      table_as_displayed$lat.1 <- NULL
+    }
+  }
+  if (('lon' %in% names(table_as_displayed)) & ('lon.1' %in% names(table_as_displayed))  ) {
+    if (all.equal(table_as_displayed$lon, table_as_displayed$lon.1)) {
+      table_as_displayed$lon.1 <- NULL
+    }
+  }
   ############################################################# #
   
   # ratios section is identical to (duplicating) code in app_server_EJAMejscreenapi and MODULE ############################################################# #
@@ -185,7 +199,7 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
     # calc_ratios_to_avg() colnames returned are same as input, not renamed to say "ratio"
     names(st_eratios) <-   names_e_ratio_to_state_avg  # but RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES as checked above
     names(st_dratios) <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg)
-    table_as_displayed <- cbind(table_as_displayed, dratios, eratios, st_dratios, st_eratios)
+    table_as_displayed <- cbind(table_as_displayed, st_dratios, st_eratios)
     
   } # end of ratio calculations 
   
@@ -195,18 +209,6 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
   # if ('totalPop' %in% names(table_as_displayed)) table_as_displayed$totalPop <- prettyNum(table_as_displayed$totalPop, big.mark = ',') 
   # if ('pop'      %in% names(table_as_displayed)) table_as_displayed$pop      <- prettyNum(table_as_displayed$pop,      big.mark = ',') 
   # # if ('total population (ACS 5yr file)' %in% names(table_as_displayed)) table_as_displayed[,`total population (ACS 5yr file)`] <- prettyNum(table_as_displayed[,`total population (ACS 5yr file)`], big.mark = ',') 
-  
-  # Instead of tracking down why it happened just remove possible duplicate columns:
-  if (('lat' %in% names(table_as_displayed)) & ('lat.1' %in% names(table_as_displayed)) ) {
-    if (all.equal(table_as_displayed$lat, table_as_displayed$lat.1)) {
-      table_as_displayed$lat.1 <- NULL
-    }
-  }
-  if (('lon' %in% names(table_as_displayed)) & ('lon.1' %in% names(table_as_displayed))  ) {
-    if (all.equal(table_as_displayed$lon, table_as_displayed$lon.1)) {
-      table_as_displayed$lon.1 <- NULL
-    }
-  }
   
   if (interactive() & verbose) {
     # note that  ejscreenit()  already 
