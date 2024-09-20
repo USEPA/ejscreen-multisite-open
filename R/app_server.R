@@ -1186,8 +1186,8 @@ app_server <- function(input, output, session) {
       if (current_slider_val[[current_upload_method()]] == 0) {
         shinyjs::disable(id = 'bt_get_results')
         showNotification(id = 'radius_warning', session = session,
-                         duration = NULL, type = 'warning', closeButton = F,
-                         'Please use a radius greater than 0 for analyzing points.')
+                         duration = NULL, type = 'error', closeButton = F,
+                         'Please use a numeric radius greater than 0 for analyzing points.')
         
       } else if (current_slider_val[[current_upload_method()]] > 0 &
                  disable_buttons[[current_upload_method()]] == FALSE) {
