@@ -20,5 +20,6 @@ utility - what type of formula is used to aggregate this variable?
  calctype(names_d)
  x = names(testoutput_ejamit_10pts_1miles$results_overall)
  cbind(x, calctype(x))
+ 
 }
 \keyword{internal}
