@@ -7,7 +7,7 @@
 # https://cran.r-project.org/web/packages/shinytest2/vignettes/use-ci.html
 on:
   pull_request:
-    branches: [development]
+    branches: [development, main, deploy-posit]
   
 name: Test
 
