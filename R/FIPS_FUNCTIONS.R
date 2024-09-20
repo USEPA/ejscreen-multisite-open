@@ -37,7 +37,7 @@
 
 ####  if fips is the INPUT, names are like   x <- fips2x(fips) 
 #
-# fips_st2eparegion()  # but not eparegion2statefips() ?? or
+# fips_st2eparegion()  # and see fips_states_in_eparegion() 
 #    fips2state_fips(    )     #  fips2statefips would be a more consistent name ?
 #    fips2state_abbrev(  )
 #    fips2statename(     ) # should it be statename or state_name
@@ -427,11 +427,11 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
 #' @export
 #'
 name2fips = function(x) {
-  
+  suppressWarnings({ # do not need to get warned that x is not a ST abbrev here
   # figure out if x is ST, statename, countyname.
   fips = fips_state_from_state_abbrev(x) # NA if not a state abbrev. ignores case.
+  })
   fips[is.na(fips)] <- fips_state_from_statename(x[is.na(fips)]) # only tries for those that were not a ST abbrev
-  
   fips[is.na(fips)] <- fips_counties_from_countynamefull(x[is.na(fips)])
   # fips[is.na(fips)] = substr(blockgroupstats$bgfips,1,5)[match(x[is.na(fips)]), blockgroupstats$countyname]
   # only tries for those that were neither ST nor statename
@@ -519,6 +519,33 @@ fips_state_from_statename <- function(statename) {
 }
 ############################################################################# #
 
+
+#' FIPS - Get state fips for all States in EPA Region(s)
+#'
+#' @param region vector of 1 or more EPA Regions (numbers 1 through 10)
+#'
+#' @return vector of 2-digit state FIPS codes like c("10", "44", "44"),
+#'   same length as input, so including any duplicates
+#' @examples
+#'   fips_states_in_eparegion(2)
+#'   fips_states_in_eparegion(6)
+#'   fips2state_abbrev(fips_states_in_eparegion(6))
+#' @export
+#'
+fips_states_in_eparegion <- function(region) {
+  
+  region = unique(as.numeric(region))
+  if (anyNA(region) || !all(region %in% 1:10)) {stop("invalid region number(s)")}
+  
+  x <- stateinfo2$FIPS.ST[!is.na(stateinfo2$REGION) & (stateinfo2$REGION %in% region)] # 1 region to many states, so 
+  x <- unique(x)
+  if (anyNA(x))  {stop("invalid region number(s)")}
+  
+  return(x)
+  # returns several state fips per input, no repeats
+  # error if any or all are nonmatches
+}
+############################################################################# #
 
 #' FIPS - Get ALL county fips in specified states
 #'
@@ -964,8 +991,12 @@ fips2name  <- function(fips, ...) {
   out <- rep(NA, length(fips))
   
   ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
+  if (any(!is.na(fips) & fipstype(fips) == "state")) {
   out[!is.na(fips) & fipstype(fips) == "state"]  <- fips2statename(fips = fips[!is.na(fips) & fipstype(fips) == "state"])
+  }
+  if (any(!is.na(fips) & fipstype(fips) == "county")) { # this prevents irrelevant warning "this function should only be used to convert county fips to county name..."
   out[!is.na(fips) & fipstype(fips) == "county"] <- fips2countyname(fips = fips[!is.na(fips) & fipstype(fips) == "county"], ...)
+  }
   if (anyNA(out)) {
     howmanyna = sum(is.na(out))
     warning("NA returned for ", howmanyna," values that failed to match")

@@ -5,12 +5,14 @@
 \title{EJAM/EJSCREEN comparisons - for interactive RStudio use}
 \usage{
 ejscreen_vscript(
-  defdir = getwd(),
+  defdir = ".",
   n,
   newpts,
   pts,
   radius,
-  savedejscreentableoutput
+  savedejscreentableoutput,
+  x100fix = TRUE,
+  x100varnames = names_pct_as_fraction_ejamit
 )
 }
 \arguments{

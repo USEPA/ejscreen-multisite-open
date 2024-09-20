@@ -2,7 +2,8 @@
 % Please edit documentation in R/state_from_latlon.R
 \name{state_from_blockid}
 \alias{state_from_blockid}
-\title{given vector of blockids, get state abbreviation of each}
+\title{given vector of blockids, get state abbreviation of each
+unused. Not needed if you have sites2blocks table that includes a bgid column}
 \usage{
 state_from_blockid(blockid)
 }
@@ -14,9 +15,17 @@ vector of ST info like AK, CA, DE, etc.
 }
 \description{
 given vector of blockids, get state abbreviation of each
+unused. Not needed if you have sites2blocks table that includes a bgid column
 }
 \examples{
-EJAM:::state_from_blockid(c(8174952, blockpoints$blockid[5:6]))
+x = sample(blockpoints$blockid, 3)
+state_from_blockid(x)[]
+mapfast(blockpoints[blockid \%in\% x, ])
 
+all.equal(state_from_blockid(x), state_from_blockid_table(blockpoints[blockid \%in\% x, ]))
+
+}
+\seealso{
+unexported state_from_blockid_table()
 }
 \keyword{internal}

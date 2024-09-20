@@ -10,12 +10,12 @@ datacreate_names_pct_as_fraction <- function(map_headernames)   {
 # map_headernames$pct_as_fraction_ejamit          is TRUE when  map_headernames$rname %in% names_pct_as_fraction_ejamit
 # map_headernames$pct_as_fraction_ejscreenit      is TRUE when  map_headernames$rname %in% names_pct_as_fraction_ejscreenit
 
-names_pct_as_fraction_blockgroupstats <- map_headernames$rname[map_headernames$pct_as_fraction_blockgroupstats]
+names_pct_as_fraction_blockgroupstats <- unique(map_headernames$rname[map_headernames$pct_as_fraction_blockgroupstats])
 
-names_pct_as_fraction_blockgroupstats <- names_pct_as_fraction_blockgroupstats[names_pct_as_fraction_blockgroupstats %in% names(blockgroupstats)]
+names_pct_as_fraction_blockgroupstats <- unique(names_pct_as_fraction_blockgroupstats[names_pct_as_fraction_blockgroupstats %in% names(blockgroupstats)])
 # names_pct_as_fraction_blockgroupstats <- names_d
 
-names_pct_as_fraction_ejamit <- map_headernames$rname[map_headernames$pct_as_fraction_ejamit]
+names_pct_as_fraction_ejamit <- unique(map_headernames$rname[map_headernames$pct_as_fraction_ejamit])
 
 # names_pct_as_fraction_ejamit <-  c(
 #   names_d, 
@@ -28,7 +28,7 @@ names_pct_as_fraction_ejamit <- map_headernames$rname[map_headernames$pct_as_fra
 #   "pctmale", "pctfemale"
 # )
 
-names_pct_as_fraction_ejscreenit <-  map_headernames$rname[map_headernames$pct_as_fraction_ejscreenit]
+names_pct_as_fraction_ejscreenit <-  unique(map_headernames$rname[map_headernames$pct_as_fraction_ejscreenit])
 # names_pct_as_fraction_ejscreenit <- c("pctpre1960", "state.avg.pctpre1960", "avg.pctpre1960") # but maybe it gets reported like 0-1?
 
 # had to put that info into map_headernames.xlsx first

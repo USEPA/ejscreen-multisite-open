@@ -1,6 +1,8 @@
 url: https://usepa.github.io/EJAM/
 template:
   bootstrap: 5
+  params:
+    noindex: true
 deploy:
   install_metadata: true
 navbar:
@@ -20,9 +22,7 @@ development:
   mode: devel
   destination: 
   version_label: warning
-template:
-  params:
-    noindex: true
+
 home:
   title: EJAM Environmental Justice Analysis Multisite
   description: Webapp and tools summarizing demographic and environmental data for hundreds of places quickly and accurately
@@ -179,6 +179,7 @@ reference:
   - states_as_sites
   - fips_state_from_state_abbrev
   - fips_state_from_statename
+  - fips_states_in_eparegion
   - fips2statename
   - fips2state_abbrev
   - fips2state_fips
@@ -411,6 +412,8 @@ reference:
   - custom_doaggregate
   - custom_ejamit
   - state_from_s2b_bysite
+  - state_from_blockid_table
+  - state_from_blockid
   - table_tall_from_overall
   - tablefixed
   - table_validated_ejamit_row

@@ -84,7 +84,7 @@ test_that("ejamit() still returns results_bysite identical to expected numbers i
           (saved as testoutput_ejamit_10pts_1miles$results_bysite)", {
             suppressWarnings({
               suppressMessages({
-                # ejamoutnow <- ejamit(testpoints_10, radius = 1, quiet = T, silentinteractive = TRUE) # see setup.R - takes roughly 5-10 seconds
+                ejamoutnow <- ejamit(testpoints_10, radius = 1, quiet = T, silentinteractive = TRUE) # see setup.R - takes roughly 5-10 seconds
                 expect_identical(
                   ejamoutnow$results_bysite,
                   testoutput_ejamit_10pts_1miles$results_bysite
@@ -97,7 +97,7 @@ test_that("ejamit() still returns results_bysite identical to expected numbers i
 ################# #
 
 test_that("ejamit() returns same exact colnames() in both results_bysite and results_overall", {
-  # ejamoutnow <- ejamit(testpoints_10, radius = 1, quiet = T, silentinteractive = TRUE) # see setup.R - takes roughly 5-10 seconds
+  ejamoutnow <- ejamit(testpoints_10, radius = 1, quiet = T, silentinteractive = TRUE) # see setup.R - takes roughly 5-10 seconds
   expect_identical(
     colnames(ejamoutnow$results_bysite),
     colnames(ejamoutnow$results_overall)
