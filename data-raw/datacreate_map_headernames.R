@@ -5,12 +5,12 @@ if (!exists("rawdir")) {rawdir <- './data-raw'}
 #variablenames(e.g.,long,clearerones)
 #toanother(e.g.,shortereasierforanalysisorprogramminginR,etc.)
 
-datacreate_map_headernames <- function(rawdir = "./data-raw", fname = 'map_headernames_2.3.xlsx') {
+datacreate_map_headernames <- function(rawdir = "./data-raw", fname = 'map_headernames_2.32.xlsx', sheet = "map_headernames") {
   
   fpath <- file.path(rawdir, fname)
   if (!file.exists(fpath)) {stop("did not find (but this requires) ", fpath)}
   
-  map_headernames <- as.data.frame(readxl::read_xlsx(fpath))
+  map_headernames <- as.data.frame(readxl::read_xlsx(fpath, sheet = sheet))
   
   map_headernames[is.na(map_headernames)] <- ''  #changeNAvaluestoemptycell,soitiseasiertosubsetetc.
   
