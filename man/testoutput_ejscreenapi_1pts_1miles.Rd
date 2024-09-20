@@ -17,12 +17,17 @@ test data, output from this function
 Just for convenience, installed with the package,
 the equivalent of results of
 
-ejscreenapi(lon = testpoints_5$lon\link{1}, lat = testpoints_5$lat\link{1},
-radius = 1, unit = 'miles', wkid = 4326,
-report_every_n = 25, # report_every_n = 1000,
-save_when_report = FALSE, format_report_or_json =  'pjson', on_server_so_dont_save_files = FALSE,
-ipurl = 'ejscreen.epa.gov',
-updateProgress = NULL, drop_redundant_indicators = FALSE)
+\verb{ejscreenapi(lon = testpoints_5$lon[1], lat = testpoints_5$lat[1]},
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{ radius = 1, unit = 'miles', wkid = 4326,
+
+ report_every_n = 25, # report_every_n = 1000,
+
+ save_when_report = FALSE, format_report_or_json =  'pjson', on_server_so_dont_save_files = FALSE, 
+ ipurl = 'ejscreen.epa.gov',
+
+ updateProgress = NULL, drop_redundant_indicators = FALSE)
+}\if{html}{\out{</div>}}
 }
 \seealso{
 \link{testpoints_5} \link{testpoints_50} \link{testpoints_500}

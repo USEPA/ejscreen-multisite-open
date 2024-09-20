@@ -225,8 +225,11 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     unique_vlookup <- c(unique(myvector_lookup),Inf) #add Inf to coerce N-1 to N
     nondupe_interval <- findInterval(myvector_selection, unique_vlookup, all.inside = TRUE)
     nondupvec <- which(!duplicated(myvector_lookup,fromLast = TRUE))
+    #set percentile to first indice if myvector_selection <= 0
+    if(any(myvector_selection<=0,na.rm=TRUE)){
+      nondupvec[1] <- 1
+    }
     whichinterval[zone == z] <- nondupvec[nondupe_interval]
-
     # WARN if raw score < PCTILE 0, in lookup ! ####
     # WARN if a raw value < minimum raw value listed in lookup table (which should be percentile zero). Why would that table lack the actual minimum? when created it should have recorded the min of each indic in each zone as the 0 pctile for that indic in that zone.
     # *** COULD IT BE THAT UNITS ARE MISMATCHED?  e.g., QUERY IS FOR RAW VALUE OF 0.35 (FRACTION OF 1) BUT LOOKUP TABLE USES RAW VALUES LIKE 35 (PERCENT. FRACTION OF 100) ?

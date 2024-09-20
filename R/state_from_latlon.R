@@ -35,10 +35,10 @@ state_from_nearest_block_bysite <- function(s2b) {
     s2b[, .(ST = state_from_blockid(blockid[which.min(distance)])), keyby = ejam_uniq_id]
   } else {
     if ("ST" %in% names(s2b)) {
-     # already there sometimes? 
+      # already there sometimes? 
       s2b
     } else {
-    s2b[, .(ST = state_from_blockid(blockid[1])), keyby = ejam_uniq_id]
+      s2b[, .(ST = state_from_blockid(blockid[1])), keyby = ejam_uniq_id]
     }
   }
 }
@@ -117,26 +117,36 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
 #'
 #' @return vector of ST info like AK, CA, DE, etc.
 #'
-#' @examples EJAM:::state_from_blockid_table(blockpoints[45:49,])
-#'
+#' @examples
+#' x = sample(blockpoints$blockid, 3)
+#' state_from_blockid_table(blockpoints[blockid %in% x, ])[]
+#' mapfast(blockpoints[blockid %in% x, ])
+#' 
+#' table(state_from_blockid_table(testoutput_getblocksnearby_10pts_1miles))
+#' # unique(state_from_latlon(testpoints_10)$ST) # slow
+#' 
+#' all.equal(state_from_blockid(x), state_from_blockid_table(blockpoints[blockid %in% x, ]))
+#' 
 #' @keywords internal
 #'
 state_from_blockid_table <- function(dt_with_blockid) {
   
-  # 1 way to get ST of every block in the entire blockwts table:
-  # blockwts[bgid2fips, substr(bgfips,1,2), on = "bgid"]
+  ## TEMPORARILY UPDATED BUT FURTHER EDITS IN BRANCH TO BE MERGED SOON
   
   if ("bgid" %in% names(dt_with_blockid)) {
-    dt_with_bgid <- dt_with_blockid
-    message("found bgid column and assuming it is valid so we do not have to use blockid to get ST")
-    ST <- blockgroupstats[dt_with_bgid, ST, on = "bgid"]
+    
+    return(blockgroupstats[dt_with_blockid, ST, on = "bgid"])
+    
   } else {
-    dt_with_blockid_ONLY <- dt_with_blockid
-    # use blockid just to get bgid from blockwts table
-    ST <- blockgroupstats[blockwts[dt_with_blockid_ONLY, .(bgid, blockid), on = "blockid"], ST, on = "bgid"]
+    
+    # all in one step, 
+    # use blockid to get bgid from blockwts table, 
+    # then use bgid to get ST from blockgroupstats table
+    
+    return(blockgroupstats[blockwts[dt_with_blockid, .(bgid, blockid), on = "blockid"], ST, on = "bgid"])
+    
   }
   
-  return(ST)
 }
 ##################################################################################################### #
 
@@ -144,23 +154,22 @@ state_from_blockid_table <- function(dt_with_blockid) {
 #' given vector of blockids, get state abbreviation of each
 #' unused. Not needed if you have sites2blocks table that includes a bgid column
 #' 
-#' 1.59    0.07    2.74 
-#' 
 #' @param blockid vector of blockid values as from EJAM in a table called blockpoints
 #' @seealso unexported state_from_blockid_table() 
 #' @return vector of ST info like AK, CA, DE, etc.
-#'
-#' @examples \dontrun{
+#' @examples
+#' x = sample(blockpoints$blockid, 3)
+#' state_from_blockid(x)[]
+#' mapfast(blockpoints[blockid %in% x, ])
 #' 
-#'  mapfast(test1000, color = "green") %>% 
-#'      color = "red")
-#' }
+#' all.equal(state_from_blockid(x), state_from_blockid_table(blockpoints[blockid %in% x, ]))
 #' 
 #' @keywords internal
 #'
 state_from_blockid <- function(blockid) {
   
-  stateinfo$ST[match(blockid2fips[blockid, substr(blockfips,1,2)], stateinfo$FIPS.ST)]
+  dt_with_blockid <- data.table(blockid = blockid)
+  return(state_from_blockid_table(dt_with_blockid))
 }
 ##################################################################################################### #
 

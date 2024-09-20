@@ -24,6 +24,6 @@ data itself starting in first cell of second row, like A2, and
 all other rows and columns must be empty.
 }
 \details{
-If in RStudio, interactively can select file from local drive. Used by app etc
+If in RStudio, interactively can select file from local drive. Also used by EJAM shiny app for file uploads.
 }
 \keyword{internal}
