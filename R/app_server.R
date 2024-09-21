@@ -73,8 +73,10 @@ app_server <- function(input, output, session) {
       options(shiny.testmode = TRUE)
       cat('shiny.testmode == TRUE\n') 
     } else {
-      options(shiny.testmode = FALSE)
-      cat('shiny.testmode == FALSE\n')
+      if(!isTRUE(getOption("shiny.testmode"))) {
+        options(shiny.testmode = FALSE)
+        cat('shiny.testmode == FALSE\n')
+      }
     }
   }, priority = 2)  
   
