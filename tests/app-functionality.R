@@ -49,8 +49,7 @@ main_shinytest <- function(data_type) {
     
     print("about to do community download")
     app$wait_for_idle(timeout = 20000)
-    # 8/16/24 - Can skip this
-    # app$expect_download("community_download_all")
+    app$expect_download("community_download_all")
     
     print("going to details tab")
     # DETAILS > Site-By-Site
