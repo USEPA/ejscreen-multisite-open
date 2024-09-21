@@ -53,16 +53,17 @@ main_shinytest <- function(data_type) {
     # app$expect_download("community_download_all")
     
     print("going to details tab")
+    # DETAILS > Site-By-Site
     app$set_inputs(results_tabs = "Details")
     app$wait_for_idle(timeout = 20000)
-    app$expect_values(name = "details-tab")
+    app$expect_values(name = "site-by-site")
     
-    # print("downloading results table from details tab")
-    # app$expect_download("download_results_table")
+    print("downloading results table from details tab")
+    app$expect_download("download_results_table")
     
     # DETAILS > PLOT AVERAGE SCORES
     print("going to plot_average details subtab")
-    app$set_inputs(details_subtabs = "plot_average")
+    app$click("#details_subtabs li[data-value='Plot Average Scores']")
     app$expect_values(name="plot_average")
     app$wait_for_idle(timeout = 20000)
 
@@ -84,6 +85,7 @@ main_shinytest <- function(data_type) {
     # DETAILS > PLOT RANGE OF SCORES
     print("going to plot_range details subtab")
     app$set_inputs(details_subtabs = "plot_range")
+    app$click("#details_subtabs li[data-value='Plot Full Range of Scores']")
     app$expect_values(name="plot_range")
     app$wait_for_idle(timeout = 20000)
 
