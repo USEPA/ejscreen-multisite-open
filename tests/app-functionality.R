@@ -63,7 +63,7 @@ main_shinytest <- function(data_type) {
     
     # DETAILS > PLOT AVERAGE SCORES
     print("going to plot_average details subtab")
-    app$click("#details_subtabs li[data-value='Plot Average Scores']")
+    app$set_inputs(details_subtabs = "Plot Average Scores")
     app$expect_values(name="plot_average")
     app$wait_for_idle(timeout = 20000)
 
@@ -84,8 +84,7 @@ main_shinytest <- function(data_type) {
 
     # DETAILS > PLOT RANGE OF SCORES
     print("going to plot_range details subtab")
-    app$set_inputs(details_subtabs = "plot_range")
-    app$click("#details_subtabs li[data-value='Plot Full Range of Scores']")
+    app$set_inputs(details_subtabs = "Plot Full Range of Scores")
     app$expect_values(name="plot_range")
     app$wait_for_idle(timeout = 20000)
 

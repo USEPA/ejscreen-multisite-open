@@ -536,9 +536,9 @@ app_ui  <- function(request) {
                              
                              tabPanel(title = 'Details',
                                       br(),
-                                      div(id="details_subtabs",
-                                          class = 'navbar1',
+                                      div(class = 'navbar1',
                                           navbarPage(
+                                            id="details_subtabs",
                                             title = NULL,
                                             #   navlistPanel(
                                             #   "Results Pages",
