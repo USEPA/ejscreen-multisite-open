@@ -5,7 +5,11 @@ main_shinytest <- function(data_type) {
       name = data_type, 
       seed=12345, 
       load_timeout=2e+05,
-      options = list(shiny.reactlog = TRUE, shiny.trace = TRUE, shiny.testmode = TRUE)
+      options = list(
+        shiny.reactlog = TRUE, 
+        shiny.trace = TRUE, 
+        shiny.testmode = TRUE
+      )
     )
     
     app$set_inputs(ss_choose_method = "upload", wait_ = FALSE)
@@ -71,16 +75,23 @@ main_shinytest <- function(data_type) {
     app$expect_values(name="demographic")
     app$wait_for_idle(timeout = 20000)
 
-    print("EJ summ_bar-ind")
-    app$set_inputs(summ_bar_ind = "EJ")
-    app$expect_values(name="EJ")
+    print("Environmental summ_bar_ind")
+    app$set_inputs(summ_bar_ind = "Environmental")
+    app$expect_values(name="environmental")
     app$wait_for_idle(timeout = 20000)
-
-    print("EJ supplemental")
-    app$set_inputs(summ_bar_ind = "EJ Supplemental")
-    app$expect_values(name="EJ-Supplemental")
-    app$wait_for_idle(timeout = 20000)
-
+    
+    if(app$get_value("include_ejindexes" == "TRUE")) {
+      print("EJ summ_bar-ind")
+      app$set_inputs(summ_bar_ind = "EJ")
+      app$expect_values(name="EJ")
+      app$wait_for_idle(timeout = 20000)
+  
+      print("EJ supplemental")
+      app$set_inputs(summ_bar_ind = "EJ Supplemental")
+      app$expect_values(name="EJ-Supplemental")
+      app$wait_for_idle(timeout = 20000)
+    }
+    
     # DETAILS > PLOT RANGE OF SCORES
     print("going to plot_range details subtab")
     app$set_inputs(details_subtabs = "Plot Full Range of Scores")
