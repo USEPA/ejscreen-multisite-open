@@ -5,13 +5,25 @@
 # Learn more about the roles of various files in:
 # * https://r-pkgs.org/tests.html
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
+
+# sometimes the tmp directory is too full and prevents install
+unlink('~/tmp', recursive=TRUE)
+dir.create('~/tmp')
+unixtools::set.tempdir('~/tmp')
+devtools::install_local('.',force=T)
+
+# this seems to sometimes not get set after install which causes the app to crash 
+# upon running the analysis
+localtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
+
 library(shinytest2)
 library(testthat)
 library(EJAM)
 
 # test_check("EJAM")
-test_app(".", filter="app-functionality")
 source("tests/app-functionality.R")
+
+test_app(".", filter="NAICS-shiny-functionality")
 # This is what ensures tests are run during  R CMD check,
 #   which you can start via  check() (i.e., build then do ⁠R CMD check)
 # check() automatically builds and checks a source package, using all known best practices. 
