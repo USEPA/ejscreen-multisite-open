@@ -42,6 +42,8 @@ jobs:
         run: unzip -o EJAM_v2.32_arrow_datasets.zip -d ./data
 
       - name: Install EJAM
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           Rscript -e 'devtools::install_local(".", force=T)'
 
