@@ -11,6 +11,7 @@ library(EJAM)
 
 # test_check("EJAM")
 test_app(".", filter="app-functionality")
+source("tests/app-functionality.R")
 # This is what ensures tests are run during  R CMD check,
 #   which you can start via  check() (i.e., build then do ⁠R CMD check)
 # check() automatically builds and checks a source package, using all known best practices. 
