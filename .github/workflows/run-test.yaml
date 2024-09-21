@@ -26,7 +26,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: |
-            devtools
+            remotes
             shinytest2
             
       - name: Install GitHub CLI
@@ -42,11 +42,8 @@ jobs:
         run: unzip -o EJAM_v2.32_arrow_datasets.zip -d ./data
 
       - name: Install EJAM
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          Rscript -e 'Sys.setenv(GITHUB_PAT = Sys.getenv("GITHUB_TOKEN"))'
-          Rscript -e 'devtools::install_local(".", force=T)'
+          Rscript -e 'remotes::install_local(".", force=T)'
 
       - name: Run Shiny Tests
         run: Rscript -e 'source("tests/testthat.R")'
