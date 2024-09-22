@@ -71,23 +71,23 @@ main_shinytest <- function(data_type) {
     app$wait_for_idle(timeout = 20000)
 
     print("Demographic summ_bar-ind")
-    app$set_inputs(summ_bar_ind = "Demographic")
+    app$set_inputs(summ_bar_ind_radio = "Demographic")
     app$expect_values(name="demographic")
     app$wait_for_idle(timeout = 20000)
 
     print("Environmental summ_bar_ind")
-    app$set_inputs(summ_bar_ind = "Environmental")
+    app$set_inputs(summ_bar_ind_radio = "Environmental")
     app$expect_values(name="environmental")
     app$wait_for_idle(timeout = 20000)
     
     if(app$get_value("include_ejindexes" == "TRUE")) {
       print("EJ summ_bar-ind")
-      app$set_inputs(summ_bar_ind = "EJ")
+      app$set_inputs(summ_bar_ind_radio = "EJ")
       app$expect_values(name="EJ")
       app$wait_for_idle(timeout = 20000)
   
       print("EJ supplemental")
-      app$set_inputs(summ_bar_ind = "EJ Supplemental")
+      app$set_inputs(summ_bar_ind_radio = "EJ Supplemental")
       app$expect_values(name="EJ-Supplemental")
       app$wait_for_idle(timeout = 20000)
     }

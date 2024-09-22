@@ -3176,11 +3176,11 @@ app_server <- function(input, output, session) {
   
   output$summ_bar_ind <- renderUI({
     if ((input$include_ejindexes == "TRUE")) {
-      radioButtons(inputId = 'summ_bar_ind',
+      radioButtons(inputId = 'summ_bar_ind_radio',
                    label = h5('Indicator type'),
                    choices = c('Demographic', 'Environmental', 'EJ','EJ Supplemental'), selected = "Environmental")
     } else {
-      radioButtons(inputId = 'summ_bar_ind',
+      radioButtons(inputId = 'summ_bar_ind_radio',
                    label = h5('Indicator type'),
                    choices = c('Demographic', 'Environmental'),
                    selected = "Environmental")
