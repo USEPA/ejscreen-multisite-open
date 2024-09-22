@@ -408,9 +408,9 @@ ejamit <- function(sitepoints,
                               by = 'ejam_uniq_id', all = T)
   setorder(out$results_bysite, ejam_uniq_id)
   
-  ## not used for overall but need to be present so columns match with bysite
-  out$results_overall$valid <- NA
-  out$results_overall$invalid_msg <- NA
+  ## not used for overall but need to be present so columns match with bysite. needs to be TRUE for some functions like ejam2report()
+  out$results_overall$valid <- TRUE
+  out$results_overall$invalid_msg <- ""
  
   setcolorder(out$results_overall, c("ejam_uniq_id","valid","invalid_msg"))
   out$longnames <- c("ejam_uniq_id","valid","invalid_msg", out$longnames[out$longnames != 'ejam_uniq_id'])
