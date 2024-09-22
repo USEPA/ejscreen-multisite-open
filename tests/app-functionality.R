@@ -80,7 +80,7 @@ main_shinytest <- function(data_type) {
     app$expect_values(name="environmental")
     app$wait_for_idle(timeout = 20000)
     
-    if(app$get_value("include_ejindexes" == "TRUE")) {
+    if(app$get_value(input="include_ejindexes") == "TRUE") {
       print("EJ summ_bar-ind")
       app$set_inputs(summ_bar_ind_radio = "EJ")
       app$expect_values(name="EJ")
