@@ -514,9 +514,7 @@ app_ui  <- function(request) {
                                ),
                                div(
                                  style = "background-color: #edeff0; color: black; width: 100%; padding: 10px 20px; text-align: right; margin: 10px 0;",
-                                 p( style = "margin-bottom: 0",
-                                    paste("Version", ejam_app_version, "| Report created on", format(Sys.Date(), '%B %d, %Y'))
-                                 )
+                                 uiOutput("report_version_date")
                                ),
                                br(),
                                tags$div(

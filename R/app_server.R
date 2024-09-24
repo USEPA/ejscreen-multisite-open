@@ -3003,6 +3003,17 @@ app_server <- function(input, output, session) {
   
   # SEE FUNCTION THAT CAN DO THIS AT ?table_xls_from_ejam() or ejam2excel()
   
+  output$report_version_date <- renderUI({
+    message(paste0("shinytestmode = ", getOption("shiny.testmode")))
+    p(style = "margin-bottom: 0",
+     paste("Version",
+           ejam_app_version,
+           "| Report created on",
+           ifelse(
+             isTRUE(getOption("shiny.testmode")),
+             "[SHINYTEST DATE]",
+             format(Sys.Date(), '%B %d, %Y'))))
+  })
   output$download_results_table <- downloadHandler(
     filename = function() {
       
