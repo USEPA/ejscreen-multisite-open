@@ -25,6 +25,7 @@ library(EJAM)
 source("tests/app-functionality.R")
 
 # filter to only shiny tests
+# test_check("EJAM") # this runs all the tests
 test_app(".", filter="shiny-functionality")
 # This is what ensures tests are run during  R CMD check,
 #   which you can start via  check() (i.e., build then do ⁠R CMD check)
