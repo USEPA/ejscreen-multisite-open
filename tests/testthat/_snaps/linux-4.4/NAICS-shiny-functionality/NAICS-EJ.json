@@ -2842,6 +2842,12 @@
         }
       ]
     },
+    "report_version_date": {
+      "html": "<p style=\"margin-bottom: 0\">Version 2.32 | Report created on [SHINYTEST DATE]<\/p>",
+      "deps": [
+
+      ]
+    },
     "summ_bar_ind": {
       "html": "<div id=\"summ_bar_ind_radio\" class=\"form-group shiny-input-radiogroup shiny-input-container\" role=\"radiogroup\" aria-labelledby=\"summ_bar_ind_radio-label\">\n  <label class=\"control-label\" id=\"summ_bar_ind_radio-label\" for=\"summ_bar_ind_radio\">\n    <h5>Indicator type<\/h5>\n  <\/label>\n  <div class=\"shiny-options-group\">\n    <div class=\"radio\">\n      <label>\n        <input type=\"radio\" name=\"summ_bar_ind_radio\" value=\"Demographic\"/>\n        <span>Demographic<\/span>\n      <\/label>\n    <\/div>\n    <div class=\"radio\">\n      <label>\n        <input type=\"radio\" name=\"summ_bar_ind_radio\" value=\"Environmental\" checked=\"checked\"/>\n        <span>Environmental<\/span>\n      <\/label>\n    <\/div>\n    <div class=\"radio\">\n      <label>\n        <input type=\"radio\" name=\"summ_bar_ind_radio\" value=\"EJ\"/>\n        <span>EJ<\/span>\n      <\/label>\n    <\/div>\n    <div class=\"radio\">\n      <label>\n        <input type=\"radio\" name=\"summ_bar_ind_radio\" value=\"EJ Supplemental\"/>\n        <span>EJ Supplemental<\/span>\n      <\/label>\n    <\/div>\n  <\/div>\n<\/div>",
       "deps": [

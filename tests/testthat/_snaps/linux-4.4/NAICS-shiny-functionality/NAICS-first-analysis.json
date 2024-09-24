@@ -1463,6 +1463,12 @@
         }
       ]
     },
+    "report_version_date": {
+      "html": "<p style=\"margin-bottom: 0\">Version 2.32 | Report created on [SHINYTEST DATE]<\/p>",
+      "deps": [
+
+      ]
+    },
     "view1_summary_plot": {
       "src": "[image data hash: b4810d3e756e1a38b658ae09978aacf1]",
       "width": 717,
