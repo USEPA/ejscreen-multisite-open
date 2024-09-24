@@ -14,6 +14,9 @@ devtools::install_local('.',force=T)
 
 # this seems to sometimes not get set after install which causes the app to crash 
 # upon running the analysis
+if(!exists("quaddata")) {
+  EJAM:::dataload_from_local(varnames = "quaddata")
+}
 localtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 
 library(shinytest2)
