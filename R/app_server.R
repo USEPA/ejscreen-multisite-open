@@ -61,7 +61,9 @@ app_server <- function(input, output, session) {
     if (length(get_golem_options("shiny.testmode")) > 0  ) { # allow params in run_app() to override default
       if (!get_golem_options("shiny.testmode")) {
         updateRadioButtons(session = session, inputId = "shiny.testmode", selected = FALSE)
-        options(shiny.testmode = FALSE)
+        if(!isTRUE(getOption("shiny.testmode"))) {
+          options(shiny.testmode = FALSE)
+        }
       } else {
         updateRadioButtons(session = session, inputId = "shiny.testmode", selected = TRUE)
         options(shiny.testmode = TRUE)
