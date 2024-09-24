@@ -2129,8 +2129,8 @@
       ]
     },
     "summ_display_hist": {
-      "src": "[image data hash: 44cbe7d1fa07592a59d0cadfb4269e41]",
-      "width": 534.15625,
+      "src": "[image data hash: 5058dead1a972b1849050b22acfdfb2c]",
+      "width": 546.65625,
       "height": 400,
       "alt": "Plot object",
       "coordmap": {
@@ -2158,18 +2158,17 @@
             },
             "range": {
               "left": 48.52568493150683,
-              "right": 528.5205479452055,
+              "right": 540.5205479452055,
               "bottom": 356.8493150684931,
               "top": 27.95890410958903
             }
           }
         ],
         "dims": {
-          "width": 534.15625,
+          "width": 546.65625,
           "height": 400
         }
-      },
-      "error": null
+      }
     },
     "summ_hist_ind": {
       "html": "<div class=\"form-group shiny-input-container\">\n  <label class=\"control-label\" id=\"summ_hist_ind-label\" for=\"summ_hist_ind\">Choose indicator<\/label>\n  <div>\n    <select id=\"summ_hist_ind\" class=\"shiny-input-select\"><option value=\"Demog.Index\" selected>Demog.Ind.<\/option>\n<option value=\"Demog.Index.Supp\">Suppl Demog.Ind.<\/option>\n<option value=\"pctlowinc\">%Low-inc.<\/option>\n<option value=\"pctlingiso\">%Limited English<\/option>\n<option value=\"pctunemployed\">%Unemployed<\/option>\n<option value=\"pctlths\">%&lt; High School<\/option>\n<option value=\"pctunder5\">%&lt; age 5<\/option>\n<option value=\"pctover64\">%&gt; age 64<\/option>\n<option value=\"pctmin\">%POC<\/option>\n<option value=\"pcthisp\">%Hispanic<\/option>\n<option value=\"pctnhba\">%Black NHA<\/option>\n<option value=\"pctnhaa\">%Asian NHA<\/option>\n<option value=\"pctnhaiana\">%AmerIndian/AK NHA<\/option>\n<option value=\"pctnhnhpia\">%Hawaiian/PI NHA<\/option>\n<option value=\"pctnhotheralone\">%Other race NHA<\/option>\n<option value=\"pctnhmulti\">%multirace NH<\/option>\n<option value=\"pctnhwa\">%White NHA<\/option>\n<option value=\"pm\">PM2.5<\/option>\n<option value=\"o3\">Ozone<\/option>\n<option value=\"no2\">NO2<\/option>\n<option value=\"dpm\">Diesel PM<\/option>\n<option value=\"rsei\">Toxic Releases to Air<\/option>\n<option value=\"traffic.score\">Traffic<\/option>\n<option value=\"pctpre1960\">%pre-1960<\/option>\n<option value=\"proximity.npl\">NPL<\/option>\n<option value=\"proximity.rmp\">RMP<\/option>\n<option value=\"proximity.tsdf\">TSDF<\/option>\n<option value=\"ust\">UST<\/option>\n<option value=\"proximity.npdes\">NPDES<\/option>\n<option value=\"drinking\">Drinking<\/option>\n<option value=\"EJ.DISPARITY.pm.eo\">EJ: PM2.5<\/option>\n<option value=\"EJ.DISPARITY.o3.eo\">EJ: Ozone<\/option>\n<option value=\"EJ.DISPARITY.no2.eo\">EJ: NO2<\/option>\n<option value=\"EJ.DISPARITY.dpm.eo\">EJ: Diesel PM<\/option>\n<option value=\"EJ.DISPARITY.rsei.eo\">EJ: Toxic Releases to Air<\/option>\n<option value=\"EJ.DISPARITY.traffic.score.eo\">EJ: Traffic<\/option>\n<option value=\"EJ.DISPARITY.pctpre1960.eo\">EJ: Lead paint<\/option>\n<option value=\"EJ.DISPARITY.proximity.npl.eo\">EJ: NPL<\/option>\n<option value=\"EJ.DISPARITY.proximity.rmp.eo\">EJ: RMP<\/option>\n<option value=\"EJ.DISPARITY.proximity.tsdf.eo\">EJ: TSDF<\/option>\n<option value=\"EJ.DISPARITY.ust.eo\">EJ: UST<\/option>\n<option value=\"EJ.DISPARITY.proximity.npdes.eo\">EJ: Wastewater<\/option>\n<option value=\"EJ.DISPARITY.drinking.eo\">EJ: Drinking Water<\/option>\n<option value=\"EJ.DISPARITY.pm.supp\">EJ Supp: PM2.5 (raw)<\/option>\n<option value=\"EJ.DISPARITY.o3.supp\">EJ Supp: Ozone (raw)<\/option>\n<option value=\"EJ.DISPARITY.no2.supp\">EJ Supp: NO2 (raw)<\/option>\n<option value=\"EJ.DISPARITY.dpm.supp\">EJ Supp: Diesel PM (raw)<\/option>\n<option value=\"EJ.DISPARITY.rsei.supp\">EJ Supp: Toxic Releases to Air (raw)<\/option>\n<option value=\"EJ.DISPARITY.traffic.score.supp\">EJ Supp: Traffic (raw)<\/option>\n<option value=\"EJ.DISPARITY.pctpre1960.supp\">EJ Supp: Lead paint (raw)<\/option>\n<option value=\"EJ.DISPARITY.proximity.npl.supp\">EJ Supp: NPL (raw)<\/option>\n<option value=\"EJ.DISPARITY.proximity.rmp.supp\">EJ Supp: RMP (raw)<\/option>\n<option value=\"EJ.DISPARITY.proximity.tsdf.supp\">EJ Supp: TSDF (raw)<\/option>\n<option value=\"EJ.DISPARITY.ust.supp\">EJ Supp: UST (raw)<\/option>\n<option value=\"EJ.DISPARITY.proximity.npdes.supp\">EJ Supp: NPDES (raw)<\/option>\n<option value=\"EJ.DISPARITY.drinking.supp\">EJ Supp: Drinking (raw)<\/option><\/select>\n    <script type=\"application/json\" data-for=\"summ_hist_ind\" data-nonempty=\"\">{\"plugins\":[\"selectize-plugin-a11y\"]}<\/script>\n  <\/div>\n<\/div>",
