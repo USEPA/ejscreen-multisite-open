@@ -6,14 +6,12 @@
 # * https://r-pkgs.org/tests.html
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
-# sometimes the tmp directory is too full and prevents install
-unlink('~/tmp', recursive=TRUE)
-dir.create('~/tmp')
-unixtools::set.tempdir('~/tmp')
+# make sure to install the latest version of the app
+library(devtools)
 devtools::install_local('.',force=T)
 
-# this seems to sometimes not get set after install which causes the app to crash 
-# upon running the analysis
+# quaddata and localtree seem to sometimes not get set after install 
+# which causes the app to crash upon running the analysis
 if(!exists("quaddata")) {
   EJAM:::dataload_from_local(varnames = "quaddata")
 }
@@ -23,9 +21,10 @@ library(shinytest2)
 library(testthat)
 library(EJAM)
 
-# test_check("EJAM")
+# this is the main function that does the test commands
 source("tests/app-functionality.R")
 
+# filter to only shiny tests
 test_app(".", filter="shiny-functionality")
 # This is what ensures tests are run during  R CMD check,
 #   which you can start via  check() (i.e., build then do ⁠R CMD check)
