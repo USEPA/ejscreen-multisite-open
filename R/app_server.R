@@ -84,7 +84,9 @@ app_server <- function(input, output, session) {
     if (length(get_golem_options("shiny.testmode")) > 0  ) { # allow params in run_app() to override default
       if (!get_golem_options("shiny.testmode")) {
         updateRadioButtons(session = session, inputId = "shiny.testmode", selected = FALSE)
-        options(shiny.testmode = FALSE)
+        if(!isTRUE(getOption("shiny.testmode"))) {
+          options(shiny.testmode = FALSE)
+        }
       } else {
         updateRadioButtons(session = session, inputId = "shiny.testmode", selected = TRUE)
         options(shiny.testmode = TRUE)
@@ -96,8 +98,10 @@ app_server <- function(input, output, session) {
       options(shiny.testmode = TRUE)
       cat('shiny.testmode == TRUE\n') 
     } else {
-      options(shiny.testmode = FALSE)
-      cat('shiny.testmode == FALSE\n')
+      if(!isTRUE(getOption("shiny.testmode"))) {
+        options(shiny.testmode = FALSE)
+        cat('shiny.testmode == FALSE\n')
+      }
     }
   }, priority = 2)  
   
@@ -2975,18 +2979,18 @@ app_server <- function(input, output, session) {
   setup_temp_files <- function() {
     tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
     # Copy Rmd file to temp directory
-    file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),
+    file.copy(from = EJAM:::app_sys('report/community_report/community_report_template.Rmd'),
               to = tempReport, overwrite = TRUE)
     # Copy CSS file
     if (!file.exists(file.path(tempdir(), 'communityreport.css'))) {
-      file.copy(from = app_sys('report/community_report/communityreport.css'),
+      file.copy(from = EJAM:::app_sys('report/community_report/communityreport.css'),
                 to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
     }
 
     # Copy logo file
     if (!file.exists(file.path(tempdir(), 'www', 'EPA_logo_white_2.png'))) {
       dir.create(file.path(tempdir(), 'www'), showWarnings = FALSE, recursive = TRUE)
-      file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
+      file.copy(from = EJAM:::app_sys('report/community_report/EPA_logo_white_2.png'),
                 to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
     }
     return(tempReport)
@@ -3041,6 +3045,17 @@ app_server <- function(input, output, session) {
   
   # SEE FUNCTION THAT CAN DO THIS AT ?table_xls_from_ejam() or ejam2excel()
   
+  output$report_version_date <- renderUI({
+    message(paste0("shinytestmode = ", getOption("shiny.testmode")))
+    p(style = "margin-bottom: 0",
+     paste("Version",
+           ejam_app_version,
+           "| Report created on",
+           ifelse(
+             isTRUE(getOption("shiny.testmode")),
+             "[SHINYTEST DATE]",
+             format(Sys.Date(), '%B %d, %Y'))))
+  })
   output$download_results_table <- downloadHandler(
     filename = function() {
       
@@ -3216,11 +3231,11 @@ app_server <- function(input, output, session) {
   
   output$summ_bar_ind <- renderUI({
     if ((input$include_ejindexes == "TRUE")) {
-      radioButtons(inputId = 'summ_bar_ind',
+      radioButtons(inputId = 'summ_bar_ind_radio',
                    label = h5('Indicator type'),
                    choices = c('Demographic', 'Environmental', 'EJ','EJ Supplemental'), selected = "Environmental")
     } else {
-      radioButtons(inputId = 'summ_bar_ind',
+      radioButtons(inputId = 'summ_bar_ind_radio',
                    label = h5('Indicator type'),
                    choices = c('Demographic', 'Environmental'),
                    selected = "Environmental")
@@ -3675,11 +3690,11 @@ app_server <- function(input, output, session) {
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "report.Rmd")
       ## copy Rmd from inst/report to temp folder
-      file.copy(from = app_sys('report/written_report/report.Rmd'),  # treats EJAM/inst/ as root
+      file.copy(from = EJAM:::app_sys('report/written_report/report.Rmd'),  # treats EJAM/inst/ as root
                 to = tempReport, overwrite = TRUE)
       ## pass image and bib files needed for knitting to temp directory
-      for (i in list.files(app_sys('report/written_report'), pattern = '.png|.bib')) {   # treats what was in source/EJAM/inst/report/ as installed/EJAM/report/  once pkg is installed
-        file.copy(from = app_sys('report/written_report', i),    # source/EJAM/inst/report/ = installed/EJAM/report/
+      for (i in list.files(EJAM:::app_sys('report/written_report'), pattern = '.png|.bib')) {   # treats what was in source/EJAM/inst/report/ as installed/EJAM/report/  once pkg is installed
+        file.copy(from = EJAM:::app_sys('report/written_report', i),    # source/EJAM/inst/report/ = installed/EJAM/report/
                   to = file.path(tempdir(), i),
                   overwrite = TRUE)
       }
