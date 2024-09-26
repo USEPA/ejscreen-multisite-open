@@ -410,6 +410,103 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
 ####################################################### #
 
 
+shapes_places_from_placenames <- function(place_st) {
+  
+  getst = function(x) {gsub(".*(..)", "\\1", x)}  # only works if exact format right like x = c("Port Chester, NY", "White Plains, NY", "New Rochelle, NY")
+  st = unique(getst(place_st))
+  place_nost = gsub("(.*),.*", "\\1", place_st) # keep non-state parts, only works if exact format right
+  
+  shp <- tigris::places(st) %>% tigris::filter_place(place_nost) # gets shapefile of those places boundaries from census via download
+  return(shp)
+}
+####################################################### #
+
+## examples
+#
+# place_st = c("Port Chester, NY", "White Plains, NY", "New Rochelle, NY")
+# shp = shapes_places_from_placenames(place_st)
+# 
+# out <- ejamit(shapefile = shp)
+# map_shapes_leaflet(shapes = shp, 
+#                    popup = popup_from_ejscreen(out$results_bysite))
+# ejam2excel(out, save_now = F, launchexcel = T)
+
+#   fips = fips_place_from_placename("Port Chester, NY")
+# seealso [shapes_places_from_placefips()] [shapes_places_from_placenames()]
+#   [fips_place2placename()] [fips_place_from_placename()] [censusplaces]
+
+
+# also see 
+#  https://www2.census.gov/geo/pdfs/reference/GARM/Ch9GARM.pdf
+#  https://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2023/TGRSHP2023_TechDoc_Ch3.pdf 
+#  https://github.com/walkerke/tigris?tab=readme-ov-file#readme
+#  https://walker-data.com/census-r/census-geographic-data-and-applications-in-r.html#tigris-workflows
+#
+# For demographic data (optionally pre-joined to tigris geometries), see the tidycensus package.
+# NAD 1983 is what the tigris pkg uses -- it only returns feature geometries for US Census data that default to NAD 1983 (EPSG: 4269) coordinate reference system (CRS).
+#   For help deciding on appropriate CRS, see the crsuggest package.
+
+
+## used by name2fips or fips_from_name 
+# see https://www2.census.gov/geo/pdfs/reference/GARM/Ch9GARM.pdf
+
+
+shapes_places_from_placefips <- function(fips) {
+  
+  if (!all(fips %in% censusplaces$fips)) {stop("check fips - some are not found in censusplaces$fips")}
+  
+  st <- fips2state_abbrev(fips)
+  place_nost <- fips_place2placename(fips, append_st = FALSE)
+  
+  shp <- tigris::places(st) %>% tigris::filter_place(place_nost) # gets shapefile of those places boundaries from census via download
+  return(shp)
+}
+####################################################### #
+
+fips_place2placename = function(fips, append_st = TRUE) {
+  
+  if (!all(fips %in% censusplaces$fips)) {stop("check fips - some are not found in censusplaces$fips")}
+  
+  place_nost <- censusplaces$placename[match(fips, censusplaces$fips)]
+  
+  if (append_st) {
+    st <- fips2state_abbrev(fips)
+    return(paste0(place_nost, ", ", st))
+  } else {
+    return(place_nost)
+  }
+}
+####################################################### #
+
+fips_place_from_placename = function(place_st, geocoding = FALSE) {
+  
+  if (any(!grepl(",", place_st))) {warning("place_st should be in form of placename, ST like Port Chester, NY")}
+  
+  if (geocoding) {
+    if (!exists("geocoding")) {
+      warning("Need to load the AOI package for geocoding to work. Using geocoding=FALSE instead, here.")
+    } else {
+      # geocoding fails sometimes when CDP is part of the name
+      place_st_dont_say_cdp <- gsub(" CDP,", ",", place_st)
+      
+      arcgis_address_xy <- geocode(place_st_dont_say_cdp)
+      setDT(arcgis_address_xy)
+      place_st <- arcgis_address_xy[ , .(best = arcgis_address[1]), by = "request"]$best
+      # now place_st are the best guesses via geocoding, ready to look for matches in table of fips and place names
+      cat("Names based on geocoding:\n", paste0(head(place_st, 30), collapse = ", "), ifelse(length(place_st) > 30, " ...etc. ", ""), "\n")
+    }
+  }
+  all_place_st <- paste(censusplaces$placename, censusplaces$ST, sep = ", ")
+  all_place_st_dont_say_cdp <- gsub(" CDP, ", ",", all_place_st)
+  place_st_dont_say_cdp <- gsub(" CDP,", ",", place_st) # in case not geocoding
+  results <- censusplaces[match(tolower(place_st_dont_say_cdp), tolower(all_place_st_dont_say_cdp), nomatch = NA), ]
+  print(results)
+  return(results$fips)
+}
+####################################################### #
+####################################################### #
+
+
 #' Get FIPS codes from names of states or counties
 #' inverse of fips2name(), 1-to-1 map statename, ST, countyname to FIPS of each
 #' @aliases fips_from_name names2fips
