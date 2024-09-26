@@ -115,7 +115,7 @@ fipstype <- function(fips) {
   ftype[nchar(fips, keepNA = FALSE) == 15] <- "block"
   ftype[nchar(fips, keepNA = FALSE) == 12] <- "blockgroup"
   ftype[nchar(fips, keepNA = FALSE) == 11] <- "tract"
-  ftype[nchar(fips, keepNA = FALSE) ==  7] <- "city"  # e.g, 5560500 is Oshkosh, WI
+  ftype[nchar(fips, keepNA = FALSE) ==  7] <- "city" # ACTUALLY IT IS "place" as in censusplaces$placename or $fips  # e.g, 5560500 is Oshkosh, WI
   ftype[nchar(fips, keepNA = FALSE) ==  5] <- "county"
   ftype[!is.na(fips) & nchar(fips) ==  2] <- "state"
   
@@ -379,7 +379,7 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
   
   # fips_table can be data.frame or data.table, as long as colnames has one valid fips alias
   ## create named vector of FIPS codes (names used as location id)
-  
+  # *** see also fixnames_aliases() and fixcolnames_infer()
   fips_alias <- c('fips', 'FIPS', 'Fips', 'fips_code', 'fipscode',
                   'blockfips', 
                   'bgfips', 'blockgroupfips', 'blockgroup_fips', 'blockgroup_fips_code',
@@ -408,6 +408,103 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
   return(fips_vec)
 }
 ####################################################### #
+####################################################### #
+
+shapes_places_from_placenames <- function(place_st) {
+  
+  getst = function(x) {gsub(".*(..)", "\\1", x)}  # only works if exact format right like x = c("Port Chester, NY", "White Plains, NY", "New Rochelle, NY")
+  st = unique(getst(place_st))
+  place_nost = gsub("(.*),.*", "\\1", place_st) # keep non-state parts, only works if exact format right
+  
+  shp <- tigris::places(st) %>% tigris::filter_place(place_nost) # gets shapefile of those places boundaries from census via download
+  return(shp)
+}
+####################################################### #
+
+## examples
+#
+# place_st = c("Port Chester, NY", "White Plains, NY", "New Rochelle, NY")
+# shp = shapes_places_from_placenames(place_st)
+# 
+# out <- ejamit(shapefile = shp)
+# map_shapes_leaflet(shapes = shp, 
+#                    popup = popup_from_ejscreen(out$results_bysite))
+# ejam2excel(out, save_now = F, launchexcel = T)
+
+#   fips = fips_place_from_placename("Port Chester, NY")
+# seealso [shapes_places_from_placefips()] [shapes_places_from_placenames()]
+#   [fips_place2placename()] [fips_place_from_placename()] [censusplaces]
+
+
+# also see 
+#  https://www2.census.gov/geo/pdfs/reference/GARM/Ch9GARM.pdf
+#  https://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2023/TGRSHP2023_TechDoc_Ch3.pdf 
+#  https://github.com/walkerke/tigris?tab=readme-ov-file#readme
+#  https://walker-data.com/census-r/census-geographic-data-and-applications-in-r.html#tigris-workflows
+#
+# For demographic data (optionally pre-joined to tigris geometries), see the tidycensus package.
+# NAD 1983 is what the tigris pkg uses -- it only returns feature geometries for US Census data that default to NAD 1983 (EPSG: 4269) coordinate reference system (CRS).
+#   For help deciding on appropriate CRS, see the crsuggest package.
+
+
+## used by name2fips or fips_from_name 
+# see https://www2.census.gov/geo/pdfs/reference/GARM/Ch9GARM.pdf
+
+
+shapes_places_from_placefips <- function(fips) {
+  
+  if (!all(fips %in% censusplaces$fips)) {stop("check fips - some are not found in censusplaces$fips")}
+  
+  st <- fips2state_abbrev(fips)
+  place_nost <- fips_place2placename(fips, append_st = FALSE)
+  
+  shp <- tigris::places(st) %>% tigris::filter_place(place_nost) # gets shapefile of those places boundaries from census via download
+  return(shp)
+}
+####################################################### #
+
+fips_place2placename = function(fips, append_st = TRUE) {
+  
+  if (!all(fips %in% censusplaces$fips)) {stop("check fips - some are not found in censusplaces$fips")}
+  
+  place_nost <- censusplaces$placename[match(fips, censusplaces$fips)]
+  
+  if (append_st) {
+    st <- fips2state_abbrev(fips)
+    return(paste0(place_nost, ", ", st))
+  } else {
+    return(place_nost)
+  }
+}
+####################################################### #
+
+fips_place_from_placename = function(place_st, geocoding = FALSE) {
+  
+  if (any(!grepl(",", place_st))) {warning("place_st should be in form of placename, ST like Port Chester, NY")}
+  
+  if (geocoding) {
+    if (!exists("geocoding")) {
+      warning("Need to load the AOI package for geocoding to work. Using geocoding=FALSE instead, here.")
+    } else {
+      # geocoding fails sometimes when CDP is part of the name
+      place_st_dont_say_cdp <- gsub(" CDP,", ",", place_st)
+      
+      arcgis_address_xy <- geocode(place_st_dont_say_cdp)
+      setDT(arcgis_address_xy)
+      place_st <- arcgis_address_xy[ , .(best = arcgis_address[1]), by = "request"]$best
+      # now place_st are the best guesses via geocoding, ready to look for matches in table of fips and place names
+      cat("Names based on geocoding:\n", paste0(head(place_st, 30), collapse = ", "), ifelse(length(place_st) > 30, " ...etc. ", ""), "\n")
+    }
+  }
+  all_place_st <- paste(censusplaces$placename, censusplaces$ST, sep = ", ")
+  all_place_st_dont_say_cdp <- gsub(" CDP, ", ",", all_place_st)
+  place_st_dont_say_cdp <- gsub(" CDP,", ",", place_st) # in case not geocoding
+  results <- censusplaces[match(tolower(place_st_dont_say_cdp), tolower(all_place_st_dont_say_cdp), nomatch = NA), ]
+  print(results)
+  return(results$fips)
+}
+####################################################### #
+####################################################### #
 
 
 #' Get FIPS codes from names of states or counties
@@ -430,12 +527,15 @@ name2fips = function(x) {
   suppressWarnings({ # do not need to get warned that x is not a ST abbrev here
   # figure out if x is ST, statename, countyname.
   fips = fips_state_from_state_abbrev(x) # NA if not a state abbrev. ignores case.
-  })
+  
   fips[is.na(fips)] <- fips_state_from_statename(x[is.na(fips)]) # only tries for those that were not a ST abbrev
   fips[is.na(fips)] <- fips_counties_from_countynamefull(x[is.na(fips)])
   # fips[is.na(fips)] = substr(blockgroupstats$bgfips,1,5)[match(x[is.na(fips)]), blockgroupstats$countyname]
   # only tries for those that were neither ST nor statename
   
+  fips[is.na(fips)] <- fips_place_from_placename(x[is.na(fips)])
+  
+  })
   # if (any(toupper(ST) %in% c("AS", "GU","MP", "UM", "VI"))) {
   #   message("note some of ST are among AS, GU, MP, UM, VI")
   # }
@@ -459,6 +559,55 @@ fips_from_name = function(x) {
 }
 ############################################################################# #
 
+# convert placename, ST to placename, statename if possible
+# Harris County, TX becomes Harris County, Texas
+# place_st2place_statename('Harris County, TX')
+# place_st2place_statename(paste0(censusplaces$countyname, ", ", censusplaces$ST)[sample(1:3000,10)])
+
+place_st2place_statename = function(fullname) {
+  
+  # split into place part and state part
+  nonstatetext = gsub("(.*),(.*)", "\\1", fullname)
+  statetext    = gsub("(.*),(.*)", "\\2", fullname)
+  nonstatetext = trimws(nonstatetext)
+  statetext = trimws(statetext)
+  suppressWarnings({
+    # convert ST to full statenames if possible
+    statefips = fips_state_from_state_abbrev(statetext)
+    statename = fips2statename(statefips)
+  })
+  statetext[!is.na(statename)] <- statename[!is.na(statename)]
+  # reassemble
+  fullname = paste0(nonstatetext, ", ", statetext)
+  return(fullname)
+}
+############################################################################# #
+
+# convert placename, statename to placename, ST if possible
+# Harris County, Texas becomes Harris County, TX
+# place_statename2place_st('Harris County, Texas')
+# place_statename2place_st(
+#   place_st2place_statename(
+#     paste0(censusplaces$countyname, ", ", censusplaces$ST)[sample(1:3000,10)]))
+
+place_statename2place_st = function(fullname) {  
+  
+  # split into place part and state part
+  nonstatetext = gsub("(.*),(.*)", "\\1", fullname)
+  statetext    = gsub("(.*),(.*)", "\\2", fullname)
+  nonstatetext = trimws(nonstatetext)
+  statetext = trimws(statetext)
+  suppressWarnings({
+    # convert full statenames to 2letter abbreviations if possible
+    statefips = fips_state_from_statename(statetext)
+    ST = fips2state_abbrev(statefips)
+  })
+  statetext[!is.na(ST)] <- ST[!is.na(ST)]
+  # reassemble
+  fullname = paste0(nonstatetext, ", ", statetext)
+  return(fullname)
+}
+############################################################################# #
 
 #' FIPS - Get state fips for each state abbrev
 #'
@@ -565,7 +714,7 @@ fips_counties_from_statefips <- function(statefips) {
   ftype = fipstype(statefips)
   if ( any(ftype[!is.na(ftype)] != "state")) {
     # fipstype() already provides warning about NA
-     warning("Some of the supplied statefips values were NA or otherwise not recognized as State FIPS codes")
+    warning("Some of the supplied statefips values were NA or otherwise not recognized as State FIPS codes")
     
   }
   statefips <- statefips[!is.na(ftype) & ftype == "state"]
@@ -632,12 +781,13 @@ fips_counties_from_statename <- function(statename) {
 #' @param ST two letter abbreviation of State, such as "TX" -- Can only be
 #'   omitted if the 1st parameter has the full name and ST like
 #'   "Harris County, TX". Ignores case.
-#'
+#' @param exact set TRUE to require exact matches, FALSE to allow partial matches
+#'   in which case outputs might differ from inputs in length and not be 1-to-1
 #' @return the county FIPS (5 digits long with leading zero if needed, as character)
-#'   but can return more than one guess per input name
+#'   but can return more than one guess per input name!
 #' @examples 
-#'  fips2name(fips_counties_from_countyname("Har", "TX")) # finds 4 matches
-#'  fips_counties_from_countyname("Har",               "TX")    # finds 4 matches
+#'  fips2name(fips_counties_from_countyname("Har", "TX")) # finds 5 matches
+#'  fips_counties_from_countyname("Har",               "TX")    # finds 5  matches
 #'  fips_counties_from_countyname("Harris",            "TX")    # finds 2 matches
 #'  fips_counties_from_countyname("Harris ",           "TX")    # finds 1 match
 #'  fips_counties_from_countyname("Harris County",     "TX")    # same
@@ -648,38 +798,83 @@ fips_counties_from_statename <- function(statename) {
 #'  
 #' @export
 #'
-fips_counties_from_countyname <- function(countyname_start, ST=NULL) {
+fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact=FALSE) {
+  
+  # out = rep(NA, length(countyname_start)) 
+  # do not try to keep 1-to-1 in to out ?? since a partial matching means we may return 2+ counties per input query term
   
   if (missing(countyname_start)) {stop("countyname_start parameter is required but missing")}
   
-  if (all(is.null(ST))) {
-    out <-     fips_counties_from_countynamefull(countyname_start)
-    message("ST not specified, so tried to find exact matches to Countyname, ST")
+  if (is.null(ST)) {
+    suppressWarnings({
+      out <-     fips_counties_from_countynamefull(countyname_start)
+    })
+    # message("ST not specified, so tried to find exact matches to Countyname, ST")
     return(out)
   } else {
-    if (length(countyname_start) != length(ST)) {stop("the two parameters must be equal in length")}
-  }
-  if (any(is.na(ST))) {
-    if (!all(is.na(ST))) { 
-      # make sure if ST is na then so is countyname_start, since confusing results if valid names sometimes have ST and sometimes do not
-      if (any(is.na(ST) & !is.na(countyname_start))) {stop("Some but not all ST values are NA where countyname_start was provided")}
+    if (length(countyname_start) != length(ST)) {
+      stop("the two parameters must be equal in length")
     }
-    out <- fips_counties_from_countynamefull(countyname_start[is.na(ST)])
+  }
+  isnast <- is.na(ST)
+  out <- rep(NA, length(ST))
+  if (any(isnast) && !all(isnast)) {  #  some are NA  
+    # make sure if ST is na then so is countyname_start, since confusing results if valid names sometimes have ST and sometimes do not
+    if (any(isnast & !is.na(countyname_start))) {stop("Some but not all ST values are NA where countyname_start was provided")}
+    suppressWarnings({
+      out[isnast] <- fips_counties_from_countynamefull(countyname_start[isnast])
+      # out <- out[!is.na(out)]
+      if (all(is.na(out))) {out <- NULL}
+    })
     message("When ST not specified, tries to find exact matches of countyname_state to Countyname, ST")
   } else {
-    out = NULL
-  }
-  
+    out <- NULL
+  }  
   # stopifnot(length(ST) == 1, is.atomic(ST), length(countyname_start) == 1, is.atomic(countyname_start))
   
-  allcfips <- fips_counties_from_state_abbrev(ST[!is.na(ST)]) # ignores case # would fail if any ST is NA.  works for vector
-  allcnames <- fips2countyname(allcfips)
+  countyname_start <- countyname_start[!isnast]
+  stnow <- ST[!isnast]
   
-  matching_countyfips <- allcfips[grep(paste0("^", countyname_start[!is.na(ST)]), allcnames, ignore.case = TRUE)]
+  cfull = paste0(countyname_start, ", ", stnow)
+  suppressWarnings({
+    # first quickly get all the exact matches (ignoring case)
+    exactmatches = fips_counties_from_countynamefull(cfull)
+  })
+  ### cfull = cfull[!is.na(exactmatches)]
+  # countyname_start_unmatched = countyname_start[is.na(exactmatches)]
+  # stnow = stnow[is.na(exactmatches)]
+  # 
+  # exactmatches <- exactmatches[!is.na(exactmatches)]
   
-  out <- c(out, matching_countyfips)
-  # out <- out[!is.na(out)]  # returning some NA values sort of implies a 1 to 1 input-output but that is not how this func works... ***
-  return(out)
+  out[!isnast] <-  exactmatches 
+  
+  if (exact) {
+    return(out)
+    
+  } else {
+    suppressWarnings({
+      # all names of counties in universe of possible hits (all in any of the queried states)
+      allcfips <- fips_counties_from_state_abbrev(stnow) # ignores case # would fail if any ST is NA.  works for vector
+      allcnames <- fips2countyname(allcfips)
+    })
+    compiledhits = NULL
+    if (length(countyname_start_unmatched) > 0) {
+      for (i in 1:length(countyname_start_unmatched)) {
+        # inefficient but ok since query like universe would rarely have hundreds of counties and never >3500
+        # also could consider    startsWith()  and   pmatch()
+        newhits = grep(paste0("^", countyname_start_unmatched[i]), allcnames, ignore.case = TRUE, value = TRUE)
+        compiledhits = c(compiledhits, newhits)
+      }
+      suppressWarnings({
+        matching_countyfips <- fips_counties_from_countyname(compiledhits)
+        matching_countyfips <- matching_countyfips[!is.na(matching_countyfips)]
+      })
+      out <- c(out, matching_countyfips)
+    }
+    out <- out[!is.na(out)]  # returning some NA values sort of implies a 1 to 1 input-output but that is not how this func works... ***
+    out <- unique(out)
+    return(out)
+  }
 }
 ############################################################################# #
 
@@ -699,13 +894,18 @@ fips_counties_from_countynamefull <- function(fullname) {
   
   # this internal function just supports fips_counties_from_countyname()
   # This requires exact match to "county name, ST" but case-insensitive
-  
+  # but now handles full statename too, not just ST abbrev
   #    examples 
   # fips2name(fips_counties_from_countynamefull("Harris County, TX"))
   # y <- fips_counties_from_countynamefull(c("Harris County, TX", "Harrison County, TX"))
   # y
   # fips2name(y)
-  # fips_counties_from_countynamefull("Harris County, tx")
+  # fips_counties_from_countyname("Harris County, tx")
+  # fips2countyname(fips_counties_from_countyname("harris county,texas"))
+  
+  ### see also  geocode()  and  censusplaces  and  EJAM/R/mod_fips_picker-DRAFT.R  
+  
+  fullname <- place_statename2place_st(fullname)
   
   x <- substr(
     blockgroupstats$bgfips,1,5
@@ -856,7 +1056,7 @@ fips_st2eparegion <- function(stfips) {
 fips2state_abbrev <- function(fips) {
   
   abb <- stateinfo2$ST[match(substr(fips_lead_zero(fips), 1, 2), stateinfo2$FIPS.ST)] # using match is ok
-  
+  abb[abb == "US"] <- NA
   # confirm returns same length as input, and check how it handles nonmatches
   x = abb
   if (anyNA(x)) {
@@ -948,7 +1148,7 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
     substr(blockgroupstats$bgfips,1,5))]  #
   # using match is OK since 
   # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
- 
+  
   if (all(is.na(ftype)) || any(ftype != "county")) {
     warning("this function should only be used to convert county fips to county name, 1 to 1 - returning NA for fips that are not countyfips")
   }
@@ -992,10 +1192,10 @@ fips2name  <- function(fips, ...) {
   
   ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
   if (any(!is.na(fips) & fipstype(fips) == "state")) {
-  out[!is.na(fips) & fipstype(fips) == "state"]  <- fips2statename(fips = fips[!is.na(fips) & fipstype(fips) == "state"])
+    out[!is.na(fips) & fipstype(fips) == "state"]  <- fips2statename(fips = fips[!is.na(fips) & fipstype(fips) == "state"])
   }
   if (any(!is.na(fips) & fipstype(fips) == "county")) { # this prevents irrelevant warning "this function should only be used to convert county fips to county name..."
-  out[!is.na(fips) & fipstype(fips) == "county"] <- fips2countyname(fips = fips[!is.na(fips) & fipstype(fips) == "county"], ...)
+    out[!is.na(fips) & fipstype(fips) == "county"] <- fips2countyname(fips = fips[!is.na(fips) & fipstype(fips) == "county"], ...)
   }
   if (anyNA(out)) {
     howmanyna = sum(is.na(out))
