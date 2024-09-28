@@ -46,7 +46,7 @@ dataload_from_local <- function(varnames = c(c('blockwts', 'blockpoints', "quadd
     folder_local_source <- "~/../Downloads/EJAMbigfiles"
   } else {
     if (is.null(folder_local_source)) {
-      folder_local_source <- app_sys('data') # default for other development machines
+      folder_local_source <- EJAM:::app_sys('data') # default for other development machines
     }
   }
 
