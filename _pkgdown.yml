@@ -1,6 +1,8 @@
 url: https://usepa.github.io/EJAM/
 template:
   bootstrap: 5
+  params:
+    noindex: true  
 deploy:
   install_metadata: true
 navbar:
@@ -20,9 +22,6 @@ development:
   mode: devel
   destination: 
   version_label: warning
-template:
-  params:
-    noindex: true
 home:
   title: EJAM Environmental Justice Analysis Multisite
   description: Webapp and tools summarizing demographic and environmental data for hundreds of places quickly and accurately
@@ -33,7 +32,7 @@ articles:
   desc: Overview for EJAM Users
   navbar: Overview for EJAM Users
   contents:
-  - "0_whatis"
+  - '`0_whatis`'
   - '`0_webapp`'
 - title: The EJAM R Package
   desc: For analysts using R
