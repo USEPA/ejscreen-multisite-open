@@ -4,10 +4,10 @@
 \alias{plot_ridgeline_ratios}
 \title{Make ridgeline plot of ratios of demographic score to its average}
 \usage{
-plot_ridgeline_ratios(ratio.to.us.d.bysite, names2plot_friendly = NULL)
+plot_ridgeline_ratios(ratio.to.us.d.bysite, shortlabels = NULL)
 }
 \arguments{
-\item{names2plot_friendly}{names to use for plot - should be same length as named list ratio.to.us.d.overall}
+\item{shortlabels}{names to use for plot - should be same length as named list ratio.to.us.d.overall}
 
 \item{ratio.to.us.d.overall}{named list of a few ratios to plot (data.frame)}
 }

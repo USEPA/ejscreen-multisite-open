@@ -237,7 +237,10 @@ if (!exists('blockgroupstats_new_as_on_ftp') && file.exists(file.path(localfolde
 
 ########################################################### #
 
-# map_headernames check: ####
+## rename colnames ####
+
+############################ #
+# 1st, check  map_headernames info  
 EJAM:::nacounts(blockgroupstats_new)
 cbind(sort(names(blockgroupstats_new)[fixcolnames(names(blockgroupstats_new),'csv','r') == names(blockgroupstats_new)]))
 #         bins (colors on map)
@@ -260,9 +263,9 @@ cbind(sort(names(blockgroupstats_new)[fixcolnames(names(blockgroupstats_new),'cs
 # [15,] "T_DWATER"       
 # [16,] "T_NO2"      
 #   etc etc
-########################################################### #
+############################ #
 
-## rename colnames ####
+# now rename columns
 
 names(blockgroupstats_new)       <-  fixcolnames(names(blockgroupstats_new),       oldtype = 'csv', newtype = 'r') # 
 names(blockgroupstats_new_state) <-  fixcolnames(names(blockgroupstats_new_state), oldtype = 'csv', newtype = 'r') # 
@@ -313,7 +316,7 @@ setdiff(          names(blockgroupstats_new), names(EJAM::blockgroupstats))
 
 ############################################################## #
 
-## save island areas ####
+## archive island areas ####
 ## but drop them from blockgroupstats_new and blockgroupstats_new_state
 
 names(blockgroupstats_new)       <- gsub("id", "OBJECTID", names(blockgroupstats_new))
@@ -371,7 +374,7 @@ write_ipc_file(bg_islandareas, sink = file.path(localfolder, "bg_islandareas.arr
 
 ################################################### # 
 
-## Drop island areas  from blockgroupstats_new and blockgroupstats_new_state ####
+## drop island areas  ####
 ##   AS, GU, MP, VI are in the new blockgroupstats table but bgid will be set to NA for those if they 
 ## are not found in bgpts. 
 
@@ -390,7 +393,7 @@ dim(bgpts)                       # 242,355 rows at this point it had
 
 ################################################# # 
 
-# Create bgfips and bgid columns ####
+## create bgfips and bgid columns ####
 
 blockgroupstats_new$bgfips       <- fips_lead_zero(blockgroupstats_new$OBJECTID)
 blockgroupstats_new_state$bgfips <- fips_lead_zero(blockgroupstats_new$OBJECTID)
@@ -479,7 +482,7 @@ nacounts(blockgroupstats_new)
 ########################################################### #
 ################################################################################ #
 
-# > bgej ####
+# > bgej - Create bgej here.####
 
 ###### MOVE EJ INDEXES FROM blockgroupstats_new and blockgroupstats_new_state
 ## to  a consolidated bgej  table 
@@ -512,7 +515,40 @@ bgej <- data.table(
 )
 # all.equal(data.frame(bgej)[, names_ej], blockgroupstats_new[,names_ej])
 
+## metadata_add ####
 bgej = metadata_add(bgej)
+
+## do not save via  usethis::use_data(bgej, overwrite = TRUE) - it is a large file
+cat("bgej created in globalenv but not saved yet - will try to save to pins board in later script... \n")
+
+## documentation for bgej ####
+
+dataset_documenter("bgej", 
+                   title = "bgej (DATA) EJScreen EJ Indexes for Census block groups",
+                   description = "bgej is a table of all blockgroups, with the raw scores of the EJ Indexes
+#'   and supplemental EJ Indexes for all the environmental indicators.",
+                   details = "This file is not stored in the package, but is obtained via [dataload_from_pins()].
+#'   
+#'   For documentation on the demographic and environmental data and indicators,
+#'   see [EJScreen documentation](https://www.epa.gov/ejscreen/understanding-ejscreen-results).
+#'   
+#'   See 
+#'     
+#'     dataload_from_pins('bgej')
+#'     
+#'     names(bgej)
+#'   
+#'   The column names are these:
+#'   
+#'     c('bgfips', 'bgid', 'ST', 'pop', 
+#'     names_ej, 
+#'     names_ej_supp, 
+#'     names_ej_state,
+#'     names_ej_supp_state
+#'     )",
+                   saveinpackage = FALSE)
+
+
 
 rm(blockgroupstats_new_state)
 blockgroupstats_new[, c(names_ej, names_ej_supp)] <- NULL
@@ -531,7 +567,7 @@ if (interactive() && askquestions) {
 }
 if (SAVELOCAL) {
   
-  # save bgej local copy for convenience ####
+  ## save bgej local copy for convenience ####
   datawrite_to_local("bgej", localfolder = localfolder)
   
   # ASARROW = TRUE

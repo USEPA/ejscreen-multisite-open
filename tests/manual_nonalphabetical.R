@@ -207,7 +207,8 @@ if (update_list_of_tests) {
     test_app = c(
       "test-golem_utils_server.R", # not really used  
       "test-golem_utils_ui.R",     # not really used
-      "test-ui_and_server.R"   
+      "test-ui_and_server.R",
+      "test-FIPS-shiny-functionality.R", "test-latlon-shiny-functionality.R", "test-NAICS-shiny-functionality.R", "test-shapefile-shiny-functionality.R"
     )
   )
   ########################################## # 

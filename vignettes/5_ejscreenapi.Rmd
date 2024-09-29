@@ -269,7 +269,7 @@ speedreport(start = began, end = ended, n = 10)
 ## EJAM's ejamit() can be 100x to >300x times as fast as ejscreenit()
 ```
 
-![](plot_speed_vs_radius.png){width="6in"}
+![Plot of speed (time required for analysis) as function of radius size (distance from each point)](plot_speed_vs_radius.png){width="6in"}
 
 ```{r speedreport1000, eval = FALSE}
 ## ejamit() just combines getblocksnearby() and doaggregate()

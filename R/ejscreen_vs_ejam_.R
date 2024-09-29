@@ -645,7 +645,8 @@ ejscreen_vs_ejam_summary_quantiles <- function(z,
 #'   diff, absdiff, pctdiff, etc.
 #'
 #'   and rows represent sites analyzed.
-#'  
+#'   
+#' @keywords internal  
 #'
 ejscreen_vs_ejam_1var = function(vs, varname = 'pop', # names_these[4], # "pctlingiso" 
                                  info = c("EJSCREEN", "EJAM", 

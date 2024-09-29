@@ -480,6 +480,14 @@ fips_place2placename = function(fips, append_st = TRUE) {
 
 fips_place_from_placename = function(place_st, geocoding = FALSE) {
   
+  ## examples
+  # place_st = 
+  ## used by name2fips or fips_from_name 
+  
+  # seealso [shapes_places_from_placefips()] [fips_place2placename()] [fips_place_from_placename()] [censusplaces]
+  
+  # see https://www2.census.gov/geo/pdfs/reference/GARM/Ch9GARM.pdf
+  
   if (any(!grepl(",", place_st))) {warning("place_st should be in form of placename, ST like Port Chester, NY")}
   
   if (geocoding) {
@@ -506,7 +514,6 @@ fips_place_from_placename = function(place_st, geocoding = FALSE) {
 ####################################################### #
 ####################################################### #
 
-
 #' Get FIPS codes from names of states or counties
 #' inverse of fips2name(), 1-to-1 map statename, ST, countyname to FIPS of each
 #' @aliases fips_from_name names2fips
@@ -525,17 +532,16 @@ fips_place_from_placename = function(place_st, geocoding = FALSE) {
 #'
 name2fips = function(x) {
   suppressWarnings({ # do not need to get warned that x is not a ST abbrev here
-  # figure out if x is ST, statename, countyname.
-  fips = fips_state_from_state_abbrev(x) # NA if not a state abbrev. ignores case.
-  
-  fips[is.na(fips)] <- fips_state_from_statename(x[is.na(fips)]) # only tries for those that were not a ST abbrev
-  fips[is.na(fips)] <- fips_counties_from_countynamefull(x[is.na(fips)])
+    # figure out if x is ST, statename, countyname.
+    fips = fips_state_from_state_abbrev(x) # NA if not a state abbrev. ignores case.
+    fips[is.na(fips)] <- fips_state_from_statename(x[is.na(fips)]) # only tries for those that were not a ST abbrev
+    fips[is.na(fips)] <- fips_counties_from_countynamefull(x[is.na(fips)])
+  })
   # fips[is.na(fips)] = substr(blockgroupstats$bgfips,1,5)[match(x[is.na(fips)]), blockgroupstats$countyname]
   # only tries for those that were neither ST nor statename
   
   fips[is.na(fips)] <- fips_place_from_placename(x[is.na(fips)])
   
-  })
   # if (any(toupper(ST) %in% c("AS", "GU","MP", "UM", "VI"))) {
   #   message("note some of ST are among AS, GU, MP, UM, VI")
   # }

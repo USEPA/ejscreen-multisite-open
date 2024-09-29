@@ -4,6 +4,12 @@
 \name{testoutput_getblocksnearby_100pts_1miles}
 \alias{testoutput_getblocksnearby_100pts_1miles}
 \title{test output of getblocksnearby(), and is an input to doaggregate()}
+\format{
+An object of class \code{data.table} (inherits from \code{data.frame}) with 16103 rows and 6 columns.
+}
+\usage{
+testoutput_getblocksnearby_100pts_1miles
+}
 \description{
 test output of getblocksnearby(), and is an input to doaggregate()
 }
@@ -13,3 +19,4 @@ This is the output of getblocksnearby(testpoints_100, radius = 1)
 \seealso{
 \code{\link[=getblocksnearby]{getblocksnearby()}}  \code{\link[=doaggregate]{doaggregate()}}  \link{testpoints_100}
 }
+\keyword{datasets}

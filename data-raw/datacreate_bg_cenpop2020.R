@@ -44,11 +44,11 @@ fname <- "https://www2.census.gov/geo/docs/reference/cenpop2020/blkgrp/CenPop202
 x <- readr::read_csv(fname, col_types = "ccccidd") # keep FIPS as character with leading zeroes  # x <- read.csv(fname)
 head(x)
 x <- as.data.frame(x)
-  length(unique(x$STATEFP))
+length(unique(x$STATEFP))
 # [1] 52
- dim(x)
+dim(x)
 #[1] 242335      7
- rm(fname)
+rm(fname)
 
 names(x) <- c("FIPS.ST", "fips3county", "fips6tract", "fips1bg", "pop2020", "lat", "lon")
 
@@ -61,17 +61,17 @@ x$FIPS        <- paste0(x$FIPS.TRACT,  x$fips1bg)
 x$bgfips <-  x$FIPS
 
 x$ST <- EJAM::stateinfo$ST[match(x$FIPS.ST, EJAM::stateinfo$FIPS.ST)]
- # x <- x[,c("FIPS.ST", "FIPS.TRACT", "FIPS", "bgfips", "lat", "lon", "pop2020")]
- x <- x[,c("bgfips", "lat", "lon", "pop2020", "ST")]
- 
- bg_cenpop2020 <- data.table::as.data.table(x)
+# x <- x[,c("FIPS.ST", "FIPS.TRACT", "FIPS", "bgfips", "lat", "lon", "pop2020")]
+x <- x[,c("bgfips", "lat", "lon", "pop2020", "ST")]
+
+bg_cenpop2020 <- data.table::as.data.table(x)
 rm(x)
 
 #  look up bgid based on join on bgfips
 if (!exists("bgid2fips")) dataload_from_pins("bgid2fips")
 bg_cenpop2020$bgid <- bgid2fips[bg_cenpop2020,  bgid, on = "bgfips"] # bgid2fips is loaded from aws, e.g. by EJAM pkg
-  data.table::setkey(bg_cenpop2020, bgid, bgfips)
- 
+data.table::setkey(bg_cenpop2020, bgid, bgfips)
+
 data.table::setkey(bg_cenpop2020,bgfips)
 data.table::setorder(bg_cenpop2020, bgid, bgfips, lat, lon, pop2020, ST)
 
@@ -91,6 +91,14 @@ sum(blockgroupstats$pop, na.rm = T)
 
 bg_cenpop2020 <-  metadata_add(bg_cenpop2020) 
 usethis::use_data(bg_cenpop2020, overwrite = TRUE)
+
+dataset_documenter('bg_cenpop2020', 
+  title = "bg_cenpop2020 (DATA) data.table with all US Census 2020 block groups",
+  description = "data.table with all US Census 2020 block groups, Census 2020 population count, 
+#'   and lat/lon of Census2020-population-weighted centroid of block group", 
+  details = "also see attributes(bg_cenpop2020) for source URL and date", 
+  seealso = "  [blockgroupstats]"
+)
 
 rm(bg_cenpop2020)
 gc()

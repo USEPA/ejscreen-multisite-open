@@ -28,3 +28,4 @@ and rows represent sites analyzed.
 \description{
 EJAM/EJSCREEN comparisons - see results at every site, for 1 INDICATOR after using ejscreen_vs_ejam()
 }
+\keyword{internal}

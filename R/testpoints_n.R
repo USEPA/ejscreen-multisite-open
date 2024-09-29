@@ -46,7 +46,7 @@
 #' 
 testpoints_n <- function(n = 10, weighting = c('frs', 'pop', 'area', 'bg', 'block'),
                          region = NULL, ST = NULL, validonly = TRUE, dt = TRUE) {
-
+  
   if (!is.null(region)) {
     if (!is.null(ST)) {
       stop('cannot specify both region and ST, just one of the two (or neither for entire US)')
@@ -162,7 +162,7 @@ testpoints_n <- function(n = 10, weighting = c('frs', 'pop', 'area', 'bg', 'bloc
         #return(bg_filtered_by_state[rownum, ])
         if (validonly) {
           message('Returning only sites with valid lat/lons')
-          return(bg_filtered_by_state[rownum, ][latlon_is.valid(x$lat, x$lon),])
+          return(bg_filtered_by_state[rownum & latlon_is.valid(bg_filtered_by_state$lat, bg_filtered_by_state$lon), ]) ##### # 
         } else {
           return(bg_filtered_by_state[rownum, ] )
         }
@@ -170,15 +170,19 @@ testpoints_n <- function(n = 10, weighting = c('frs', 'pop', 'area', 'bg', 'bloc
       
       if (validonly) {
         message('Returning only sites with valid lat/lons')
-        return(bg_filtered_by_state[rownum, ][latlon_is.valid(x$lat, x$lon),])
+        return(bg_filtered_by_state[rownum, ][latlon_is.valid(lat, lon),])
       } else {
         return(bg_filtered_by_state[rownum, ] )
       }
-    } else {
+    } else { 
+      
+      stop("DEBUGGING THIS")
+      
       rownum <- sample.int(bgpts[,.N], size = n, replace = FALSE)
       if (!dt) {
         x = data.table::copy(bgpts[rownum, ])
         setDF(x)
+        
         x$sitenumber <- seq_len(nrow(x))
         if (validonly) {
           message('Returning only sites with valid lat/lons')

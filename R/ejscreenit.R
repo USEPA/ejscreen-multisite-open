@@ -247,7 +247,7 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
     if (interactiveprompt) {
       junk <- readline('Press any key to go on after viewing this map of input points')
     }
-    # mapfast(testoutput_ejscreenapi_plus_50) is ok, but ejscreenit(pts) fails here ***
+    # mapfast(testoutput_ejscreenapi_plus_5) is ok, but ejscreenit(pts) fails here ***
   }
   
   ################################################### #

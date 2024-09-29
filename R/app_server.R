@@ -2799,10 +2799,10 @@ app_server <- function(input, output, session) {
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report',
                         fixcolnames(c(names_d, names_d_subgroups, names_e), 'r', 'shortlabel')) # is this right?
     ejcols          <- c(names_ej,          names_ej_state,          names_ej_supp,          names_ej_supp_state)
-    ejcols_friendly <- fixcolnames(ejcols, 'r', 'shortlabel')
+    ejcols_short <- fixcolnames(ejcols, 'r', 'shortlabel')
     which_ejcols_here <- which(ejcols %in% names(data_processed()$results_bysite)  )
     cols_to_select <- c(cols_to_select, ejcols[         which_ejcols_here] )
-    tableheadnames <- c(tableheadnames, ejcols_friendly[which_ejcols_here])
+    tableheadnames <- c(tableheadnames, ejcols_short[which_ejcols_here])
     tableheadnames <- c(tableheadnames,
                         names(data_summarized()$cols), 
                         # 'Max of selected indicators',  ###

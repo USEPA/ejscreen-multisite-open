@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_datapack.R
 \name{datapack}
 \alias{datapack}
-\title{UTILITY - See names and size of data sets in package(s) - internal utility function}
+\title{UTILITY - DRAFT - See names and size of data sets in installed package(s) - internal utility function}
 \usage{
 datapack(pkg = ejampackages, len = 30, sortbysize = TRUE, simple = TRUE)
 }
@@ -21,8 +21,6 @@ TRUE to just get names in each package, like
 }
 \value{
 If simple = TRUE, data.frame with colnames Package and Item.
-
-If simple = FALSE, data.frame with colnames Package, Item, size, Title.Short
 }
 \description{
 Wrapper for data() and can get memory size of objects
@@ -52,5 +50,9 @@ It may create and leave objects in global envt - not careful about that.
  # sorted alphabetically across all the pkgs
  x[order(x$Item), 1:2]
 
+}
+\seealso{
+\code{\link[=dataset_pkgdown_yaml_check]{dataset_pkgdown_yaml_check()}}
+If simple = FALSE, data.frame with colnames Package, Item, size, Title.Short
 }
 \keyword{internal}

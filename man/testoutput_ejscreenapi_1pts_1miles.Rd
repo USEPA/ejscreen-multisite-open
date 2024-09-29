@@ -17,7 +17,7 @@ test data, output from this function
 Just for convenience, installed with the package,
 the equivalent of results of
 
-\verb{ejscreenapi(lon = testpoints_5$lon[1], lat = testpoints_5$lat[1]},
+ejscreenapi(lon = testpoints_5$lon\link{1}, lat = testpoints_5$lat\link{1},
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{ radius = 1, unit = 'miles', wkid = 4326,
 

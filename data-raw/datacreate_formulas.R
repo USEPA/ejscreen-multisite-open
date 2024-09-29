@@ -245,6 +245,26 @@ formulas_d <- metadata_add(formulas_d)
 
 usethis::use_data(formulas_d, overwrite = TRUE)
 
+dataset_documenter("formulas_d",
+                   title = "formulas_d (DATA) table of formulas to aggregate or calculate indicators",
+                   description = "These formulas can describe how each indicator is calculated from 
+#'   other variables like counts or how it is aggregated as a weighted mean, etc.",
+                   details = "Created for EJAM by datacreate_formulas.R script
+#' 
+#' Can be used by [calc_ejam()] for aggregation or to create a derived custom
+#'   indicator for all US blockgroups based on counts obtained from the ACS.)"
+                   )
+
+dataset_documenter("formulas_all",
+title =  "formulas_all (DATA) table of formulas to aggregate or calculate indicators",
+description = "These formulas can describe how each indicator is calculated from 
+#'   other variables like counts or how it is aggregated as a weighted mean, etc.",
+details = "Created for EJAM by datacreate_formulas.R script
+#' 
+#' Can be used by [calc_ejam()] for aggregation or to create a derived custom
+#'   indicator for all US blockgroups based on counts obtained from the ACS."
+)
+
 
 cat("FINISHED A SCRIPT\n")
 cat("\n In globalenv() so far: \n\n")

@@ -69,7 +69,7 @@ indexblocks()
 
 # Key groups of functions
 
-The EJAM package reference manual has a complete list of documented functions, grouped by category. There are several categories of functions listed there:
+The [EJAM package reference manual](https://usepa.github.io/EJAM/reference/index.html) has a complete list of documented functions, grouped by category. There are several categories of functions listed there:
 
 -   Key Functions `ejamit()`, `ejam2report()`, `ejam2excel()`, `ejam2map()`, `ejam2ratios()`, `ejam2table_tall()`
 -   Specify Points by Lat/Lon
@@ -354,14 +354,7 @@ See shapefile_from_any() and related functions:
 
 ```{r notrun_shapefile_functionlist, eval=FALSE, echo=TRUE}
 shapefile_from_any()
-shapefile_from_gdbzip()
-shapefile_from_gdb()
-shapefile_from_json()
-shapefile_from_filepaths()
-shapefile_from_folder()
-shapefile_filepaths_from_folder()
-shapefile_filepaths_valid()
-shapefile_clean()
+
 shapefile_from_sitepoints()
 shape_buffered_from_shapefile()
 shape_buffered_from_shapefile_points()
@@ -542,6 +535,10 @@ cbind(overall = as.list( out$results_overall[ , ..names_d_pctile])); cat("\n")
 ### Barplot showing which indicator is most elevated overall
 
 ```{r barplot_d, eval=TRUE}
+#| fig.alt: >
+#|   Barplot of ratios of demographic indicators at selected sites to State averages. 
+#|   It is a series of bars where some are above a ratio of 1, and one is more than 2
+#|   times the State average of supplemental demographic index.
 out <- testoutput_ejamit_1000pts_1miles
 
 ejam2barplot(out,
@@ -552,6 +549,13 @@ ejam2barplot(out,
 ### Histogram of indicators distribution over all people across all sites
 
 ```{r histo, eval = TRUE}
+#| fig.alt: >
+#|   Histogram of distribution of scores nearby, in ten decile bins, as percentiles versus a
+#|   flat line representing the US overall, an expected count of 100 sites per decile,
+#|   out of 1,000 sites total. 
+#|   Bars in the first three deciles (low traffic scores) are above the expected 100 line,
+#|   meaning these sites have an overrepresentation of sites with low traffic scores
+#|   compared to the US overall.
 hist(out$results_bysite$pctile.traffic.score, 10, xlab = "Local traffic scores (expressed as a percentile)", 
      ylab = "count of sites in each bin, out of 1,000 sites", freq = TRUE, 
      main = "Actual distribution of scores nearby, as percentiles, 

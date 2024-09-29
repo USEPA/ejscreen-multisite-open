@@ -4,6 +4,12 @@
 \name{usastats}
 \alias{usastats}
 \title{usastats (DATA) data.frame of 100 percentiles and means}
+\format{
+An object of class \code{data.frame} with 102 rows and 67 columns.
+}
+\usage{
+usastats
+}
 \description{
 data.frame of 100 percentiles and means (about 100 rows)
 in the USA overall, across all locations (e.g., block groups in \link{blockgroupstats})
@@ -14,8 +20,9 @@ This should be similar to the lookup tables in the gdb on the FTP site of EJScre
 except it also has data for the demographic race/ethnicity subgroups.
 
 For details on how the table was made, see source package files
-EJAM/data-raw/datacreate_usastats_2023-08-28.R
-and possibly /EJAM/data-raw/usastats_subgroups.R
+EJAM/data-raw/datacreate_usastats2.32_add_dsubgroups.R and
+EJAM/data-raw/datacreate_usastats2.32.R
 
 See also \link{statestats}
 }
+\keyword{datasets}

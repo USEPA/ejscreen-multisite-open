@@ -15,6 +15,9 @@
 #' @export
 #'
 table_rounding_info <- function(var, varnametype="rname") {
+  
+  # Also see the internal helper function  round2nearest_n()  which lets you explicitly round to nearest 100, e.g.
+  
   as.numeric(  # in case it was still stored as character in map_headernames
     as.vector(unlist(varinfo(var = var, info = "decimals", varnametype = varnametype)))
   )

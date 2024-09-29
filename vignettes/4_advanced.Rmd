@@ -556,7 +556,7 @@ nearby
 
 Ratios at each site, of avg dist of group / avg dist of everyone else near site:
 
-```{r distance_by_group_by_site, eval=TRUE, echo=TRUE}
+```{r distance_by_group_by_site, eval=FALSE, echo=TRUE}
 
 out <- testoutput_ejamit_10pts_1miles
 ## But try a larger radius to reveal more information:

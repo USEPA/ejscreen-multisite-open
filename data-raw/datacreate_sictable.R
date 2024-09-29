@@ -55,7 +55,15 @@ datacreate_sictable <- function(SIC,
   attr(sictable, "date_saved_in_package") <- as.character(Sys.Date())
   usethis::use_data(sictable, overwrite = TRUE)
   cat("saved sictable\n")
- 
+ # Document it ####
+  dataset_documenter("sictable",
+                     "sictable (DATA) data.table of SIC code(s) and industry names for each EPA-regulated site",
+                     description = "data.table of SIC code(s) and industry names for each EPA-regulated site in Facility Registry Service
+#' Also has the 2,3, and 4-digit SIC that this code falls under, where relevant for given length",
+                     details = "This is similar to the data file EJAM::SIC but in a more useful format and newer functions work with it. Also see [SIC info](https://siccode.com)",
+                     seealso = "[SIC] [sictable] [sic_categories()]"
+                     )
+  
   #    table(nchar(sictable$code))
   #     sictable 
   

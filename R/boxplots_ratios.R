@@ -18,7 +18,7 @@
 #' @param x data.frame that is the output of ejscreen analysis, for example:
 #'   ```
 #'   x <- ejscreenit(testpoints_5)$table
-#'   x <- testoutput_ejscreenapi_plus_50
+#'   x <- testoutput_ejscreenapi_plus_5
 #'   ```
 #' @param selected_dvar_colname  default is "Demog.Index"
 #' @param selected_dvar_nicename default is "Demog.Index"
