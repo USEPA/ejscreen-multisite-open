@@ -1,7 +1,20 @@
 
-
 # SOURCE-ABLE SCRIPT  TO  REBUILD PACKAGE DOCUMENTATION AND vignettes  (articles) using pkgdown
 
+# setup ####
+
+doask <- TRUE # or #     doask = FALSE 
+
+# defaults
+dotests       <- FALSE
+doinstall     <- FALSE
+dodocument    <- TRUE
+dopreviewonly <- TRUE  # this is to do  pkgdown::build_site()  not  pkgdown::build_site_github_pages
+
+golem::detach_all_attached()
+
+require(devtools)
+require(pkgdown)
 
 ############################################################# # 
 # For documentation on set up of a pkgdown website,
@@ -41,27 +54,16 @@
 #   and by adding   --no-build-vignettes to the "Build Source Package" field in your project options. 
 ############################################# #
 
-# setup ####
-
-golem::detach_all_attached()
-
-require(devtools)
-require(pkgdown)
-
-dotests <- FALSE
-if (interactive() & rstudioapi::isAvailable()) {dotests <- utils::askYesNo("Do you want to run tests 1st?")}
+if (doask & interactive() & rstudioapi::isAvailable()) {dotests <- utils::askYesNo("Do you want to run tests 1st?")}
 if (is.na(dotests)) {stop('stopped')}
 
-doinstall <- FALSE
-if (interactive()  ) {doinstall <- utils::askYesNo("Do you want to re-install the package?")}
+if (doask & interactive()  & rstudioapi::isAvailable() ) {doinstall <- utils::askYesNo("Do you want to re-install the package?")}
 if (is.na(doinstall)) {stop('stopped')}
 
-dodocument <- TRUE
-if (interactive()  ) {dodocument <- utils::askYesNo("Do document()?")}
+if (doask & interactive()  & rstudioapi::isAvailable() ) {dodocument <- utils::askYesNo("Do document()?")}
 if (is.na(dodocument)) {stop('stopped')}
 
-dopreviewonly = TRUE
-if (interactive()  ) {dopreviewonly  <- utils::askYesNo("Just build site preview locally (not for github yet)?")}
+if (doask & interactive()  & rstudioapi::isAvailable() ) {dopreviewonly  <- utils::askYesNo("Just build site preview locally (not for github yet)?")}
 if (is.na(dopreviewonly)) {stop('stopped')}
 #################### #
 
@@ -137,7 +139,8 @@ if (doinstall) {
 # so it loads the .rda from aws that are older and not all files are there. 
 ## why did it not use the pins versions since it did connect? and why not found in that local path???
 ## so did rm(list=ls()) and tried to continue from library( ) above .
-EJAM:::rmost(notremove = c("dataload_pin_available", 'dopreviewonly', 'dodocument'))
+
+EJAM:::rmost(notremove = c('dotests', "dataload_pin_available", 'dopreviewonly', 'dodocument', 'doask', 'doinstall'))
 
 #################### # #################### # #################### # #################### # 
 
@@ -265,8 +268,8 @@ if (dopreviewonly) {
   pkgdown:::build_redirects('.')
       \n")  
   
-  pkgdown:::build_sitemap('.')
-  pkgdown:::build_redirects('.')
+  # pkgdown:::build_sitemap('.')
+  # pkgdown:::build_redirects('.')
 
   }
 #################### # 
