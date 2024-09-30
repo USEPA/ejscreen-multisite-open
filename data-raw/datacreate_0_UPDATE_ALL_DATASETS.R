@@ -158,7 +158,7 @@ if (0 == 1) {  # collapsable list
   documentOpen('./data-raw/datacreate_formulas.R')                    # was in progress; maybe not used yet
   documentOpen('./data-raw/datacreate_test_address_table.R')       # ok
   documentOpen('./data-raw/datacreate_testpoints_testoutputs.R')      # confirm new datasets/functions/indicators work here
-  # from the original  EJAMejscreenapi  package
+  # from the original  EJAM ejscreenapi  test data
   documentOpen('./data-raw/datacreate_default_points_shown_at_startup.R')            
   documentOpen('./data-raw/datacreate_testpoints_5_50_500.R')            
   documentOpen('./data-raw/datacreate_ejscreenRESTbroker2table_na_filler.R')         
@@ -610,7 +610,7 @@ system.time({
 source_maybe("datacreate_testpoints_testoutputs.R")
 
 # ~------------------------------------------- ####
-## EJAMejscreenapi info ####
+## related to ejscreenapi  ####
 ######################################### #
 
 ### datacreate_default_points_shown_at_startup.R ####

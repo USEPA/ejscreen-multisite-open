@@ -28,9 +28,9 @@ if (resaving_testpoints_rda) {
   usethis::use_data(testpoints_500,               overwrite = TRUE)
   # 
   # # load the existing test points
-  # data("testpoints_5",   package = "EJAMejscreenapi")
-  # data("testpoints_50",  package = "EJAMejscreenapi")
-  # data("testpoints_500", package = "EJAMejscreenapi")
+  # data("testpoints_5")
+  # data("testpoints_50")
+  # data("testpoints_500")
   # 
   # file.exists('./R/testpoints_5.R')
   # file.exists('./R/testpoints_50.R')

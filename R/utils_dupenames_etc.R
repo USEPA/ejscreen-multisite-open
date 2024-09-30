@@ -17,10 +17,10 @@
 nacounts = function(x, showall=FALSE) {
   
   if (NCOL(x) == 1) {
-          return(
-            data.frame(nas = sum(is.na(x)),
-                       other = sum(!is.na(x)))
-            ) # ignores showall
+    return(
+      data.frame(nas = sum(is.na(x)),
+                 other = sum(!is.na(x)))
+    ) # ignores showall
   } else {
     if (showall) {
       shown <- rep(TRUE, NCOL(x))
@@ -42,7 +42,9 @@ nacounts = function(x, showall=FALSE) {
 #' UTILITY - see what is in y not x
 #' 
 #' utility just like setdiff except for y,x instead of x,y
-#' 
+#' @examples
+#'   setdiff(   1:4, 3:8)
+#'   setdiff_yx(1:4, 3:8) # makes it easy to check both without 
 #' @keywords internal
 #' 
 setdiff_yx = function(x,y) setdiff(y,x)
@@ -52,6 +54,7 @@ setdiff_yx = function(x,y) setdiff(y,x)
 #' UTILITY - see what is only in x or y but not both - just like setdiff except for y,x and also x,y
 #' 
 #' setdiff2 aka unshared just shows which elements are in one and only one of the sets x and y
+#' @examples setdiff2(1:4, 3:8)
 #' 
 #' @keywords internal
 #' 
@@ -59,14 +62,14 @@ setdiff2 <- function(x,y) {setdiff(union(x,y),intersect(x,y))}
 ##################################################################### #
 
 
-#' UTILITY - see what is only in x or y but not both
-#' 
-#' utility just like setdiff except for y,x and also x,y
-#' Just shows which elements are in one and only one of the sets x and y
+#' UTILITY - see what is only in x or y but not both - just like setdiff except for y,x and also x,y
+#'  
+#' setdiff2 aka unshared just shows which elements are in one and only one of the sets x and y
+#' @examples unshared(1:4, 3:8)
 #' 
 #' @keywords internal
 #' 
-unshared <- function(x,y) {setdiff(union(x,y),intersect(x,y))}
+unshared <- function(x,y) {setdiff(union(x,y), intersect(x,y))}
 ##################################################################### #
 # conflicting sourcefile names ####
 
@@ -217,8 +220,7 @@ dupenames <- function(pkg = EJAM::ejampackages, sortbypkg=FALSE, compare.functio
 ## (used by dupenames ####
 
 #' UTILITY - check different versions of function with same name in 2 packages
-#' 
-#' used by dupenames() to check different versions of function with same name in 2 packages
+#' obsolete since EJAMejscreenapi phased out? was used by dupenames() to check different versions of function with same name in 2 packages
 #' @param fun quoted name of function, like "latlon_infer"
 #' @param package1 quoted name of package, like "EJAM"
 #' @param package2 quoted name of other package, like "EJAMejscreenapi"
@@ -386,7 +388,7 @@ functions_that_use <- function(text = "stop\\(", pkg = "EJAM", ignore_comments =
 #' 
 #' @return data.table with colnames object, exported, data  where exported and data are 1 or 0 for T/F,
 #'   unless vectoronly = TRUE in which case it returns a character vector
-#' @examples  functions_in_pkg("datasets") # functions_in_pkg("EJAMejscreenapi")
+#' @examples  # functions_in_pkg("datasets")
 #' 
 #' @keywords internal
 #'
@@ -415,7 +417,7 @@ functions_in_pkg <- function(pkg, alphasort_table=FALSE, internal_included=TRUE,
     internal_only_withdata(pkg = pkg), 
     dataonly(pkg = pkg)))}
   
-  # # double-checks
+  # # double-checks, obsolete now since phased out use of EJAMejscreenapi pkg
   # 
   # setequal(      exported_plus_internal_withdata("EJAMejscreenapi"), 
   #          union(exported_plus_internal_nodata(  "EJAMejscreenapi"), dataonly("EJAMejscreenapi")))
@@ -498,51 +500,55 @@ functions_in_pkg <- function(pkg, alphasort_table=FALSE, internal_included=TRUE,
 #' 
 dependencies_of_ejam <- function(localpkg = "EJAM", depth = 6, ignores_grep = "0912873410239478") {
   
-  cat(" 
-      sort(packrat:::recursivePackageDependencies('EJAM', lib.loc = .libPaths(), ignores = NULL))
-      would do something similar.
-      \n")  
+  #################### #
+  
+  cat(paste0("
+  
+  This may be useful if you have the deepdep package installed (not loaded by EJAM): 
+  
+sort(
+  unique( 
+    grep(
+      ignores_grep, 
+      deepdep", "::", "deepdep(
+        localpkg, 
+        local = TRUE, 
+        downloads = FALSE, 
+        depth = depth
+      )$name, 
+      value = TRUE, 
+      invert = TRUE)
+  )
+)  
+  
+      "))
+  #################### #  
+  
+  cat(paste0("
+  
+  This may be useful:
+  
+sort(packrat", ":::", "recursivePackageDependencies('EJAM', lib.loc = .libPaths(), ignores = NULL))
+
+      "))
+  #################### #
   
   cat("
-      dependencies_of_ejam(ignores_grep = 'EJAM' )
-      would ignore other EJAM-prefixed package names.
-      \n")
-  cat("
-  If you have the deepdep package installed (not loaded by EJAM), try this: 
-  sort(
-    unique( 
-      grep(
-        ignores_grep, 
-        deepdep::deepdep(
-          localpkg, 
-          local = TRUE, 
-          downloads = FALSE, 
-          depth = depth
-        )$name, 
-        value = TRUE, 
-        invert = TRUE)
-    )
-  )  
   
+  This would ignore other EJAM-prefixed package names:
+  
+dependencies_of_ejam(ignores_grep = 'EJAM' )
+
       ")
+  #################### #
   
-  # report all dependencies and downstream ones etc.
-  # 
-  # x <- dependencies_of_ejam()
-  # y <- sort(packrat:::recursivePackageDependencies('EJAM', lib.loc = .libPaths(), ignores = NULL))
+  ## report all dependencies and downstream ones etc.
+  ## requires that packrat and deepdep packages be attached 1st:
+  # x <- grep("asdfasdfasfasdfasdf", deepdep('EJAM', local = TRUE, downloads = FALSE, depth = 6)$name, value = TRUE, invert = TRUE)
+  # y <- sort( packrat:::recursivePackageDependencies('EJAM', lib.loc = .libPaths(), ignores = NULL))
   # setdiff(y, x)
-  # ## [1] "snow"
-  # 
-  #          OBSOLETE NOW THAT EJAM NO LONGER REQUIRES EJAMejscreenapi OR EJAMbatch.summarizer
-  
-  # only_due_to_EJAMejscreenapi      = setdiff(
-  #   dependencies_of_ejam("EJAMejscreenapi"), 
-  #   dependencies_of_ejam("EJAM", ignores_grep = "EJAMejscreenapi"))
-  # only_due_to_EJAMbatch.summarizer = setdiff(
-  #   dependencies_of_ejam("EJAMbatch.summarizer"), 
-  #   dependencies_of_ejam("EJAM", ignores_grep = "EJAMbatch.summarizer"))
-  # length(only_due_to_EJAMejscreenapi)
-  # length(only_due_to_EJAMbatch.summarizer)
+  # ## [1] "snow"  
+  ## for some reason this 1 package is identified as a dependency in source but not installed version of EJAM
   
   return(NULL)
 }

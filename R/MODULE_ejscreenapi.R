@@ -446,9 +446,9 @@ mod_ejscreenapi_server <- function(id, session,
     #  - app_server_EJAMejscreenapi()  in app_server_EJAMejscreenapi.R  - was deployable server code
     #  - "standalone" branch of the old EJAMejscreenapi package/ repo, that was the deployed app.
     #
-    ## Code in EJAM:::mod_ejscreenapi_server() was initially based on 
-    ##  EJAMejscreenapi:::app_server(), which was also the starting point for 
-    ##  EJAM:::app_server_EJAMejscreenapi()
+    ## Code in nonexported mod_ejscreenapi_server() was initially based on the former
+    ##  EJAMejscreenapi package version of app_server(), which was also the starting point for 
+    ##  EJAM package version of app_server_EJAMejscreenapi()
     ##
     ##  So the code below was copied from the app server body, right after this line:
     ##       app_server <- function(input, output, session) {
