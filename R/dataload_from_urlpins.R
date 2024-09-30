@@ -36,7 +36,7 @@ dataload_from_urlpins <- function(varnames = c('blockwts', 'blockpoints', 'block
     got = NULL
     for (i in seq_along(varnames)) {
       pname = varnames[i]
-      if (pins::pin_exists(server, pname)) {
+      if (pins::pin_exists(board, pname)) {
         assign(pname, pins::pin_read(board, pname), envir = envir)
         if (!exists(pname, envir = envir)) {
           warning(pname, "was found on pins board but could not be assigned to specified environment")
