@@ -228,7 +228,8 @@ if (dopreviewonly) {
     examples = FALSE,     # *** should only set TRUE if you want to include outputs of examples along with the function documentation!
     new_process = FALSE,  # faster if FALSE (and HAD PROBLEMS IF TRUE... if FALSE then it can rely on having frs and other files available in current environment, for building vignettes?)
     
-    devel = TRUE, # faster if TRUE - If FALSE, will first install the package to a temporary library, and will run all examples and vignettes in a new process.
+    devel = FALSE,
+    # devel = TRUE, # faster if TRUE - If FALSE, will first install the package to a temporary library, and will run all examples and vignettes in a new process.
     # build_site() defaults to devel = FALSE so that you get high fidelity outputs when you building the complete site; 
     # build_reference(), build_home() and friends default to devel = TRUE so that you can rapidly iterate during development.
     

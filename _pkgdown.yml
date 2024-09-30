@@ -364,6 +364,7 @@ reference:
   - run_app
   - dataload_from_local
   - dataload_from_pins
+  - dataload_from_urlpins
   - dataload_from_aws
   - ejampackages
 - title: "EJScreen API"

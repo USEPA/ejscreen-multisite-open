@@ -241,6 +241,14 @@ if (justchecking) {
     }
     
     if (!exists(varname_i, envir = envir)) {
+      # try public pins board here as last resort location to check 
+      dataload_from_urlpins(varname_i, envir = envir) # use default function and extension params.
+      if (!exists(varname_i, envir = envir)) {
+        if (!silent) {cat(" and could NOT download ", varname_i, " from public pins board via ejscreendata pkgdown site \n", sep = "")}
+      }
+    }
+    
+    if (!exists(varname_i, envir = envir)) {
       # try DMAP data commons AWS here as last resort location to check 
       dataload_from_aws(varname_i, envir = envir, folder_local_source = "NOTCHECKINGLOCAL" ) # use default function and extension params. use a nonworking local folder to avoid local
       if (!exists(varname_i, envir = envir)) {
