@@ -5,11 +5,9 @@ EJAM Environmental Justice Analysis Multisite tool
 
 <!-- README.md is generated from README.Rmd. Please edit Rmd not md  -->
 <!-- badges: start -->
-<!-- or we could comment out the badge  -->
-
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-
+<!-- or we could comment out the badge 
+&#10;[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+ -->
 <!-- badges: end -->
 
 EJAM makes it easy to see demographic and environmental information

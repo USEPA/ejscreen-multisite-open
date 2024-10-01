@@ -176,7 +176,7 @@ EJAM::dataload_from_pins("all") #  # just in case
 if (dopreviewonly) {
   # locally before publishing
   
-  pkgdown::build_site(examples = FALSE)
+  pkgdown::build_site(examples = FALSE, lazy = TRUE, devel = FALSE, install = FALSE, new_process = FALSE)
   
   # build_site() is a convenient wrapper around six functions:
   #   
