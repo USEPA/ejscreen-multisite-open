@@ -105,7 +105,7 @@ if (doinstall) {
       
       upgrade = FALSE, 
       
-      # build_vignettes = FALSE,  
+      build_vignettes = FALSE,  
       ## old-style vignetters were in  doc folder, but pkgdown-style are in   docs folder, 
       
       build = FALSE,

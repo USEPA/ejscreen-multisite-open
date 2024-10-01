@@ -937,7 +937,7 @@ abline(h = mean(s2b_stats$blocks_within_1mile), col = "red")
 
 ### Histogram and table showing how many blocks are nearby a site
 
-```{r histoblocks, eval=TRUE, echo=TRUE, fig.height=6, fig.width=7}
+```{r histoblocks, eval=TRUE, echo=TRUE, fig.cap="Example of Histogram and table showing how many blocks are within 3 miles of a site", fig.alt="histogram with count of sites on y axis and how many blocks on x axis up to 6,000 showing huge share of sites have fewer than 500 blocks within 3 miles, but some have over 5,000 blocks within 3 miles of a single site.", fig.height=6, fig.width=7}
 
 hist(sites2blocks[,.N, by = "ejam_uniq_id"][, N], 20, 
      xlab = "How many blocks are nearby?", 
@@ -966,15 +966,30 @@ summary(s2b_stats)
 
 ### Map all sites with popup at each saying how many blocks were found nearby
 
-```{r s2b_stats, eval=TRUE, echo=TRUE, fig.cap="Example of mapfast() for seeing how many blocks are at each site", fig.height=5, fig.width=5}
-if (!('ejam_uniq_id' %in% names(sitepoints))) {sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))}
+```{r s2b_stats_leaflet, eval=TRUE, echo=TRUE, fig.cap="Example of mapfast() for seeing how many blocks are at each site", fig.height=5, fig.width=5}
+## done previously:
+# radius <- 3
+# sitepoints <- testpoints_100
+# sites2blocks <- getblocksnearby(sitepoints, radius, quadtree = localtree, quiet = TRUE)
+# s2b_stats <- sites2blocks[ , .(
+#   avgDistance = round(mean(distance), 2),
+#   blocksfound = .N, 
+#   blocks_within_1mile = sum(distance <= 1),
+#   blocks_within_0.75   = sum(distance <= 0.75),
+#   blocks_within_0.25  = sum(distance <= 0.25)
+# ), by = 'ejam_uniq_id'][order(blocksfound), ]
+# setorder(s2b_stats, ejam_uniq_id)
+
+if (!('ejam_uniq_id' %in% names(sitepoints))) {
+  sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
+}
 s2b_stats <- merge(sitepoints, s2b_stats, by = "ejam_uniq_id")
 
 # Show in red the sites with very few blocks nearby, suggesting more uncertainty in demographic counts
 
 few <- s2b_stats$blocks_within_1mile < 30
 mm <- mapfast(s2b_stats, radius = radius)
-mm %>% leaflet::addCircles(
+mm |> leaflet::addCircles(
   lng = s2b_stats$lon[few], 
   lat = s2b_stats$lat[few], color = "red", popup = popup_from_any(s2b_stats[few, ]))  
 ```
