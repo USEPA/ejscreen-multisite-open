@@ -26,7 +26,7 @@ home:
   title: EJAM Environmental Justice Analysis Multisite
   description: Webapp and tools summarizing demographic and environmental data for hundreds of places quickly and accurately
   sidebar:
-    structure: [dev, links, toc, citation, license, community]
+    structure: [dev, links, citation, license, community]
 articles:
 - title: The EJAM Web App
   desc: Overview for EJAM Users
@@ -42,8 +42,6 @@ articles:
   - '`2_quickstart`'
   - '`3_analyzing`'
   - '`4_advanced`'
-  - '`5_ejscreenapi`'
-  - '`6_future_plans`'
 reference:
 - title: "Key Functions"
   desc: "The Main High-Level Functions in EJAM"

@@ -171,6 +171,22 @@ EJAM::dataload_from_pins("all") #  # just in case
 #################### # #################### # #################### # #################### # 
 # ~ ####
 
+## 2 options for how to keep site updated, from pkgdown intro https://pkgdown.r-lib.org/articles/pkgdown.html
+# 
+# A) If you’re using GitHub, we recommend setting up pkgdown and GitHub actions 
+# (e.g., https://github.com/r-lib/actions/tree/v2-branch/examples#build-pkgdown-site ) 
+# to automatically build and publish your site:
+#  Run this ONCE EVER to have github actions re-publish your site regularly:
+# 
+#   usethis::use_pkgdown_github_pages()
+#
+# B) But, if not using GitHub (or if GitHub Actions have trouble rendering vignettes to html 
+#   due to lacking access to pins board etc.)
+#   then you'll have to run this manually EVERY TIME you want to update the site:
+
+#   pkgdown::build_site() 
+
+
 # ** BUILD SITE PREVIEW #### 
 
 if (dopreviewonly) {
@@ -178,6 +194,7 @@ if (dopreviewonly) {
   
   pkgdown::build_site(examples = FALSE, lazy = TRUE, devel = FALSE, install = FALSE, new_process = FALSE)
   
+  # https://pkgdown.r-lib.org/reference/build_site.html
   # build_site() is a convenient wrapper around six functions:
   #   
   # init_site()
@@ -205,7 +222,9 @@ if (dopreviewonly) {
   # This does ALL the pages over again
   
   # build_articles()
-  
+  # >>>Note that when you run build_articles() directly (outside of build_site()) vignettes 
+  #  will use the currently installed version of the package, not the current source version. 
+  #  This makes iteration quicker when you are primarily working on the text of an article.
   # # This works (at least for one article) ... new_process = FALSE seemed to help:
   # build_article("0_whatis",   new_process = FALSE)
   # build_article("0_webapp",   new_process = FALSE)
@@ -213,6 +232,7 @@ if (dopreviewonly) {
   # build_article("2_quickstart",   new_process = FALSE)
   # build_article("3_analyzing",    new_process = FALSE)
   # build_article("4_advanced",     new_process = FALSE)
+  
   # build_article("5_ejscreenapi",  new_process = FALSE)
   # build_article("6_future_plans", new_process = FALSE)
   
