@@ -1206,20 +1206,35 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     
     myvar <- varsneedpctiles[i]
     
-    if ((myvar %in% names(usastats)) & (myvar %in% names(results_bysite)) & (myvar %in% names(results_overall))) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
-      us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
-        unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
-      us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
-        unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
-      # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
-    } else { # cannot find that variable in the percentiles lookup table
-      us.pctile.cols_bysite[    , varnames.us.pctile[[i]]] <- NA
-      us.pctile.cols_overall[   , varnames.us.pctile[[i]]] <- NA
+    ################################## #
+    ## alternatively, to add new column of percentiles directly to results tables:
+    add_pctiles_directly_not_merge <- FALSE
+    if (add_pctiles_directly_not_merge) {
+      results_bysite[, varnames.us.pctile[[i]]  := pctile_from_raw_lookup(
+        unlist(results_bysite[  , ..myvar]),
+        varname.in.lookup.table = myvar, lookup = usastats)]
+      results_bysite[, varnames.us.pctile[[i]]  := pctile_from_raw_lookup(
+        unlist(results_bysite[  , ..myvar]),
+        varname.in.lookup.table = myvar, lookup = usastats)]
+    } else {
+      
+      if ((myvar %in% names(usastats)) & (myvar %in% names(results_bysite)) & (myvar %in% names(results_overall))) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
+        us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
+          unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
+        us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
+          unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
+        # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
+      } else { # cannot find that variable in the percentiles lookup table
+        us.pctile.cols_bysite[    , varnames.us.pctile[[i]]] <- NA
+        us.pctile.cols_overall[   , varnames.us.pctile[[i]]] <- NA
+      }
+      
     }
+    ################################## #
     
     ################################## #
     #### >>>Demog.Index SPECIAL CASE:####
-
+    
     # state.pctile.Demog.Index <- 
     # percentile based on using the blockgroupstats$Demog.Index.State  value (myvar_to_use)
     #  but look in statestats$Demog.Index  column  
@@ -1255,10 +1270,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     }
     
   }
-  # Q: does this convert it from data.table to data.frame? I think not. xxx
   
-  results_overall <- cbind(results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
-  results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
+  if (add_pctiles_directly_not_merge) {
+    # already done
+  } else {
+    results_overall <- cbind(results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+    results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
+  }
   ##____________________________________________________  #  ##################################################### #
   
   #### EJ INDEX PERCENTILES ####
@@ -1437,7 +1455,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   ############################################################################## #
   ### Nationwide  ####
-
+  
   avg.cols_overall <-   usastats[ usastats$PCTILE == "mean",  names_these] # not a data.table, or it would need to say  usastats[ PCTILE == "mean",  ..names_these]
   ## all.equal( as.vector(unlist(avg.cols_overall)), as.vector(unlist( data.frame(t( usastats_means(names_these, dig = 7)  ))  ) ) ) # TRUE, but that function is not any simpler for getting the means
   # rename the colnames to avg instead of just basic name
