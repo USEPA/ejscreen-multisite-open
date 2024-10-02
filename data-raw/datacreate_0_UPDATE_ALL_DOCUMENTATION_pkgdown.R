@@ -3,13 +3,14 @@
 
 # setup ####
 
-doask <- TRUE # or #     doask = FALSE 
+doask = TRUE # or #     doask = FALSE 
 
 # defaults
-dotests       <- FALSE
-doinstall     <- FALSE
-dodocument    <- TRUE
-dopreviewonly <- TRUE  # this is to do  pkgdown::build_site()  not  pkgdown::build_site_github_pages
+dotests       = FALSE
+doinstall     = FALSE
+dodocument    = TRUE
+doloadall_not_library = FALSE
+dopreviewonly = TRUE  #  do  pkgdown::build_site()  not  pkgdown::build_site_github_pages
 
 golem::detach_all_attached()
 
@@ -63,8 +64,12 @@ if (is.na(doinstall)) {stop('stopped')}
 if (doask & interactive()  & rstudioapi::isAvailable() ) {dodocument <- utils::askYesNo("Do document()?")}
 if (is.na(dodocument)) {stop('stopped')}
 
+if (doask & interactive()  & rstudioapi::isAvailable() ) {doloadall_not_library  <- utils::askYesNo("do load_all() instead of library(EJAM) ?")}
+if (is.na(doloadall_not_library)) {stop('stopped')}
+
 if (doask & interactive()  & rstudioapi::isAvailable() ) {dopreviewonly  <- utils::askYesNo("Just build site preview locally (not for github yet)?")}
 if (is.na(dopreviewonly)) {stop('stopped')}
+
 #################### #
 
 # TEST ? ####
@@ -115,21 +120,11 @@ if (doinstall) {
       
       quiet = FALSE
     )
-    
     #################### # 
     
     golem::detach_all_attached()
-    library(devtools); library(pkgdown)
-    ## LOAD INSTALLED VERSION? ####
-    
-    x = try( library(EJAM) )
-    if (inherits(x, "try-error")) {stop("try restarting R")}
-    rm(x)
-    # that had been causing an error that quitting / restarting RStudio seemed tfix(Error in `poll(list(self), ms)`:
-    # ! Native call to `processx_poll` failed
-    # Caused by error in `chain_call(c_processx_poll, pollables, type, as.integer(ms))`:
-    #   ! lazy-load database 'C:/Users/... .. . ./EJAM/R/EJAM.rdb' is corrupt
-    
+    library(devtools)
+    library(pkgdown)
   })  
 }
 #################### # #################### # #################### # #################### # 
@@ -140,10 +135,11 @@ if (doinstall) {
 ## why did it not use the pins versions since it did connect? and why not found in that local path???
 ## so did rm(list=ls()) and tried to continue from library( ) above .
 
-EJAM:::rmost(notremove = c('dotests', "dataload_pin_available", 'dopreviewonly', 'dodocument', 'doask', 'doinstall'))
+EJAM:::rmost(notremove = c('dotests', "dataload_pin_available", 'dopreviewonly', 'dodocument', 'doask', 'doinstall', 'doloadall_not_library'))
 
 #################### # #################### # #################### # #################### # 
-
+if (dodocument) {
+  
 # README ####
 
 rmarkdown::render("README.Rmd")  # renders .Rmd to create a  .md file that works in github as a webpage
@@ -151,7 +147,7 @@ rmarkdown::render("README.Rmd")  # renders .Rmd to create a  .md file that works
 # build_rmd() would take a couple minutes as it installs the package in a temporary library
 # build_rmd() would just be a wrapper around rmarkdown::render() that 1st installs a temp copy of pkg, then renders each .Rmd in a clean R session.
 #################### # #################### # #################### # #################### # 
-if (dodocument) {
+
 # DOCUMENT ####
 
 document()
@@ -159,8 +155,13 @@ document()
 #################### # #################### # #################### # #################### # 
 
 # LOAD ALL FROM SOURCE  ####
-
+if (doloadall_not_library) {
 load_all()
+  } else {
+    x = try( require(EJAM) )
+    if (inherits(x, "try-error")) {stop("try restarting R")}
+    rm(x)
+}
 #################### # #################### # #################### # #################### # 
 
 # DATASETS FROM PINS  ####
@@ -178,7 +179,7 @@ EJAM::dataload_from_pins("all") #  # just in case
 # to automatically build and publish your site:
 #  Run this ONCE EVER to have github actions re-publish your site regularly:
 # 
-#   usethis::use_pkgdown_github_pages()
+#   usethis::use_pkgdown_github_pages()  # only ONCE
 #
 # B) But, if not using GitHub (or if GitHub Actions have trouble rendering vignettes to html 
 #   due to lacking access to pins board etc.)
@@ -187,12 +188,16 @@ EJAM::dataload_from_pins("all") #  # just in case
 #   pkgdown::build_site() 
 
 
-# ** BUILD SITE PREVIEW #### 
+# ** BUILD SITE PREVIEW before moving to docs? and committing #### 
 
 if (dopreviewonly) {
   # locally before publishing
   
-  pkgdown::build_site(examples = FALSE, lazy = TRUE, devel = FALSE, install = FALSE, new_process = FALSE)
+  pkgdown::build_site(
+    examples = FALSE, lazy = TRUE, 
+    devel = FALSE, 
+    install = FALSE, new_process = FALSE
+    )
   
   # https://pkgdown.r-lib.org/reference/build_site.html
   # build_site() is a convenient wrapper around six functions:
@@ -272,25 +277,19 @@ if (dopreviewonly) {
   # ── Building search index ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   # Error in UseMethod("xml_find_first") : no applicable method for 'xml_find_first' applied to an object of class "xml_document"
   #  and trying it alone afterwards fails with the same error.
-  #
   # so it never gets to 
-  #   pkgdown:::build_sitemap('.') etc. etc.
-  #    which are steps in    
-  # pkgdown:::build_site_local() 
+  # #  some  steps in    
+  # pkgdown:::build_site_local() ?
   #    which is part of 
   # pkgdown::build_site_github_pages()
   # 
-  # But then trying these two steps alone in command line works:
+  # But then trying this in command line works:
   
   cat("If there was a problem, you might need to restart and finish by doing these :  \n\n")
   cat("
-  pkgdown:::build_sitemap('.')
-  pkgdown:::build_redirects('.')
-      \n")  
-  
-  # pkgdown:::build_sitemap('.')
-  # pkgdown:::build_redirects('.')
-
+  pkgdown:::build_search('.')
+      \n")
+  # pkgdown:::build_search('.')
   }
 #################### # 
 
