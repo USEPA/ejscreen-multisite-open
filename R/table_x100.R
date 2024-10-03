@@ -1,7 +1,18 @@
 
+table_x100 <- function(df, cnames = c(names_pct_as_fraction_blockgroupstats, 
+                                      names_pct_as_fraction_ejamit,
+                                      names_pct_as_fraction_ejscreenit)[2]) {
+  
+  fix_pctcols_x100(df = df, cnames = cnames)
+}
+############################################################################# #  
+
+
 #' utility to multiply certain percentage columns by 100 to convert 0-1.00 into 0-100
 #' 
 #' multiplies some data to rescale percentages stored as 0 to 1, into 0-100
+#' 
+#' @aliases table_x100
 #' 
 #' @param df data.frame but can be data.table
 #' @param cnames colnames in df of indicators to multiply by 100, like those in
@@ -12,7 +23,7 @@
 #'
 #'   names_pct_as_fraction_ejscreenit
 #'
-#' @seealso [varinfo()]
+#' @seealso [table_signif_round_x100()] [table_signif()] [table_round()] [table_x100()]
 #' @return df with data in specified columns multiplied by 100
 #'
 #' @examples 
@@ -51,7 +62,7 @@ fix_pctcols_x100 <- function(df, cnames = c(names_pct_as_fraction_blockgroupstat
   }
   tofix <- names(df)[names(df) %in% cnames]
   if (length(tofix) != length(cnames)) {
-    message("note that not all of cnames were found in df")
+    # message("note that not all of cnames were found in df") # drop this since it happens always
   }
   
   if (is.data.table(df)) {
