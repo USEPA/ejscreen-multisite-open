@@ -1,8 +1,8 @@
-# EJAM 2.32.0-EJScreen2.32 (August 2024)
+# EJAM 2.32.0-EJScreen2.32 (August/September 2024)
 
--   New data incorporated, to match EJScreen version 2.32 ozone and other data corrections EJScreen released August 2024 as version 2.32
--   Bug fixes and enhancements
--   Will refresh all documentation of R package help files and vignettes (articles) website 
+-   New data incorporated, to match EJScreen version 2.32 ozone and other data changes/corrections EJScreen released August 2024 as version 2.32
+-   Bug fixes and enhancements to web app, R functions, and documentation
+-   Refreshed all documentation of R package help files and vignettes (articles) website
 
 # EJAM 2.3.0-EJScreen2.3 (July 2024)
 
