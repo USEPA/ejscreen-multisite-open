@@ -61,6 +61,7 @@ testpoints_n <- function(n = 10, weighting = c('frs', 'pop', 'area', 'bg', 'bloc
     print(x)
   }
   ST_needed <- toupper(ST)
+  if (length(ST_needed) == 0) {ST_needed <- NULL}
   
   if (NROW(n)  == 1) {
     if (n == 1e6) {warning('a million used to sound like a lot')}

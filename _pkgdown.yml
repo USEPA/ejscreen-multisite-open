@@ -360,11 +360,10 @@ reference:
 - title: "Utilities / Misc."
   contents:
   - run_app
-  - dataload_from_local
   - dataload_from_pins
   - dataload_from_urlpins
+  - dataload_from_local
   - dataload_from_aws
-  - ejampackages
 - title: "EJScreen API"
   desc: "EJAM-EJScreen and using the EJScreen API"
   contents:
@@ -421,8 +420,6 @@ reference:
   - testoutput_ejscreenapi_1pts_1miles
   - testoutput_ejscreenRESTbroker_1pts_1miles
   - format_ejamit_columns
-  - table_round
-  - table_rounding_info
   - table_order_variables
   - custom_ejamit
   - custom_doaggregate
@@ -566,3 +563,9 @@ reference:
   - shapefile_filepaths_validize
   - shapefile_from_json
   - sitepoints_from_anything
+  - table_signif_round_x100
+  - table_signif
+  - table_round
+  - table_x100
+  - table_rounding_info
+  - ejampackages
