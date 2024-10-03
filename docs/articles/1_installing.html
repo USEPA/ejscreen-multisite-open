@@ -5,7 +5,6 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="1. Installing the EJAM R package">
 <title>Installing the EJAM R package • EJAM</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -15,71 +14,58 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Installing the EJAM R package">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Installing the EJAM R package">
+<meta name="description" content="1. Installing the EJAM R package">
 <meta property="og:description" content="1. Installing the EJAM R package">
-<meta property="og:image" content="usepa.github.io/EJAM/logo.svg">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<meta property="og:image" content="https://usepa.github.io/EJAM/logo.svg">
+<meta name="robots" content="noindex">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">EJAM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.2</small>
+    <small class="nav-text text-warning me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.32.0</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <h6 class="dropdown-header" data-toc-skip>Overview for EJAM Users</h6>
-    <a class="dropdown-item" href="../articles/0_whatis.html">What is EJAM</a>
-    <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
-    <div class="dropdown-divider"></div>
-    <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
-    <a class="dropdown-item" href="../articles/1_installing.html">Installing the EJAM R package</a>
-    <a class="dropdown-item" href="../articles/2_quickstart.html">Quick Start Guide</a>
-    <a class="dropdown-item" href="../articles/3_analyzing.html">Basics of Using EJAM for Analysis in RStudio</a>
-    <a class="dropdown-item" href="../articles/4_advanced.html">Advanced Features</a>
-    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">Using the EJScreen API via EJAM</a>
-    <a class="dropdown-item" href="../articles/6_future_plans.html">Future Plans and Ideas for EJAM</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Overview for EJAM Users</h6></li>
+    <li><a class="dropdown-item" href="../articles/0_whatis.html">What is EJAM</a></li>
+    <li><a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>For analysts using R</h6></li>
+    <li><a class="dropdown-item" href="../articles/1_installing.html">Installing the EJAM R package</a></li>
+    <li><a class="dropdown-item" href="../articles/2_quickstart.html">Quick Start Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/3_analyzing.html">Basics of Using EJAM for Analysis in RStudio</a></li>
+    <li><a class="dropdown-item" href="../articles/4_advanced.html">Advanced Features</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/USEPA/EJAM/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/USEPA/EJAM/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -105,7 +91,7 @@ and the data or functions can be used outside of the shiny app
 interface, if you want to reuse data or code, or want to do customized
 analysis or explore the data in R.</p>
 <p>To install EJAM, you will need to have access to the relevant GitHub
-repositories on EPA’s enterprise github site, at <a href="https://github.com/USEPA" class="external-link uri" target="_blank" rel="noreferrer noopener" title="https://github.com/USEPA">USEPA
+repository on EPA’s enterprise github site, at <a href="https://github.com/USEPA" class="external-link uri" target="_blank" rel="noreferrer noopener" title="https://github.com/USEPA">USEPA
 GitHub</a>.</p>
 <div class="section level2">
 <h2 id="how-to-install">How to install<a class="anchor" aria-label="anchor" href="#how-to-install"></a>
@@ -117,30 +103,29 @@ GitHub</a>.</p>
 <code><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">remotes::install_github()</a></code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">}</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">'USEPA/EJAMejscreenapi'</span>,</span>
-<span>  <span class="st">'USEPA/EJAMbatch.summarizer'</span>,</span>
-<span>  <span class="st">'USEPA/EJAM'</span></span>
-<span>  <span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>However, until the repositories are made public, you need to be on
-VPN and also get a PAT to do this – see details below.</p>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">'USEPA/EJAM'</span><span class="op">)</span></span></code></pre></div>
+<p>To install the development version, which may be newer but not yet
+fully working:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span><span class="op">}</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">'USEPA/EJAM'</span>, ref <span class="op">=</span> <span class="st">"development"</span><span class="op">)</span></span></code></pre></div>
+<p>However, until the repository is made public, you need to be on VPN
+and also get a PAT to do this – see details below.</p>
 </div>
 <div class="section level3">
 <h3 id="if-you-need-the-full-source-code-or-want-to-buildinstall-in-rstudio-on-your-own">if you need the full source code or want to build/install in RStudio
 on your own<a class="anchor" aria-label="anchor" href="#if-you-need-the-full-source-code-or-want-to-buildinstall-in-rstudio-on-your-own"></a>
 </h3>
-<p>There are 3 EJAM-specific packages as of early 2024 that EJAM needs,
-all of which are in EPA github repositories:</p>
-<p>Essential packages only available on the <a href="https://github.com/USEPA/EJAM" class="external-link uri" target="_blank" rel="noreferrer noopener" title="github.com/USEPA/EJAM">USEPA github</a>
-(not CRAN) are:</p>
+<p>There is now no other EJAM-specific package that EJAM needs - all of
+the code is consolidated in the EJAM package.</p>
+<p>The package is available on the <a href="https://github.com/USEPA/EJAM" class="external-link uri" target="_blank" rel="noreferrer noopener" title="github.com/USEPA/EJAM">USEPA github</a>
+(not CRAN)</p>
 <ul>
 <li><a href="https://github.com/USEPA/EJAM#readme" class="external-link uri" target="_blank" rel="noreferrer noopener" title="github.com/USEPA/EJAM">EJAM</a></li>
-<li><a href="https://github.com/USEPA/EJAMejscreenapi#readme" class="external-link uri" target="_blank" rel="noreferrer noopener" title="github.com/USEPA/EJAMejscreenapi">EJAMejscreenapi</a></li>
-<li><a href="https://github.com/USEPA/EJAMbatch.summarizer#readme" class="external-link uri" target="_blank" rel="noreferrer noopener" title="github.com/USEPA/EJAMbatch.summarizer">EJAMbatch.summarizer</a></li>
 </ul>
 <p>Options for getting the source package:</p>
 <ol style="list-style-type: lower-alpha">
-<li><p>One way to get each source package is that in RStudio you can
+<li><p>One way to get the source package is that in RStudio you can
 click New Project, Version Control, Git, and enter the repository URL.
 It will download the full source package, which has additional files
 related to development that you do not need if you just want to use the
@@ -186,7 +171,7 @@ environmental variable, where <code><a href="https://remotes.r-lib.org/reference
 it.</li>
 </ul>
 <ol start="3" style="list-style-type: decimal">
-<li>Try again to install the packages using
+<li>Try again to install the package using
 <code><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">devtools::install_github()</a></code>
 </li>
 </ol>
@@ -209,8 +194,8 @@ root folder (as can be found in the code repository).</p>
 you can start by loading and attaching the package, using library or
 require. It should automatically download some data and build an
 index.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://usepa.github.io/EJAM/">EJAM</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://usepa.github.io/EJAM">EJAM</a></span><span class="op">)</span></span>
 <span><span class="co"># or library(EJAM)</span></span></code></pre></div>
 <p>That should be all you need to do.</p>
 <p>Just in case you need more details on how that works, the following
@@ -222,14 +207,39 @@ index.</p>
 <p>To work in the RStudio console, EJAM needs some datasets not stored
 as part of the package. However, they already should be downloaded and
 loaded into memory automatically as soon as you use
-<code><a href="https://usepa.github.io/EJAM/">require(EJAM)</a></code> assuming that the current version of
-<code>EJAM:::on.Attach()</code> source code uses
-<code>asap_aws &lt;- TRUE; asap_index &lt;- TRUE; asap_bg</code>. If you
-want to be sure or if something is missing, you can do this
+<code><a href="https://usepa.github.io/EJAM">require(EJAM)</a></code>. If you want to check access, you can use
+<code>dataload_from_pins(justchecking = T)</code>.</p>
+<p>Typically you would not need to download any datasets yourself,
+because EJAM just downloads these when the app starts (technically, when
+the R package is attached) (or only as needed in the case of certain
+datasets that are not always needed). Some datasets are installed along
+with the package, such as the [blockgroupstats] data. But large files
+like “[blockpoints]” are stored on a “pins board” server and EJAM
+downloads them from there. You might want your own local copies, though,
+for these reasons:</p>
+<ol style="list-style-type: decimal">
+<li>If your computer can’t immediately access the pins board server due
+to authentication/ credentials setup that you prefer to skip. Access to
+the datasets may change during development and before they are public
+datasets they might not be as easy to get access to without setting up
+access to the pins board, etc.</li>
+<li>If you have local copies, EJAM avoids the slight delay of
+downloading some essential data (e.g., blockpoints) when you first do
+library(EJAM), and then when you first use EJ Indexes (relying on bgej)
+or the FRS/ NAICS/ SIC/ programid/ registryid features (relying on
+datasets like “frs” etc.).</li>
+</ol>
+<p>In case you do want copies of the datasets EJAM normally downloads,
+and have access to those files, you can save them in the data subfolder
+of the EJAM package source code folder and then install from source.
+That way, the locally-run EJAM code avoids downloading them because it
+always first checks for local copies.</p>
+<p>If you do have access to the pins board, and want to download them
 manually:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/dataload_from_pins.html">dataload_from_pins</a></span><span class="op">(</span><span class="st">'all'</span><span class="op">)</span></span>
-<span><span class="co"># It takes some time for the large downloads, while EJAM is still in development.</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/dataload_from_pins.html">dataload_from_pins</a></span><span class="op">(</span>justchecking <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/dataload_from_pins.html">dataload_from_pins</a></span><span class="op">(</span><span class="st">'all'</span><span class="op">)</span></span>
+<span><span class="co"># It takes a moment for the large downloads, while EJAM is still in development.</span></span></code></pre></div>
 <p>Attaching the package actually checks for copies in memory first
 (e.g., <code>exists("quaddata", envir = globalenv())</code>), then local
 disk (using <code><a href="../reference/dataload_from_local.html">dataload_from_local()</a></code> looking in the data
@@ -244,36 +254,36 @@ needed, using <code><a href="../reference/dataload_from_pins.html">dataload_from
 <p>EJAM also needs to build the index of about 8 million US block
 locations (one internal point for each block), which takes a few
 seconds. EJAM does this automatically when attached via
-<code><a href="https://usepa.github.io/EJAM/">require(EJAM)</a></code> or <code><a href="https://usepa.github.io/EJAM/">library(EJAM)</a></code>, by creating an
+<code><a href="https://usepa.github.io/EJAM">require(EJAM)</a></code> or <code><a href="https://usepa.github.io/EJAM">library(EJAM)</a></code>, by creating an
 object called <a href="../reference/localtree.html">localtree</a> based
 on the <a href="../reference/quaddata.html">quaddata</a> object obtained
 as mentioned above. Some functions check for it and try to build the
 index on the fly if it is missing. You can also (re)build it
 manually:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/indexblocks.html">indexblocks</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>DRAFT/beta</p>
+  <p>US EPA 2024</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>EJAM Version 2.2.2 beta</p>
+  <p>EJAM Version 2.32.0</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
