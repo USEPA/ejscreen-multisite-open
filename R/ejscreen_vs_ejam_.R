@@ -373,7 +373,7 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   
   z$same_shown <- data.frame(z$EJAM_shown == z$EJSCREEN_shown)
   
-  z$ratio <- z$EJAM / z$EJSCREEN   # prettyNum(z$ratio, digits = 2, format = 'f')
+  z$ratio <- ifelse(z$EJSCREEN == 0 & z$EJAM == 0, 1, ifelse(z$EJSCREEN == 0, NA, z$EJAM / z$EJSCREEN))   # prettyNum(z$ratio, digits = 2, format = 'f')
   z$diff <- z$EJAM - z$EJSCREEN
   z$absdiff <- abs(z$diff)
   z$pctdiff <- z$ratio - 1
@@ -382,7 +382,7 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   # rname <- colnames(ejamsite) # same as colnames(z$EJAM) OR  names(z$EJAM)
   # longname <- fixcolnames(colnames(ejamsite), 'r', 'long')
   
-  ejscreen_vs_ejam_summary(z)
+  nil = ejscreen_vs_ejam_summary(z)
   
   invisible(z) 
 }
@@ -494,7 +494,7 @@ ejscreen_vs_ejam_bysite <- function(vsout, pts, varname = "blockcount_near_site"
 #' @keywords internal
 #'
 ejscreen_vs_ejam_summary <- function(z = NULL, 
-                                     myvars = colnames(z$EJAM), tol = 0.01, 
+                                     myvars = colnames(z$EJAM), tol = 0.05, 
                                      prob = 0.95, na.rm = TRUE ) {
   
   if (is.null(z)) {
@@ -580,7 +580,10 @@ ejscreen_vs_ejam_summary <- function(z = NULL,
   cat("\n\nComparison of results for", NROW(z$EJAM), "sites.\n")
   print(z$EJAM[1,'radius.miles'])
   cat("\n")
-  print(pct_agree[pct_agree$indicator %in% usefulvars, usefulstats])
+  print(cbind(
+    varlist = varinfo(pct_agree$indicator[pct_agree$indicator %in% usefulvars], 'varlist'),
+    pct_agree[pct_agree$indicator %in% usefulvars, usefulstats]
+    ))
   
   cat("\n\n")
   print(pct_agree[pct_agree$indicator %in% c("pop", "blockcount_near_site"), usefulstats])
@@ -777,6 +780,23 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
 #'   For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
 #'   and rows represent sites analyzed.
 #' 
+#' @examples
+#' vs = ejscreen_vscript(pts = testpoints_100, radius = 3)
+#' 
+#' ## look only at places where blockcount was identical, to exclude that as source of difference
+#' vs_blocksmatch = lapply(vs, function(df) df[vs$absdiff[, "blockcount_near_site"] == 0, ])
+#' # vss = ejscreen_vs_ejam_summary(vs )
+#' vssb = ejscreen_vs_ejam_summary(vs_blocksmatch)
+#' # vss[vss$indicator %in% names_these, c(1,7,8)]
+#' vssb[vssb$indicator %in% names_these, c(1,7,8)]
+#' x = vssb[vssb$indicator %in% c('pop', names_these), c(1,7,8)] 
+#' x[order(x$pct.of.sites.agree.within.tol), ]
+#' 
+#' xx = cbind(indicator = vssb$indicator[vssb$indicator %in% c('pop', names_these)],
+#'  round(vssb[vssb$indicator %in% c('pop', names_these),
+#'   c('pct.of.sites.agree.within.tol', 'max.abs.diff', 'median.abs.diff')], 0))
+#' xx[xx$pct.of.sites.agree.within.tol < 100, ]
+#' 
 #' @export
 #' 
 ejscreen_vscript <- function(defdir = '.',
@@ -884,7 +904,7 @@ ejscreen_vscript <- function(defdir = '.',
   
   # see some of the results and save all
   
-  sumvs <- ejscreen_vs_ejam_summary(vs)
+  sumvs <- ejscreen_vs_ejam_summary(vs) # prints as it does this
   qqq <- ejscreen_vs_ejam_summary_quantiles(vs, mystat = 'ratio', myvars = c(names_these, 'pop'), digits = 2)
   
   fname = paste0("EJAM vs EJSCREEN results for ", n, " points")
@@ -900,6 +920,8 @@ ejscreen_vscript <- function(defdir = '.',
   cat("ejscreen_vs_ejam_summary(vs) \n\n")
   sumvs <- ejscreen_vs_ejam_summary(vs) # just printout not full results
   cat("\n\n-------------------------------------------------------------------\n\n")
+  cat("percentiles across analyzed locations, of the ratio of EJAM / EJSCREEN estimates\n")
+  cat("showing median ratio and ratio hit by only 5% of places\n\n")
   cat( 'qqq[order(qqq[, "95%"], decreasing = F), c("50%", "95%")] \n\n' )
   print( qqq[order(qqq[, "95%"], decreasing = F), c("50%", "95%")]  )
   cat("\n\n-------------------------------------------------------------------\n\n")
