@@ -358,17 +358,17 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   
   EJSCREEN_shown <- table_round(apisite)  # SLOW! ***
   EJAM_shown     <- table_round(ejamsite)  # SLOW! ***
-  
-  apisite <- apply(apisite, MARGIN = 2, as.numeric)
-  ejamsite <- apply(ejamsite, MARGIN = 2, as.numeric)
-  EJSCREEN_shown <- apply(EJSCREEN_shown, MARGIN = 2, as.character)
-  EJAM_shown <- apply(EJAM_shown, MARGIN = 2, as.character)
-  
+  suppressWarnings({
+    apisite               <- apply( apisite,       MARGIN = 2, as.numeric)
+    ejamsite              <- apply(ejamsite,       MARGIN = 2, as.numeric)
+    EJSCREEN_shown <- trimws(apply(EJSCREEN_shown, MARGIN = 2, as.character))
+    EJAM_shown     <- trimws(apply(    EJAM_shown, MARGIN = 2, as.character))
+  })  
   z <- list(
     EJSCREEN = apisite,
-    EJAM = ejamsite,
+    EJAM    = ejamsite,
     EJSCREEN_shown = EJSCREEN_shown,
-    EJAM_shown = EJAM_shown
+    EJAM_shown         = EJAM_shown
   )
   
   z$same_shown <- data.frame(z$EJAM_shown == z$EJSCREEN_shown)
@@ -379,10 +379,12 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   z$pctdiff <- z$ratio - 1
   z$abspctdiff <- abs(z$pctdiff)   
   
+  z <- lapply(z, function(mymatrix) as.data.frame(mymatrix)) # convert each matrix array to data.frame so easier to refer to colnames in each table
+  
   # rname <- colnames(ejamsite) # same as colnames(z$EJAM) OR  names(z$EJAM)
   # longname <- fixcolnames(colnames(ejamsite), 'r', 'long')
   
-  nil = ejscreen_vs_ejam_summary(z)
+  # ejscreen_vs_ejam_summary(z) # done also by ejscreen_vscript() so it would be repeated here
   
   invisible(z) 
 }
@@ -500,11 +502,18 @@ ejscreen_vs_ejam_summary <- function(z = NULL,
   if (is.null(z)) {
     z <-  ejscreen_vs_ejam()
   }
+  # make each a data.frame instead of matrix array
+  # so it is easier to refer to columns by name like z$EJSCREEN[ , myvars]
+  z = lapply(z, function(mydf) as.data.frame(mydf)) # duplicates earlier step but ok
+  
   # tol Set tol so that results are said to agree if they differ by less than tol percent, where tol is a fraction 0 to 1. 
   # z is output of ejscreen_vs_ejam
   # na.rm <- TRUE # to see 0% etc. instead of NA for indicators that could not be compared in at least some sites that may lack data.
   ## for a subset of key indicators:
   # myvars <- c(names_these, names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)
+  
+  # need pop and radius.miles for this to work as written
+  myvars <- unique(c('pop', myvars, 'radius.miles'))
   
   z$EJSCREEN             <- z$EJSCREEN[ , myvars]
   z$EJAM                     <- z$EJAM[ , myvars]
@@ -518,6 +527,8 @@ ejscreen_vs_ejam_summary <- function(z = NULL,
   z$pctdiff       <- z$pctdiff[ , myvars]
   z$abspctdiff <- z$abspctdiff[ , myvars]
   
+  z$same_round0 <- round(z$EJSCREEN[ , myvars], 0) == round(z$EJAM[ , myvars], 0)
+  
   # calculate each as count of sites that agree (and not NA), over count of sites with data ie that are not NA 
   # matrixes of valid/not
   ok_ejscreen <- !is.na(z$EJSCREEN) # dim is 100 x 389, e.g.
@@ -529,20 +540,24 @@ ejscreen_vs_ejam_summary <- function(z = NULL,
   sites.with.data.both     <- colSums(ok_ejam & ok_ejscreen)
   
   sites.agree.rounded      <- colSums(z$same_shown, na.rm = na.rm) # only counts if valid
+  sites.agree.round0       <- colSums(z$same_round0, na.rm = na.rm)
   sites.agree.within.tol   <- colSums(z$abspctdiff < tol, na.rm = TRUE)
   
   pct_agree = data.frame(
     
     indicator = myvars, 
+    varlist = varinfo(myvars, 'varlist')$varlist,
     
     sites.with.data.ejscreen = sites.with.data.ejam,
     sites.with.data.neither = sites.with.data.neither,
     sites.with.data.both    = sites.with.data.both,
     
     sites.agree.rounded    = sites.agree.rounded,
+    sites.agree.round0     = sites.agree.round0,
     sites.agree.within.tol = sites.agree.within.tol,
     
     pct.of.sites.agree.rounded    = round(100 * sites.agree.rounded    / sites.with.data.both, 1),
+    pct.of.sites.agree.round0     = round(100 * sites.agree.round0     / sites.with.data.both, 1),
     pct.of.sites.agree.within.tol = round(100 * sites.agree.within.tol / sites.with.data.both, 1), 
     # test/check NA handling there ***
     
@@ -559,16 +574,16 @@ ejscreen_vs_ejam_summary <- function(z = NULL,
   pct_agree$within.x.pct.at.p.pct.of.sites <- round(pct_agree$within.x.pct.at.p.pct.of.sites, 0)
   pct_agree$max.pct.diff <- round(pct_agree$max.pct.diff, 0)
   rownames(pct_agree) <- NULL
-  pct_agree <- pct_agree[order(pct_agree$pct.of.sites.agree.rounded, -pct_agree$within.x.pct.at.p.pct.of.sites, decreasing = T), ]
+  pct_agree <- pct_agree[order(pct_agree$varlist, pct_agree$pct.of.sites.agree.rounded, -pct_agree$within.x.pct.at.p.pct.of.sites, decreasing = T), ]
   
   usefulvars <- c('blockcount_near_site', 'pop', names_e, names_d, 
                   #names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile,
                   names_d_subgroups
   )
-  usefulstats <- c('indicator',
+  usefulstats <- c('indicator', 'varlist',
                    #  "sites.with.data.both",
                    #  "sites.agree.rounded", "sites.agree.within.tol",
-                   'pct.of.sites.agree.rounded', 'pct.of.sites.agree.within.tol',
+                   'pct.of.sites.agree.rounded', 'pct.of.sites.agree.round0', 'pct.of.sites.agree.within.tol',
                    # 'median.pct.diff', 'max.pct.diff', 
                    'within.x.pct.at.p.pct.of.sites')
   
@@ -580,10 +595,11 @@ ejscreen_vs_ejam_summary <- function(z = NULL,
   cat("\n\nComparison of results for", NROW(z$EJAM), "sites.\n")
   print(z$EJAM[1,'radius.miles'])
   cat("\n")
-  print(cbind(
-    varlist = varinfo(pct_agree$indicator[pct_agree$indicator %in% usefulvars], 'varlist'),
-    pct_agree[pct_agree$indicator %in% usefulvars, usefulstats]
-    ))
+  printrounded = pct_agree[pct_agree$indicator %in% usefulvars, usefulstats]
+  #printrounded$
+  print(
+    printrounded
+  )
   
   cat("\n\n")
   print(pct_agree[pct_agree$indicator %in% c("pop", "blockcount_near_site"), usefulstats])
@@ -599,7 +615,6 @@ ejscreen_vs_ejam_summary <- function(z = NULL,
   invisible(pct_agree)
 }
 ######################################################################### # 
-
 
 
 
@@ -696,8 +711,12 @@ ejscreen_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
   if (!all(myvars %in% colnames(z$EJAM))) {stop('myvars must be among colnames of z$EJAM')}
   
   z = sapply(z, function(x) x[mysite, ])[myvars, , drop = FALSE]
-  # z = data.frame(z)
-  # z = sapply(z, unlist)
+  z = data.frame(z, varlist = varinfo(myvars, 'varlist')$varlist)
+  z = z[order(z$varlist), ]
+  
+  roundable = c( 'ratio', 'diff', 'absdiff', 'pctdiff', 'abspctdiff' )
+  z[, roundable] <- round(z[, roundable], 4)
+  
   return(z)
 }
 ######################################################################### # 
@@ -830,7 +849,6 @@ ejscreen_vscript <- function(defdir = '.',
   }
   setwd(mydir)
   # setwd("~/../Desktop/EJAM Team Files/-0 TO DO LISTS AND ISSUES IN PACKAGES/comparisons")
-  save_ejscreen_output <- file.path(mydir, "ejscreenapi_plus_out.rda")
   
   # # a list of points can be analyzed interactively like this: 
   if (missing(newpts) && missing(pts)) {
@@ -852,6 +870,10 @@ ejscreen_vscript <- function(defdir = '.',
     }
     n = NROW(pts)
   }
+  save_ejscreen_output <- file.path(mydir, "ejscreenapi_plus_out.rda")
+  save_ejscreen_output <- gsub("out.rda$", paste0("out for ", n, "points-", gsub(':','.',Sys.time()), ".rda"), save_ejscreen_output) 
+  
+  
   if (missing(radius)) {
     radius = ask_number()
     if (is.na(radius)) {stop('cancelled')}
@@ -864,7 +886,7 @@ ejscreen_vscript <- function(defdir = '.',
     if (is.na(usesavedejscreen)) {stop('cancelled')}
   } else {
     # user can specify they dont want to get asked about using saved results like this:
-    if ( savedejscreentableoutput[1] == FALSE || is.null(savedejscreentableoutput) || is.na(savedejscreentableoutput) ) {
+    if ((length(savedejscreentableoutput) == 1 && savedejscreentableoutput[1] == FALSE) || is.null(savedejscreentableoutput) || all(is.na(savedejscreentableoutput))) {
       usesavedejscreen <- FALSE
     } else {
       usesavedejscreen <- TRUE
@@ -942,9 +964,9 @@ ejscreen_vscript <- function(defdir = '.',
   ######################################################################################### # 
   
   #  save data for R:
-  write.csv(pts, row.names = FALSE, file = file.path(mydir, paste0("EJAM vs EJSCREEN latlon used for ", n, "test points", gsub(':','.',Sys.time()), ".csv")))
+  write.csv(pts, row.names = FALSE, file = file.path(mydir, paste0("EJAM vs EJSCREEN latlon used for ", n, "points-", gsub(':','.',Sys.time()), ".csv")))
   # save(pts, file = file.path(mydir, paste0(fname, "-pts.rda")))
-  save(vs, file = file.path(mydir, paste0(fname, "-vs", gsub(':','.',Sys.time()), ".rda")))
+  save(vs, file = file.path(mydir, paste0(fname, "-vs-", gsub(':','.',Sys.time()), ".rda")))
   ############################ # 
   setwd(oldir)
   cat("\n\n  Files saved in ", mydir, "\n\n")
