@@ -1028,19 +1028,21 @@ leastdense <- s2b_stats$ejam_uniq_id[order(
 ```
 
 ```{r, doplotblocksnotshowoutput, fig.cap="Map very high density area with 4,596 blocks near the site, via plotblocksnearby()", eval=TRUE, echo=FALSE}
-plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
+# radius <- 3
+sitepoints <- testpoints_100
+plotblocksnearby(sitepoints = sitepoints[densest, ])
 ```
 
 ```{r showplotblockscommandnotdoit, eval=FALSE, echo=TRUE, include=TRUE}
-plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
+plotblocksnearby(sitepoints = sitepoints[densest, ])
 ```
 
 ```{r, doplotblocksnotshowoutput_lowdensity, fig.cap="Map very low density area with 11 blocks near the site, via plotblocksnearby()", eval=TRUE, echo=FALSE}
-plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == leastdense, ])
+plotblocksnearby(sitepoints = sitepoints[ leastdense, ])
 ```
 
 ```{r showplotblockscommandnotdoit_lowdensity, eval=FALSE, echo=TRUE, include=TRUE}
-plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == leastdense, ])
+plotblocksnearby(sitepoints = sitepoints[ leastdense, ])
 ```
 
 Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the

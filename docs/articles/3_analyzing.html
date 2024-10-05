@@ -86,155 +86,124 @@
 
     
     
+<p>This article provides examples of how to use EJAM in RStudio,
+especially how to use more specialized functions to find specific places
+to analyze, such as EPA-regulated facilities defined in various ways,
+and how to explore the results in more detail than the web app can
+provide.</p>
 <div class="section level2">
-<h2 id="key-functions">Key Functions<a class="anchor" aria-label="anchor" href="#key-functions"></a>
+<h2 id="running-a-basic-analysis">Running a Basic Analysis<a class="anchor" aria-label="anchor" href="#running-a-basic-analysis"></a>
 </h2>
 <ul>
-<li><p><strong><code><a href="../reference/run_app.html">run_app()</a></code></strong> to launch the web app
+<li><p><strong><code><a href="../reference/run_app.html">run_app()</a></code></strong> launches the web app
 locally (to run in RStudio on a single computer rather than on a
 server)</p></li>
 <li><p><strong><code><a href="../reference/ejamit.html">ejamit()</a></code></strong> provides most results in
-just one function, and they can be viewed using
-<code><a href="../reference/ejam2report.html">ejam2report()</a></code> and <code><a href="../reference/ejam2excel.html">ejam2excel()</a></code>. Sample input
-to <code><a href="../reference/ejamit.html">ejamit()</a></code> is in <code>testpoints_10</code> and sample
-output is in <code>testoutput_ejamit_10pts_1miles</code>.
-<code><a href="../reference/ejamit.html">ejamit()</a></code> especially relies on
-<code><a href="../reference/getblocksnearby.html">getblocksnearby()</a></code> and <code><a href="../reference/doaggregate.html">doaggregate()</a></code>:</p></li>
-<li><p><code><a href="../reference/getblocksnearby.html">getblocksnearby()</a></code> takes a set of points (e.g.,
-facilities) and finds the Census blocks near each. Sample input is in
-<code>testpoints_100</code>, and sample output is in
-<code>testoutput_getblocksnearby_10pts_1miles</code></p></li>
-<li><p><code><a href="../reference/get_blockpoints_in_shape.html">get_blockpoints_in_shape()</a></code> does the same for
-polygons, finding blocks in each.</p></li>
-<li><p><code><a href="../reference/doaggregate.html">doaggregate()</a></code> takes the list of blocks near each
-point, joins it to blockgroup indicators like from EJScreen, and
-aggregates at each buffered point as well as for the overall set of
-unique blocks (residents). Sample input is in
-<code>testoutput_getblocksnearby_10pts_1miles</code> and sample output
-is in <code>testoutput_doaggregate_10pts_1miles</code></p></li>
+just one function (if you already have a list of places to analyze), as
+shown in the <a href="https://usepa.github.io/EJAM/articles/2_quickstart.html">Quick
+Start Guide</a></p></li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="key-groups-of-functions">Key groups of functions<a class="anchor" aria-label="anchor" href="#key-groups-of-functions"></a>
+<h2 id="tools-for-exploring-results">Tools for Exploring Results<a class="anchor" aria-label="anchor" href="#tools-for-exploring-results"></a>
 </h2>
-<p>The <a href="https://usepa.github.io/EJAM/reference/index.html">EJAM
-package reference manual</a> has a complete list of documented
-functions, grouped by category. There are several categories of
-functions listed there:</p>
-<ul>
-<li>Key Functions <code><a href="../reference/ejamit.html">ejamit()</a></code>, <code><a href="../reference/ejam2report.html">ejam2report()</a></code>,
-<code><a href="../reference/ejam2excel.html">ejam2excel()</a></code>, <code><a href="../reference/ejam2map.html">ejam2map()</a></code>,
-<code><a href="../reference/ejam2ratios.html">ejam2ratios()</a></code>, <code><a href="../reference/ejam2table_tall.html">ejam2table_tall()</a></code>
-</li>
-<li>Specify Points by Lat/Lon</li>
-<li>Specify Facilities by ID</li>
-<li>Specify Facility Type</li>
-<li>Specify Places by Shapefile</li>
-<li>Specify Counties, etc./FIPS tools</li>
-<li>Blocks, Distances, Residents - e.g.,
-<code><a href="../reference/getblocksnearby.html">getblocksnearby()</a></code>
-</li>
-<li>Calculating and Aggregating</li>
-<li>Viewing Results (using the overall functions above)</li>
-<li>Test Data (if EJAM is installed, try
-<code>browseURL(system.file("testdata", package = "EJAM"))</code>)</li>
-<li>Utilities for finding URL or API info</li>
-<li>etc.</li>
-</ul>
-<p>Also see <code>data("EJAM")</code> and see
-?<code><a href="../reference/dataload_from_pins.html">dataload_from_pins()</a></code> and <code>usastats</code>,
-<code>statestats</code></p>
+<p>For a standard analysis, the basic tools like
+<code><a href="../reference/ejam2report.html">ejam2report()</a></code>, <code><a href="../reference/ejam2excel.html">ejam2excel()</a></code>,
+<code><a href="../reference/ejam2map.html">ejam2map()</a></code>, etc. let you explore results, as shown in the
+<a href="https://usepa.github.io/EJAM/articles/2_quickstart.html">Quick
+Start Guide</a>.</p>
+<p>If you want more ways to visualize and dig into results, examples are
+provided below in the sections on <a href="#exploring-results">EXPLORING
+RESULTS</a> and <a href="#visualization-of-findings-plots">VISUALIZATION
+OF FINDINGS (PLOTS)</a>. For example, you can check which groups or
+which facilities have notable findings.</p>
 </div>
 <div class="section level2">
-<h2 id="points-nearby-residents">POINTS &amp; NEARBY RESIDENTS<a class="anchor" aria-label="anchor" href="#points-nearby-residents"></a>
+<h2 id="tools-for-selecting-locations-to-analyze">Tools for Selecting Locations to Analyze<a class="anchor" aria-label="anchor" href="#tools-for-selecting-locations-to-analyze"></a>
 </h2>
 <p>EJAM offers a variety of ways to specify the places to be analyzed
-and compared. Once you specify some list of places, EJAM will analyze
-them as a whole (overall), and also individually so that you can compare
-places to each other.</p>
-<p>Places analyzed and compared can be any of the following:</p>
+and compared. The web app helps you select locations in several
+ways.</p>
+<p>If you are working in RStudio, and you already have identified the
+points or areas to analyze, the [ejamit()] function will accept 1) point
+coordinates, 2) a shapefile, or 3) a list of FIPS codes.</p>
+<p>However, if you first need to get the points (lat, lon values), or
+you need a more in-depth, custom approach to finding facilities or
+Census places to analyze, there are several groups of functions to help
+with that, as shown in all the examples below. They are also shown in
+the <a href="https://usepa.github.io/EJAM/reference/index.html">EJAM
+package reference manual</a>, by category.</p>
+<p>You can specify locations for analysis in a variety of ways:</p>
 <ul>
-<li>Points, defining all residents within X miles of each point</li>
-<li>Polygons (from shapefiles), such as redlining zones, higher risk
-areas based on modeling, etc.</li>
-<li>Census Units such as Counties or other types of Census Units defined
-by FIPS code (e.g., Counties in one State)</li>
-</ul>
-<p>Groups will be available in another type of analysis, not yet
-implemented. Groups will let you get statistics for each group, to
-compare categories of places. Whole groups of points/ polygons/ census
-areas will be treated as the units of analysis. This will allow you to
-define groups of points, for example, and get a summary for each group,
-such as residents near any of the facilities of one type. This enables
-comparison of categories of places, such as analyzing 3 types of
-facilities at once with results aggregated for each type, or comparing
-redlining zones grouped by grade, or comparing areas with some feature
-(poor air quality, or receiving grants, etc.) versus areas without that
-trait, all limited to one State or Region, for example.</p>
-<p>To analyze points and the circular areas around each one, you can
-specify the points in two basic ways:</p>
+<li>
+<strong>Near each point:</strong> Specify points and analyze
+residents who are <a href="#near-each-point-proximity-analysis">NEAR
+EACH POINT (PROXIMITY ANALYSIS)</a>
 <ul>
-<li>A list of points defined by coordinates or by EPA ID numbers for
-each point</li>
-<li>All points that are the locations of EPA-regulated facilities of a
-certain type. The categories that can be used include the
-following:</li>
-<li>EPA Program (e.g., all greenhouse gas reporting facilities)</li>
-<li>Industry type, based on NAICS code (e.g., )</li>
+<li>[<strong>Latitude and Longitude</strong>]</li>
+<li>[<strong>Facilities by ID</strong>] can be defined <a href="#by-facility-using-epa-registry-id">by Facility, using EPA
+Registry ID</a> or <a href="#by-facility-using-epa-program-system-id">by
+Facility, using EPA Program System ID</a>
+</li>
+<li>[<strong>Facilities by Type</strong>] can be defined <a href="#by-industry-naics">by Industry (NAICS)</a> or <a href="#facilities-by-type">Facilities by Type</a> or by Clean Air Act
+source category defined by <a href="#by-mact-subpart-hazardous-air-pollutant-source-category">by MACT
+Subpart (hazardous air pollutant source category)</a>
+</li>
 </ul>
-<div class="section level3">
-<h3 id="compare-all-points-in-a-category">Compare all Points in a Category<a class="anchor" aria-label="anchor" href="#compare-all-points-in-a-category"></a>
-</h3>
+</li>
+<li>
+<strong>Within each polygon:</strong> Specify areas of any size and
+shape to analyze residents within each polygon/zone/area (based on
+shapefiles or Census FIPS codes)
+<ul>
+<li>
+<strong>within areas or zones</strong> on a map if you have GIS data
+in <a href="#shapefiles">SHAPEFILES</a> - Polygons (from shapefiles)
+could for example define redlining zones, higher risk areas based on
+modeling, etc.</li>
+<li>
+<strong>within Census units like cities or Counties</strong> defined
+using <a href="#fips-codes">FIPS CODES</a> - Census Units such as
+Counties or other types of Census Units are defined by FIPS code (e.g.,
+Counties in one State).</li>
+</ul>
+</li>
+</ul>
 </div>
+<div class="section level2">
+<h2 id="near-each-point-proximity-analysis">NEAR EACH POINT (PROXIMITY ANALYSIS)<a class="anchor" aria-label="anchor" href="#near-each-point-proximity-analysis"></a>
+</h2>
 <div class="section level3">
-<h3 id="specify-points-where-you-want-to-center-the-circular-buffers">Specify points (where you want to center the circular buffers)<a class="anchor" aria-label="anchor" href="#specify-points-where-you-want-to-center-the-circular-buffers"></a>
+<h3 id="latitude-and-longitude">Latitude and Longitude<a class="anchor" aria-label="anchor" href="#latitude-and-longitude"></a>
 </h3>
 <p>You can define locations as all residents within X miles of any one
 or more of the specified points, and you can define those points in a
 few ways. One way is to upload a table of coordinates – latitude and
 longitude for each point, one row per site, with columns called lat and
-lon (or some synonyms that work).</p>
+lon (or some synonyms that work). There are also <a href="https://usepa.github.io/EJAM/reference/index.html#specify-points-by-lat-lon">more
+detailed functions for working with latlon coordinates.</a></p>
 <p>The simplest way to do that in the RStudio console is something like
 <code>x &lt;- ejamit()</code>, which prompts you to upload a spreadsheet
 with lat lon columns, and asks you for the radius.</p>
-<p>You can also specify a set of facilities by uploading their Registry
-ID numbers in a table, or using other identifiers. For example, there is
-a function <code><a href="../reference/latlon_from_programid.html">latlon_from_programid()</a></code> in the examples
-below.</p>
-<p>You can define circular buffers around a set of EPA-regulated
-facilities in a few other ways as well, such as by NAICS (or SIC)
-industry names or codes, EPA program covering the set of facilities
-(e.g., all greenhouse gas reporters), or a Clean Air Act MACT
+<p>As explained below, you can get the latitudes and longitudes of
+EPA-regulated facilities if you want to specify a set of facilities by
+uploading their Registry ID numbers in a table, or using other
+identifiers. For example, there is a function
+<code><a href="../reference/latlon_from_programid.html">latlon_from_programid()</a></code> in the examples below.</p>
+<p>You can also get coordinates in a few other ways, such as by NAICS
+(or SIC) industry names or codes, EPA program covering the set of
+facilities (e.g., all greenhouse gas reporters), or a Clean Air Act MACT
 subpart.</p>
-<div class="section level4">
-<h4 id="by-industry-naics">by Industry (NAICS)<a class="anchor" aria-label="anchor" href="#by-industry-naics"></a>
-</h4>
-<p>You can specify sites by NAICS, but it is important to note the FRS
-lacks NAICS info for many regulated facilities!</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/naics_from_any.html">naics_from_any</a></span><span class="op">(</span><span class="st">"paint and coating"</span>, children <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      code     n2     n3     n4     n5     n6                            name</span></span>
-<span><span class="co">#&gt;     &lt;num&gt; &lt;char&gt; &lt;char&gt; &lt;char&gt; &lt;char&gt; &lt;char&gt;                          &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:  32551     32    325   3255  32551  32551 Paint and Coating Manufacturing</span></span>
-<span><span class="co">#&gt; 2: 325510     32    325   3255  32551 325510 Paint and Coating Manufacturing</span></span>
-<span><span class="co">#&gt; 3: 325510     32    325   3255  32551 325510 Paint and Coating Manufacturing</span></span>
-<span><span class="co">#&gt;                                    num_name</span></span>
-<span><span class="co">#&gt;                                      &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:  32551 - Paint and Coating Manufacturing</span></span>
-<span><span class="co">#&gt; 2: 325510 - Paint and Coating Manufacturing</span></span>
-<span><span class="co">#&gt; 3: 325510 - Paint and Coating Manufacturing</span></span>
-<span><span class="co">## note latlon_from_naics() requires the frs_by_naics dataset, which it tries to load on demand.</span></span>
-<span><span class="co"># head(latlon_from_naics(325510)) # has about 1,000 facilities</span></span>
-<span></span>
-<span><span class="co">## All sectors with this phrase in their NAICS title</span></span>
-<span><span class="co">#</span></span>
-<span><span class="co">#  x &lt;- ejamit(frs_from_naics("paint and coating"), 1)</span></span></code></pre></div>
-<p>See many more examples of working with NAICS, in a section below.</p>
 </div>
+<div class="section level3">
+<h3 id="facilities-by-id">Facilities by ID<a class="anchor" aria-label="anchor" href="#facilities-by-id"></a>
+</h3>
+<p>EPA-regulated facilities can be found in the Facility Registry
+Services by identification number.</p>
 <div class="section level4">
 <h4 id="by-facility-using-epa-registry-id">by Facility, using EPA Registry ID<a class="anchor" aria-label="anchor" href="#by-facility-using-epa-registry-id"></a>
 </h4>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># note frs_from_regid() and latlon_from_regid() require the frs dataset, which they try to load on demand.</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/frs_from_regid.html">frs_from_regid</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">110071293460</span>, <span class="fl">110000333826</span><span class="op">)</span><span class="op">)</span></span>
@@ -249,12 +218,43 @@ lacks NAICS info for many regulated facilities!</p>
 <div class="section level4">
 <h4 id="by-facility-using-epa-program-system-id">by Facility, using EPA Program System ID<a class="anchor" aria-label="anchor" href="#by-facility-using-epa-program-system-id"></a>
 </h4>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># latlon_from_programid() requires access to the frs_by_programid dataset, which it tries to load on demand.</span></span>
 <span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/exists.html" class="external-link">exists</a></span><span class="op">(</span><span class="st">"frs_by_programid"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/latlon_from_programid.html">latlon_from_programid</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"XJW000012435"</span>, <span class="st">"00768SRTRSROAD1"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="facilities-by-type">Facilities by Type<a class="anchor" aria-label="anchor" href="#facilities-by-type"></a>
+</h3>
+<div class="section level4" data-link="by Industry (NAICS)">
+<h4 id="by-industry-naics">by Industry (NAICS)<a class="anchor" aria-label="anchor" href="#by-industry-naics"></a>
+</h4>
+<p>You can specify sites by NAICS, but it is important to note the FRS
+lacks NAICS info for many regulated facilities!</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/naics_from_any.html">naics_from_any</a></span><span class="op">(</span><span class="st">"paint and coating"</span>, children <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> </span>
+<span><span class="co">#&gt;      code     n2     n3     n4     n5     n6                            name</span></span>
+<span><span class="co">#&gt;     &lt;num&gt; &lt;char&gt; &lt;char&gt; &lt;char&gt; &lt;char&gt; &lt;char&gt;                          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:  32551     32    325   3255  32551  32551 Paint and Coating Manufacturing</span></span>
+<span><span class="co">#&gt; 2: 325510     32    325   3255  32551 325510 Paint and Coating Manufacturing</span></span>
+<span><span class="co">#&gt; 3: 325510     32    325   3255  32551 325510 Paint and Coating Manufacturing</span></span>
+<span><span class="co">#&gt;                                    num_name</span></span>
+<span><span class="co">#&gt;                                      &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:  32551 - Paint and Coating Manufacturing</span></span>
+<span><span class="co">#&gt; 2: 325510 - Paint and Coating Manufacturing</span></span>
+<span><span class="co">#&gt; 3: 325510 - Paint and Coating Manufacturing</span></span>
+<span><span class="co">## note latlon_from_naics() requires the frs_by_naics dataset, which it tries to load on demand. </span></span>
+<span><span class="co"># head(latlon_from_naics(325510)) </span></span>
+<span><span class="co"># has about 1,000 facilities  </span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># All sectors with this phrase in their NAICS title</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co">#  x &lt;- ejamit(frs_from_naics("paint and coating"), 1)}</span></span></code></pre></div>
+<p>See many more <a href="#working-with-naics-codes-industry-codes">Working with NAICS Codes
+(Industry Codes)</a>, in a section below.</p>
 </div>
 <div class="section level4">
 <h4 id="by-epa-regulatory-program">by EPA Regulatory Program<a class="anchor" aria-label="anchor" href="#by-epa-regulatory-program"></a>

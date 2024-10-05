@@ -67,8 +67,8 @@ if (is.na(dodocument)) {stop('stopped')}
 if (doask & interactive()  & rstudioapi::isAvailable() ) {doloadall_not_library  <- utils::askYesNo("do load_all() instead of library(EJAM) ?")}
 if (is.na(doloadall_not_library)) {stop('stopped')}
 
-if (doask & interactive()  & rstudioapi::isAvailable() ) {dopreviewonly  <- utils::askYesNo("Just build site preview locally (not for github yet)?")}
-if (is.na(dopreviewonly)) {stop('stopped')}
+# if (doask & interactive()  & rstudioapi::isAvailable() ) {dopreviewonly  <- utils::askYesNo("Just build site preview locally (not for github yet)?")}
+# if (is.na(dopreviewonly)) {stop('stopped')}
 
 #################### #
 
@@ -188,10 +188,10 @@ EJAM::dataload_from_pins("all") #  # just in case
 #   pkgdown::build_site() 
 
 
-# ** BUILD SITE PREVIEW before moving to docs? and committing #### 
+# ** BUILD SITE  before committing #### 
 
 if (dopreviewonly) {
-  # locally before publishing
+ 
   
   pkgdown::build_site(
     examples = FALSE, lazy = TRUE, 
@@ -211,85 +211,85 @@ if (dopreviewonly) {
   # build_redirects()
   
   
-  # build_site_github_pages() would do more steps:
+  # build_site_github_pages() is for use in a github action, and would do more steps:
   #  build_site(), but then also gets metadata about package and does
   #  clean_site() and
   #  build_github_pages()
 } else {
   #################### # #################### # #################### # #################### # 
   # ~ ####
-  Sys.time() # next part can be SLOW # 40 minutes for all of this to run with slowest options
-  
-  # ** BUILD SITE GITHUB PAGES #### 
-  
-  # (web based vignettes) for pkgdown website.  in /docs/ ? not /doc/ 
-  # knit button might not work in some cases?
-  # This does ALL the pages over again
-  
-  # build_articles()
-  # >>>Note that when you run build_articles() directly (outside of build_site()) vignettes 
-  #  will use the currently installed version of the package, not the current source version. 
-  #  This makes iteration quicker when you are primarily working on the text of an article.
-  # # This works (at least for one article) ... new_process = FALSE seemed to help:
-  # build_article("0_whatis",   new_process = FALSE)
-  # build_article("0_webapp",   new_process = FALSE)
-  # build_article("1_installing",   new_process = FALSE)
-  # build_article("2_quickstart",   new_process = FALSE)
-  # build_article("3_analyzing",    new_process = FALSE)
-  # build_article("4_advanced",     new_process = FALSE)
-  
-  # build_article("5_ejscreenapi",  new_process = FALSE)
-  # build_article("6_future_plans", new_process = FALSE)
-  
-  # reads the vignettes/xyz.Rmd and uses those as it
-  #  recreates all .html files, etc. (could perhaps do as bkgd job)
-  
-  #** build_site_github_pages 
-  
-  pkgdown::build_site_github_pages(  ## ?? or just build_site() ?
-    
-    # but this function is meant to be used as part of github actions
-    # https://pkgdown.r-lib.org/reference/build_site_github_pages.html
-    
-    dest_dir = "docs",
-    clean = FALSE,        # faster if FALSE. TRUE would delete objects already attached? 
-    examples = FALSE,     # *** should only set TRUE if you want to include outputs of examples along with the function documentation!
-    new_process = FALSE,  # faster if FALSE (and HAD PROBLEMS IF TRUE... if FALSE then it can rely on having frs and other files available in current environment, for building vignettes?)
-    
-    devel = FALSE,
-    # devel = TRUE, # faster if TRUE - If FALSE, will first install the package to a temporary library, and will run all examples and vignettes in a new process.
-    # build_site() defaults to devel = FALSE so that you get high fidelity outputs when you building the complete site; 
-    # build_reference(), build_home() and friends default to devel = TRUE so that you can rapidly iterate during development.
-    
-    lazy = TRUE       # faster if TRUE   (can force a build despite no change in source vs destination copy)
-  )
-  # that does clean_site(),   build_site(), and  build_github_pages() 
-  
-  Sys.time() # 40 minutes for all of this to run with slowest options above
-  
-  #################### # #################### # #################### # #################### # 
-  # ~ ####
-  # did it finish ? ####
-  
-  # But within that, it stops with error on this step: 
-  #
-  #     build_search('.')   # **** PROBLEM IN pkgdown ******
-  # ── Building search index ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-  # Error in UseMethod("xml_find_first") : no applicable method for 'xml_find_first' applied to an object of class "xml_document"
-  #  and trying it alone afterwards fails with the same error.
-  # so it never gets to 
-  # #  some  steps in    
-  # pkgdown:::build_site_local() ?
-  #    which is part of 
-  # pkgdown::build_site_github_pages()
+  # Sys.time() # next part can be SLOW # 40 minutes for all of this to run with slowest options
   # 
-  # But then trying this in command line works:
-  
-  cat("If there was a problem, you might need to restart and finish by doing these :  \n\n")
-  cat("
-  pkgdown:::build_search('.')
-      \n")
+  # # ** BUILD SITE GITHUB PAGES #### 
+  # 
+  # # (web based vignettes) for pkgdown website.  in /docs/ ? not /doc/ 
+  # # knit button might not work in some cases?
+  # # This does ALL the pages over again
+  # 
+  # # build_articles()
+  # # >>>Note that when you run build_articles() directly (outside of build_site()) vignettes 
+  # #  will use the currently installed version of the package, not the current source version. 
+  # #  This makes iteration quicker when you are primarily working on the text of an article.
+  # # # This works (at least for one article) ... new_process = FALSE seemed to help:
+  # # build_article("0_whatis",   new_process = FALSE)
+  # # build_article("0_webapp",   new_process = FALSE)
+  # # build_article("1_installing",   new_process = FALSE)
+  # # build_article("2_quickstart",   new_process = FALSE)
+  # # build_article("3_analyzing",    new_process = FALSE)
+  # # build_article("4_advanced",     new_process = FALSE)
+  # 
+  # # build_article("5_ejscreenapi",  new_process = FALSE)
+  # # build_article("6_future_plans", new_process = FALSE)
+  # 
+  # # reads the vignettes/xyz.Rmd and uses those as it
+  # #  recreates all .html files, etc. (could perhaps do as bkgd job)
+  # 
+  # #** build_site_github_pages 
+  # 
+  # pkgdown::build_site_github_pages(  ## ?? or just build_site() ?
+  #   
+  #   # but this function is meant to be used as part of github actions
+  #   # https://pkgdown.r-lib.org/reference/build_site_github_pages.html
+  #   
+  #   dest_dir = "docs",
+  #   clean = FALSE,        # faster if FALSE. TRUE would delete objects already attached? 
+  #   examples = FALSE,     # *** should only set TRUE if you want to include outputs of examples along with the function documentation!
+  #   new_process = FALSE,  # faster if FALSE (and HAD PROBLEMS IF TRUE... if FALSE then it can rely on having frs and other files available in current environment, for building vignettes?)
+  #   
+  #   devel = FALSE,
+  #   # devel = TRUE, # faster if TRUE - If FALSE, will first install the package to a temporary library, and will run all examples and vignettes in a new process.
+  #   # build_site() defaults to devel = FALSE so that you get high fidelity outputs when you building the complete site; 
+  #   # build_reference(), build_home() and friends default to devel = TRUE so that you can rapidly iterate during development.
+  #   
+  #   lazy = TRUE       # faster if TRUE   (can force a build despite no change in source vs destination copy)
+  # )
+  # # that does clean_site(),   build_site(), and  build_github_pages() 
+  # 
+  # Sys.time() # 40 minutes for all of this to run with slowest options above
+  # 
+  # #################### # #################### # #################### # #################### # 
+  # # ~ ####
+  # # did it finish ? ####
+  # 
+  # # But within that, it stops with error on this step: 
+  # #
+  # #     build_search('.')   # **** PROBLEM IN pkgdown ******
+  # # ── Building search index ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  # # Error in UseMethod("xml_find_first") : no applicable method for 'xml_find_first' applied to an object of class "xml_document"
+  # #  and trying it alone afterwards fails with the same error.
+  # # so it never gets to 
+  # # #  some  steps in    
+  # # pkgdown:::build_site_local() ?
+  # #    which is part of 
+  # # pkgdown::build_site_github_pages()
+  # # 
+  # # But then trying this in command line works:
+  # 
+  # cat("If there was a problem, you might need to restart and finish by doing these :  \n\n")
+  # cat("
   # pkgdown:::build_search('.')
+  #     \n")
+  # # pkgdown:::build_search('.')
   }
 #################### # 
 

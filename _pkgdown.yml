@@ -43,14 +43,19 @@ articles:
   - '`3_analyzing`'
   - '`4_advanced`'
 reference:
-- title: "Key Functions"
-  desc: "The Main High-Level Functions in EJAM"
+- title: "Key Functions for Starting an Analysis"
+  desc: "Starting the Analysis"
   contents:
   - EJAM
   - app_run_EJAM
   - ejamit
   - ejamit_compare_distances
   - ejamit_compare_types_of_places
+  - app_run_EJAMejscreenapi
+  - ejscreenit_for_ejam
+- title: "Key Functions for Viewing Results"
+  desc: "Viewing the Results"
+  contents:
   - ejam2excel
   - ejam2report
   - ejam2map
@@ -63,7 +68,6 @@ reference:
   - ejam2tableviewer
   - ejam2table_tall
   - ejam2shapefile
-  - ejscreenit_for_ejam
 - title: "Specify Points by Lat/Lon"
   desc: "Utilities for working with latitude/ longitude or address"
   contents:
@@ -563,9 +567,6 @@ reference:
   - shapefile_filepaths_validize
   - shapefile_from_json
   - sitepoints_from_anything
-  - table_signif_round_x100
-  - table_signif
   - table_round
-  - table_x100
   - table_rounding_info
   - ejampackages

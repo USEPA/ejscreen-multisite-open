@@ -116,9 +116,9 @@ and also get a PAT to do this – see details below.</p>
 <h3 id="if-you-need-the-full-source-code-or-want-to-buildinstall-in-rstudio-on-your-own">if you need the full source code or want to build/install in RStudio
 on your own<a class="anchor" aria-label="anchor" href="#if-you-need-the-full-source-code-or-want-to-buildinstall-in-rstudio-on-your-own"></a>
 </h3>
-<p>There is now no other EJAM-specific package that EJAM needs - all of
-the code is consolidated in the EJAM package.</p>
-<p>The package is available on the <a href="https://github.com/USEPA/EJAM" class="external-link uri" target="_blank" rel="noreferrer noopener" title="github.com/USEPA/EJAM">USEPA github</a>
+<p>The only EPA/EJAM-specific package needed is the EJAM package
+itself.</p>
+<p>That package is available on the <a href="https://github.com/USEPA/EJAM" class="external-link uri" target="_blank" rel="noreferrer noopener" title="github.com/USEPA/EJAM">USEPA github</a>
 (not CRAN)</p>
 <ul>
 <li><a href="https://github.com/USEPA/EJAM#readme" class="external-link uri" target="_blank" rel="noreferrer noopener" title="github.com/USEPA/EJAM">EJAM</a></li>
@@ -242,11 +242,11 @@ manually:</p>
 <span><span class="co"># It takes a moment for the large downloads, while EJAM is still in development.</span></span></code></pre></div>
 <p>Attaching the package actually checks for copies in memory first
 (e.g., <code>exists("quaddata", envir = globalenv())</code>), then local
-disk (using <code><a href="../reference/dataload_from_local.html">dataload_from_local()</a></code> looking in the data
-folder of the (source or installed) package, as defined by
+disk (using [dataload_from_local()] looking in the data folder of the
+(source or installed) package, as defined by
 <code>EJAM:::app_sys()</code> which is just a wrapper for
 <code><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file()</a></code>), then finally tries to download any still
-needed, using <code><a href="../reference/dataload_from_pins.html">dataload_from_pins()</a></code>.</p>
+needed, using [dataload_from_pins()] for example.</p>
 </div>
 <div class="section level3">
 <h3 id="details-on-the-indexing-of-blocks">Details on the indexing of blocks<a class="anchor" aria-label="anchor" href="#details-on-the-indexing-of-blocks"></a>

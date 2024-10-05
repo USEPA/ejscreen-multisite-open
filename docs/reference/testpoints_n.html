@@ -77,7 +77,7 @@ facility, blockgroup, block, place on the map, or US resident.</p>
 
 <dt id="arg-weighting">weighting<a class="anchor" aria-label="anchor" href="#arg-weighting"></a></dt>
 <dd><p>word indicating how to weight the random points (some synonyms are allowed, in addition to those shown here):</p>
-<p>Note the default is frs, but you may want to use pop even though it is slower.</p><ul><li><p>pop or people = Average Person: random person among all US residents (block point of residence per 2020 Census)</p></li>
+<p>Note the default is frs, but you may want to use pop even though it is slower.</p><ul><li><p>pop or people (slow) = Average Person: random person among all US residents (block point of residence per 2020 Census)</p></li>
 <li><p>frs or facility = Average Facility: random EPA-regulated facility from actives in Facility Registry Service (FRS)</p></li>
 <li><p>bg = Average Blockgroup: random US Census block group (internal point like a centroid)</p></li>
 <li><p>block = Average Block: random US Census block (internal point like a centroid)</p></li>
@@ -92,7 +92,7 @@ facility, blockgroup, block, place on the map, or US resident.</p>
 <dt id="arg-st">ST<a class="anchor" aria-label="anchor" href="#arg-st"></a></dt>
 <dd><p>optional, can be a character vector of 2 letter State abbreviations to pick from only some States.
 #' @examples
-mapfast(testpoints_n(300, ST_needed = c('LA','MS')) )</p></dd>
+mapfast(testpoints_n(300, ST = c('LA','MS')) )</p></dd>
 
 
 <dt id="arg-validonly">validonly<a class="anchor" aria-label="anchor" href="#arg-validonly"></a></dt>
