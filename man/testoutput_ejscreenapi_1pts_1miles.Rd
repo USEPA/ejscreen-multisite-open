@@ -5,7 +5,7 @@
 \alias{testoutput_ejscreenapi_1pts_1miles}
 \title{test data, output from this function}
 \format{
-An object of class \code{data.frame} with 1 rows and 292 columns.
+An object of class \code{data.frame} with 1 rows and 291 columns.
 }
 \usage{
 testoutput_ejscreenapi_1pts_1miles

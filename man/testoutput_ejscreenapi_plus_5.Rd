@@ -5,7 +5,7 @@
 \alias{testoutput_ejscreenapi_plus_5}
 \title{test data examples of output from \code{\link[=ejscreenapi_plus]{ejscreenapi_plus()}} using testpoints_5, radius = 1}
 \format{
-An object of class \code{data.frame} with 5 rows and 390 columns.
+An object of class \code{data.frame} with 5 rows and 355 columns.
 }
 \usage{
 testoutput_ejscreenapi_plus_5

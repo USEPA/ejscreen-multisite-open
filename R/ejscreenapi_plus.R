@@ -129,6 +129,8 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
   results_table <- cbind(pts, batchtableout) # needed here to allow links to be made 
   results_table <- urls_clusters_and_sort_cols(results_table)
   
+  # results_table <- results_table[, names(results_table) != 'mapurl']   # drop this column that was only useful while viewing uploaded points but is redundant in final results here
+  
   ############################################################## #
   
   # table is renamed here so code will be identical to code in server.R
@@ -136,6 +138,7 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
   
   # colnames in results table are always api version of names
   #   name the columns using the Rfieldnames style  - also ensures any calc_ratios_to_avg() will work right
+  
   names(table_as_displayed) <- fixcolnames(
     namesnow = names(table_as_displayed), 
     oldtype = 'api', # oldtype = "original",
@@ -159,53 +162,21 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
   }
   ############################################################# #
   
-  # ratios section is identical to (duplicating) code in app_server_EJAMejscreenapi and MODULE ############################################################# #
+  # note: ejscreenapi_plus() vs app_server_EJAMejscreenapi vs MODULE ############################################################# #
   
   ### Add Ratios to us or state averages ####
   
   if (calculate_ratios) {
-    
-    names_e_FOR_RATIOS <- names_e
-    names_d_FOR_RATIOS <- c(names_d, names_d_subgroups)
-    # but not c(names_d, names_d_subgroups) ?? #  AVERAGE IS NOT AN OUTPUT OF API - need to get means from usastats, statestats
-
-    if (!all(paste0("ratio.to.avg.",       names_e_FOR_RATIOS) == names_e_ratio_to_avg)) {stop("names_e and names_e_ratio_to_avg are sorted differently")}
-    if (!all(paste0("ratio.to.avg.",       names_d_FOR_RATIOS) == c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg))) {stop("d-related names are sorted differently")}
-    if (!all(paste0("ratio.to.state.avg.", names_e_FOR_RATIOS) == names_e_ratio_to_state_avg)) {stop("names_e and names_e_ratio_to_state_avg are sorted differently")}
-    if (!all(paste0("ratio.to.state.avg.", names_d_FOR_RATIOS) == c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg))) {stop("d-related names are sorted differently")}
-
-    ##  ratio to US avg ------------ -
-    
-    # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT IS THE SORT ORDER OF THE VARIABLES !
-    usratios <- calc_ratios_to_avg(table_as_displayed, 
-                                   zone.prefix = "", 
-                                   evarnames = names_e_FOR_RATIOS, 
-                                   dvarnames = names_d_FOR_RATIOS ) 
-    eratios <- round(usratios$ratios_e, 4)
-    dratios <- round(usratios$ratios_d, 4)
-    # calc_ratios_to_avg() colnames returned are same as input, not renamed to say "ratio"
-    names(eratios) <-   names_e_ratio_to_avg
-    names(dratios) <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg)
-    table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
-    
-    ##  ratio to STATE avg ------------- -
-    
-    st_ratios <- calc_ratios_to_avg(table_as_displayed, 
-                                    zone.prefix = "state.", 
-                                    evarnames = names_e_FOR_RATIOS,
-                                    dvarnames = names_d_FOR_RATIOS ) 
-    st_eratios <- round(st_ratios$ratios_e, 4)
-    st_dratios <- round(st_ratios$ratios_d, 4)
-    # calc_ratios_to_avg() colnames returned are same as input, not renamed to say "ratio"
-    names(st_eratios) <-   names_e_ratio_to_state_avg  # but RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES as checked above
-    names(st_dratios) <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg)
-    table_as_displayed <- cbind(table_as_displayed, st_dratios, st_eratios)
-    
+    table_as_displayed <- calc_ratios_to_avg_for_ejscreenapi(table_as_displayed = table_as_displayed)
   } # end of ratio calculations 
   
   ############################################################## #
   
-  #  Add commas to numbers for population counts? ####  
+  
+  
+  
+  
+  #-_Commas for pop count ####
   # if ('totalPop' %in% names(table_as_displayed)) table_as_displayed$totalPop <- prettyNum(table_as_displayed$totalPop, big.mark = ',') 
   # if ('pop'      %in% names(table_as_displayed)) table_as_displayed$pop      <- prettyNum(table_as_displayed$pop,      big.mark = ',') 
   # # if ('total population (ACS 5yr file)' %in% names(table_as_displayed)) table_as_displayed[,`total population (ACS 5yr file)`] <- prettyNum(table_as_displayed[,`total population (ACS 5yr file)`], big.mark = ',') 
