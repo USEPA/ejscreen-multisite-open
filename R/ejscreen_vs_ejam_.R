@@ -90,6 +90,10 @@
 #'  # in RStudio, interactive:
 #'  vs <- ejscreen_vscript()
 #'  
+#'  # vs filtered to just the ones where rounded pop disagrees
+#'  table(vs$same_shown$pop)
+#'  vspopoff <- lapply(vs, function(x) x[!vs$same_shown$pop, ])
+#'  
 #'  pts <- testpoints_100[1:5, ]
 #'    
 #'   # This step can take a long time, 
@@ -359,10 +363,10 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   EJSCREEN_shown <- table_round(apisite)  # SLOW! ***
   EJAM_shown     <- table_round(ejamsite)  # SLOW! ***
   suppressWarnings({
-    apisite               <- apply( apisite,       MARGIN = 2, as.numeric)
-    ejamsite              <- apply(ejamsite,       MARGIN = 2, as.numeric)
-    EJSCREEN_shown <- trimws(apply(EJSCREEN_shown, MARGIN = 2, as.character))
-    EJAM_shown     <- trimws(apply(    EJAM_shown, MARGIN = 2, as.character))
+    apisite               <- as.matrix(as.data.frame(lapply( apisite,    as.numeric))) # should now work if only 1 point (1 row) was analyzed
+    ejamsite              <- as.matrix(as.data.frame(lapply(ejamsite,    as.numeric)))
+    EJSCREEN_shown <- as.matrix(as.data.frame(lapply(EJSCREEN_shown, function(z) trimws(as.character(z)) )))
+    EJAM_shown     <- as.matrix(as.data.frame(lapply(EJAM_shown, function(z) trimws(as.character(z)) )))
   })  
   z <- list(
     EJSCREEN = apisite,
@@ -673,7 +677,7 @@ ejscreen_vs_ejam_1var = function(vs, varname = 'pop', # names_these[4], # "pctli
                                           "pctdiff", "abspctdiff")[c(1,2,5,6)]) {
   cat("\nAlso try, e.g.,  ejscreen_vs_ejam_1var(vs, 'blockcount_near_site')")
   cat('\n\nComparison of results at a few sites, for the indicator', varname, paste0(' (', fixcolnames(varname, 'r', 'long'), ')\n\n'))
-  y = data.frame(sapply(vs[info], function(x) x[,varname]))
+  y = data.frame(lapply(vs[info], function(x) x[,varname]))
   if ("pctdiff" %in% names(y)) {y$pctdiff = round(100 * y$pctdiff, 0)}
   y
 }
@@ -693,7 +697,8 @@ ejscreen_vs_ejam_1var = function(vs, varname = 'pop', # names_these[4], # "pctli
 #'   
 #' @param mysite rownumber corresponding to site of interest, among 1:nrow(z$EJAM)
 #'
-#' @return a table showing one row per indicator, and columns like EJSCREEN, EJAM, ratio, etc.
+#' @return a table showing one row per indicator, and columns like EJSCREEN, EJAM, ratio, etc.,
+#'   but see str() because it is a list in matrix form
 #'
 #' @examples 
 #'   dontrun{
@@ -704,19 +709,21 @@ ejscreen_vs_ejam_1var = function(vs, varname = 'pop', # names_these[4], # "pctli
 #'
 #' @keywords internal
 #' 
-ejscreen_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
+ejscreen_vs_ejam_see1 <- function(z, myvars = c("ejam_uniq_id", 'pop', names_d), mysite = 1) {
   
   if (!is.list(z) | !("EJAM" %in% names(z))) {stop('z must be output of ejscreen_vs_ejam() or ejscreen_vs_ejam_alreadyrun()')}
   if (length(mysite) > 1 | mysite > NROW(z$EJAM)) {stop('mysite must be the row number of 1 site in the table z$EJAM')}
   if (!all(myvars %in% colnames(z$EJAM))) {stop('myvars must be among colnames of z$EJAM')}
-  
+  if (length(myvars) == 1) {myvars = c('ejam_uniq_id', myvars)} # quick fix since didn't handle just 1 var
   z = sapply(z, function(x) x[mysite, ])[myvars, , drop = FALSE]
-  z = data.frame(z, varlist = varinfo(myvars, 'varlist')$varlist)
-  z = z[order(z$varlist), ]
+  z = cbind(z, varlist = varinfo(myvars, 'varlist')$varlist) # now a matrix that is also actually a list so it can store both character and numeric elements
+  z = z[order(as.vector(unlist(z[,'varlist'] ))), ]
   
   roundable = c( 'ratio', 'diff', 'absdiff', 'pctdiff', 'abspctdiff' )
-  z[, roundable] <- round(z[, roundable], 4)
-  
+  z[, roundable] <- round(as.numeric(z[, roundable]), 4)
+  # if output is made a data.frame,   EJAM_shown etc. do not show quote marks to make clear it is text.
+  # if output is kept a matrix/array (that is really a list here), you cannot easily refer to a column like z$ratio 
+  z = data.frame( lapply(as.data.frame(z), unlist) ) # lets you do things like z$ratio or z[,c('EJSCREEN', 'EJAM')] or z[!z$same_shown, ]
   return(z)
 }
 ######################################################################### # 
@@ -729,7 +736,11 @@ ejscreen_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
 #' @param overlay_blockgroups optional, set TRUE to see overlay of boundaries of parent blockgroups,
 #'   noting that you have to click to turn off the layer for block point info popups to work
 #' @param ... passed to [plotblocksnearby()]
-#' @return Just draws map and shows tables and returns output of ejscreen_vs_ejam_see1()
+#' @return Just draws map and shows tables and returns the table of blocks near the site
+#'   and info on how much the distance and pop count differ from what EJAM thinks
+#'   is the actual exact radius, with possible explanation of discrepancy
+#'   between ejscreen api and ejam estimate,
+#'   but you may also want the output of ejscreen_vs_ejam_see1()
 #' @examples dontrun{
 #'   z <- ejscreen_vs_ejam(testpoints_10, radius = 3, include_ejindexes = TRUE)
 #'   ejscreen_vs_ejam_see1map(3, z, overlay_blockgroups = TRUE)
@@ -744,21 +755,130 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
   # n is the rownumber of the site analyzed, row of x$EJAM
   # x is from x <- ejscreen_vs_ejam(pts, radius = radius, include_ejindexes = TRUE)
   
-  if (is.null(radius)) {radius = x$EJAM[1, "radius.miles"]}  
+  differenceinfo = ejscreen_vs_ejam_see1(x,
+                                         mysite = n, 
+                                         myvars = c('pop', 'blockcount_near_site'))[ , c('EJSCREEN', 'EJAM', 'diff')]
+  ######### #
+  if (is.null(radius)) {radius = x$EJAM[n, "radius.miles"]}
   datf = data.frame(x$EJAM[n, 1:10, drop = FALSE], lat = x$EJAM[n, 'lat'], lon = x$EJAM[n, 'lon'])
-  px <- plotblocksnearby(datf, 
-                         radius = radius, 
-                         overlay_blockgroups = overlay_blockgroups, 
-                         ...)
+  suppressWarnings({
+    
+    px <- plotblocksnearby(datf, 
+                           radius = radius + 0.08, # 0.01 miles is 52.81 feet... 
+                           #  to include a few that are slightly beyond the stated radius !
+                           overlay_blockgroups = overlay_blockgroups, 
+                           ...)
+  })
   px[blockgroupstats, bgpop := pop, on = 'bgid']
   px[, blockpop := bgpop * blockwt]
-  these <- tail(px[order(-distance), .(blockid, distance, blockpop)], 10) # see the 10 furthest sites
-  these$cumpop = round(rev(cumsum(rev(these$blockpop))), 1) # cumulative starting from furthest site
-  print(these)
   
-  ejscreen_vs_ejam_see1(x,
-                        mysite = n, 
-                        myvars = c('pop', 'blockcount_near_site'))[ , c('EJSCREEN', 'EJAM', 'diff')]
+  # see the 10 furthest sites, that are <= radius,
+  
+  these <- tail(px[distance <= radius, ][order(distance), .(blockid, distance, blockpop)], 10) 
+  these$cumpop = round(rev(cumsum(rev(these$blockpop))), 0) # cumulative starting from furthest site
+  
+  # but then also include the next few beyond that radius
+  # so add as many as the discrepancy and about 5 more
+  
+  these_extras <- head(px[distance > radius, ][order(distance), .(blockid, distance, blockpop)], 5 + differenceinfo['blockcount_near_site', 'diff']) 
+  these_extras$blockpop = -1 * these_extras$blockpop
+  these_extras$cumpop = round( (cumsum((these_extras$blockpop))), 0) 
+  
+  these <- rbind(these, 
+                 data.frame(blockid = NA, distance = radius, blockpop = NA, cumpop = 0), # dividing line in list
+                 these_extras)
+  
+  these$blockpop = round(these$blockpop, 1)
+  these$feet = -1 * round((radius - these$distance) * 5281, 0) 
+  these$meters = -1 * round((radius - these$distance) * meters_per_mile, 0)
+  
+  ########################## # 
+  these$explanation = ""
+  pdif = round(differenceinfo['pop', 'diff'], 0)
+  bdif = differenceinfo['blockcount_near_site', 'diff']
+  explained = FALSE
+  if (pdif != 0) {
+    # does a single block explain the discrepancy?########################## # 
+    if (pdif %in% round(these$blockpop, 0) & bdif %in% c(-1, 1)) {
+      these$explanation[round(these$blockpop, 0) == pdif] <- "pop of this block matches pop diff"
+      explained = TRUE
+    }
+    if (bdif != 1) {
+      if (!explained) {
+        # could it be a combo of some exactly bdif number of blocks that explains the pdif? e.g., missed all 3 or all 3 are extra ########################## # 
+        combs = combn(seq_along((these$blockpop)), m = bdif)
+        possible_explanations <- combs[, which(round(colSums(combn((these$blockpop), m = bdif)), 0) == pdif)]
+        # most likely guess is the set (if one exists) that are in order by distance, like the next 3 beyond radius, ranked by distance
+        inorderbydistance = apply(possible_explanations, 2, function(x) setequal(x, min(x):(min(x) + length(x) - 1) ))
+        if (any(inorderbydistance)) {
+          if (sum(inorderbydistance) > 1) {
+            bestone = possible_explanations[, inorderbydistance][,1]
+          } else {
+            bestone = possible_explanations[, inorderbydistance] 
+          }
+        } else {
+          bestone = possible_explanations[,1] # just take the first one, since none are obviously most likely
+        }
+        these$explanation[bestone] <- "group of missing or extra?"
+        explained <- TRUE
+      }
+    }
+    
+    # could it be bdif blocks but also 1 more missed and 1 more extra?
+    #   would check as above with combn but where m  = bdif +2
+    #   includes case where bdif == 0    
+    if (!explained) {
+      # could it be a combo of some exactly bdif +2 number of blocks that explains the pdif? e.g., missed all 3 or all 3 are extra ########################## # 
+      combs = combn(seq_along((these$blockpop)), m = bdif + 2)
+      possible_explanations <- combs[, which(round(colSums(combn((these$blockpop), m = bdif + 2)), 0) == pdif)]
+      if (length(possible_explanations) != 0) {
+        if (NCOL(possible_explanations) == 1) {
+          bestone = possible_explanations
+        } else {
+          # most likely guess is the set (if one exists) that are in order by distance, like the next 3 beyond radius, ranked by distance
+          inorderbydistance = apply(possible_explanations, 2, function(x) setequal(x, min(x):(min(x) + length(x) - 1) ))
+          if (any(inorderbydistance)) {
+            if (sum(inorderbydistance) > 1) {
+              bestone = possible_explanations[, inorderbydistance][,1]
+            } else {
+              bestone = possible_explanations[, inorderbydistance] 
+            }
+          } else {
+            bestone = possible_explanations[,1] # just take the first one, since none are obviously most likely
+          }
+        }
+        these$explanation[bestone] <- "group of missing or extra?"
+        explained <- TRUE
+      }
+    }
+    # This case should've been found already by the combinations above
+    # if (!explained) {
+    #   # does an obvious combo of blocks explain the discrepancy? ########################## # 
+    #   if (pdif %in% these$cumpop) {
+    #     these$explanation[these$cumpop == pdif] <- "cumpop matches pop diff"
+    #     explained <- TRUE
+    #   }
+    # }
+    
+    ########################## # 
+  }
+  these = these[ , c('blockid', 'distance', 'feet', 'meters', 'blockpop' ,'cumpop' ,'explanation')]
+  
+  cat(paste0("\nSite ", n, ", ejam_uniq_id = ", x$EJAM$ejam_uniq_id[n], '\n\n'))
+  
+  print(these)
+  cat("blockpop shown here is rounded off\n\n")
+  
+  
+  cat("\nThere should be",
+      differenceinfo['blockcount_near_site', 'diff'],
+      "block(s) whose population account(s) for the pop count discrepancy of ",
+      pdif,
+      "people. \n\n"
+  )
+  print(differenceinfo)
+  
+  invisible(these)
 }
 ######################################################################### # 
 
@@ -802,6 +922,10 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
 #' @examples
 #' vs = ejscreen_vscript(pts = testpoints_100, radius = 3)
 #' 
+#' #'  # vs filtered to just the ones where rounded pop disagrees
+#'  table(vs$same_shown$pop)
+#'  vspopoff <- lapply(vs, function(x) x[!vs$same_shown$pop, ])
+#'  
 #' ## look only at places where blockcount was identical, to exclude that as source of difference
 #' vs_blocksmatch = lapply(vs, function(df) df[vs$absdiff[, "blockcount_near_site"] == 0, ])
 #' # vss = ejscreen_vs_ejam_summary(vs )
@@ -855,6 +979,8 @@ ejscreen_vscript <- function(defdir = '.',
     newpts = askYesNo("Use a new set of random points? (instead of saved points)")
     if (is.na(newpts)) {stop("cancelled")}
   }
+  
+  
   if (missing(pts) && newpts) {
     if (missing(n)) {
       n = ask_number(default = 100, title = "Points", message = "How many points to run?")
