@@ -154,7 +154,12 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
   # ALSO WILL ALLOW SEARCH BY NAICS (INDUSTRIAL SECTOR) 
   # ALSO WILL ALLOW UPLOAD OF SHAPEFILE/ GIS DATA LAYER TO SPECIFY BUFFER AREAS, ETC.
   
+  ############################################################# #
+  ############################################################# #
+  ############################################################# #
+  
   pts <- shiny::reactive({
+    
     # THIS GETS UPDATED WHEN THERE IS A CHANGE IN input$pointsfile
     ## if not uploaded yet, show default example. ####
     if (is.null(input$pointsfile)) {
@@ -244,7 +249,7 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
                   # SOME CODE ASSUMES INPUT POINTS MATCH 1 TO 1 OUTPUT POINTS- CREATES PROBLEM IF INPUT ROW COUNT DIFFERS FROM OUTPUT ROW COUNT, WHICH MAYBE COULD HAPPEN FOR QUERY ON ID, AND ESPECIALLY IF QUERY ON NAICS, FOR EXAMPLE.
                 } else {
                   showModal(modalDialog(title = "Error", paste0("The file must have columns named lat and lon, or registry_id, or pgm_sys_id. Headers must be in row 1, data starting in row 2.", ''), easyClose = TRUE))
-                  cat(paste0("The file must have columns named lat and lon, or registry_id, or pgm_sys_id. Headers must be in row 1, data starting in row 2.", '\n'), file=stdout())
+                  cat(paste0("The file must have columns named lat and lon, or registry_id, or pgm_sys_id. Headers must be in row 1, data starting in row 2.", '\n'), file = stdout())
                   pts_filecontents <- default_points_shown_at_startup  # defined in global.R   This line is so default example is shown instead of uploaded file that does not have correct columns 
                 }
               }
@@ -283,45 +288,40 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
       }
     }
     
-    mapurl <- url_ejscreenmap(lat=pts_filecontents$lat, lon=pts_filecontents$lon)  # e.g.,  "https://ejscreen.epa.gov/mapper/index.html?wherestr=35.3827475,-86.2464592"
+    mapurl <- url_ejscreenmap(lat = pts_filecontents$lat, lon = pts_filecontents$lon)  # e.g.,  "https://ejscreen.epa.gov/mapper/index.html?wherestr=35.3827475,-86.2464592"
     pts_filecontents$mapurl  <- paste0('<a href=\"', mapurl, '\", target=\"_blank\">EJScreen Map ', rownames(pts_filecontents), '</a>')
     
     pts_filecontents
-  })
+  }) # END OF pts() reactive
+  ############################################################# #
+  ############################################################# #
+  ############################################################# #
   
-  # RADIUS input: UI and text and limit for radius slider: Miles / Km ####
+  # >>>>>> RADIUS input: UI and text and limit for radius slider: Miles / Km ####
+  # Used either typed in radius or slider ####
+  #  allow radius to get typed into a text box as an alternative !!! ***
   
-  output$radius_slider <- renderUI({sliderInput(
-    inputId = "radius_via_slider", 
-    label = paste0("Radius of ",     input$default_miles, " miles ", 
-                   paste0("(", round(input$default_miles      * meters_per_mile / 1000, 3), ' km)')), 
-    value =                          input$default_miles, 
-    min = minradius, max = input$max_miles, step = stepradius
-  ) })
-  shiny::observe({     shiny::updateSliderInput(
-    inputId = 'radius_via_slider',  
-    label = paste0("Radius of ",     input$radius_via_slider, " miles ",
-                   paste0("(", round(input$radius_via_slider * meters_per_mile / 1000, 3), ' km)'))
-    #   throttle(input$radius_via_slider, millis = 200)   # this would prevent frequent UI updates as slider is moved 
-  ) })
   
-  output$radius_textbox <- renderUI({textInput(
-    inputId = "radius_via_text", 
-    label = paste0("Radius of ",     input$default_miles, " miles ", 
-                   paste0("(", round(input$default_miles            * meters_per_mile / 1000, 3), ' km)')), 
-    value =             as.character(input$default_miles)
-  ) })
-  shiny::observe({     shiny::updateTextInput(
-    inputId = 'radius_via_text',
-    label = paste0("Radius of ", radius_via_text_validated(), " miles ",  
-                   ifelse(minradius           == as.numeric(radius_via_text_validated()), "(min.) ", ""),
-                   ifelse(input$default_miles == as.numeric(radius_via_text_validated()), "(default) ", ""),
-                   ifelse(input$max_miles     == as.numeric(radius_via_text_validated()), "(max.) ", ""),
-                   paste0("(",             round(as.numeric(radius_via_text_validated()) * meters_per_mile / 1000, 3), ' km)'))
-  ) })
   
+  
+  
+  if (!exists("minradius")) {minradius <- 0.5}
+  if (!exists("stepradius")) {stepradius <-  0.05 }
+  output$radius_slider <- renderUI({sliderInput(inputId =  ("radius_via_slider"),
+                                                label = paste0("Radius of ",     input$default_miles, " miles ",
+                                                               paste0("(", round(input$default_miles      * meters_per_mile / 1000, 3), ' km)')),
+                                                value =                          input$default_miles,
+                                                min = minradius, max = input$max_miles, step = stepradius
+  ) })
+  # minradius and stepradius are defined in   global_EJAMejscreenapi.R file
+  
+  shiny::observe({     shiny::updateSliderInput(session = session, inputId =  ('radius_via_slider'),
+                                                label = paste0("Radius of ",     input$radius_via_slider, " miles ",
+                                                               paste0("(", round(input$radius_via_slider * meters_per_mile / 1000, 3), ' km)'))
+                                                #   throttle(input$radius_via_slider, millis = 200)   # this would prevent frequent UI updates as slider is moved
+  ) })
   radius_via_text_validated <- reactive({
-    x = input$radius_via_text 
+    x = input$radius_via_text
     if (is.null(x))                                  {x = input$default_miles}
     if (is.na(x) | length(x) > 1 | length(x) == 0)   {x = input$default_miles}
     x = as.numeric(x)
@@ -331,8 +331,29 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
     as.character(x)
   })
   
-  # Used either typed in radius or slider ####
-  #  allow radius to get typed into a text box as an alternative !!! ***
+  output$radius_textbox <- renderUI({textInput(
+    "radius_via_text",
+    label = paste0("Radius of ",     input$default_miles, " miles ",
+                   paste0("(", round(input$default_miles            * meters_per_mile / 1000, 3), ' km)')),
+    value =             as.character(input$default_miles)
+  ) })
+  shiny::observe({ shiny::updateTextInput(
+    session = session,
+    inputId =  'radius_via_text',
+    label = paste0(
+      "Radius of ", radius_via_text_validated(), " miles ",
+      ifelse(minradius           == as.numeric(radius_via_text_validated()), "(min.) ", ""),
+      ifelse(input$default_miles == as.numeric(radius_via_text_validated()), "(default) ", ""),
+      ifelse(input$max_miles     == as.numeric(radius_via_text_validated()), "(max.) ", ""),
+      paste0("(",             round(as.numeric(radius_via_text_validated()) * meters_per_mile / 1000, 3), ' km)'))
+  ) })
+  
+  # USE SIMPLIFIED INPUT OF RADIUS UNTIL FIX MODULE USE OF TEXT VS SLIDER INPUTS ***
+  #
+  if ("works in server not module" == "works in server not module") {
+    # Use typedin radius or slider ####
+    #  allow radius to get typed into a text box as an alternative !!! ***
+  
   radius_miles <- reactive({
     if (input$slider_vs_text_radius == "type_in") {
       x = as.numeric(radius_via_text_validated())
@@ -344,6 +365,15 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
     }
     x
   })
+  }  else {
+    stop('not done like this here - see module')
+  #   radius_miles <- reactive({ input$SIMPLERADIUS })
+  }
+  ############################################################# #
+  ############################################################# #
+  ############################################################# #
+  # . ####
+  
   
   # _...Output Text: point count, radius in km, etc. ####
   
@@ -496,51 +526,22 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
     
     # colnames in results table are always api version of names
     #_Rename columns from original format to use R-friendly names ####
+    
     names(table_as_displayed) <- fixcolnames(
       namesnow = names(table_as_displayed), 
       oldtype = 'api', # because results_table()  never has renamed colnames
       newtype = 'r', 
-      mapping_for_names=map_headernames
+      mapping_for_names = map_headernames
     )
     
     ############################################################# #
     
-    # ratios section is identical to code in ejscreenapi_plus() ############################################################# #
+    # note: ejscreenapi_plus() vs app_server_EJAMejscreenapi vs MODULE ############################################################# #
     
     ### Add Ratios to us or state averages ####
     
     if (input$include_ratios) {
-      
-      names_e_FOR_RATIOS <- names_e
-      names_d_FOR_RATIOS <- names_d
-      # but not c(names_d, names_d_subgroups) ? #  AVERAGE IS NOT AN OUTPUT OF API - would need to get means from usastats, statestats
-      
-      if (!all(paste0("ratio.to.avg.",       names_e) == names_e_ratio_to_avg))       {stop("names_e and names_e_ratio_to_avg are sorted differently")}
-      if (!all(paste0("ratio.to.avg.",       names_d) == names_d_ratio_to_avg))       {stop("names_d and names_d_ratio_to_avg are sorted differently")}
-      if (!all(paste0("ratio.to.state.avg.", names_e) == names_e_ratio_to_state_avg)) {stop("names_e and names_e_ratio_to_state_avg are sorted differently")}
-      if (!all(paste0("ratio.to.state.avg.", names_d) == names_d_ratio_to_state_avg)) {stop("names_d and names_d_ratio_to_state_avg are sorted differently")}
-      
-      ##  ratio to US avg ------------ -
-      
-      # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT IS THE SORT ORDER OF THE VARIABLES !
-      usratios <- calc_ratios_to_avg(table_as_displayed, evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # not subgroups # this was not designed to analyze state percentiles ?
-      eratios <- round(usratios$ratios_e, 4)
-      dratios <- round(usratios$ratios_d, 4)
-      
-      names(eratios) <- names_e_ratio_to_avg
-      names(dratios) <- names_d_ratio_to_avg
-      table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
-      
-      ##  ratio to STATE avg ------------- -
-      
-      st_ratios <- calc_ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
-      eratios <- round(st_ratios$ratios_e, 4)
-      dratios <- round(st_ratios$ratios_d, 4)
-      
-      names(eratios) <- names_e_ratio_to_state_avg # but RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES as checked above
-      names(dratios) <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg)  
-      table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
-     
+      table_as_displayed <- calc_ratios_to_avg_for_ejscreenapi(table_as_displayed = table_as_displayed)
     } # end of ratio calculations   
     
     ############################################################## #
@@ -553,18 +554,18 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
       newtype = usewhichnames,  # now will be named using headers user wanted
       mapping_for_names = map_headernames
     )
-    
     ############################################################## #
     
     #-_Commas for pop count ####
     if ('totalPop' %in% names(table_as_displayed)) table_as_displayed$totalPop <- prettyNum(round(table_as_displayed$totalPop, 0), big.mark = ',') 
     if ('pop'      %in% names(table_as_displayed)) table_as_displayed$pop      <- prettyNum(round(table_as_displayed$pop, 0),      big.mark = ',') 
-    
+  # } # end of if (!use_ejscreenit())
     table_as_displayed
     
   }) # end of table_as_displayed_reactive 
+  ## end of table_as_displayed_reactive  <<<<<<<< ####
   
-  
+  #   output$rendered_results_table <- DT::renderDT ####
   output$rendered_results_table <- DT::renderDT({  
     if (NROW(table_as_displayed_reactive()) > input$max_pts_showtable) {
       table_as_displayed_reactive()[1:(input$max_pts_showtable), ]
@@ -603,6 +604,20 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
   
   
   ## Show inputs or results, whatever was just updated ####
+  # keeps track of which is latest one updated, to display that
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  ## Show inputs or results, whatever was just updated ##  ##
   output$table_ui <-  renderUI({
     # if (most_recently_changed() == 'run') DT::DTOutput('rendered_results_table')
     if (most_recently_changed() == 'upload'   ) {
@@ -614,7 +629,7 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
   
   #####################   #####################   #####################   #################### # 
   #####################   #####################   #####################   #################### # 
-  
+  # . ####
   ## Downloading the Table + Excel format + Links!* ####
   
   ### Buttons to Rename table header row -show only if results ready ####
@@ -660,22 +675,12 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
         }
         table_as_displayed <- table_as_displayed_reactive()
         
-        # already renamed to whatever was requested via input$usewhichnames
-        # if (input$usewhichnames == 'friendly') { # friendly here actually means rname 
-        #   names(table_as_displayed) <- fixcolnames(names(table_as_displayed), oldtype = 'api', newtype = 'friendly', mapping_for_names = map_headernames) }
-        # if (input$usewhichnames == 'long') {
-        #   names(table_as_displayed) <- fixcolnames(names(table_as_displayed), oldtype = 'api', newtype = 'long', mapping_for_names = map_longnames)
-        #   # map_longnames <- data.frame(oldnames = map_headernames$oldnames, newnames_ejscreenapi = map_headernames$longname_tableheader, stringsAsFactors = FALSE)
-        #   # names(table_as_displayed) <- fixnames(names(table_as_displayed), mapping_for_names = map_longnames) }
-        
         ########################################################  #
         # prep for excel 
         #
         currentnametype <- input$usewhichnames
         pctile_colnums <-  which('pctile' ==  fixcolnames(names(table_as_displayed), oldtype = currentnametype, newtype = 'jsondoc_shortvartype') ) # this should get what type each is.
-        # pctile_colnums <- which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$oldnames)])
-        # pctile_colnums <- union(pctile_colnums, which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$longname_tableheader)]))
-        
+  
         # fix URLs to work in csv pulled into Excel or in Excel files (as opposed to datatable shown in browser)
         table_as_displayed$`EJScreen Report` <- gsub('.*(http.*)\", target=.*', '\\1', table_as_displayed$`EJScreen Report`) 
         table_as_displayed$EJScreenMAP <- gsub('.*(http.*)\", target=.*', '\\1', table_as_displayed$EJScreenMAP)
@@ -688,11 +693,11 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
           # note despite name of function, write_excel_csv() saves it as a csv, NOT ACTUALLY excel, 
           #  but writes csv faster and indicates it is UTF8 encoding to help import to excel
         } else {
-          wb <- xls_formatting_api(df=table_as_displayed, 
-                                   hyperlink_cols=c('EJScreen Report', 'EJScreen Map'),
-                                   heatmap_colnames=names(table_as_displayed)[pctile_colnums],
-                                   heatmap_cuts=c(80, 90, 95),
-                                   heatmap_colors=c('yellow', 'orange', 'red'))
+          wb <- table_xls_format_api(df = table_as_displayed,
+                                     hyperlink_cols = c('EJScreen Map', 'EJScreen Report'),
+                                     heatmap_colnames = names(table_as_displayed)[pctile_colnums],
+                                     heatmap_cuts = c(80, 90, 95),
+                                     heatmap_colors = c('yellow', 'orange', 'red'))
           openxlsx::saveWorkbook(wb, file = file) # like  openxlsx::write.xlsx(table_as_displayed, file = file)
         }
         ########################################################  #
@@ -702,10 +707,10 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
   
   
   ### Table tips - show only if results ready ####
-  output$tabletips_button_ui <- renderUI({
-    req(results_table())
-    shiny::actionButton('tabletips_button', 'Tip on using this table')  ## tips on using table
-  })
+  # output$tabletips_button_ui <- renderUI({
+  #   req(results_table())
+  #   shiny::actionButton('tabletips_button', 'Tip on using this table')  ## tips on using table
+  # })
   ####################   #####################   #####################   #################### # 
   ### Table tips - text box (about interactive data table) ####
   
@@ -714,16 +719,20 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
       modalDialog(
         title = "Using the interactive table of results",
         tabletips_message,
-        # HTML(paste('<a href=\"', echo_url, '\", target=\"_blank\">', echo_url,  '</a>', sep = '')),
+        # HTML(paste('<a href=\"', echo_url, '\", target=\"_blank\" rel=\"noreferrer noopener\">', echo_url,  '</a>', sep = '')),
         easyClose = TRUE 
       )
     )
   }), input$tabletips_button )
   
   # ____________________________________________________________________ ####### 
-  # 3__ MODULE__ * MAP #### ####################
-  # using  params:  ####    ### # 
-  ####################   #####################   #####################   #################### # 
+  
+  # ______________________  ####
+  # . ####
+  # 3. MAP  ####################
+  # . ####
+  # using  params:  ####    ### #
+  ####################   #####################   #####################   #################### #
   
   ##  Map set up params ####
   
@@ -762,18 +771,18 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
   
   popup_to_show <- reactive({
     # Whether to display popups on map using uploaded point data or results of EJ stats run.
-    # cat('\n', 'The value of most_recently_changed() is now ', most_recently_changed(), '\n', file = stderr())
     if (most_recently_changed() == 'results') {x <- (popup_ejstats())}
     if (most_recently_changed() == 'upload')  {x <- (popup_uploadedpoints())}
     x
-  })  
+  })
+  
   popup_uploadedpoints <- reactive({
     #  RESTRICT NUMBER OF POINTS MAPPED AND POPUPS TOO, HERE, BASED ON CAP input$max_pts_map
     popup_from_uploadedpoints(
       pts()[1:min( input$max_pts_map, NROW(pts())), ]
     )
-    #mapfast(column_names = 'all') 
   })
+  
   popup_ejstats <- reactive({
     # cat('recalculating popup_ejstats since results table changed\n')
     #  create popups for map, using EJ stats from buffer analysis
@@ -917,13 +926,14 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
   # projcrs <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0" #  lat / lon
   # try({mapview  ::  mapView(   (sf  ::  st_as_sf(x = (pts()), coords = c("lon", "lat"), crs = projcrs)))@map}, silent = TRUE)
   
-  # ____________________________________________________________________ ####### 
-  #
-  # 4__ could become a MODULE?__ * GRAPHICS #### ####################
-  
+  # ______________________  ####
+  # . ####
+  # 4. GRAPHICS   ####################
+  # . ####
   ## Boxplots ####
-  # 
+  #
   # output$plot1out <- shiny::renderCachedPlot({
+  
   output$plot1out <- shiny::renderPlot({
     req(results_table())
     out <- results_table()

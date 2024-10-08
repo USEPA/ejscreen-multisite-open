@@ -40,7 +40,10 @@ avg.in.us <- datacreate_avg.in.us(usastats = usastats,  # must be the updated/ne
 
 avg.in.us <- metadata_add(avg.in.us)
 usethis::use_data(avg.in.us, overwrite = TRUE)
-
+# documentation ####
+dataset_documenter('avg.in.us', 
+                   title = "avg.in.us (DATA) national averages of key indicators, for convenience",
+                   description = "also available via [usastats] and created by /data-raw/datacreate_avg.in.us")
 
 cat("FINISHED A SCRIPT\n")
 cat("\n In globalenv() so far: \n\n")

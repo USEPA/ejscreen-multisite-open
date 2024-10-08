@@ -11,7 +11,7 @@ map_google(lat, lon, zoom = 12, point = TRUE, launch = TRUE)
 \item Anything that can be handled by \code{\link[=sitepoints_from_any]{sitepoints_from_any()}}.
 Leave unspecified to interactively browse to a .xlsx file that has lat,lon columns,
 or lat can be a data.frame with lat,lon column names in which case longitude should not be provided,
-such as lat = testpoints\link{1,}, or lat and lon can be separately provided as vectors.
+such as lat = testpoints_10\link{1,}, or lat and lon can be separately provided as vectors.
 }}
 
 \item{lon}{longitude, or omit this parameter to provide points as the first parameter.}

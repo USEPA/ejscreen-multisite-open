@@ -17,24 +17,28 @@ test2lon <- c(-118.241073, -76.641674)
 # missing_api_results <- inherits(brokerout, "try-error")
 
 
+apiref$`Seconds elapsed obtaining data` = NULL
+apinow$`Seconds elapsed obtaining data` = NULL
 
 
 test_that("ejscreenit() works at all", {
   expect_no_error(  suppressMessages({
+    suppressWarnings({
     junk <-  ejscreenit(testpoints_5[1:2, ], radius = 0.5, nosave = T, nosee = T, interactiveprompt = F, 
                         calculate_ratios = F)
-  })
+})  })
   )
 })
+
 test_that('ejscreenit() does not crash for 2 points x= lons, y = lats', {
   expect_no_error({
     ## returns warnings about invalid sites throughout analysis, but no errors
-    suppressWarnings(
+    suppressWarnings({
     out_ejscreenit_separate_lat_lon <- ejscreenit(
       x = test2lon, y = test2lat, radius = testradius,
       nosave = TRUE, nosee = TRUE, interactiveprompt = FALSE
     )
-    )
+    })
   } )
 })
 

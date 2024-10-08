@@ -336,7 +336,7 @@ rm(savehere)
   # [60,] "ie_li"             "names_d_languageli_count"     
   # [61,] "api_li"            "names_d_languageli_count"     
   # [62,] "other_li"          "names_d_languageli_count"     
-  # [63,] "pop"               "names_d_other_count"          
+  # [63,] "pop"               "names_d_other_count"          or names_wts
   # [64,] "age25up"           "names_d_other_count"          
   # [65,] "hhlds"             "names_d_other_count"          
   # [66,] "pctdisability"     "names_health"                 
@@ -432,9 +432,12 @@ paste0(setdiff(names_d_language, names(blockgroupstats)) , collapse = ", "), "\n
 blockgroupstats    <- metadata_add(blockgroupstats)
 usethis::use_data(blockgroupstats, overwrite = T)
 
-bgej <- metadata_add(bgej)
-## do not save via  usethis::use_data(bgej, overwrite = TRUE) - it is a large file
-cat("bgej created in globalenv but not saved yet - will try to save to pins board now \n")
+cat("REMEMBER TO MANUALLY UPDATE THE DOCUMENTATION IN data_blockgroupstats.R\n")
+if (rstudioapi::isAvailable()) {
+    rstudioapi::documentOpen('./R/data_blockgroupstats.R')
+}
+# OR USE 
+# dataset_documenter('blockgroupstats', saveinpackage = FALSE)
 
 cat("FINISHED A SCRIPT\n")
 cat("\n In globalenv() so far: \n\n")
@@ -458,34 +461,38 @@ capture.output({
 #################################################################################### #
 
 
-### if fixing scaling after blockgroupstats had already been created:
-if (1 == 0 ) {
-
-  
-  x100 = c(names_d_subgroups, names_d_subgroups_alone,
-           'pctunder18' , 'pctover17', 'pctmale', 'pctfemale', 'pctpoor',
-           'pctlan_nonenglish' ,     
-           'pctlan_spanish'   ,       
-           'pctlan_ie'       ,      
-           'pctlan_api'    ,          
-           'pctlan_other'    ,       
-           
-           # already scaled correctly  
-           # 'pctspanish_li'   , 
-           # 'pctie_li'  ,      
-           # 'pctapi_li'  ,        
-           # 'pctother_li'   ,      
-           
-           'pctownedunits'  ,
-           'pctnobroadband'  )
-
-x100 = intersect(x100, names(blockgroupstats))
-
-blockgroupstats[, (x100) := lapply(.SD, function(x) x/100), .SDcols = x100] 
-
-# check it
-cbind(sort(sapply(blockgroupstats, max)))
-
-blockgroupstats    <- metadata_add(blockgroupstats)
-usethis::use_data(blockgroupstats, overwrite = T)
-}
+# ### if fixing scaling after blockgroupstats had already been created:
+# if (1 == 0 ) {
+# 
+#   
+#   x100 = c(names_d_subgroups, names_d_subgroups_alone,
+#            'pctunder18' , 'pctover17', 'pctmale', 'pctfemale', 'pctpoor',
+#            'pctlan_nonenglish' ,     
+#            'pctlan_spanish'   ,       
+#            'pctlan_ie'       ,      
+#            'pctlan_api'    ,          
+#            'pctlan_other'    ,       
+#            
+#            # already scaled correctly  
+#            # 'pctspanish_li'   , 
+#            # 'pctie_li'  ,      
+#            # 'pctapi_li'  ,        
+#            # 'pctother_li'   ,      
+#            
+#            'pctownedunits'  ,
+#            'pctnobroadband'  )
+# 
+# x100 = intersect(x100, names(blockgroupstats))
+# 
+# blockgroupstats[, (x100) := lapply(.SD, function(x) x/100), .SDcols = x100] 
+# 
+# # check it
+# cbind(sort(sapply(blockgroupstats, max)))
+# 
+# blockgroupstats    <- metadata_add(blockgroupstats)
+# usethis::use_data(blockgroupstats, overwrite = T)
+# 
+# cat("REMEMBER TO MANUALLY UPDATE THE DOCUMENTATION IN data_blockgroupstats.R\n")
+# # OR USE 
+# dataset_documenter('blockgroupstats', saveinpackage = FALSE)
+# }

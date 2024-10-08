@@ -4,6 +4,13 @@
 \name{testpoints_100}
 \alias{testpoints_100}
 \title{test points data.frame with columns sitenumber, lat, lon}
+\format{
+An object of class \code{data.frame} with 100 rows and 4 columns.
+}
+\usage{
+testpoints_100
+}
 \description{
 test points data.frame with columns sitenumber, lat, lon
 }
+\keyword{datasets}

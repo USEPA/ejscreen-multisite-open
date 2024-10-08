@@ -5,7 +5,7 @@ dataload_from_pins(varnames = c("blockpoints", "blockwts", "quaddata"))
 indexblocks()
                    
 # Note: Do not set defaults for a module UNTIL INSIDE THE MODULE 
-#    EJAMejscreenapi module uses its own global.R file:
+#    EJAM ejscreenapi module uses its own global.R file:
 #   source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))
 
 ################### #

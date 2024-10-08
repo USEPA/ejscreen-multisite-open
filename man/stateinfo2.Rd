@@ -4,6 +4,12 @@
 \name{stateinfo2}
 \alias{stateinfo2}
 \title{stateinfo2 (DATA) data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)}
+\format{
+An object of class \code{data.frame} with 58 rows and 26 columns.
+}
+\usage{
+stateinfo2
+}
 \description{
 52 rows and several variables: ST is the 2-letter abbreviation,
 statename is the State name, etc.
@@ -11,33 +17,33 @@ statename is the State name, etc.
 \details{
 Created for EJAM by datacreate_stateinfo2.R script
 
-Also see \url{https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/release/2020-island-areas-data-products.html}
+Also see \href{https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/release/2020-island-areas-data-products.html}{Census info}
 
 column names:
 
-c("statename", "FIPS.ST", "ST", "ftpname", "REGION",
+c('statename', 'FIPS.ST', 'ST', 'ftpname', 'REGION',
 
-"is.usa.plus.pr", "is.usa", "is.state", "is.contiguous.us", "is.island.areas",
+'is.usa.plus.pr', 'is.usa', 'is.state', 'is.contiguous.us', 'is.island.areas',
 
-"area.sqmi", "area.sqkm",
+'area.sqmi', 'area.sqkm',
 
-"landarea.sqmi", "landarea.sqkm",
+'landarea.sqmi', 'landarea.sqkm',
 
-"waterarea.sqmi", "waterarea.sqkm",
+'waterarea.sqmi', 'waterarea.sqkm',
 
-"inland.sqmi", "inland.sqkm",
+'inland.sqmi', 'inland.sqkm',
 
-"coastal.sqmi", coastal.sqkm",
+'coastal.sqmi', coastal.sqkm',
 
-"greatlakes.sqmi", "greatlakes.sqkm",
+'greatlakes.sqmi', 'greatlakes.sqkm',
 
-"territorial.sqmi", "territorial.sqkm",
+'territorial.sqmi', 'territorial.sqkm',
 
-"lat", "lon")
+'lat', 'lon')
 
 Some datasets lack PR. (72)
 
-Many datasets lack these:  AS, GU, MP, VI (codes "60" "66" "69" "78")
+Many datasets lack these:  AS, GU, MP, VI (codes '60' '66' '69' '78')
 
 Almost all datasets lack UM. (74)
 
@@ -55,3 +61,4 @@ Almost all datasets lack UM. (74)
 \seealso{
 \link{stateinfo}  for fewer columns
 }
+\keyword{datasets}

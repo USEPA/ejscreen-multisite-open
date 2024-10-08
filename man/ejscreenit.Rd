@@ -199,8 +199,7 @@ Also used are
 \dontrun{
  pts <- testpoints_50[1:3, ] # sample data from package
  mapfast(pts)
- #pts <- system.file("testdata/testpoints_12.xlsx",    package="EJAMejscreenapi") 
- #pts <- system.file("testdata/testpoints_5.csv",package="EJAMejscreenapi") 
+ #pts <- system.file("testdata/latlon/testpoints_10.xlsx", package="EJAM") 
  if (interactive)
  
  x <- ejscreenit(pts, 

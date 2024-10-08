@@ -20,7 +20,7 @@ testpoints_n(
 
 Note the default is frs, but you may want to use pop even though it is slower.
 \itemize{
-\item pop or people = Average Person: random person among all US residents (block point of residence per 2020 Census)
+\item pop or people (slow) = Average Person: random person among all US residents (block point of residence per 2020 Census)
 \item frs or facility = Average Facility: random EPA-regulated facility from actives in Facility Registry Service (FRS)
 \item bg = Average Blockgroup: random US Census block group (internal point like a centroid)
 \item block = Average Block: random US Census block (internal point like a centroid)
@@ -31,7 +31,7 @@ Note the default is frs, but you may want to use pop even though it is slower.
 
 \item{ST}{optional, can be a character vector of 2 letter State abbreviations to pick from only some States.
 #' @examples
-mapfast(testpoints_n(300, ST_needed = c('LA','MS')) )
+mapfast(testpoints_n(300, ST = c('LA','MS')) )
 \dontrun{
 n=2
 for (d in c(TRUE,FALSE)) {

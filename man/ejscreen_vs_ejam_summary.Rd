@@ -7,7 +7,7 @@
 ejscreen_vs_ejam_summary(
   z = NULL,
   myvars = colnames(z$EJAM),
-  tol = 0.01,
+  tol = 0.05,
   prob = 0.95,
   na.rm = TRUE
 )

@@ -46,7 +46,7 @@ frsprogramcodes <- data.frame(
 frsprogramcodes <- metadata_add(frsprogramcodes) # here? or it might have obsolete metadata?
 
 usethis::use_data(frsprogramcodes, overwrite = TRUE)
-
+cat("UPDATE DOCUMENTATION MANUALLY IN .R FILE - it is a bit complicated to use dataset_documenter() for this one\n")
 
 #  setorder(frs_by_programid[program %in% frsprogramcodes$code, .N, by=program], -N)[]
 

@@ -61,7 +61,9 @@ app_server <- function(input, output, session) {
     if (length(get_golem_options("shiny.testmode")) > 0  ) { # allow params in run_app() to override default
       if (!get_golem_options("shiny.testmode")) {
         updateRadioButtons(session = session, inputId = "shiny.testmode", selected = FALSE)
-        options(shiny.testmode = FALSE)
+        if(!isTRUE(getOption("shiny.testmode"))) {
+          options(shiny.testmode = FALSE)
+        }
       } else {
         updateRadioButtons(session = session, inputId = "shiny.testmode", selected = TRUE)
         options(shiny.testmode = TRUE)
@@ -73,8 +75,10 @@ app_server <- function(input, output, session) {
       options(shiny.testmode = TRUE)
       cat('shiny.testmode == TRUE\n') 
     } else {
-      options(shiny.testmode = FALSE)
-      cat('shiny.testmode == FALSE\n')
+      if(!isTRUE(getOption("shiny.testmode"))) {
+        options(shiny.testmode = FALSE)
+        cat('shiny.testmode == FALSE\n')
+      }
     }
   }, priority = 2)  
   
@@ -533,19 +537,13 @@ app_server <- function(input, output, session) {
     ## wait for file to be uploaded
     req(input$ss_upload_latlon)
     
-    ## check if file extension is appropriate
-    ext <- tolower(tools::file_ext(input$ss_upload_latlon$name))
+    
     ## if acceptable file type, read in; if not, send warning text
-    
+    input_file_path <- input$ss_upload_latlon$datapath
     # ideally would quickly check file size here before actually trying to read the entire file in case it is > cap.
-    
-    sitepoints <- switch(ext,
-                         csv = data.table::fread(input$ss_upload_latlon$datapath),
-                         xls  = readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
-                         xlsx = readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
-                         shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
-    )
-    
+   
+    sitepoints <- as.data.table(read_csv_or_xl(fname= input_file_path))
+                  
     # DO NOT USE THE UPLOAD IF IT HAS MORE THAN MAX POINTS ALLOWED FOR UPLOAD
     #
     if (NROW(sitepoints) > input$max_pts_upload) {
@@ -592,15 +590,11 @@ app_server <- function(input, output, session) {
     ##  >this part could be replaced by  latlon_from_anything() *** and each time it is repeated below
     # ext <- latlon_from_anything(input$ss_upload_latlon$datapath)
     
-    ## check if file extension is appropriate
-    ext <- tolower(tools::file_ext(input$ss_upload_frs$name))
+    input_file_path <- input$ss_upload_frs$datapath
     ## if acceptable file type, read in; if not, send warning text
-    read_frs <- switch(ext,
-                       csv =  read.csv(input$ss_upload_frs$datapath),
-                       xls = readxl::read_excel(input$ss_upload_frs$datapath),
-                       xlsx = readxl::read_excel(input$ss_upload_frs$datapath),
-                       shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
-    ) # returns a data.frame
+    
+    read_frs <- as.data.table(read_csv_or_xl(fname= input_file_path))
+      # returns a data.frame
     cat("ROW COUNT IN FILE THAT SHOULD provide FRS REGISTRY_ID: ", NROW(read_frs), "\n")
     #include frs_is_valid verification check function, must have colname REGISTRY_ID
     if (frs_is_valid(read_frs)) {
@@ -725,14 +719,13 @@ app_server <- function(input, output, session) {
     req(input$ss_upload_program)
     
     ## check if file extension is appropriate
-    ext <- tolower(tools::file_ext(input$ss_upload_program$name))
+    input_file_path <- input$ss_upload_program$datapath
     ## if acceptable file type, read in; if not, send warning text
-    read_pgm <- switch(ext,
-                       csv  =  data.table::fread(input$ss_upload_program$datapath),
-                       xls  = readxl::read_excel(input$ss_upload_program$datapath) %>% data.table::as.data.table(),
-                       xlsx = readxl::read_excel(input$ss_upload_program$datapath) %>% data.table::as.data.table(),
-                       shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
-    ) # returns a data.frame
+    
+    
+    read_pgm <- as.data.table(read_csv_or_xl(fname= input_file_path))
+                   
+             # returns a data.frame
     cat("ROW COUNT IN file that should have program, pgm_sys_id: ", NROW(read_pgm), "\n")
     ## error if no columns provided
     if (!any(c('program','pgm_sys_id') %in% tolower(colnames(read_pgm)))) {
@@ -899,15 +892,11 @@ app_server <- function(input, output, session) {
   data_up_fips <- reactive({
     req(input$ss_upload_fips)
     
-    ## check if file extension is appropriate
-    ext <- tolower(tools::file_ext(input$ss_upload_fips$name))
+  
+    
+    input_file_path <- input$ss_upload_fips$datapath
     ## if acceptable file type, read in; if not, send warning text
-    fips_dt <- switch(ext,
-                      csv  =  data.table::fread(input$ss_upload_fips$datapath),
-                      xls  = readxl::read_excel(input$ss_upload_fips$datapath) |>  data.table::as.data.table(),
-                      xlsx = readxl::read_excel(input$ss_upload_fips$datapath) |>  data.table::as.data.table(),
-                      shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
-    )
+    fips_dt <- as.data.table(read_csv_or_xl(fname= input_file_path))
     cat("COUNT OF ROWS IN FIPS FILE: ", NROW(fips_dt),"\n")
     
     ################################################################################### #
@@ -2810,10 +2799,10 @@ app_server <- function(input, output, session) {
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report',
                         fixcolnames(c(names_d, names_d_subgroups, names_e), 'r', 'shortlabel')) # is this right?
     ejcols          <- c(names_ej,          names_ej_state,          names_ej_supp,          names_ej_supp_state)
-    ejcols_friendly <- fixcolnames(ejcols, 'r', 'shortlabel')
+    ejcols_short <- fixcolnames(ejcols, 'r', 'shortlabel')
     which_ejcols_here <- which(ejcols %in% names(data_processed()$results_bysite)  )
     cols_to_select <- c(cols_to_select, ejcols[         which_ejcols_here] )
-    tableheadnames <- c(tableheadnames, ejcols_friendly[which_ejcols_here])
+    tableheadnames <- c(tableheadnames, ejcols_short[which_ejcols_here])
     tableheadnames <- c(tableheadnames,
                         names(data_summarized()$cols), 
                         # 'Max of selected indicators',  ###
@@ -2948,18 +2937,18 @@ app_server <- function(input, output, session) {
   setup_temp_files <- function() {
     tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
     # Copy Rmd file to temp directory
-    file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),
+    file.copy(from = EJAM:::app_sys('report/community_report/community_report_template.Rmd'),
               to = tempReport, overwrite = TRUE)
     # Copy CSS file
     if (!file.exists(file.path(tempdir(), 'communityreport.css'))) {
-      file.copy(from = app_sys('report/community_report/communityreport.css'),
+      file.copy(from = EJAM:::app_sys('report/community_report/communityreport.css'),
                 to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
     }
 
     # Copy logo file
     if (!file.exists(file.path(tempdir(), 'www', 'EPA_logo_white_2.png'))) {
       dir.create(file.path(tempdir(), 'www'), showWarnings = FALSE, recursive = TRUE)
-      file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
+      file.copy(from = EJAM:::app_sys('report/community_report/EPA_logo_white_2.png'),
                 to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
     }
     return(tempReport)
@@ -3014,6 +3003,17 @@ app_server <- function(input, output, session) {
   
   # SEE FUNCTION THAT CAN DO THIS AT ?table_xls_from_ejam() or ejam2excel()
   
+  output$report_version_date <- renderUI({
+    message(paste0("shinytestmode = ", getOption("shiny.testmode")))
+    p(style = "margin-bottom: 0",
+     paste("Version",
+           ejam_app_version,
+           "| Report created on",
+           ifelse(
+             isTRUE(getOption("shiny.testmode")),
+             "[SHINYTEST DATE]",
+             format(Sys.Date(), '%B %d, %Y'))))
+  })
   output$download_results_table <- downloadHandler(
     filename = function() {
       
@@ -3189,11 +3189,11 @@ app_server <- function(input, output, session) {
   
   output$summ_bar_ind <- renderUI({
     if ((input$include_ejindexes == "TRUE")) {
-      radioButtons(inputId = 'summ_bar_ind',
+      radioButtons(inputId = 'summ_bar_ind_radio',
                    label = h5('Indicator type'),
                    choices = c('Demographic', 'Environmental', 'EJ','EJ Supplemental'), selected = "Environmental")
     } else {
-      radioButtons(inputId = 'summ_bar_ind',
+      radioButtons(inputId = 'summ_bar_ind_radio',
                    label = h5('Indicator type'),
                    choices = c('Demographic', 'Environmental'),
                    selected = "Environmental")
@@ -3648,11 +3648,11 @@ app_server <- function(input, output, session) {
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "report.Rmd")
       ## copy Rmd from inst/report to temp folder
-      file.copy(from = app_sys('report/written_report/report.Rmd'),  # treats EJAM/inst/ as root
+      file.copy(from = EJAM:::app_sys('report/written_report/report.Rmd'),  # treats EJAM/inst/ as root
                 to = tempReport, overwrite = TRUE)
       ## pass image and bib files needed for knitting to temp directory
-      for (i in list.files(app_sys('report/written_report'), pattern = '.png|.bib')) {   # treats what was in source/EJAM/inst/report/ as installed/EJAM/report/  once pkg is installed
-        file.copy(from = app_sys('report/written_report', i),    # source/EJAM/inst/report/ = installed/EJAM/report/
+      for (i in list.files(EJAM:::app_sys('report/written_report'), pattern = '.png|.bib')) {   # treats what was in source/EJAM/inst/report/ as installed/EJAM/report/  once pkg is installed
+        file.copy(from = EJAM:::app_sys('report/written_report', i),    # source/EJAM/inst/report/ = installed/EJAM/report/
                   to = file.path(tempdir(), i),
                   overwrite = TRUE)
       }

@@ -3,11 +3,18 @@
 \docType{data}
 \name{censusplaces}
 \alias{censusplaces}
-\title{censusplaces (DATA) Census FIPS and other basic info on 41,414 cities/towns/places}
+\title{censusplaces (DATA) Census FIPS and other basic info on roughly 40,000 cities/towns/places}
+\format{
+An object of class \code{data.frame} with 38195 rows and 7 columns.
+}
+\usage{
+censusplaces
+}
 \description{
-This is just a list of US cities and similar places defined by Census
+Table of US cities and other Census Designated Places, Incorporated Places, and County Subdivisions
 }
 \details{
-from (https://www2.census.gov/geo/docs/reference/codes/PLACElist.txt)
-Column names:  "EPA_REGION" "STATE" "ST_FIPS" "COUNTY" "CO_FIPS" "PLACE" "PL_FIPS"
+from \url{https://www2.census.gov/geo/docs/reference/codes/PLACElist.txt}
+Column names: eparegion, ST, stfips, countyname, countyfips, placename, fips
 }
+\keyword{datasets}

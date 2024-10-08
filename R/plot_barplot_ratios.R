@@ -98,7 +98,7 @@ plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg, names_
 #'
 #' @param ratio.to.us.d.overall named list of a few ratios to plot, but see [ejam2barplot()]
 #'   for an easier way to specify which indicator to show.
-#' @param names2plot_friendly names to use for plot - should be same length as named list ratio.to.us.d.overall
+#' @param shortlabels names to use for plot - should be same length as named list ratio.to.us.d.overall
 #' @param mycolorsavailable leave as default
 #' @param main title for plot, like "Demographics at the Analyzed Locations Compared to US Overall"
 #' @examples
@@ -111,7 +111,7 @@ plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg, names_
 #' @return ggplot should be returned
 #' @export
 plot_barplot_ratios <- function(ratio.to.us.d.overall,
-                                names2plot_friendly = NULL,
+                                shortlabels = NULL,
                                 mycolorsavailable=c("gray", "yellow", "orange", "red"),
                                 main = "Demographics at the Analyzed Locations Compared to US Overall") {
   
@@ -156,15 +156,15 @@ plot_barplot_ratios <- function(ratio.to.us.d.overall,
     # ratio.to.us.d.overall <- ratio.to.us.d()  # reactive already available
   # if (isTRUE(all.equal(names(ratio.to.us.d.overall), c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg)))) {
   #
-  # #supershortnames <- substr(gsub(" |-|age","",gsub("People of Color","POC", names2plot_friendly)),1,6)
+  # 
 
   # }
-  if (is.null(names2plot_friendly)) {
-    names2plot_friendly <- fixcolnames(names(ratio.to.us.d.overall), oldtype = "r", newtype = "shortlabel")
-    supershortnames <- gsub(' \\(.*', '', gsub("People of Color","POC", names2plot_friendly))
+  if (is.null(shortlabels)) {
+    shortlabels <- fixcolnames(names(ratio.to.us.d.overall), oldtype = "r", newtype = "shortlabel")
+    supershortnames <- gsub(' \\(.*', '', gsub("People of Color","POC", shortlabels))
     names(ratio.to.us.d.overall) <- supershortnames
   }
-    names(ratio.to.us.d.overall) <- names2plot_friendly
+    names(ratio.to.us.d.overall) <- shortlabels
 
 
   ratio.to.us.d.overall[is.infinite(ratio.to.us.d.overall)] <- 0
@@ -183,7 +183,7 @@ thisdata <-  data.frame(name = names(ratio.to.us.d.overall),
     ## drop any indicators with Inf or NaNs
     dplyr::filter(is.finite(value))
 
-thisdata$name <- factor(thisdata$name, levels = thisdata$name)
+thisdata$name <- factor(thisdata$name) # factor(thisdata$name, levels = thisdata$name)
 
 
 thisplot <- thisdata %>%

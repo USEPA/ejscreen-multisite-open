@@ -95,7 +95,7 @@ rm(bg_blockcounts2)
 # 242355    5
 ############################################# # 
 
-# add metadata ------------------- 
+# add metadata ####
 # EJAM :::  metadata_add(), 
 # latest source version of this internal function is available after devtools::load_all()
 
@@ -103,8 +103,15 @@ bgpts <- EJAM:::metadata_add(bgpts)
 
 ############################################# # 
 
-# save for EJAM package
+# save for EJAM package ####
 
 usethis::use_data(bgpts, overwrite = TRUE)
+
+# documentation ####
+dataset_documenter('bgpts', 
+  title = "bgpts (DATA) lat lon of popwtd center of blockgroup, and count of blocks per block group",
+  description = "This is just a list of US block groups and how many blocks are in each. It also has the lat and lon roughly of each blockgroup", 
+  details = 'The point used for each bg is the Census 2020 population weighted mean of the internal points of the blocks. It gives an approximation of where people live and where each bg is, which is useful for some situations. Has all US States, DC, PR, but not  "AS" "GU" "MP" "VI" (and not U.S. Minor Outlying Islands FIPS 74 UM)', 
+)
 
 ############################################# # 

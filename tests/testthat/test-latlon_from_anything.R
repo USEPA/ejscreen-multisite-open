@@ -43,7 +43,7 @@ testthat::test_that("latlon_from_anything prefers lat,lon if other aliases also 
 
 testthat::test_that("latlon_from_anything works with x, y vectors", {
   expect_no_error({
-    x <- latlon_from_anything(x = testpoints_100$lon[1:6], y = testpoints_100$lat[1:6] )
+    x <- latlon_from_anything(testpoints_100$lon[1:6], testpoints_100$lat[1:6] )
     y <- latlon_from_anything(testpoints_100[1:6, ])
   })
   expect_identical(x[, c("lat", "lon")], y[, c("lat", "lon")])
@@ -53,7 +53,7 @@ testthat::test_that("latlon_from_anything works with x, y vectors", {
 testthat::test_that("latlon_from_anything works with 1-row data.frame", {
   expect_no_error({
     x <- latlon_from_anything(data.frame(lat = testpoints_10$lat[1], lon = testpoints_10$lon[1])) 
-    y <- latlon_from_anything(y = testpoints_10$lat[1], x =  testpoints_10$lon[1])
+    y <- latlon_from_anything(testpoints_10$lat[1], testpoints_10$lon[1])
   })
   expect_equal(x$lat, y$lat)
   expect_equal(x$lon, y$lon)

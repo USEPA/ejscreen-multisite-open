@@ -49,10 +49,6 @@ fixnames_to_type <- function(namesnow, oldtype='apiname', newtype='rname', mappi
     # }
   }
   
-    # old info was in varnameinfo22, but now is in map_headernames
-    # varnameinfo22 <- as.data.frame(readr::read_csv('map_batch_to_friendly_fieldnames_2022_EJAM.csv'))
-
-    
   if (!(newtype %in% colnames(mapping_for_names)))   {warning(paste('returning unchanged names because mapping_for_names has no column called ', newtype))
     return(namesnow)}
   if (!(oldtype %in% colnames(mapping_for_names))) {warning(paste('returning unchanged names because mapping_for_names has no column called ', oldtype))

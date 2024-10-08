@@ -87,5 +87,7 @@ metadata4pins = data.frame(metadata4pins)
 
 # attr(metadata4pins, "date_saved_in_package") <- as.character(Sys.Date()) # this should be a date assigned only when datacreate_ script is run for a specific dataset to create it.
 usethis::use_data(metadata4pins, overwrite = TRUE)
-
+dataset_documenter('metadata4pins', 
+                   title = "metadata about data object, for pins", 
+                   details = "metadata such as description of dataset, for pins board data in EJAM package")
 #################################################################### #

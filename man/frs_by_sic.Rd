@@ -7,3 +7,6 @@
 This is the format with one row per site-SIC pair,
 so multiple rows for one site if it is in multiple SIC.
 }
+\details{
+This file is not stored in the package, but is obtained via \code{\link[=dataload_from_pins]{dataload_from_pins()}}.
+}

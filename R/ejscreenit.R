@@ -151,8 +151,7 @@
 #' @examples \dontrun{
 #'  pts <- testpoints_50[1:3, ] # sample data from package
 #'  mapfast(pts)
-#'  #pts <- system.file("testdata/testpoints_12.xlsx",    package="EJAMejscreenapi") 
-#'  #pts <- system.file("testdata/testpoints_5.csv",package="EJAMejscreenapi") 
+#'  #pts <- system.file("testdata/latlon/testpoints_10.xlsx", package="EJAM") 
 #'  if (interactive)
 #'  
 #'  x <- ejscreenit(pts, 
@@ -247,7 +246,7 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
     if (interactiveprompt) {
       junk <- readline('Press any key to go on after viewing this map of input points')
     }
-    # mapfast(testoutput_ejscreenapi_plus_50) is ok, but ejscreenit(pts) fails here ***
+    # mapfast(testoutput_ejscreenapi_plus_5) is ok, but ejscreenit(pts) fails here ***
   }
   
   ################################################### #

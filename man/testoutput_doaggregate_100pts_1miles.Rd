@@ -4,6 +4,12 @@
 \name{testoutput_doaggregate_100pts_1miles}
 \alias{testoutput_doaggregate_100pts_1miles}
 \title{test output of doaggregate()}
+\format{
+An object of class \code{list} of length 5.
+}
+\usage{
+testoutput_doaggregate_100pts_1miles
+}
 \description{
 test output of doaggregate()
 }
@@ -13,3 +19,4 @@ This is the output of doaggregate(testoutput_getblocksnearby_100pts_1miles, site
 \seealso{
 \code{\link[=doaggregate]{doaggregate()}} \code{\link[=ejamit]{ejamit()}} \link{testoutput_getblocksnearby_100pts_1miles} \link{testpoints_100}
 }
+\keyword{datasets}

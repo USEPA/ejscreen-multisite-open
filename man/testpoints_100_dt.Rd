@@ -4,6 +4,13 @@
 \name{testpoints_100_dt}
 \alias{testpoints_100_dt}
 \title{test points data.frame with columns sitenumber, lat, lon}
+\format{
+An object of class \code{data.table} (inherits from \code{data.frame}) with 100 rows and 4 columns.
+}
+\usage{
+testpoints_100_dt
+}
 \description{
 test points data.frame with columns sitenumber, lat, lon
 }
+\keyword{datasets}

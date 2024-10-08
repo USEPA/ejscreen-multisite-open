@@ -39,7 +39,16 @@ all.equal(testids_registry_id, EJAM::testids_registry_id)
 # use_data() ####
 
 usethis::use_data(testids_registry_id, overwrite = TRUE)
+#################################### #
 
+## Documentation ####
+
+dataset_documenter(
+  "testids_registry_id",
+  title = "test data, EPA Facility Registry ID numbers to try using",
+  details = "Just for convenience, installed with the package",
+  
+)
 #################################### #
 
 # write.xlsx ####
@@ -61,6 +70,15 @@ savex(x, "./inst/testdata/registryid",  "testids_registry_id_8.xlsx")
 rm(x)
 rm(savex)
 #################################### #
+cat('
+    REMEMBER TO RECREATE PACKAGE DOCUMENTATION:
+    devtools::document()  # for .Rd help files. or Clean and INSTALL package
+    see EJAM/data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R  for the documentation website
+    devtools::build_manual()  # for pdf manual
+    postdoc::render_package_manual()  # for html manual
+    \n')
+
+
 ## check what was just created (or was already) in SOURCE package
 
 if (1 == 0) {

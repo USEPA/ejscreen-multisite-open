@@ -4,6 +4,13 @@
 \name{high_pctiles_tied_with_min}
 \alias{high_pctiles_tied_with_min}
 \title{high_pctiles_tied_with_min (DATA) internal data used to handle cases where multiple places are tied for the lowest indicator score}
+\format{
+An object of class \code{list} of length 53.
+}
+\usage{
+high_pctiles_tied_with_min
+}
 \description{
 high_pctiles_tied_with_min (DATA) internal data used to handle cases where multiple places are tied for the lowest indicator score
 }
+\keyword{datasets}

@@ -151,6 +151,20 @@ state_from_blockid_table <- function(dt_with_blockid) {
 ##################################################################################################### #
 
 
+#' given vector of blockids, get bgid of each (the parent block group)
+#'
+#' @param blockid vector of block ids like in blockwts data.table or blockpoints
+#'
+#' @return vector of bgid values
+#' 
+#' @keywords internal
+#'
+bgid_from_blockid = function(blockid) {
+  blockwts[data.table(blockid = blockid), .(bgid, blockid), on = "blockid"]$bgid
+  }
+##################################################################################################### #
+
+
 #' given vector of blockids, get state abbreviation of each
 #' unused. Not needed if you have sites2blocks table that includes a bgid column
 #' 

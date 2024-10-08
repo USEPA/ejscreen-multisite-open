@@ -23,8 +23,10 @@ epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text
 epa_programs <- metadata_add(epa_programs)
 usethis::use_data(epa_programs, overwrite = TRUE)
 
-
-
+cat("UPDATED DOCUMENTATION OF THIS DATA SET MANUALLY - HELP DOC IS A BIT COMPLICATED\n")
+if (rstudioapi::isAvailable()) {
+    rstudioapi::documentOpen('./R/data_epa_programs.R')
+}
 ############################################################################################ #
 
 # ***  note `epa_programs` is a complete list and has counts, while 

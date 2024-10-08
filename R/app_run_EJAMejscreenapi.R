@@ -1,6 +1,6 @@
 
-#' Launch EJAMejscreenapi web app in RStudio
-#' @description Launch EJAMejscreenapi web app in RStudio
+#' Launch EJAM ejscreenapi web app in RStudio
+#' @description Launch EJAM ejscreenapi web app in RStudio
 #' @md
 #' @details 
 #' 

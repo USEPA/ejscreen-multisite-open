@@ -370,7 +370,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
   #   results <- results[, !(names(results) %in% map_headernames$api_synonym)] # this was removing P_HISP with no copy by another name!
   # }
   # drop this synonym still here
-  if (all(c("RAW_D_LIFEEXP", "RAW_HI_LIFEEXP")) %in% names(results)) {results$RAW_HI_LIFEEXP <- NULL}
+  if (all(c("RAW_D_LIFEEXP", "RAW_HI_LIFEEXP")  %in% names(results))) {results$RAW_HI_LIFEEXP <- NULL}
   if (nicenames) {
     names(results) <- fixcolnames(names(results) , "api", 'long') # but downstream functions mostly expect rname format
   }

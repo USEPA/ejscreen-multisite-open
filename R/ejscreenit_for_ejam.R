@@ -108,6 +108,16 @@ ejscreenapi2ejam_format <- function(ejscreenapi_plus_out, fillmissingcolumns = F
     setDT(x)
     setcolorder(x, sharednames_in_ejam_order)
   }
+  # make sure class is same for each column of ejscreenapi output as it is in ejam output
+  shouldbelike <- copy(testoutput_ejamit_10pts_1miles$results_bysite)
+  setDF(shouldbelike)
+  setDF(x)
+  for (i in 1:NCOL(x)) {
+    class(x[, colnames(x)[i]]) <- 
+      class(shouldbelike[, colnames(x)[i]])
+  }
+  setDT(x)
+  
   return(x)
   
   ### test it:
