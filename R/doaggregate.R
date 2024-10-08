@@ -763,6 +763,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ## >>> TEMPORARY PATCH UNTIL FORMULA FIXED - SEE ISSUE #498  https://github.com/USEPA/EJAM/issues/498 ####
   results_overall$pctownedunits <- NA; results_bysite$pctownedunits <- NA
   
+  results_overall$drinking <- NA; results_bysite$drinking <- NA
+  
   
   ############################################### #
   ##     later, for results_overall, will calc state pctiles once we have them for each site
