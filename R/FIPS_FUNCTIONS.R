@@ -161,22 +161,28 @@ fips_lead_zero <- function(fips) {
   fips[nchar(fips, keepNA = FALSE) == 0]	<- NA
   # 1 or 2 characters is state fips
   fips[nchar(fips, keepNA = FALSE) == 1]	<- paste0("0", fips[nchar(fips, keepNA = FALSE) == 1])
+  # 2 state
   # 3 is bad
   fips[nchar(fips, keepNA = FALSE) == 3]	<- NA
   # 4 or 5 is county
   fips[nchar(fips, keepNA = FALSE) == 4]	<- paste0("0", fips[nchar(fips, keepNA = FALSE) == 4])
-  # 6-9 are bad
-  fips[nchar(fips, keepNA = FALSE) == 6]	<- NA
-  fips[nchar(fips, keepNA = FALSE) == 7]	<- NA
+  # 5 county
+  # 6-7 are Census places like cities, cdp  #  census places like CDPs, "3651000" table(nchar(censusplaces$fips ))
+  fips[nchar(fips, keepNA = FALSE) == 6]	<- paste0("0", fips[nchar(fips, keepNA = FALSE) == 6]) 
+  # 7 place
+  # 8-9 are bad
   fips[nchar(fips, keepNA = FALSE) == 8]	<- NA
   fips[nchar(fips, keepNA = FALSE) == 9]	<- NA
   # 10 or 11 is tract
   fips[nchar(fips, keepNA = FALSE) == 10]	<- paste0("0", fips[nchar(fips, keepNA = FALSE) == 10])
+  # 11 tract
   # 12 is blockgroup
   # 13 is bad
   fips[nchar(fips, keepNA = FALSE) == 13]	<- NA
   # 14-15 is block
   fips[nchar(fips, keepNA = FALSE) == 14]	<- paste0("0", fips[nchar(fips, keepNA = FALSE) == 14])
+  # 15 block
+  # 16 or more is bad
   fips[nchar(fips, keepNA = FALSE) >= 16]	<- NA
   
   # convert to NA any other things like text that is not actually a number
@@ -408,15 +414,54 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
   return(fips_vec)
 }
 ####################################################### #
-####################################################### #
+
 
 shapes_places_from_placenames <- function(place_st) {
+  
+  # name2fips()  uses fips_place_from_placename() 
+  
+  ## input here is in the format of place_st as is created from the censusplaces table
+  ##   columns  placename  and ST field 
+  ##   so it has lower case "city" for example like "Denver city" or "Funny River CDP"
+  ## which is sometimes slightly different than found in TIGRIS places table
+  ##  column NAMELSAD   and stateabbrev ST would be based on STATEFP field
+  ## and "NAMELSAD' differs from the "NAME" column (e.g., Hoboken vs Hoboken city)
+  
+  # place_st = c('denver city, co',  "new york city, ny" )
+  
+  
+  fips = fips_place_from_placename(place_st)  # get FIPS of each place
+  fips = fips_lead_zero(fips)
+  
+  st = censusplaces$ST[match(as.numeric(fips), censusplaces$fips)]
+  # as.numeric since not stored with leading zeroes there !
+  
+  tp = tigris::places(unique(st))  # DOWNLOAD THE BOUNDARIES FOR ENTIRE STATE, EACH STATE REQUIRED HERE
+  shp = tp[match(fips, tp$GEOID), ] # use FIPS of each place to get boundaries
+  return(shp)
+}
+####################################################### #
+
+shapes_places_from_placenames2 <- function(place_st) {
+  
+  #   This earlier way just relies on the tigris pkg for search/filtering
+  
   
   getst = function(x) {gsub(".*(..)", "\\1", x)}  # only works if exact format right like x = c("Port Chester, NY", "White Plains, NY", "New Rochelle, NY")
   st = unique(getst(place_st))
   place_nost = gsub("(.*),.*", "\\1", place_st) # keep non-state parts, only works if exact format right
   
-  shp <- tigris::places(st) %>% tigris::filter_place(place_nost) # gets shapefile of those places boundaries from census via download
+  if (length(st) > 1) {cat("not tested/written to handle more than one state at a time\n")}
+  
+  tigrisplaces <-  tigris::places(st) # places(st) is what limits tigrisplaces to just the State st
+  # tigrisplaces$NAME is like Rockland     
+  # tigrisplaces$NAMELSAD  is like Rockland city
+  # tigrisplaces also has STATEFP, PLACEFP, geometry, ALAND, INTPTLAT, INTPTLON, etc.
+  #   and in GA,e.g., has more fips than censusplaces does, somehow, and a few fips in censusplaces are not in tigrisplaces
+  ## censusplaces has these: eparegion ST stfips      countyname countyfips         placename    fips
+  
+  shp <- tigrisplaces %>% tigris::filter_place(place_nost) # gets shapefile of those places boundaries from census via download
+  
   return(shp)
 }
 ####################################################### #
@@ -465,7 +510,7 @@ shapes_places_from_placefips <- function(fips) {
 
 fips_place2placename = function(fips, append_st = TRUE) {
   
-  if (!all(fips %in% censusplaces$fips)) {stop("check fips - some are not found in censusplaces$fips")}
+  if (!all(fips %in% censusplaces$fips)) {warning("check fips - some are not found in censusplaces$fips")}
   
   place_nost <- censusplaces$placename[match(fips, censusplaces$fips)]
   
@@ -478,11 +523,17 @@ fips_place2placename = function(fips, append_st = TRUE) {
 }
 ####################################################### #
 
-fips_place_from_placename = function(place_st, geocoding = FALSE) {
+fips_place_from_placename = function(place_st, geocoding = FALSE, exact = TRUE) {
+  
+  # CAUTION - currently assumes a placename,ST occurs only once per state,
+  # but there are exceptions like Denver township, MI occurs twice for example, in 2 different counties of same state.
+  
+  #   exact = FALSE  option will use grep() instead of match()
   
   ## examples
-  # place_st = 
-  ## used by name2fips or fips_from_name 
+  # fips_place_from_placename(c('denver',  "new york" ), exact = F)
+  
+   ## used by name2fips or fips_from_name 
   
   # seealso [shapes_places_from_placefips()] [fips_place2placename()] [fips_place_from_placename()] [censusplaces]
   
@@ -504,10 +555,28 @@ fips_place_from_placename = function(place_st, geocoding = FALSE) {
       cat("Names based on geocoding:\n", paste0(head(place_st, 30), collapse = ", "), ifelse(length(place_st) > 30, " ...etc. ", ""), "\n")
     }
   }
+  
   all_place_st <- paste(censusplaces$placename, censusplaces$ST, sep = ", ")
   all_place_st_dont_say_cdp <- gsub(" CDP, ", ",", all_place_st)
   place_st_dont_say_cdp <- gsub(" CDP,", ",", place_st) # in case not geocoding
-  results <- censusplaces[match(tolower(place_st_dont_say_cdp), tolower(all_place_st_dont_say_cdp), nomatch = NA), ]
+  
+  if (!exact) {
+    
+    ### for exact=F, should recode to query name using grep within given ST, separately
+    ## so that it could accept "new york, ny" and be able to find "new york city, ny"
+    ## and "denver, co" would find "denver city, co"
+    
+    results = list()
+    for (i in 1:length(place_st_dont_say_cdp)) {
+      results[[i]]  <- censusplaces[grepl(place_st_dont_say_cdp[i], all_place_st_dont_say_cdp, ignore.case = TRUE), ]  
+      if (length(results[[i]]) == 0) {results[[i]] <- NA}
+    }
+    results <- data.frame(rbindlist(results))
+    
+  } else {
+    
+    results <- censusplaces[match(tolower(place_st_dont_say_cdp), tolower(all_place_st_dont_say_cdp), nomatch = NA), ]
+  }
   print(results)
   return(results$fips)
 }
@@ -522,25 +591,42 @@ fips_place_from_placename = function(place_st, geocoding = FALSE) {
 #'   "Harris County, TX"
 #'   (not the same as where ST is separate in [fips_counties_from_countyname()])
 #'   Ignores case.
+#' @param exact must match exactly but set to FALSE if you want partial matching
+#'   and possibly more than one result for a query term x
 #' @return vector of character fips codes
+#' @details
+#'   CAUTION - for cities/ towns/ CDPs/ etc. (census places), this
+#'   currently assumes a placename,ST occurs only once per state,
+#'   but there are exceptions like Denver township, MI occurs twice for example,
+#'    in 2 different counties of same state.
+#' 
 #' @examples 
 #' name2fips(c("de", "NY"))
 #' name2fips("rhode island")
 #' name2fips(c("delaware", "NY"))
+#' name2fips(c("Magnolia town, DE", "Delaware City city, DE"))
+#' name2fips(c('denver',  "new york" ), exact = F)
 #' 
 #' @export
 #'
-name2fips = function(x) {
+name2fips = function(x, exact = TRUE) {
+  
   suppressWarnings({ # do not need to get warned that x is not a ST abbrev here
     # figure out if x is ST, statename, countyname.
+    
+    # STATE
     fips = fips_state_from_state_abbrev(x) # NA if not a state abbrev. ignores case.
     fips[is.na(fips)] <- fips_state_from_statename(x[is.na(fips)]) # only tries for those that were not a ST abbrev
-    fips[is.na(fips)] <- fips_counties_from_countynamefull(x[is.na(fips)])
+    
+    # COUNTY
+    fips[is.na(fips)] <- fips_counties_from_countynamefull(x[is.na(fips)], exact = exact)
   })
   # fips[is.na(fips)] = substr(blockgroupstats$bgfips,1,5)[match(x[is.na(fips)]), blockgroupstats$countyname]
   # only tries for those that were neither ST nor statename
   
-  fips[is.na(fips)] <- fips_place_from_placename(x[is.na(fips)])
+  # PLACE:  cities/ census designated places/ towns
+  fips[is.na(fips)] <- fips_place_from_placename(x[is.na(fips)], exact = exact) 
+  # e.g. "Denver city, CO" or "Funny River CDP, AK"
   
   # if (any(toupper(ST) %in% c("AS", "GU","MP", "UM", "VI"))) {
   #   message("note some of ST are among AS, GU, MP, UM, VI")
@@ -553,9 +639,9 @@ name2fips = function(x) {
 ############################################################################# #
 
 #' @export
-names2fips <- function(x) {
+names2fips <- function(x, exact = TRUE) {
   # this is just an alias where "names" is plural instead of singular "name"
-  name2fips(x = x)}
+  name2fips(x = x, exact = exact)}
 ############################################################################# #
 
 #' @export
@@ -787,7 +873,8 @@ fips_counties_from_statename <- function(statename) {
 #' @param ST two letter abbreviation of State, such as "TX" -- Can only be
 #'   omitted if the 1st parameter has the full name and ST like
 #'   "Harris County, TX". Ignores case.
-#' @param exact set TRUE to require exact matches, FALSE to allow partial matches
+#' @param exact TRUE requireS exact matches, FALSE to allow partial matches
+#'   which here means first few letters match (it is not using grep), and
 #'   in which case outputs might differ from inputs in length and not be 1-to-1
 #' @return the county FIPS (5 digits long with leading zero if needed, as character)
 #'   but can return more than one guess per input name!
@@ -804,7 +891,7 @@ fips_counties_from_statename <- function(statename) {
 #'  
 #' @export
 #'
-fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact=FALSE) {
+fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact = TRUE) {
   
   # out = rep(NA, length(countyname_start)) 
   # do not try to keep 1-to-1 in to out ?? since a partial matching means we may return 2+ counties per input query term
@@ -813,7 +900,7 @@ fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact=FAL
   
   if (is.null(ST)) {
     suppressWarnings({
-      out <-     fips_counties_from_countynamefull(countyname_start)
+      out <-     fips_counties_from_countynamefull(countyname_start, exact = TRUE)
     })
     # message("ST not specified, so tried to find exact matches to Countyname, ST")
     return(out)
@@ -828,7 +915,7 @@ fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact=FAL
     # make sure if ST is na then so is countyname_start, since confusing results if valid names sometimes have ST and sometimes do not
     if (any(isnast & !is.na(countyname_start))) {stop("Some but not all ST values are NA where countyname_start was provided")}
     suppressWarnings({
-      out[isnast] <- fips_counties_from_countynamefull(countyname_start[isnast])
+      out[isnast] <- fips_counties_from_countynamefull(countyname_start[isnast], exact = TRUE)
       # out <- out[!is.na(out)]
       if (all(is.na(out))) {out <- NULL}
     })
@@ -844,7 +931,7 @@ fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact=FAL
   cfull = paste0(countyname_start, ", ", stnow)
   suppressWarnings({
     # first quickly get all the exact matches (ignoring case)
-    exactmatches = fips_counties_from_countynamefull(cfull)
+    exactmatches = fips_counties_from_countynamefull(cfull, exact = TRUE)
   })
   ### cfull = cfull[!is.na(exactmatches)]
   # countyname_start_unmatched = countyname_start[is.na(exactmatches)]
@@ -890,13 +977,14 @@ fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact=FAL
 #' @param countyname_start exact (case-insensitive) name of 
 #'   county comma state abbreviation, 
 #'   like "Johnson County, TX". Ignores case.
+#' @param exact set to FALSE to use grep, but that can return more than one per input
 #' @seealso [fips_counties_from_countyname()]
 #' @return the county FIPS (5 digits long with leading zero if needed, as character)
 #'   of each, or NA for non matches
 #'  
 #' @keywords internal
 #'
-fips_counties_from_countynamefull <- function(fullname) {
+fips_counties_from_countynamefull <- function(fullname, exact = TRUE) {
   
   # this internal function just supports fips_counties_from_countyname()
   # This requires exact match to "county name, ST" but case-insensitive
@@ -913,12 +1001,26 @@ fips_counties_from_countynamefull <- function(fullname) {
   
   fullname <- place_statename2place_st(fullname)
   
-  x <- substr(
-    blockgroupstats$bgfips,1,5
-  )[match(
-    tolower(fullname), 
-    tolower(paste0(blockgroupstats$countyname, ", ", blockgroupstats$ST))
-  )]
+  if (exact) {
+    x <- substr(
+      blockgroupstats$bgfips,1,5
+    )[match(
+      tolower(fullname), 
+      tolower(paste0(blockgroupstats$countyname, ", ", blockgroupstats$ST))
+    )]
+  } else {
+    # test
+    x = list()
+    for (i in 1:length(fullname)) {
+      x[[i]] <- substr(
+        blockgroupstats$bgfips,1,5
+      )[grep(fullname[i], paste0(blockgroupstats$countyname, ", ", blockgroupstats$ST), ignore.case = TRUE)]
+      x[[i]] <- unique(x[[i]])
+      if (length(x[[i]]) == 0) {x[[i]] <- NA}
+    }
+    # print(x) #  as a list 
+    x = unlist(x)
+  }
   if (anyNA(x)) {
     howmanyna = sum(is.na(x))
     warning("NA returned for ", howmanyna," values that failed to match")
