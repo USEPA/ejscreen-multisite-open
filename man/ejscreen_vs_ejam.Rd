@@ -99,6 +99,10 @@ how ties are treated in percentile lookup tables, etc.), or
  # in RStudio, interactive:
  vs <- ejscreen_vscript()
  
+ # vs filtered to just the ones where rounded pop disagrees
+ table(vs$same_shown$pop)
+ vspopoff <- lapply(vs, function(x) x[!vs$same_shown$pop, ])
+ 
  pts <- testpoints_100[1:5, ]
    
   # This step can take a long time, 

@@ -4,7 +4,11 @@
 \alias{ejscreen_vs_ejam_see1}
 \title{EJAM/EJSCREEN comparisons - see results for 1 site after using ejscreen_vs_ejam()}
 \usage{
-ejscreen_vs_ejam_see1(z, myvars = names_d, mysite = 1)
+ejscreen_vs_ejam_see1(
+  z,
+  myvars = c("ejam_uniq_id", "pop", names_d),
+  mysite = 1
+)
 }
 \arguments{
 \item{z}{output of ejscreen_vs_ejam() or ejscreen_vscript()}
@@ -21,7 +25,8 @@ myvars = grep("pctile", colnames(z$EJAM), value = T)}
 \item{mysite}{rownumber corresponding to site of interest, among 1:nrow(z$EJAM)}
 }
 \value{
-a table showing one row per indicator, and columns like EJSCREEN, EJAM, ratio, etc.
+a table showing one row per indicator, and columns like EJSCREEN, EJAM, ratio, etc.,
+but see str() because it is a list in matrix form
 }
 \description{
 EJAM/EJSCREEN comparisons - see results for 1 site after using ejscreen_vs_ejam()

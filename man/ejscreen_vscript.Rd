@@ -57,6 +57,10 @@ so you can iterate and rerun just the EJAM portion and compare to the saved benc
 \examples{
 vs = ejscreen_vscript(pts = testpoints_100, radius = 3)
 
+#'  # vs filtered to just the ones where rounded pop disagrees
+ table(vs$same_shown$pop)
+ vspopoff <- lapply(vs, function(x) x[!vs$same_shown$pop, ])
+ 
 ## look only at places where blockcount was identical, to exclude that as source of difference
 vs_blocksmatch = lapply(vs, function(df) df[vs$absdiff[, "blockcount_near_site"] == 0, ])
 # vss = ejscreen_vs_ejam_summary(vs )

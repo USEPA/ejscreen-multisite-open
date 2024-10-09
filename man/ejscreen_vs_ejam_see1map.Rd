@@ -23,7 +23,11 @@ noting that you have to click to turn off the layer for block point info popups 
 \item{...}{passed to \code{\link[=plotblocksnearby]{plotblocksnearby()}}}
 }
 \value{
-Just draws map and shows tables and returns output of ejscreen_vs_ejam_see1()
+Just draws map and shows tables and returns the table of blocks near the site
+and info on how much the distance and pop count differ from what EJAM thinks
+is the actual exact radius, with possible explanation of discrepancy
+between ejscreen api and ejam estimate,
+but you may also want the output of ejscreen_vs_ejam_see1()
 }
 \description{
 EJAM/EJSCREEN comparisons - see map and tables of blocks near a site to explain discrepancy in pop and blocks
