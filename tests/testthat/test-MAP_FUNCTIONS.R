@@ -24,7 +24,7 @@
 test_that("popup_from_ejscreen() works even if 1 row or 1 indicator", {
   expect_no_error({
     suppressMessages({
-      x = popup_from_ejscreen(testoutput_ejscreenapi_plus_50)
+      x = popup_from_ejscreen(testoutput_ejscreenapi_plus_5)
       
       x = popup_from_ejscreen(testoutput_ejamit_10pts_1miles$results_bysite[1:2,])
       

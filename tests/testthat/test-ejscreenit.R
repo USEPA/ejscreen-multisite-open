@@ -17,33 +17,30 @@ test2lon <- c(-118.241073, -76.641674)
 # missing_api_results <- inherits(brokerout, "try-error")
 
 
+apiref$`Seconds elapsed obtaining data` = NULL
+apinow$`Seconds elapsed obtaining data` = NULL
 
 
 test_that("ejscreenit() works at all", {
   expect_no_error(  suppressMessages({
+    suppressWarnings({
     junk <-  ejscreenit(testpoints_5[1:2, ], radius = 0.5, nosave = T, nosee = T, interactiveprompt = F, 
                         calculate_ratios = F)
-  })
+})  })
   )
 })
+
 test_that('ejscreenit() does not crash for 2 points x= lons, y = lats', {
   expect_no_error({
+    ## returns warnings about invalid sites throughout analysis, but no errors
+    suppressWarnings({
     out_ejscreenit_separate_lat_lon <- ejscreenit(
       x = test2lon, y = test2lat, radius = testradius,
       nosave = TRUE, nosee = TRUE, interactiveprompt = FALSE
     )
+    })
   } )
 })
-
-# SLOW FOR API to run several points
-apiref_list <- testoutput_ejscreenit_5 # 5 points, 1 mile radius
-apinow_list <- ejscreenit(testpoints_5, radius = 1, nosave = T, nosee = T, interactiveprompt = F, calculate_ratios = T)
-apiref = apiref_list$table
-apinow = apinow_list$table
-apiref$timeSeconds <- NULL # these vary
-apinow$timeSeconds <- NULL # these vary
-apiref$`Seconds elapsed obtaining data` <- NULL
-apinow$`Seconds elapsed obtaining data` <- NULL
 
 test_that("ejscreenit() still returns list with names identical to what it used to return (saved as testoutput_ejscreenit_5)", {
   expect_identical(

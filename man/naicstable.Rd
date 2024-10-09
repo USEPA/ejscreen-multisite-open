@@ -3,14 +3,22 @@
 \docType{data}
 \name{naicstable}
 \alias{naicstable}
-\title{naicstable (DATA) data.table of NAICS code(s) and industry names for each EPA-regulated site in Facility Registry Service
-Also has the 2,3,4,5,and 6-digit NAICS that this code falls under, where relevant for given length}
+\title{naicstable (DATA) data.table of NAICS code(s) and industry names for each EPA-regulated site}
+\format{
+An object of class \code{data.table} (inherits from \code{data.frame}) with 2200 rows and 8 columns.
+}
+\usage{
+naicstable
+}
 \description{
-This is similar to the data file EJAM::NAICS but in a more useful format and newer functions work with it.
+data.table of NAICS code(s) and industry names for each EPA-regulated site in Facility Registry Service
+Also has the 2,3,4,5,and 6-digit NAICS that this code falls under, where relevant for given length
 }
 \details{
-see \url{https://naics.com}
+This is similar to the data file EJAM::NAICS but in a more useful format and newer functions work with it.
+see \href{https://naics.com}{NAICS.com}
 }
 \seealso{
 \code{\link[=naics_from_any]{naics_from_any()}} \link{NAICS}  \code{\link[=naics_categories]{naics_categories()}}  \code{\link[=naics_findwebscrape]{naics_findwebscrape()}}
 }
+\keyword{datasets}

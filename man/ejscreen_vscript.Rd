@@ -5,12 +5,14 @@
 \title{EJAM/EJSCREEN comparisons - for interactive RStudio use}
 \usage{
 ejscreen_vscript(
-  defdir = getwd(),
+  defdir = ".",
   n,
   newpts,
   pts,
   radius,
-  savedejscreentableoutput
+  savedejscreentableoutput,
+  x100fix = TRUE,
+  x100varnames = names_pct_as_fraction_ejamit
 )
 }
 \arguments{
@@ -51,4 +53,22 @@ TO RUN A SET OF POINTS THROUGH BOTH EJSCREEN AND EJAM
 AND SAVE STATS ON THE DIFFERENCES
 -- including letting you use saved ejscreenapi results and input points
 so you can iterate and rerun just the EJAM portion and compare to the saved benchmark data.
+}
+\examples{
+vs = ejscreen_vscript(pts = testpoints_100, radius = 3)
+
+## look only at places where blockcount was identical, to exclude that as source of difference
+vs_blocksmatch = lapply(vs, function(df) df[vs$absdiff[, "blockcount_near_site"] == 0, ])
+# vss = ejscreen_vs_ejam_summary(vs )
+vssb = ejscreen_vs_ejam_summary(vs_blocksmatch)
+# vss[vss$indicator \%in\% names_these, c(1,7,8)]
+vssb[vssb$indicator \%in\% names_these, c(1,7,8)]
+x = vssb[vssb$indicator \%in\% c('pop', names_these), c(1,7,8)] 
+x[order(x$pct.of.sites.agree.within.tol), ]
+
+xx = cbind(indicator = vssb$indicator[vssb$indicator \%in\% c('pop', names_these)],
+ round(vssb[vssb$indicator \%in\% c('pop', names_these),
+  c('pct.of.sites.agree.within.tol', 'max.abs.diff', 'median.abs.diff')], 0))
+xx[xx$pct.of.sites.agree.within.tol < 100, ]
+
 }

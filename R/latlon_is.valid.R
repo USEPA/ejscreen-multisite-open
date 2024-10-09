@@ -89,6 +89,10 @@ latlon_is.possible   <- function(lat, lon) {
 #' See [islandareas]
 #' @param lat vector of latitudes
 #' @param lon vector of longitudes
+#' @param exact_but_slow_islandareas optional logical, set it to TRUE to check each point vs
+#'   boundaries in [states_shapefile] to identify which ones are in Island Areas according to that shapefile.
+#'   The default method here is much faster, but just checks if a point is within a bounding box
+#'   that should approximate each of the Island Areas, found in the object [islandareas].
 #' @return vector of TRUE / FALSE values indicating a given lat lon pair
 #'   is approximately in one of the rough bounding boxes that includes the 4 Island Areas.
 #' @seealso   [latlon_is.usa()] [latlon_is.islandareas()] [latlon_is.available()] [latlon_is.possible()]
@@ -102,31 +106,39 @@ latlon_is.possible   <- function(lat, lon) {
 #'
 #' @keywords internal
 #'
-latlon_is.islandareas <- function(lat, lon)  {
-  if(missing(lat) | missing(lon)){
+latlon_is.islandareas <- function(lat, lon, exact_but_slow_islandareas = FALSE)  {
+  
+  if (missing(lat) | missing(lon)) {
     warning('"lat" and/or "lon" argument not provided, please provide both values.')
     return(FALSE)
   }
-  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
+  if (all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))) {
     warning('"lat" and/or "lon" cannot be coerced to a numeric.')
     return(FALSE)
   }
-  if(is.null(lat) | is.null(lon)){
+  if (is.null(lat) | is.null(lon)) {
     warning('No lat or lon column found')
     return(FALSE)
   }
   
-  x <- islandareas
-  states <- unique(x$ST)
-  # ok <- rep(TRUE, length(states))
-  ok  <- list()
-  for (i in 1:length(states)) {
-    ok[[i]] <- (lat > x$lat[x$limit == "min" & x$ST == states[i]]) &
-      (lat < x$lat[x$limit == "max" & x$ST == states[i]]) &
-      (lon > x$lon[x$limit == "min" & x$ST == states[i]]) &
-      (lon < x$lon[x$limit == "max" & x$ST == states[i]])
+  if (exact_but_slow_islandareas) {
+    ST <- state_from_latlon(lat = lat, lon = lon)$ST
+    ok <- ST %in% islandareas$ST
+  } else {
+    
+    ## caveat: See details at https://www.britannica.com/place/Trust-Territory-of-the-Pacific-Islands on areas no longer part of the US but still with some sites in FRS, "110009291462" "110013804678" "110067353429" "110067377430" "110070929074" E.G. https://echo.epa.gov/detailed-facility-report?fid=110067353429 https://echo.epa.gov/detailed-facility-report?fid=110013804678 
+    x <- islandareas
+    states <- unique(x$ST)
+    # ok <- rep(TRUE, length(states))
+    ok  <- list()
+    for (i in 1:length(states)) {
+      ok[[i]] <- (lat > x$lat[x$limit == "min" & x$ST == states[i]]) &
+        (lat < x$lat[x$limit == "max" & x$ST == states[i]]) &
+        (lon > x$lon[x$limit == "min" & x$ST == states[i]]) &
+        (lon < x$lon[x$limit == "max" & x$ST == states[i]])
+    }
+    ok <- apply(do.call(rbind, ok), 2, any)
   }
-  ok <- apply(do.call(rbind, ok), 2, any)
   return(ok)
 }
 ############################################### #
@@ -140,8 +152,14 @@ latlon_is.islandareas <- function(lat, lon)  {
 #'
 #'   (based on approx ranges of lat lon seen among block internal points dataset)
 #'
-#'   But note Guam, American Samoa, Northern Mariana Islands, and U.S. Virgin Islands are outside these ranges!
-#'   EJScreen 2.2 did not provide demographic data in those locations anyway, but can map sites there.
+#'   But note Guam, American Samoa, Northern Mariana Islands, and U.S. Virgin Islands ranges are approximated!
+#'   EJScreen has not had demographic data in those locations anyway, but can map sites there.
+#'   see latlon_is.islandareas()
+#'   and note details at https://www.britannica.com/place/Trust-Territory-of-the-Pacific-Islands
+#'    on areas no longer part of the US but still with some sites in FRS,
+#'    ids "110009291462" "110013804678" "110067353429" "110067377430" "110070929074" 
+#'    e.g., https://echo.epa.gov/detailed-facility-report?fid=110067353429
+#'    or https://echo.epa.gov/detailed-facility-report?fid=110013804678 
 #'
 #'   lat must be between 17.5 and 71.5, and
 #'
@@ -152,6 +170,7 @@ latlon_is.islandareas <- function(lat, lon)  {
 #' @param quiet optional logical, if TRUE, show list of bad values in console
 #' @param invalid_msg_table set TRUE if you want a data.frame with colnames "valid" and "invalid_msg"
 #' @return logical vector, one element per lat lon pair (location)
+#' @param exact_but_slow_islandareas see [latlon_is.islandareas()]
 #' @seealso   [latlon_is.usa()] [latlon_is.islandareas()] [latlon_is.available()] [latlon_is.possible()]
 #'   [latlon_df_clean()] [latlon_infer()] [latlon_is.valid()] [latlon_as.numeric()]
 #' @examples  \dontrun{
@@ -164,7 +183,8 @@ latlon_is.islandareas <- function(lat, lon)  {
 #'
 #' @export
 #'
-latlon_is.valid <- function(lat, lon, quiet = TRUE, invalid_msg_table = FALSE) {
+latlon_is.valid <- function(lat, lon, quiet = TRUE, invalid_msg_table = FALSE , exact_but_slow_islandareas = FALSE) {
+
   
   if (missing(lon) && !missing(lat)) {
     if (is.data.frame(lat)) {
@@ -210,7 +230,10 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE, invalid_msg_table = FALSE) {
     return(data.frame(valid = rep(FALSE, NROW(lat)), invalid_msg = "lat or lon not numeric"))
     } else {
     return(FALSE)
-  }}
+
+
+  }
+  
   
   # assume none bad until proven otherwise
   bad         <- rep(FALSE, length(lat))
@@ -224,7 +247,7 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE, invalid_msg_table = FALSE) {
   #   (lat < 17.5 | lat > 71.5) |   (lon > -64 & lon < 172) |  (lon > 180 | lon < -180)
   # )
   
-  in_islandareas <- latlon_is.islandareas(lat = lat, lon = lon)
+  in_islandareas <- latlon_is.islandareas(lat = lat, lon = lon, exact_but_slow_islandareas = exact_but_slow_islandareas)
   if (any(in_islandareas, na.rm = TRUE)) {
     message("Some points appear to be in US Island Areas, which may lack some data such as demographic data here")
   }

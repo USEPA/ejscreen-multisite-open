@@ -24,8 +24,12 @@
 #'  table_round(x)
 #' 
 #' @export
+#' @keywords internal
 #'
 table_round <- function(x, var = names(x), varnametype="rname", ...) {
+  
+  # See the internal helper function  round2nearest_n()  which lets you explicitly round to nearest 100, e.g.
+  
   # warning("Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, 
   #         because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.")
   

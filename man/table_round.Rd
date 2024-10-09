@@ -44,3 +44,4 @@ because rounding info says 0 digits when the intent is to show 0 digits after th
 \seealso{
 \code{\link[=var_is_numeric_ish]{var_is_numeric_ish()}} \code{\link[=table_rounding_info]{table_rounding_info()}}
 }
+\keyword{internal}

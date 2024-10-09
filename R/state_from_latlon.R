@@ -35,10 +35,10 @@ state_from_nearest_block_bysite <- function(s2b) {
     s2b[, .(ST = state_from_blockid(blockid[which.min(distance)])), keyby = ejam_uniq_id]
   } else {
     if ("ST" %in% names(s2b)) {
-     # already there sometimes? 
+      # already there sometimes? 
       s2b
     } else {
-    s2b[, .(ST = state_from_blockid(blockid[1])), keyby = ejam_uniq_id]
+      s2b[, .(ST = state_from_blockid(blockid[1])), keyby = ejam_uniq_id]
     }
   }
 }
@@ -93,10 +93,13 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
   pts <- data.frame(lat = lat, lon = lon) |>
     sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(states_shapefile))  # st_as_sf wants lon,lat not lat,lon
   pts <- pts |> sf::st_join(states_shapefile)
+  # note setdiff(stateinfo2$ST, sort(unique(states_shapefile$STUSPS)))
+  # [1] "UM" "US"  but has PR,GU,AS,VI,MP
   
   pts <- as.data.frame(pts)[,c("STUSPS", "NAME", "STATEFP")]
   colnames(pts) <- c("ST", "statename", "FIPS.ST")
-  pts$REGION <- EJAM::stateinfo$REGION[match(pts$statename, stateinfo$statename)]
+  pts$REGION <- fips_st2eparegion(pts$FIPS.ST) # this is not sensitive to exact spelling of statename and can handle Island Areas 
+  # EJAM::stateinfo$REGION[match(pts$statename, stateinfo$statename)] 
   pts$n <- 1:NROW(pts)
   
   if (suppressWarnings({
@@ -114,44 +117,75 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
 #'
 #' @return vector of ST info like AK, CA, DE, etc.
 #'
-#' @examples EJAM:::state_from_blockid_table(blockpoints[45:49,])
-#'
+#' @examples
+#' x = sample(blockpoints$blockid, 3)
+#' state_from_blockid_table(blockpoints[blockid %in% x, ])[]
+#' mapfast(blockpoints[blockid %in% x, ])
+#' 
+#' table(state_from_blockid_table(testoutput_getblocksnearby_10pts_1miles))
+#' # unique(state_from_latlon(testpoints_10)$ST) # slow
+#' 
+#' all.equal(state_from_blockid(x), state_from_blockid_table(blockpoints[blockid %in% x, ]))
+#' 
 #' @keywords internal
 #'
 state_from_blockid_table <- function(dt_with_blockid) {
   
-   blockgroupstats[sites2blocks, ST, on = "bgid"]
+  ## TEMPORARILY UPDATED BUT FURTHER EDITS IN BRANCH TO BE MERGED SOON
   
-  # if (!exists('blockid2fips')) {
-  #   dataload_from_pins(varnames = 'blockid2fips')
-  # }
-  # if (!exists('blockid2fips')) {return(rep(NA, NROW(dt_with_blockid)))}
-  # stateinfo$ST[match(blockid2fips[dt_with_blockid, substr(blockfips,1,2), on = "blockid"], stateinfo$FIPS.ST)]
-
+  if ("bgid" %in% names(dt_with_blockid)) {
+    
+    return(blockgroupstats[dt_with_blockid, ST, on = "bgid"])
+    
+  } else {
+    
+    # all in one step, 
+    # use blockid to get bgid from blockwts table, 
+    # then use bgid to get ST from blockgroupstats table
+    
+    return(blockgroupstats[blockwts[dt_with_blockid, .(bgid, blockid), on = "blockid"], ST, on = "bgid"])
+    
+  }
+  
 }
+##################################################################################################### #
+
+
+#' given vector of blockids, get bgid of each (the parent block group)
+#'
+#' @param blockid vector of block ids like in blockwts data.table or blockpoints
+#'
+#' @return vector of bgid values
+#' 
+#' @keywords internal
+#'
+bgid_from_blockid = function(blockid) {
+  blockwts[data.table(blockid = blockid), .(bgid, blockid), on = "blockid"]$bgid
+  }
 ##################################################################################################### #
 
 
 #' given vector of blockids, get state abbreviation of each
-#'
+#' unused. Not needed if you have sites2blocks table that includes a bgid column
+#' 
 #' @param blockid vector of blockid values as from EJAM in a table called blockpoints
-#'
+#' @seealso unexported state_from_blockid_table() 
 #' @return vector of ST info like AK, CA, DE, etc.
-#'
-#' @examples EJAM:::state_from_blockid(c(8174952, blockpoints$blockid[5:6]))
-#'
+#' @examples
+#' x = sample(blockpoints$blockid, 3)
+#' state_from_blockid(x)[]
+#' mapfast(blockpoints[blockid %in% x, ])
+#' 
+#' all.equal(state_from_blockid(x), state_from_blockid_table(blockpoints[blockid %in% x, ]))
+#' 
 #' @keywords internal
 #'
 state_from_blockid <- function(blockid) {
   
-  if (!exists('blockid2fips')) {
-    dataload_from_pins(varnames = 'blockid2fips')
-  }
-  if (!exists('blockid2fips')) {return(rep(NA, length(blockid)))}
-  stateinfo$ST[match(blockid2fips[blockid, substr(blockfips,1,2)], stateinfo$FIPS.ST)]
+  dt_with_blockid <- data.table(blockid = blockid)
+  return(state_from_blockid_table(dt_with_blockid))
 }
 ##################################################################################################### #
-
 
 
 #' Get FIPS of ALL BLOCKGROUPS in the States or Counties specified

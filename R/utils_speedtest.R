@@ -61,7 +61,7 @@
 speedtest <- function(n=10, sitepoints=NULL, weighting='frs', 
                       radii=c(1, 3.106856, 5, 10, 31.06856)[1:3], avoidorphans=FALSE,
                       test_ejamit = FALSE, test_getblocksnearby=TRUE, test_doaggregate=TRUE, test_batch.summarize=FALSE, 
-                      logging=FALSE, logfolder=getwd(), logfilename="log_n_datetime.txt", honk_when_ready=TRUE, 
+                      logging=FALSE, logfolder='.', logfilename="log_n_datetime.txt", honk_when_ready=TRUE, 
                       saveoutput=FALSE, plot=TRUE, getblocks_diagnostics_shown=FALSE, ...) {
   
   n <- sort(n, decreasing = TRUE) # just to keep organized
@@ -228,12 +228,13 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
           # print(step3)
         }
       } else {
-        # doing ejamit()
+        # doing ejamit() because test_ejamit == TRUE
         cat('\nStarted ejamit() to calculate each indicator for each site, and overall.\n')
         out <- ejamit(
           sitepoints = sitepoints[[i]],
-          radius = radius, maxradius = 31.07,
-          avoidorphans = avoidorphans, silentinteractive = TRUE 
+          radius = radius, # maxradius = 31.07,
+          avoidorphans = avoidorphans, 
+          silentinteractive = TRUE 
         )
         
         
@@ -409,7 +410,7 @@ speedtable_expand <- function(speedtable) {
 # t3_1000=system.time({  x3=getblocksnearby(testpoints_1000,3);  save(x3,file = 'x3_1000.rda');rm(x3)})
 # t6_1000=system.time({  x6=getblocksnearby(testpoints_1000,6);  save(x6,file = 'x6_1000.rda');rm(x6)})
 # 
-# testpoints_10k <- testpoints_n(10000,"frs")
+# testpoints_10k <- testpoints_n(10000, weighting = "frs")
 # 
 # t1_10k=system.time({  x1=getblocksnearby(testpoints_10k,1);  save(x1,file = 'x1_10k.rda');rm(x1)})
 # t3_10k=system.time({  x3=getblocksnearby(testpoints_10k,3);  save(x3,file = 'x3_10k.rda');rm(x3)})

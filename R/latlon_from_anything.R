@@ -66,7 +66,7 @@
 latlon_from_anything <- function(anything, lon_if_used, interactiveprompt = TRUE, invalid_msg_table = FALSE, set_invalid_to_na = TRUE) {
   
 
-  if (missing(anything) || is.null(anything) || all(length(anything) == 0) || "" %in% anything) {
+  if (missing(anything) || is.null(anything) || all(length(anything) == 0) || all(is.na(anything)) || all("" == anything)) {
     if (interactive() && !shiny::isRunning() && interactiveprompt) {
       
       if (!rstudioapi::isAvailable()) {

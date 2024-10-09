@@ -3,18 +3,23 @@
 \docType{data}
 \name{testoutput_ejscreenit_5}
 \alias{testoutput_ejscreenit_5}
-\title{test data examples of output from \link{ejscreenit} using (testpoints_5, radius = 1)}
+\title{test data examples of output from \code{\link[=ejscreenit]{ejscreenit()}} using testpoints_5, radius = 1}
+\format{
+An object of class \code{list} of length 3.
+}
+\usage{
+testoutput_ejscreenit_5
+}
 \description{
-test data examples of output from \link{ejscreenit} using (testpoints_5, radius = 1)
+test data examples of output from \code{\link[=ejscreenit]{ejscreenit()}} using testpoints_5, radius = 1
 }
 \details{
 Just for convenience, installed with the package.
-Has header row plus 5 rows, and about 200+ columns of buffer summary results.
+A list of outputs, named 'table', 'map', and 'plot'
 }
 \seealso{
-\link{testpoints_50}                   \link{testpoints_500}
+\link{testpoints_5} \link{testpoints_50} \link{testpoints_500}
 
-\link{testoutput_ejscreenit_50}       \link{testoutput_ejscreenit_500}
-
-\link{testoutput_ejscreenapi_plus_50} \link{testoutput_ejscreenapi_plus_500}
+\link{testoutput_ejscreenit_5} \link{testoutput_ejscreenit_50} \link{testoutput_ejscreenit_500}
 }
+\keyword{datasets}

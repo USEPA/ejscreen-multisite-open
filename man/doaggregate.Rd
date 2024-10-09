@@ -28,7 +28,7 @@ doaggregate(
 \item{sites2blocks}{data.table of distances in miles between all sites (facilities) and
 nearby Census block internal points, with columns ejam_uniq_id, blockid, distance,
 created by getblocksnearby  function.
-See \link{sites2blocks_example10pts_1miles} aka \link{testoutput_getblocksnearby_10pts_1miles} dataset in package, as input to this function}
+See \link{testoutput_getblocksnearby_10pts_1miles} dataset in package, as input to this function}
 
 \item{sites2states_or_latlon}{data.table or just data.frame,
 with columns ejam_uniq_id (each unique one in sites2blocks) and
@@ -98,13 +98,15 @@ indicator across everyone within each demographic group.
 }
 }
 \description{
-getblocksnearby() and doaggregate() are the two key functions that run ejamit().
+Used by ejamit() and the shiny app to summarize blockgroups scores at each site and overall.
+}
+\details{
+\code{\link[=getblocksnearby]{getblocksnearby()}} and doaggregate() are the two key functions that run \code{\link[=ejamit]{ejamit()}}.
 \code{doaggregate()} takes a set of sites like facilities and the
 set of blocks that are near each,
 combines those with indicator scores for block groups, and
 aggregates the numbes within each place and across all overall.
-}
-\details{
+
 For all examples, see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
 
 \code{doaggregate()} is the code run after \code{\link[=getblocksnearby]{getblocksnearby()}} (or a related function for
@@ -118,25 +120,60 @@ in each buffer (i.e., near each facility):
 \item \strong{POPULATION-WEIGHTED MEANS}: for  Environmental indicators, but also any percentage indicator
 for which the universe (denominator) is population count (rather than households, persons age 25up, etc.)
 
-\emph{\strong{EJ Indexes}:} The way EJScreen
-does this is apparently finding the pop wtd mean of EJ Index raw scores,
-not the EJ Index formula applied to the summarized demographic score and aggregated envt number.
-\item \strong{CALCULATED BY FORMULA}: Buffer or overall score calculated via formulas using aggregated counts,
-such as percent low income = sum of counts low income / sum of counts of denominator,
-which in this case is the count of those for whom the poverty ratio is known. Assuming no rounding errors,
-this method should give the same result as using a weighted mean of percentages, where the weights are
+\emph{\strong{EJ Indexes}:} The pop wtd mean of EJ Index raw scores.
+\item \strong{CALCULATED BY FORMULA}: Buffer or overall score calculated as weighted mean of percentages, where the weights are
 the correct denominator like count of those for whom the poverty ratio is known.
 \item \strong{LOOKED UP}: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
 }
 
 This function requires the following datasets:
 \itemize{
-\item blockwts: data.table with these columns: blockid , bgid, blockwt
-\item quaddata data.table used to create localtree, a quad tree index of block points
+\item \link{blockwts}: data.table with these columns: blockid , bgid, blockwt
+\item \link{quaddata} data.table used to create localtree, a quad tree index of block points
 (and localtree that is created when package is loaded)
-\item blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
+\item \link{blockgroupstats} - A data.table (such as EJScreen demographic and environmental data by blockgroup)
 }
 }
+\section{\strong{Identification of nearby residents -- methodology:}}{
+EJAM uses the same approach as EJScreen does to identify the count and demographics of nearby residents,
+so EJScreen technical documentation should be consulted on the approach,
+at \href{https://www.epa.gov/ejscreen/technical-information-about-ejscreen}{EJScreen Technical Info}{.uri target="_blank" rel="noreferrer noopener"}.
+EJAM implements that approach using faster code and data formats, but it
+still uses the same high-resolution approach as described in EJScreen documentation
+and summarized below.
+
+The identification of nearby residents is currently done in a way that includes all 2020 Census blocks whose
+"internal point" (a lat/lon provided by the Census Bureau) is within the specified distance of the facility point.
+This is taken from the EJScreen block weights file, but can also be independently calculated.
+
+The summary or aggregation or "rollup" within the buffer is done by calculating the
+population-weighted average block group score among all the people residing in the buffer.
+The weighting is by population count for variables that are fractions of population,
+but other denominators and weights (e.g., households count) are used as appropriate,
+as explained in EJScreen technical documentation on the formulas, and
+replicated by formulas used in EJAM functions such as doaggregate().
+
+Since the blockgroup population counts are from American Community Survey (ACS) estimates,
+but the block population counts are from a decennial census, the totals for a blockgroup differ.
+The amount each partial blockgroup contributes to the buffer's overall score is based on
+the estimated number of residents from that blockgroup who are in the buffer.
+This is based on the fraction of the blockgroup population that is estimated to be in the buffer,
+and that fraction is calculated as the fraction of the blockgroup's decennial census block population
+that is in the census blocks inside the buffer.
+
+A given block is considered entirely inside or entirely outside the buffer,
+and those are used to more accurately estimate what fraction of a given block group's
+population is inside the buffer. This is more accurate and faster than areal apportionment of block groups.
+Census blocks are generally so small relative to typical buffers that this is very accurate -
+it is least accurate if a very small buffer distance is specified
+in an extremely low density rural area where a block can be geographically large.
+Although it is rarely if ever a significant issue (for reasonable, useful buffer sizes),
+an even more accurate approach in those cases might be either areal apportionment of blocks,
+which is very slow and assumes residents are evenly spread out across the full block's area,
+or else an approach that uses higher resolution estimates of residential locations than even
+the Decennial census blocks can provide, such as a dasymetric map approach.
+}
+
 \seealso{
 \link{ejamit}   \code{\link[=getblocksnearby]{getblocksnearby()}}
 }

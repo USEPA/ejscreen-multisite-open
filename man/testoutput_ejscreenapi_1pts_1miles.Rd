@@ -5,7 +5,7 @@
 \alias{testoutput_ejscreenapi_1pts_1miles}
 \title{test data, output from this function}
 \format{
-An object of class \code{data.frame} with 1 rows and 292 columns.
+An object of class \code{data.frame} with 1 rows and 291 columns.
 }
 \usage{
 testoutput_ejscreenapi_1pts_1miles
@@ -18,11 +18,16 @@ Just for convenience, installed with the package,
 the equivalent of results of
 
 ejscreenapi(lon = testpoints_5$lon\link{1}, lat = testpoints_5$lat\link{1},
-radius = 1, unit = 'miles', wkid = 4326,
-report_every_n = 25, # report_every_n = 1000,
-save_when_report = FALSE, format_report_or_json =  'pjson', on_server_so_dont_save_files = FALSE,
-ipurl = 'ejscreen.epa.gov',
-updateProgress = NULL, drop_redundant_indicators = FALSE)
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{ radius = 1, unit = 'miles', wkid = 4326,
+
+ report_every_n = 25, # report_every_n = 1000,
+
+ save_when_report = FALSE, format_report_or_json =  'pjson', on_server_so_dont_save_files = FALSE, 
+ ipurl = 'ejscreen.epa.gov',
+
+ updateProgress = NULL, drop_redundant_indicators = FALSE)
+}\if{html}{\out{</div>}}
 }
 \seealso{
 \link{testpoints_5} \link{testpoints_50} \link{testpoints_500}

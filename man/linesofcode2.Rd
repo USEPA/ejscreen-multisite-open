@@ -5,7 +5,7 @@
 \title{linesofcode2 - UTILITY - count lines of source code per .R file (not per function) - NOT TESTED}
 \usage{
 linesofcode2(
-  folder = getwd(),
+  folder = ".",
   packages,
   recursive = TRUE,
   sums = FALSE,

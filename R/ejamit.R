@@ -70,7 +70,19 @@
 #' @param testing used while testing this function
 #' @param ... passed to [getblocksnearby()] etc. such as  report_progress_every_n = 0
 #' 
-#' @return A list of tables of results
+#' @return A list of tables of results:
+#' 
+#'   * **results_overall**  a data.table with one row that provides the summary across all sites, the aggregated results for all unique residents.
+#'
+#'   * **results_bysite**   results for individual sites (buffers) - a data.table of results,
+#'     one row per ejam_uniq_id (i.e., each site analyzed), one column per indicator
+#'
+#'   * **results_bybg_people**  results for each block group, to allow for showing the distribution of each
+#'      indicator across everyone within each demographic group.
+#'
+#'   * **longnames**  descriptive long names for the indicators in the above outputs
+#'
+#'   * **count_of_blocks_near_multiple_sites**  additional detail
 #'
 #' @examples
 #' 
@@ -183,7 +195,17 @@ ejamit <- function(sitepoints,
   
   if (sitetype == "shp") {
     
+
     ## . check shp ####
+
+    # something like this could replace similar code in server: ***
+    shp <- shapefile_from_any(shapefile, cleanit = FALSE)
+    # shp <- cbind(ejam_uniq_id = 1:nrow(shp), shp) # assign id to ALL even empty or invalid inputs
+    shp  <- shapefile_clean(shp) # reassigns ejam_uniq_id to all, then drops invalid but not empty!! uses default crs = 4269;  drops invalid rows or return NULL if none valid  # shp <- sf::st_transform(shp, crs = 4269) # done by shapefile_clean()
+    shp$valid <- !(!sf::st_is_valid(shp) | sf::st_is_empty(shp) ) # but clean dropped invalid ones already
+    # ***  retain  empty but not invalid rows for analysis? ***
+    if (is.null(shp)) {stop('No valid shapes found in shapefile')}
+    class(shp) <- c(class(shp), 'data.table')
     
     shp <- shapefile_from_any(shapefile, cleanit = FALSE) # if user entered ejamit(shapefile=1), e.g., it will prompt for an actual file.
     # now it does shapefix()
@@ -274,10 +296,11 @@ ejamit <- function(sitepoints,
     if (!silentinteractive) {cat('Finding blocks in each FIPS Census unit.\n')}
     
     mysites2blocks <- getblocksnearby_from_fips(
-      
+
       fips = fips,  # these get retained as ejam_uniq_id for the fips case.
       inshiny = inshiny,
-      need_blockwt = need_blockwt
+
+      need_blockwt = need_blockwt+++
     )
     if (nrow(mysites2blocks) == 0) {
       return(NULL)
@@ -420,6 +443,7 @@ ejamit <- function(sitepoints,
   # Handle sites dropped during getblocksnearby or doaggregate steps or with no data (zero pop)
   # * valid, invalid_msg   ####
   
+
   #     latlon, shp, fips handled the same way here
   
   # Add rows with invalid sites that were dropped before getblocks...
@@ -435,6 +459,18 @@ ejamit <- function(sitepoints,
   site_in_blocksfound  <- data_uploaded$ejam_uniq_id %in% mysites2blocks$ejam_uniq_id
   site_in_results      <- data_uploaded$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
   site_in_results_pop0 <- data_uploaded$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id[out$results_bysite$pop == 0]
+
+  if (sitetype == "latlon") {
+    dup <- data.frame(sitepoints) # latlon. already has ejam_uniq_id
+  }
+  if (sitetype == "fips") {
+    dup <- data.frame(fips = fips, ejam_uniq_id = as.character(fips)) # for merge or join below to work, must match class (integer vs character) of output of doaggregate() and before that output of getblocksnearby_from_fips(fips_counties_from_state_abbrev('DE'))  #  1:length(fips)) 
+  }
+  if (sitetype == "shp") {
+    dup <- sf::st_drop_geometry(shp)[, intersect(names(shp), c('ejam_uniq_id', 'valid', colnames(shp)[1:2], 'NAME'))] 
+    # dup <- data.frame(dup, ejam_uniq_id = 1:NROW(dup)) # shp already had ejam_uniq_id
+  }
+
   
   data_uploaded$valid[site_in_results_pop0 | !site_in_results] <- FALSE  # NOTE this also says invalid if zero population
 
@@ -449,12 +485,14 @@ ejamit <- function(sitepoints,
                               by = 'ejam_uniq_id', all = T)
   setorder(out$results_bysite, ejam_uniq_id)
   
+
   out$results_overall$valid <- sum(out$results_bysite$valid, na.rm = TRUE)
   out$results_overall$invalid_msg <- ""
   if (!setequal(names(out$results_overall), names(out$results_bysite))) {stop('column names in bysite and overall do not match')}
   setcolorder(out$results_overall, names(out$results_bysite))
   
   out$longnames <- fixcolnames(names(out$results_bysite), 'r', 'long') # or try to sort c(fixcolnames(c("valid", "invalid_msg"), 'r', 'long'), out$longnames)
+
   ################################################################ #
   
   # * Hyperlinks ####

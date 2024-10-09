@@ -219,7 +219,7 @@ if (justchecking) {
               varnames_gotten <- c(varnames_gotten, varname_i)
             } else {
               
-              # FAIL: problem using pins? ####
+              # FAIL: problem using connect server pins board ####
               
               warning(
                 "Error with ", varname_i,
@@ -237,6 +237,17 @@ if (justchecking) {
           if (!silent) {cat(" and could NOT download ", varname_i, 
                             " - cannot connect to ", server, "/", "\n", sep = "")}
         }
+      }
+    }
+    
+    if (!exists(varname_i, envir = envir)) {
+      # try public pins board here as last resort location to check 
+      attempt = try(dataload_from_urlpins(varname_i, envir = envir)) # use default function and extension params.
+      if (inherits(attempt, "try-error")) {
+        if (!silent) {cat("Error trying to download ", varname_i, " from public pins board via dataload_from_urlpins()  \n", sep = "")}
+      }
+      if (!exists(varname_i, envir = envir)) {
+        if (!silent) {cat(" and could NOT download ", varname_i, " from public pins board via ejscreendata pkgdown site \n", sep = "")}
       }
     }
     

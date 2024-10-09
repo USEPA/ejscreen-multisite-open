@@ -4,12 +4,17 @@
 \alias{latlon_is.islandareas}
 \title{Check lat lon coordinates to see if each is approx. in general area of US Island Areas Guam, USVI, Amer Samoa or N Marianas}
 \usage{
-latlon_is.islandareas(lat, lon)
+latlon_is.islandareas(lat, lon, exact_but_slow_islandareas = FALSE)
 }
 \arguments{
 \item{lat}{vector of latitudes}
 
 \item{lon}{vector of longitudes}
+
+\item{exact_but_slow_islandareas}{optional logical, set it to TRUE to check each point vs
+boundaries in \link{states_shapefile} to identify which ones are in Island Areas according to that shapefile.
+The default method here is much faster, but just checks if a point is within a bounding box
+that should approximate each of the Island Areas, found in the object \link{islandareas}.}
 }
 \value{
 vector of TRUE / FALSE values indicating a given lat lon pair
