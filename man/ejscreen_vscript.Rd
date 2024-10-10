@@ -2,14 +2,17 @@
 % Please edit documentation in R/ejscreen_vs_ejam_.R
 \name{ejscreen_vscript}
 \alias{ejscreen_vscript}
-\title{EJAM/EJSCREEN comparisons - for interactive RStudio use}
+\title{EJAM/EJSCREEN comparisons - for interactive RStudio use
+The best starting point for comparisons of single-site EJScreen API results and EJAM multisite results.}
 \usage{
 ejscreen_vscript(
   defdir = ".",
   n,
   newpts,
-  pts,
-  radius,
+  pts = NULL,
+  radius = NULL,
+  fips = NULL,
+  shapefile = NULL,
   savedejscreentableoutput,
   x100fix = TRUE,
   x100varnames = names_pct_as_fraction_ejamit
@@ -25,6 +28,12 @@ ejscreen_vscript(
 \item{pts}{data.frame of points with columns lat,lon}
 
 \item{radius}{miles}
+
+\item{fips}{vector of fips codes if relevant}
+
+\item{shapefile}{not implemented, except in the sense that newpts can be
+specified to be cities, which are analyzed using shapefiles in EJAM,
+but as fips in ejscreenapi. Select new, shape (city) options in interactive mode.}
 
 \item{savedejscreentableoutput}{is a data.table from ejscreenit()$table}
 }
@@ -46,22 +55,27 @@ and rows represent sites analyzed.
 }
 \description{
 EJAM/EJSCREEN comparisons - for interactive RStudio use
+The best starting point for comparisons of single-site EJScreen API results and EJAM multisite results.
 }
 \details{
-THIS IS A SCRIPT FOR INTERACTIVE RSTUDIO CONSOLE USE
-TO RUN A SET OF POINTS THROUGH BOTH EJSCREEN AND EJAM
+THIS IS FOR INTERACTIVE RSTUDIO CONSOLE USE
+TO RUN A SET OF POINTS THROUGH BOTH
+EJScreen and the EJAM multisite tool
 AND SAVE STATS ON THE DIFFERENCES
--- including letting you use saved ejscreenapi results and input points
+
+Also lets you use saved ejscreenapi results and input points
 so you can iterate and rerun just the EJAM portion and compare to the saved benchmark data.
 }
 \examples{
 vs = ejscreen_vscript(pts = testpoints_100, radius = 3)
+ejscreen_vs_explain(vs, 1:2)
 
-#'  # vs filtered to just the ones where rounded pop disagrees
+#'  # To filter that to just the ones where rounded pop disagrees
  table(vs$same_shown$pop)
  vspopoff <- lapply(vs, function(x) x[!vs$same_shown$pop, ])
  
-## look only at places where blockcount was identical, to exclude that as source of difference
+##  To filter that to just the ones where blockcount was identical, 
+#   to exclude that as source of difference
 vs_blocksmatch = lapply(vs, function(df) df[vs$absdiff[, "blockcount_near_site"] == 0, ])
 # vss = ejscreen_vs_ejam_summary(vs )
 vssb = ejscreen_vs_ejam_summary(vs_blocksmatch)
@@ -76,3 +90,7 @@ xx = cbind(indicator = vssb$indicator[vssb$indicator \%in\% c('pop', names_these
 xx[xx$pct.of.sites.agree.within.tol < 100, ]
 
 }
+\seealso{
+Relies on \code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}} \code{\link[=ejscreen_vs_ejam_alreadyrun]{ejscreen_vs_ejam_alreadyrun()}} \code{\link[=ejscreen_vs_explain]{ejscreen_vs_explain()}}
+}
+\keyword{internal}

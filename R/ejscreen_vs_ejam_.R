@@ -72,14 +72,14 @@
 #'   being scaled as 0 to 1 into rescaled values of 0 to 100, because some 
 #'   outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.
 #' @param save_when_report see [ejscreenapi_plus()], to save progress every so often just in case.
-#' @param save_ejscreen_output set to NULL to avoid saving ejscreen results locally.
+#' @param save_ejscreen_output set to NULL or FALSE to avoid saving ejscreen results locally.
 #'   If specified as a valid path and filename ending in .rda, it saves there.
 #'   If missing, function will prompt in interactive R session
-#'   for a folder to use for saving the .rda results of ejscreenapi_plus().
+#'   for a folder to use for saving the .rda results of ejscreenapi 
 #' @param report_every_n see ejscreenapi_plus()
 #' @param calculate_ratios passed to ejscreenapi_plus() and [ejamit()]
-#' @param ... passed to ejamit() as any additional parameters,
-#'    like include_ejindexes = FALSE
+#' @param include_ejindexes passed to ejscreenapi_plus() and [ejamit()]
+#' @param ... passed to ejamit() as any additional parameters
 #'
 #' @return a list of data frames, with names 
 #'   EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, 
@@ -143,6 +143,7 @@
 #' 
 ejscreen_vs_ejam <- function(latlon, radius = 3, 
                              fips = NULL,
+                             shapefile = NULL,
                              nadrop = FALSE,
                              save_ejscreen_output = "ejscreenapi_plus_out.rda",
                              save_when_report = FALSE, report_every_n = 250, # save every 10 minutes or so
@@ -150,26 +151,39 @@ ejscreen_vs_ejam <- function(latlon, radius = 3,
                              x100fix = TRUE, 
                              x100varnames = names_pct_as_fraction_ejamit, ...) {
   
-  if ((!is.null(save_ejscreen_output) && !(FALSE %in% save_ejscreen_output))  ) {
+  # if you set save_ejscreen_output to F, FALSE, NULL those all get treated as NULL. if set to T or TRUE, use default file name
+  #   convert F to FALSE  (and T to TRUE)
+  if (!is.null(save_ejscreen_output)) {
+    if (is.logical(save_ejscreen_output)) {save_ejscreen_output <- as.logical(save_ejscreen_output)}
+    # convert TRUE to default file name
+    if (as.logical(save_ejscreen_output)) {save_ejscreen_output <- "ejscreenapi_plus_out.rda"}
+    # convert FALSE to NULL
+    if (!as.logical(save_ejscreen_output)) {save_ejscreen_output <- NULL} 
+  }
+  # if it is not NULL (because it was provided as something other than NULL, F, or FALSE)... 
+  if (!is.null(save_ejscreen_output)) {
     if (missing(save_ejscreen_output) & interactive()) {
       mydir = rstudioapi::selectDirectory("save ejscreen results in what folder?")
+      if (is.na(mydir)) {stop('halted')}
     } else {
-      mydir = dirname(save_ejscreen_output)
+      mydir <- dirname(save_ejscreen_output)
       if (!dir.exists(mydir)) {stop(mydir, " folder not found")}
       save_ejscreen_output <- basename(save_ejscreen_output)
       if (tools::file_ext(save_ejscreen_output) != "rda") {stop("filename specified in save_ejscreen_output must end in .rda")}
     }
   }
   ################################### #
+  
   # GET EJSCREEN RESULTS ####
   
   ## a) this is simplest - it just calculates ratios in its default, and adds URLs we dont need, but no map, no table view, no boxplot/etc.
   api1 <- ejscreenapi_plus(latlon, radius = radius,
                            fips = fips,
+                           # shapefile = shapefile,  # NOT IMPLEMENTED 
                            save_when_report = save_when_report, report_every_n = report_every_n,
                            calculate_ratios = calculate_ratios)
   
-  ## b) this would work but after using ejscreenapi_plus()  it also can do map, boxplot, interactive DT viewer, etc.
+  ## b) this would work but after using ejscreenapi_plus()  but waste of time since we do not need map, boxplot, interactive DT viewer, etc.
   # api1 <- ejscreenit(latlon, radius = radius, 
   #                    fips = fips, 
   #                    calculate_ratios = calculate_ratios,
@@ -184,10 +198,15 @@ ejscreen_vs_ejam <- function(latlon, radius = 3,
   # )
   
   ################################### #
+  
   # GET EJAM RESULTS ####
   
-  if (missing(latlon)) {latlon <- api1[ , c('id', 'lat', 'lon')]} # in case provided interactively above
-  ejam1 <- ejamit(latlon, radius = radius, calculate_ratios = calculate_ratios, include_ejindexes = include_ejindexes, ...)$results_bysite
+  if (missing(latlon) && all(c('id', 'lat', 'lon') %in% names(api1))) {latlon <- api1[ , c('id', 'lat', 'lon')]} # in case provided interactively above
+  ejam1 <- ejamit(latlon, radius = radius, 
+                  fips = fips,
+                  shapefile = shapefile, 
+                  calculate_ratios = calculate_ratios, include_ejindexes = include_ejindexes, 
+                  ...)$results_bysite
   
   ################################### #
   if (!is.null(save_ejscreen_output)) {
@@ -632,7 +651,6 @@ ejscreen_vs_ejam_summary <- function(z = NULL,
 ######################################################################### # 
 
 
-
 #' EJAM/EJSCREEN comparisons - see quantiles over tested sites, of a stat like ratio of EJAM/EJSCREEN
 #'
 #' @param z output of ejscreen_vs_ejam()
@@ -653,7 +671,6 @@ ejscreen_vs_ejam_summary_quantiles <- function(z,
                                                mystat = c("ratio", "diff", "absdiff", "pctdiff", "abspctdiff")[1], 
                                                myvars = c('pop', names_these), 
                                                probs = (0:20) / 20, na.rm = TRUE, digits = 4) {
-  
   round(
     t(
       sapply(
@@ -665,7 +682,6 @@ ejscreen_vs_ejam_summary_quantiles <- function(z,
   )
 }
 ######################################################################### # 
-
 
 #' EJAM/EJSCREEN comparisons - see results at every site, for 1 INDICATOR after using ejscreen_vs_ejam()
 #'
@@ -744,7 +760,7 @@ ejscreen_vs_ejam_see1 <- function(z, myvars = c("ejam_uniq_id", 'pop', names_d),
 
 
 #' EJAM/EJSCREEN comparisons - Try to explain discrepancy in pop and blocks via map and tables of blocks near a site
-#'
+#' 
 #' @param n row number in x$EJAM of site to check
 #' @param x results from  x <- ejscreen_vs_ejam(testpoints_10, radius =3, include_ejindexes = TRUE)
 #' @param overlay_blockgroups optional, set TRUE to see overlay of boundaries of parent blockgroups,
@@ -765,7 +781,7 @@ ejscreen_vs_ejam_see1 <- function(z, myvars = c("ejam_uniq_id", 'pop', names_d),
 #'   z <- ejscreen_vs_ejam(testpoints_10, radius = 3, include_ejindexes = TRUE)
 #'   ejscreen_vs_ejam_see1map(3, z, overlay_blockgroups = TRUE)
 #'  }
-#'
+#' @seealso [ejscreen_vs_explain()]
 #' @keywords internal
 #' 
 ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
@@ -778,7 +794,12 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
   # function to help explain discrepancy in pop and blocks  
   # n is the rownumber of the site analyzed, row of x$EJAM
   # x is from x <- ejscreen_vs_ejam(pts, radius = radius, include_ejindexes = TRUE)
-  on.exit({rm(blockid2fips, blockpoints,blockwts); save.image(file = "saved memory image when see1map crashed.rda")})
+  
+  on.exit({
+    rm(blockid2fips, blockpoints,blockwts)
+    save.image(  file = paste0("saved memory image when ejscreen_vs_ejam_see1map() crashed at id ", x$EJAM[n, 'ejam_uniq_id'], ".rda"))
+    dataload_from_pins()
+  })
   
   differenceinfo = ejscreen_vs_ejam_see1(x,
                                          mysite = n, 
@@ -820,7 +841,7 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
   these$cumpop = round(rev(cumsum(rev(these$blockpop))), 0) # cumulative starting from furthest site
   
   # but then also include the next few beyond that radius
-
+  
   these_extras <- head(px[distance > radius, ][order(distance),
                                                .(blockid, distance, blockpop)],
                        extra_blocks2check_beyond_radius + abs(differenceinfo['blockcount_near_site', 'diff']))
@@ -857,7 +878,6 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
         
         # could it be a combo of some exactly bdif number of blocks that explains the pdif? e.g., missed all 3 or all 3 are extra ########################## # 
         combs = combn(seq_along((these$blockpop)), m = abs(bdif))
-        
         
         possible_explanations <- combs[, which(round(colSums(combn((these$blockpop), m = abs(bdif))), 0) == pdif)]
         if (NCOL(possible_explanations) != 0) {
@@ -926,7 +946,6 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
     if (!explained) {
       these$explanation[is.na(these$blockid) & these$distance == radius] <- "No obvious explanation here"
     }
-    
     ########################## # 
   }
   these = these[ , c('blockid', 'distance', 'feet', 'meters', 'blockpop' ,'cumpop' ,'explanation')]
@@ -935,7 +954,6 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
   
   print(these)
   cat("blockpop shown here is rounded off\n\n")
-  
   
   cat("\nThere should be",
       differenceinfo['blockcount_near_site', 'diff'],
@@ -949,7 +967,7 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
 }
 ######################################################################### # 
 
-#' interactively step through sites to see which blocks may explain difference in population count
+#' EJAM/EJSCREEN comparisons - loop or interactively step through sites to see which blocks may explain difference in population count
 #'
 #' @param vs The output of [ejscreen_vs_ejam()] or [ejscreen_vscript()]
 #' @param pause_on_each_site set FALSE to avoid tapping key to advance to each next one
@@ -957,13 +975,17 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
 #'   population counts agreed to zero decimal places
 #' @param map set to FALSE to suppress drawing map but still return block-level info
 #' @return same
-#' 
+#' @seealso [ejscreen_vs_explain_summary()]
 #' @keywords internal
 #'
 ejscreen_vs_explain <- function(vs, ejam_uniq_id = NULL, pause_on_each_site = TRUE, onlyifpopdiffers = TRUE, map = TRUE) {
   
-  on.exit({rm(blockid2fips, blockpoints,blockwts); save.image(file = "saved memory image when ejscreen_vs_explain crashed.rda")})
-
+  on.exit({
+    rm(blockid2fips, blockpoints,blockwts)
+    save.image(  file = paste0("saved memory image when ejscreen_vs_explain() crashed at id ", x$EJAM[n, 'ejam_uniq_id'], ".rda"))
+    dataload_from_pins()
+  })
+  
   if (!pause_on_each_site) {
     map <- FALSE
   }
@@ -1011,14 +1033,14 @@ ejscreen_vs_explain <- function(vs, ejam_uniq_id = NULL, pause_on_each_site = TR
       
       txt <- unique(this$explanation[this$explanation != ""])
       if ("pop of this 1 block matches pop diff" %in% txt) {
-        why[i] = "1 block explains pop diff and blockcount diff" # this explanation takes precedence if avail.
+        why[i] = "A single block explains pop diff and blockcount diff" # this explanation takes precedence if avail.
         
       } else {
         if ("These missing or extra blocks explain the pop diff and blockcount diff"  %in% txt) {
           why[i] = "A group of blocks explains pop diff and blockcount diff"
         } else {
-        why[i] = txt[1]
-      }}
+          why[i] = txt[1]
+        }}
       # meters_absdiff records how large is the discrepancy in distance 
       # between radius specified and 
       # EJAM-estimated distance of a block that 
@@ -1051,30 +1073,79 @@ ejscreen_vs_explain <- function(vs, ejam_uniq_id = NULL, pause_on_each_site = TR
   )
   
   print(addmargins(cbind(Number.of.Facilities = table(why$why)), margin = 1))
-  cat("\n\n# After vs <- ejscreen_vscript()  or  vs <- ejscreen_vs_ejam_alreadyrun()\n# to summarize output of  why <- ejscreen_vs_explain(vs)  try this:\n  addmargins(cbind(Number.of.Facilities = table(why$why)), margin = 1) \n\n")
+  cat("\n
+# After vs <- ejscreen_vscript()  or  vs <- ejscreen_vs_ejam_alreadyrun()
+# to summarize output of  why <- ejscreen_vs_explain(vs)  try this:
+ejscreen_vs_explain_summary(why)
+\n")
   invisible(why)
 }
-################# #
+########################################################### #
 
-# x2 =  ejscreen_vs_explain(vs, 144:500, 
-#   pause_on_each_site = F)
-# 
-# ------------------ -
-#   Site #219 of 357
-# Analyzing 1 points, radius of 3.08 miles around each.
-# Finding Census blocks with internal point within  3.08  miles of the site (point), for each of 1  sites (points)...
-# Stats via getblocks_diagnostics(), but NOT ADJUSTING UP FOR VERY SHORT DISTANCES: 
-#   min distance before adjustment:  0.03447249 
-# max distance before adjustment:  5.613253 
-# 
-# Error in matrix(r, nrow = len.r, ncol = count) : 
-#   invalid 'ncol' value (too large or NA)
-# In addition: Warning message:
-#   In combn(seq_along((these$blockpop)), m = abs(bdif)) :
-#   NAs introduced by coercion to integer range
-# Called from: matrix(r, nrow = len.r, ncol = count)
+#' EJAM/EJSCREEN comparisons - Summarize explanations for discrepancies in pop
+#'
+#' @param whyall Output from [ejscreen_vs_explain()]
+#'
+#' @return summary table of info, on how many sites had each type of explanation
+#' @examples
+#' vs10 <- ejscreen_vs_ejam(testpoints_10, radius = 3, save_ejscreen_output = F, save_when_report = F, calculate_ratios = F)
+#' why10 <- ejscreen_vs_explain(vs10, ejam_uniq_id = 1:10, pause_on_each_site = F)
+#' ejscreen_vs_explain_summary(why10)
+#' 
+#' @keywords internal
+#' @export
+#'
+ejscreen_vs_explain_summary = function(whyall) {
+  
+  ################### #
+  cat("
+--------------------------------------------------------------
 
-######################################################################################### # 
+  ALL CASES TESTED
+
+")
+  fulltable <-  addmargins(cbind(
+    Number.of.Facilities = table(whyall$why, useNA = 'always'),
+    Percent.of.Facilities = round(100 * table(whyall$why, useNA = 'always') / NROW(whyall), 0)
+  ), margin = 1)
+  print(fulltable)
+  fulltable <- data.frame(fulltable) # prints slightly differently once this happens but easier to refer to a column
+  cat('\n\n')
+  ################### #
+  cat("
+--------------------------------------------------------------
+
+  CASES where Pop shown differs, so it needs an explanation
+
+")
+  whydiff = whyall[!is.na(whyall$why) & whyall$why != "pop shown is same!", ]
+  print(addmargins(cbind(
+    Number.of.Facilities = table(whydiff$why, useNA = 'always'),
+    Percent.of.Facilities = round(100 * table(whydiff$why, useNA = 'always') / NROW(whydiff), 0)
+  ), margin = 1))
+  cat("
+--------------------------------------------------------------
+
+
+")
+  ################### #  
+  ejscreen_vs_explain_summary_plot(fulltable)
+  
+  invisible(fulltable)
+}
+########################################################### #
+
+ejscreen_vs_explain_summary_plot <- function(x) {
+  
+  barplot(
+    x[ 1:(NROW(x) - 1), ]$Number.of.Facilities, 
+    names.arg = c("Group of blocks missed/extra", "1 block missed/extra", "No obvious reason", "Pop Counts Identical", "NA"), 
+    xlab = "Explanation for Difference in Population Counts", 
+    ylab = "Number of Locations", 
+    main = paste0("Comparison of EJScreen and EJAM at ", x$Number.of.Facilities[rownames(x) == 'Sum'], " Sites")
+  )
+}
+########################################################### #
 
 
 #'  EJAM/EJSCREEN comparisons - for interactive RStudio use
@@ -1095,6 +1166,10 @@ ejscreen_vs_explain <- function(vs, ejam_uniq_id = NULL, pause_on_each_site = TR
 #' @param newpts logical, if need new set of random locations
 #' @param pts data.frame of points with columns lat,lon
 #' @param radius miles
+#' @param fips vector of fips codes if relevant
+#' @param shapefile not implemented, except in the sense that newpts can be 
+#'   specified to be cities, which are analyzed using shapefiles in EJAM,
+#'   but as fips in ejscreenapi. Select new, shape (city) options in interactive mode.
 #' @param savedejscreentableoutput is a data.table from ejscreenit()$table 
 #'
 #' @return a list of data frames, with names 
@@ -1114,6 +1189,7 @@ ejscreen_vs_explain <- function(vs, ejam_uniq_id = NULL, pause_on_each_site = TR
 #' 
 #' @examples
 #' vs = ejscreen_vscript(pts = testpoints_100, radius = 3)
+#' ejscreen_vs_explain(vs, 1:2)
 #' 
 #' #'  # To filter that to just the ones where rounded pop disagrees
 #'  table(vs$same_shown$pop)
@@ -1138,7 +1214,11 @@ ejscreen_vs_explain <- function(vs, ejam_uniq_id = NULL, pause_on_each_site = TR
 #' @keywords internal
 #' 
 ejscreen_vscript <- function(defdir = '.',
-                             n, newpts, pts, radius, savedejscreentableoutput,
+                             n, newpts,
+                             pts = NULL, radius = NULL, 
+                             fips = NULL,
+                             shapefile = NULL, # not implemented 
+                             savedejscreentableoutput,
                              x100fix = TRUE, 
                              x100varnames = names_pct_as_fraction_ejamit
 ) {
@@ -1167,36 +1247,124 @@ ejscreen_vscript <- function(defdir = '.',
     mydir <- defdir
   }
   setwd(mydir)
-  # setwd("~/../Desktop/EJAM Team Files/-0 TO DO LISTS AND ISSUES IN PACKAGES/comparisons")
+  # setwd(..../comparisons")
   
-  # # a list of points can be analyzed interactively like this: 
-  if (missing(newpts) && missing(pts)) {
-    newpts = askYesNo("Use a new set of random points? (instead of saved points)")
+  ############################## # 
+  if (!missing(pts) || !missing(fips) || !missing(shapefile) || !missing(savedejscreentableoutput)) {
+    # specified places already
+    newpts <- FALSE
+    ##  need sitetype to make other type NULL
+    if (!missing(savedejscreentableoutput)) {sitetype = 1} else {
+      if (!missing(pts)) {sitetype = 1} else {
+        if (!missing(shapefile)) {sitetype = 2} else {
+          if (!missing(fips)) {sitetype = 3} # called fips even if  city/cdp fips
+        }}}
+  } else {
+    #  maybe they want to specify the file interactively or ask for new places interactively
+    newpts = askYesNo("Use a new set of random places? (instead of saved places/points)")
     if (is.na(newpts)) {stop("cancelled")}
   }
-  
-  
-  if (missing(pts) && newpts) {
+  ############################## # 
+  if (newpts) {
     if (missing(n)) {
-      n = ask_number(default = 100, title = "Points", message = "How many points to run?")
+      n = ask_number(default = 100, title = "Places", message = "How many places to test?")
       if (is.na(n)) {stop('cancelled')}
     }
-    pts <- testpoints_n(n, weighting = 'frs')
-  } else {
-    ###  or reload existing saved points and run EJAM again
-    if (missing(pts)) {
-      myfile = rstudioapi::selectFile("Which file has saved pts as .csv, .xls, .xlsx?", path = mydir, filter = "csv or xls or xlsx (*.csv, *.xls, *.xlsx)")
-      if (is.na(myfile)) {stop("cancelled")}
-      pts <- read_csv_or_xl(myfile) # read.csv(myfile) # load(file.path(mydir, "pts.rda"))
-    }
-    n = NROW(pts)
   }
+  if (newpts) {
+    
+    # points vs shape vs fips, for NEW random places
+    sitetype = 0
+    while (!(sitetype %in% 1:4)) {
+      sitetype <- ask_number("What types of locations?",
+                             message = "Enter 1, 2, or 3 \n1 points\n2 Shapes (Cities/CDPs)\n3 FIPS (Counties)\n4 quit", 
+                             default = 1
+      )
+    }
+    if (sitetype == 1) {
+      pts <- testpoints_n(n, weighting = 'frs')
+    }
+    if (sitetype == 2) {
+      randomrows <- sample(1:NROW(censusplaces), n)
+      fips <- censusplaces$fips[randomrows]
+      sitetype <- 3 # if picked new "shapes" they are always cities here so they get passed as fips to ejamit()
+    } else {
+      if (sitetype == 3) {
+        cfips <- unique(substr(blockgroupstats$bgfips, 1, 5))
+        randomrows <- sample(1:length(cfips), n)
+        fips <- cfips[randomrows]
+      }
+    }
+    if (sitetype == 4) {stop("halted")}
+  }
+  
+  ############################## # 
+  
+  # if uploading to specify places
+  
+  if (!newpts && 
+      missing(pts) && missing(fips) && missing(shapefile) && missing(savedejscreentableoutput)) {
+    
+    # need to specify where to upload from, and read it
+    #  to reload existing saved points/places and run EJAM again    
+    
+    # points vs shape vs fips, for uploaded places
+    sitetype = 0
+    while (!(sitetype %in% 1:4)) {
+      sitetype <- ask_number("What types of saved locations to upload to run in EJAM?",
+                             message = "Enter 1, 2, or 3 
+1 points
+2 Shapes (Cities/CDPs)
+3 FIPS (Counties)
+4 quit", 
+                             default = 1
+      )
+    }
+    if (sitetype == 1) {
+      pts <- sitepoints_from_any()
+      n = NROW(pts)
+    }
+    if (sitetype == 2) {
+      shapefile = shapefile_from_any()
+      n = NROW(shapefile)
+      warning('shapefiles other than cities via fips may not be implemented yet for ejscreen_vs_  ')
+    }
+    if (sitetype == 3) {
+      fips = fips_from_table(read_csv_or_xl())
+      n = length(fips)
+    }
+    if (sitetype == 4) {stop("halted")}
+  }
+  ###################################### #
+  if (sitetype == 1) {
+    # pts <- NULL
+    shapefile <- NULL
+    fips <- NULL
+  }
+  if (sitetype == 2) {
+    pts <- NULL
+    # shapefile <- NULL
+    fips <- NULL
+  }
+  if (sitetype == 3) {
+    pts <- NULL
+    shapefile <- NULL
+    # fips <- NULL
+  }
+  ###################################### #
+  # where will we save the results?
+  ## note save_ejscreen_output is NOT the same as savedejscreentableoutput !
   save_ejscreen_output <- file.path(mydir, "ejscreenapi_plus_out.rda")
   save_ejscreen_output <- gsub("out.rda$", paste0("out for ", n, "points-", gsub(':','.',Sys.time()), ".rda"), save_ejscreen_output) 
-  
-  
-  if (missing(radius)) {
-    radius = ask_number()
+  ###################################### #  
+  if (missing(radius) || is.null(radius)) {
+    
+    if (is.null(fips) || is.null(shapefile)) {
+      if (is.null(shapefile)) {cat('adding buffer on shapefiles not implemented here, setting radius/buffering to zero')}
+      radius <- 0
+    } else {
+      radius = ask_number()
+    }
     if (is.na(radius)) {stop('cancelled')}
   }
   ############################################ #
@@ -1227,14 +1395,20 @@ ejscreen_vscript <- function(defdir = '.',
     if (!is.data.frame(savedejscreentableoutput)) {stop("savedejscreentableoutput should be a data.frame output from ejscreenit()$table or similar")}
     cat("Using saved ejscreen results and running new EJAM results to compare them... \n")
     vs <- ejscreen_vs_ejam_alreadyrun(apisite = savedejscreentableoutput,
-                                      ejamsite = ejamit(pts, radius = radius, include_ejindexes = TRUE)$results_bysite,
+                                      ejamsite = ejamit(pts, radius = radius, 
+                                                        fips = fips,
+                                                        shapefile = shapefile,
+                                                        include_ejindexes = TRUE)$results_bysite,
                                       x100fix = x100fix, 
                                       x100varnames = x100varnames
     )
   } else {
     ## to do it all from scratch
     
-    vs <- ejscreen_vs_ejam(pts, radius = radius, include_ejindexes = TRUE, 
+    vs <- ejscreen_vs_ejam(pts, radius = radius, 
+                           fips = fips,
+                           shapefile = shapefile,
+                           include_ejindexes = TRUE, 
                            save_ejscreen_output = save_ejscreen_output,
                            x100fix = x100fix, 
                            x100varnames = x100varnames)
@@ -1297,121 +1471,3 @@ ejscreen_vscript <- function(defdir = '.',
   invisible(vs)
 }
 ######################################################################################### # 
-
-
-
-
-
-############################################################ #
-############################################################ #
-############################################################ #
-############################################################ #
-
-if (1 == 0) {
-  ### Comparing what the functions provide:
-  
-  ### ejscreenapi outputs:
-  # provides as rnames if ejscreenapi_plus() but as longnames if ejscreenit() 
-  
-  # all.equal(names(testoutput_ejscreenit_5$table), names(testoutput_ejscreenapi_plus_5))
-  # api_table1 = ejscreenapi_plus(testpoints_10)  # provides as rnames
-  api_all <- ejscreenit(testpoints_10, radius = 3) # provides as LONG NAMES for convenience, including  "EJScreen Report" "EJScreen Map" "Buffer distance (miles)" "% Low Income" etc.   
-  api_table <- api_all$table
-  # setdiff2(fixcolnames(names(api_table), 'long', 'r'), names(api_table1))
-  ### These names are identical once converted from long to r type names.
-  names(api_table) <- fixcolnames(names(api_table), 'long', 'r')
-  #  all.equal(api_table, api_table1)
-  ### [1] "Component “timeSeconds”: Mean relative difference: 0.1214217"
-  data.table # :: # 
-  setDT(api_table)
-  rm(api_all)
-  gc()
-  
-  ### EJAM outputs:
-  # provides as rnames
-  
-  # names(testoutput_ejamit_100pts_1miles$results_bysite)
-  ### analyze.stuff # :: # overlaps(names(api_table),  names(testoutput_ejamit_100pts_1miles$results_bysite))
-  ### in.a in.a.only overlap in.b.only in.b in.one.only union
-  ### unique  340       153     187       103  290         256   443  
-  
-  ejamout <- ejamit(testpoints_10, radius = 3, include_ejindexes = TRUE, calculate_ratios = T, extra_demog = TRUE) # provides as rnames
-  ejam_table <- copy(ejamout$results_bysite)  #  data.table # ::
-  rm(ejamout)
-  gc()
-  
-  inboth <- intersect(names(ejam_table), names(api_table))
-  onlyejam <- setdiff(names(ejam_table), names(api_table)) # not provided by API, or named differently
-  onlyapi <- setdiff(names(api_table), names(ejam_table)) # 
-  # > names_d_other_count %in% onlyejam
-  #  Both have pop, hhld, nonmins, but
-  ## only EJAM has: "povknownratio","age25up","unemployedbase", "pre1960","builtunits"
-  
-  # missing from API:
-  ### ratios for demog subgroups
-  ## raw EJ scores
-  ### pctiles demog subgroups
-  ### avg demog subgroups
-  ### count demog subgroups and groups  
-  okmissing <- c(
-    c(names_d_subgroups_ratio_to_avg, names_d_subgroups_ratio_to_state_avg),
-    c(names_ej, names_ej_state, names_ej_supp, names_ej_supp_state),
-    c(names_d_subgroups_pctile, names_d_subgroups_state_pctile),
-    c(names_d_subgroups_avg, names_d_subgroups_state_avg),
-    names_d_subgroups_count,
-    names_d_count 
-  )
-  all(okmissing %in% onlyejam)
-  setdiff(onlyejam, okmissing)
-  
-  
-  # WILL FIX: 
-  
-  # FOUND PROBLEM IN ejscreenapi_plus outputs: lat and lon each appear twice, if input is testpoints_10
-  
-  ################################################################## #
-  
-  # WILL FIX: 
-  
-  # ejscreenapi() outputs now differ from those names in testoutput_ejscreenapi_1pts_1miles - rebuild examples for  ejscreenapi 
-  setdiff2(names(x), names(testoutput_ejscreenapi_1pts_1miles))
-  # ok in map_headernames
-  # [1] "P_NHWHITE"      "P_NHBLACK"      "P_NHASIAN"      "P_NHAMERIND"    "P_NHHAWPAC"     "P_NHOTHER_RACE" "P_NHTWOMORE"    "TOTALPOP"      
-  # [9] "P_WHITE"        "P_BLACK"        "P_ASIAN"        "P_AMERIND"      "P_HAWPAC"       "P_OTHER_RACE"   "P_TWOMORE"  
-  ################################################################## #
-  
-  # setdiff2(names(x$EJAM), names(testoutput_ejscreenapi_plus_5))
-  
-  
-  
-  onlyejam <- onlyejam[!grepl("DISPARITY", onlyejam)]
-  
-  # unexplained missing
-  
-  setdiff(onlyejam, okmissing) 
-  
-  
-  ## but do not have, for some reason, these in API outputs: Some problem with renaming to/from r format, done or not in outputs
-  # testoutput_ejscreenapi_1pts_1miles  has percentage but not counts like P_AGE_LT18 
-  #  "AGE_LT18" "AGE_GT17" - counts are not in api output, only percents of these
-  # "MALES" "FEMALES" - counts are not in api output, only percents of these like "P_MALES"
-  # "OWNHU"  "OCCHU"  - counts are not in api output, only percents of these like "P_OWN_OCCUPIED"  -- now "pctownedunits"
-  #   "DISAB_UNIVERSE"  "DISABILITY"  - counts are not in api output, only percents of these like "P_DISABILITY" 
-  # "PCT_HH_BPOV"   "HH_BPOV" - NOT SURE WHY THESE ARE MISSING
-  #
-  #"LAN_UNIVERSE" 
-  # "LAN_ENG_NA" 
-  #     "LAN_SPANISH"        "LAN_IE"        "LAN_API"     
-  #     "HLI_SPANISH_LI"     "HLI_IE_LI"     "HLI_API_LI"      "HLI_OTHER_LI"  ###  but later edited map_headernames??
-  # "PCT_HLI_SPANISH_LI" "PCT_HLI_IE_LI" "PCT_HLI_API_LI"  "PCT_HLI_OTHER_LI" ### but later edited map_headernames
-  #  "pct_lan_eng"
-  #  "pct_lan_spanish"    "pct_lan_ie"    "pct_lan_api"
-  # 
-  #  "distance_min"  "distance_min_avgperson"  "sitecount_max"  "sitecount_unique"  "sitecount_avg"
-  
-  
-  
-}
-
-
-

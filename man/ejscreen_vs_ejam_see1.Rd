@@ -31,6 +31,9 @@ but see str() because it is a list in matrix form
 \description{
 EJAM/EJSCREEN comparisons - see results for 1 site after using ejscreen_vs_ejam()
 }
+\details{
+see also ejscreen_vs_ejam_bysite() and ejscreen_vs_explain()
+}
 \examples{
   dontrun{
   z <- ejscreen_vs_ejam(testpoints_10, radius = 3)
