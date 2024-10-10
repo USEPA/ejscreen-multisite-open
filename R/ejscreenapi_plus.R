@@ -23,7 +23,7 @@
 #' 
 #' @param fips if used instead of lon,lat it should be a character FIPS code vector
 #'   (counties, tracts, or blockgroups)
-#'   
+#' @param shapefile not implemented
 #' @param report_every_n default is to provide an update every so often
 #' @param save_when_report default is FALSE but if TRUE it saves work in progress every so often
 #' @param format_report_or_json do not use
@@ -78,6 +78,7 @@
 #'  
 ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
                              fips = NULL,
+                             shapefile = NULL, # pending
                              report_every_n=100, save_when_report=FALSE, 
                              format_report_or_json='pjson', on_server_so_dont_save_files=FALSE, ipurl='ejscreen.epa.gov',
                              mapping_for_names = NULL, 
@@ -85,6 +86,8 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
                              calculate_ratios=TRUE,
                              verbose=FALSE,
                              getstatefromplacename = TRUE) {
+  
+  if (!is.null(shapefile)) {warning('shapefile not implemented yet')}
   
   if (is.null(mapping_for_names)) {mapping_for_names <- map_headernames} # should be available as data via package or loaded via global.R
   
@@ -107,6 +110,7 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
     lon = lon, lat = lat,
     radius = radius, unit = unit, wkid = wkid, 
     fips = fips,
+    shapefile = shapefile, 
     format_report_or_json = format_report_or_json, ipurl = ipurl,
     report_every_n = report_every_n, save_when_report = save_when_report, 
     on_server_so_dont_save_files = on_server_so_dont_save_files,

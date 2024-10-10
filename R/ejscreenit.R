@@ -113,6 +113,7 @@
 #' @param nicenames whether to use long plain english headers in table or R variable names,
 #'   e.g.,  "Particulate Matter (PM 2.5 in ug/m3)" not "pm"
 #' @param fips if used instead of x,y it can specify fips codes of counties, tracts, or blockgroups
+#' @param shapefile not implemented
 #' @param nosave   logical, if TRUE, sets as FALSE and overrides save_map, save_plot, save_table. Ignored if FALSE.
 #' @param nosee    logical, if TRUE, sets as FALSE and overrides see_map, see_plot, see_table. Ignored if FALSE.
 #' @param save_map   logical, whether to save png image file locally
@@ -210,6 +211,7 @@
 #' 
 ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
                        fips = NULL,
+                       shapefile = NULL,
                        nosave = TRUE, nosee = TRUE,
                        save_map    =TRUE, see_map  =TRUE,
                        save_plot   =TRUE, see_plot =TRUE,
@@ -221,6 +223,8 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
                        # codefilesourced='./global.R', codefoldersourced='./R',
                        getstateinfofromplacename = TRUE,
                        ...) {
+  
+  if (!is.null(shapefile)) {warning('shapefile not implemented yet')}
   
   ################################################### #  ################################################### #
   if (nosave) {save_map <- FALSE; save_plot <- FALSE; save_table <- FALSE}
@@ -260,6 +264,7 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
   out <- ejscreenapi_plus(pts, radius = radius, mapping_for_names = map_headernames, 
                           usewhichnames = usewhichnames,
                           fips = fips,
+                          shapefile = shapefile,
                           # verbose = FALSE, # ALREADY THE DEFAULT IN ejscreenapi_plus() and putting it here causes problems if user tries to specify a value for it in ejscreenit()
                           calculate_ratios = calculate_ratios,
                           getstatefromplacename = TRUE,

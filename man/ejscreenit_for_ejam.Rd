@@ -4,12 +4,23 @@
 \alias{ejscreenit_for_ejam}
 \title{Get EJScreen results directly from EJScreen servers via their API}
 \usage{
-ejscreenit_for_ejam(sitepoints, radius = 3, fillmissingcolumns = TRUE, ...)
+ejscreenit_for_ejam(
+  sitepoints,
+  radius = 3,
+  fips = NULL,
+  shapefile = NULL,
+  fillmissingcolumns = TRUE,
+  ...
+)
 }
 \arguments{
 \item{sitepoints}{table with lat and lon columns}
 
 \item{radius}{in miles}
+
+\item{fips}{fips code (or possibly a vector of fips codes)}
+
+\item{shapefile}{not implemented}
 
 \item{...}{passed to ejscreenit()}
 }

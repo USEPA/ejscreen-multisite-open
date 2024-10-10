@@ -10,6 +10,7 @@ ejscreenit(
   radius = 3,
   maxradiusmiles = 10,
   fips = NULL,
+  shapefile = NULL,
   nosave = TRUE,
   nosee = TRUE,
   save_map = TRUE,
