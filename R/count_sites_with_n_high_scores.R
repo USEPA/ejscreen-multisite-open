@@ -147,8 +147,8 @@ count_sites_with_n_high_scores <- function(
   
   textout <- matrix("", nrow = NROW(cumpcts), ncol = NCOL(cumpcts))
   for (rown in  (2:NROW(cumpcts))) {  # DOES THIS NOT WORK IF ONLY 1 INDICATOR? (which would be an odd case)
-    # cat('\n')
-    # browser()
+    
+    
     for (coln in rev(1:length(ratio_benchmarks))) {  ####  WILL THIS NOT WORK IF ONLY 1 BENCHMARK? ***
       # this assumes you provided ratio_benchmarks in increasing order !
       # but makes sense to report highest ratios first.
