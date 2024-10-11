@@ -88,8 +88,6 @@ run_renaming_tests = function(tlist, oldnames, testname="test", fun2test = fixco
     })
   }
   
-  print(results$new_is_canonical)
-  
   ###################################### # 
 }
 
