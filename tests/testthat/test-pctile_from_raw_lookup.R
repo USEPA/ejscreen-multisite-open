@@ -96,7 +96,7 @@ test_that('multiple zero minimums return zero',{
                                   lookup = mylookup 
                                   )
   })
-  expect_equal(val, c(  56, 56, 61 ,86, 98))
+  expect_equal(val, c(  0, 56, 61 ,86, 98))
 })
  
 # #   If the value is less than the cutpoint listed as percentile 0,

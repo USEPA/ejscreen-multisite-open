@@ -133,7 +133,8 @@ metadata_mapping <- list(
   
   test_metadata_custom2 = list(
     custominfo = 123, 
-    moreinfo = "abc"
+    moreinfo = "abc",
+    unchangedinfo = 9
   ),
   
   default = default_metadata

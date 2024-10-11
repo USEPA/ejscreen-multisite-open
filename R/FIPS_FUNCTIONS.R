@@ -381,11 +381,11 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
   ## create named vector of FIPS codes (names used as location id)
   # *** see also fixnames_aliases() and fixcolnames_infer()
   fips_alias <- c('fips', 'FIPS', 'Fips', 'fips_code', 'fipscode',
-                  'blockfips', 
-                  'bgfips', 'blockgroupfips', 'blockgroup_fips', 'blockgroup_fips_code',
-                  'FIPS.TRACT', 'tractfips', 'tract_fips',
+                  'statefips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST',
                   'countyfips', 'FIPS.COUNTY',
-                  'statefips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST'
+                  'FIPS.TRACT', 'tractfips', 'tract_fips',
+                  'bgfips', 'blockgroupfips', 'blockgroup_fips', 'blockgroup_fips_code',
+                  'blockfips'
   )
   if (any(tolower(colnames(fips_table)) %in% fips_alias)) {
     firstmatch <- intersect(fips_alias, colnames(fips_table))[1]

@@ -166,9 +166,15 @@ metadata_check <- function(packages = EJAM::ejampackages,
       cat(paste0(pkg, ' package not installed\n'))
       # packages <- packages[packages != pkg]
       # return a 1row data.frame with NA values, using the attributes listed in which as the colnames:
-      
-      results <- which; names(results) <- results; results[] <- NA
-      next
+      #If package doesnt exist, return dataframe with appropriate NA values as per the test
+      results <- data.frame(
+        package = pkg,
+        item = NA,
+        matrix(NA, ncol = length(which), nrow = 1),
+        has_metadata = FALSE
+      )
+      colnames(results) <- c("package", "item", which, "has_metadata")
+      return(results)
     }
     ############################################### # 
     # which datasets to check ####
