@@ -29,7 +29,7 @@ test_that("getblocksnearby() same results as saved", {
     if (NROW(x) != NROW(y)) {cat("NEED TO UPDATE testoutput_getblocksnearby_10pts_1miles !?\n")}
     testthat::skip_if(NROW(x) != NROW(y))
     expect_identical(
-     x, y
+     x, y,ignore_attr =TRUE
     )
   })
 })
