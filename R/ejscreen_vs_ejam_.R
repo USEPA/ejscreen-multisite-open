@@ -1145,8 +1145,8 @@ ejscreen_vs_explain_summary = function(whyall, radius = "analyzed radius", showm
     
     cat('At', sum(whyall$meters_diff[whyall$why != "pop shown is same!" & !is.na(whyall$why)] == 0 ), 'of those with a discrepancy, it is unclear if the estimate was too high or too low since no obvious explanation was found (or difference was approximately zero meters in a few cases).' )
     cat("\n")
-    meterstats(whyall = whyall, radius = radius)
-    meters_cdf(whyall = whyall, radius = radius)
+    ejscreen_vs_explain_meterstats(whyall = whyall, radius = radius)
+    ejscreen_vs_explain_meters_cdf(whyall = whyall, radius = radius)
   }
   
   ejscreen_vs_explain_summary_plot(fulltable)
