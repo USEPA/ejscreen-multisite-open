@@ -86,7 +86,7 @@ Compare EJScreen API vs EJAM stats near site(s) (after results already run)
    
    # **** WORK IN PROGRESS ... *** !!!!!  
    
-   # SEE [ejscreen_vscript()] for a newer, interactive version
+   # SEE [ejscreen_vs()] for a newer, interactive version
    
    
    # Reported key indicators - which ones do or don't match

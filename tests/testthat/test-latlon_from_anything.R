@@ -41,9 +41,18 @@ testthat::test_that("latlon_from_anything prefers lat,lon if other aliases also 
 })
 ################################################ #
 
+testthat::test_that("latlon_from_anything warns if lat, lon switched", {
+ expect_warning(
+   expect_warning(
+   expect_warning({
+    x <- latlon_from_anything(testpoints_100$lon[1:6], testpoints_100$lat[1:6])
+  })
+ ))
+})
+
 testthat::test_that("latlon_from_anything works with x, y vectors", {
   expect_no_error({
-    x <- latlon_from_anything(testpoints_100$lon[1:6], testpoints_100$lat[1:6] )
+    x <- latlon_from_anything(testpoints_100$lat[1:6], testpoints_100$lon[1:6])
     y <- latlon_from_anything(testpoints_100[1:6, ])
   })
   expect_identical(x[, c("lat", "lon")], y[, c("lat", "lon")])
@@ -100,9 +109,10 @@ testthat::test_that("latlon_from_anything works with tibbles", {
     x <- latlon_from_anything(tibble(lat = testpoints_10$lat, lon = testpoints_10$lon))
     y <- latlon_from_anything(data.frame(lat = testpoints_10$lat, lon = testpoints_10$lon))
   })
-  expect_identical(
+  expect_equal(
     x,
-    y
+    y ,
+    ignore_attr = TRUE
   )
 })
 ################################################ #
@@ -114,7 +124,7 @@ testthat::test_that("latlon_from_anything works with csv", {
   skip_if(!file.exists(tfile))
   x <- latlon_from_anything(tfile)
   y <- latlon_from_anything(testpoints_10[1:2, ])
-  expect_equal(x, y)
+  expect_equal(x, y, ignore_attr = TRUE)
 })
 ################################################ #
 

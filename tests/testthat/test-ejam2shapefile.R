@@ -71,8 +71,10 @@ test_that("ejam2shapefile ok if use defaults", {
 
 test_that("ejam2shapefile ok if save=F", {
   expect_no_error({
-    # save FALSE
-    shp <- ejam2shapefile(testoutput_ejamit_10pts_1miles, save = FALSE)
+    expect_warning( # some specified varnames not found
+      # save FALSE
+      shp <- ejam2shapefile(testoutput_ejamit_10pts_1miles, save = FALSE)
+    )
     # map_shapes_leaflet(shp)
   })
   expect_true("sf" %in% class(shp))

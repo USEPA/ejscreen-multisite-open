@@ -10,6 +10,7 @@ ejscreenit(
   radius = 3,
   maxradiusmiles = 10,
   fips = NULL,
+  shapefile = NULL,
   nosave = TRUE,
   nosee = TRUE,
   save_map = TRUE,
@@ -44,6 +45,8 @@ prompted to select a file from a local drive.
 \item{maxradiusmiles}{optional in case you want to use a radius of more than default cap}
 
 \item{fips}{if used instead of x,y it can specify fips codes of counties, tracts, or blockgroups}
+
+\item{shapefile}{not implemented}
 
 \item{nosave}{logical, if TRUE, sets as FALSE and overrides save_map, save_plot, save_table. Ignored if FALSE.}
 

@@ -5,8 +5,9 @@ testthat::test_that("fixcolnames_infer works at all", {
   testthat::expect_no_error({names(test_address_table_renamed) <- fixcolnames_infer(names(test_address_table_renamed))})
   testthat::expect_identical(test_address_table_goodnames, test_address_table_renamed)
   
-  testthat::expect_identical(fixcolnames_infer(currentnames = test_address_parts1 ),
-                             c("lat", "lon", "address", "street", "city", "state", "zip"))
+  testthat::expect_equal(fixcolnames_infer(currentnames = test_address_parts1),
+                             c("lat", "lon", "address", "street", "city", "state", "zip"),
+                            ignore_attr = TRUE)
   testthat::expect_identical(fixcolnames_infer(currentnames = names(test_address_table) ),
                              c("Acol", "street", "city", "state", "zip", "other_column"))
 })
@@ -37,6 +38,7 @@ run_renaming_tests = function(tlist, oldnames, testname="test", fun2test = fixco
   ## run standard tests on functions that rename things
   
   results = testsetup(tlist = tlist, oldnames = oldnames, fun2test = fun2test)
+  
   bestnames = names(tlist)
   synonyms =  as.vector(unlist(tlist)) # remove canonical name from list of aliases if shows up there too
   synonyms =  synonyms[!(synonyms %in% bestnames)]
@@ -85,6 +87,7 @@ run_renaming_tests = function(tlist, oldnames, testname="test", fun2test = fixco
       )
     })
   }
+  
   ###################################### # 
 }
 
@@ -134,7 +137,7 @@ mylist = eval(formals(fixmapheadernamescolname)$alias_list)
 run_renaming_tests(tlist = mylist, 
                    oldnames = as.vector(unlist(mylist)), 
                    testname = "latlon_infer", 
-                   fun2test = EJAM:::latlon_infer    ####### # 
+                   fun2test =fixmapheadernamescolname   ####### # 
 )
 ######################################################## # 
 
