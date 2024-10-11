@@ -57,7 +57,7 @@ metadata_add <- function(x) {
   for (i in seq_along(metadata)) {
     attr(x, which = names(metadata)[i]) <- metadata[[i]]
   }
-  invisible(x),
+  invisible(x)
 }
 #################################################### #
 
