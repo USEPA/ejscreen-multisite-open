@@ -470,7 +470,7 @@ test_that("fips_state_from_statename() works", {
 test_that("fips_counties_from_statefips() works", {
   suppressWarnings({
     myst = stateinfo2$FIPS.ST[!is.na(stateinfo2$FIPS.ST)]
-    myst = myst[myst != 74] # UM
+    myst = myst[!(myst %in% c(60,66,69,74,78))] # remove US territories since don't have counties
     expect_no_error({
       myst2 = fips_counties_from_statefips(myst)
     })
