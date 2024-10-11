@@ -12,7 +12,7 @@ ejscreen_vs_ejam_1var(
 )
 }
 \arguments{
-\item{vs}{output of ejscreen_vs_ejam() or ejscreen_vscript()}
+\item{vs}{output of ejscreen_vs_ejam() or ejscreen_vs()}
 
 \item{varname}{}
 

@@ -68,11 +68,11 @@ For each data.frame, colnames are indicators like pop, blockcount_near_site, etc
 and rows represent sites analyzed.
 }
 \description{
-This is the main function used by \code{\link[=ejscreen_vscript]{ejscreen_vscript()}} to compare
+This is the main function used by \code{\link[=ejscreen_vs]{ejscreen_vs()}} to compare
 EJScreen API vs EJAM stats near site(s)
 }
 \details{
-Consider using \code{\link[=ejscreen_vscript]{ejscreen_vscript()}} which does this all interactively.
+Consider using \code{\link[=ejscreen_vs]{ejscreen_vs()}} which does this all interactively.
 
 The EJAM tool/ function called \code{\link[=ejamit]{ejamit()}}
 does not rely on EJScreen's typical single-location approach to do the calculations
@@ -106,7 +106,7 @@ how ties are treated in percentile lookup tables, etc.)
 \examples{
  \dontrun{
  # in RStudio, interactive:
- vs <- ejscreen_vscript()
+ vs <- ejscreen_vs()
  
  # vs filtered to just the ones where rounded pop disagrees
  table(vs$same_shown$pop)
@@ -145,6 +145,6 @@ how ties are treated in percentile lookup tables, etc.)
   }
 }
 \seealso{
-\code{\link[=ejscreen_vscript]{ejscreen_vscript()}} which does it all interactively, and uses \code{\link[=ejscreen_vs_ejam_alreadyrun]{ejscreen_vs_ejam_alreadyrun()}} if appropriate.
+\code{\link[=ejscreen_vs]{ejscreen_vs()}} which does it all interactively, and uses \code{\link[=ejscreen_vs_ejam_alreadyrun]{ejscreen_vs_ejam_alreadyrun()}} if appropriate.
 }
 \keyword{internal}

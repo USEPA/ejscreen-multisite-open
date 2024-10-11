@@ -11,7 +11,7 @@ ejscreen_vs_ejam_see1(
 )
 }
 \arguments{
-\item{z}{output of ejscreen_vs_ejam() or ejscreen_vscript()}
+\item{z}{output of ejscreen_vs_ejam() or ejscreen_vs()}
 
 \item{myvars}{optional to check just a subset of the colnames found in z$EJAM and z$EJSCREEN,
 such as

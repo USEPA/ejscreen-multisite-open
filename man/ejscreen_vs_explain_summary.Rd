@@ -8,7 +8,8 @@ Summarize output of ejscreen_vs_explain()}
 ejscreen_vs_explain_summary(
   whyall,
   radius = "analyzed radius",
-  showmeters = TRUE
+  showmeters = TRUE,
+  showpop = TRUE
 )
 }
 \arguments{
@@ -16,7 +17,10 @@ ejscreen_vs_explain_summary(
 
 \item{radius}{optional radius in miles, for labels on plot and table}
 
-\item{showmeters}{set FALSE to hide CDF plot and stats table on quantiles of meters}
+\item{showmeters}{set FALSE to hide CDF plot and stats table on quantiles of meters
+(note it creates more than 1 plot so click on the back arrow of the plots pane to see the rest)}
+
+\item{showpop}{set FALSE to hide CDF plot on quantiles of pop counts}
 }
 \value{
 summary table of info, on how many sites had each type of explanation
