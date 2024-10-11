@@ -111,6 +111,7 @@ library(dplyr)
 consoleclear <- function() {if (interactive() & rstudioapi::isAvailable()) {rstudioapi::executeCommand("consoleClear")}}
 consoleclear()
 ########################################## #
+
 ## Find the tests ####
 update_list_of_tests <- TRUE
 if (update_list_of_tests) {
