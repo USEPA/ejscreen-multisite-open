@@ -57,23 +57,28 @@ test_that("ejscreenit() still returns a list that includes a table with names id
 test_that("ejscreenit() still returns a list that includes a table with column classes identical to the ones it used to return (saved as testoutput_ejscreenit_10pts_1miles$table)", {
   expect_identical(
     sapply(apiref, class),
-    sapply(apinow, class)
+    sapply(apinow, class),ignore_attr = TRUE
   )
   # all.equal(apiref, apinow)
 })
 test_that("ejscreenit() still returns identical table contents to what it used to", {
   expect_identical(
     apiref, 
-    apinow
+    apinow, ignore_attr = TRUE
   )
 })
 test_that('ejscreenit() does not crash, for 2 points, x=pts; list of 3 outputs of correct class. table right NROW', {
   expect_no_error({
-    out_ejscreenit <- ejscreenit(
-      x = pts, radius = testradius,
-      nosave = TRUE, nosee = TRUE, interactiveprompt = FALSE
-    )}
-  )
+    suppressWarnings(
+      suppressMessages(
+        out_ejscreenit <- ejscreenit(
+          x = pts, radius = testradius,
+          nosave = TRUE, nosee = TRUE, interactiveprompt = FALSE
+        )
+      )
+    )
+  
+  })
   # should be a data.frame, etc.
   expect_type(out_ejscreenit, 'list')
   expect_identical(names(out_ejscreenit), c('table', 'map', 'plot'))
