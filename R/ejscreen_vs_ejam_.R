@@ -459,7 +459,6 @@ ejscreen_vs_ejam_bysite <- function(vsout, pts, varname = "blockcount_near_site"
 #' @param prob optional fraction of 1 representing percentile p to check for absolute percentage differences.
 #'   See within.x.pct.at.p.pct.of.sites value that is returned.
 #' @param na.rm needs testing, optional
-#' 
 #'
 #' @return A data.frame of summary stats showing counts and percents of analyzed sites (or those with valid data 
 #'   that are found in both EJAM and EJSCREEN outputs), indicating how many of the sites
@@ -645,6 +644,10 @@ ejscreen_vs_ejam_summary <- function(z = NULL,
   # see all sites for one indicator like "pop"
   print(head(ejscreen_vs_ejam_1var(z), 25))
   cat("\n\n")
+  
+  cat("\n\n To explore why one or more sites had discrepancies in blockcount and population count, \n")
+  cat('once vs is the output of ejscreen_vs_ejam() or _vscript or _alreadyrun, try\n\n')
+  cat("  ejscreen_vs_explain(vs) \n\n")
   
   invisible(pct_agree)
 }
@@ -975,8 +978,10 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE,
 #'   population counts agreed to zero decimal places
 #' @param map set to FALSE to suppress drawing map but still return block-level info
 #' @return same
-#' @seealso [ejscreen_vs_explain_summary()]
+#' @seealso uses [ejscreen_vs_explain_summary()] to show summary
+#' 
 #' @keywords internal
+#' @export
 #'
 ejscreen_vs_explain <- function(vs, ejam_uniq_id = NULL, pause_on_each_site = TRUE, onlyifpopdiffers = TRUE, map = TRUE) {
   
@@ -1011,7 +1016,6 @@ ejscreen_vs_explain <- function(vs, ejam_uniq_id = NULL, pause_on_each_site = TR
   }
   
   for (i in 1:alln) {
-    
     
     if (skippable_tf[i]) {
       if (!all(skippable_tf[1:i])) {
@@ -1072,30 +1076,34 @@ ejscreen_vs_explain <- function(vs, ejam_uniq_id = NULL, pause_on_each_site = TR
     why = why
   )
   
-  print(addmargins(cbind(Number.of.Facilities = table(why$why)), margin = 1))
+  #   print(addmargins(cbind(Number.of.Facilities = table(why$why)), margin = 1))
   cat("\n
 # After vs <- ejscreen_vscript()  or  vs <- ejscreen_vs_ejam_alreadyrun()
-# to summarize output of  why <- ejscreen_vs_explain(vs)  try this:
-ejscreen_vs_explain_summary(why)
+# To summarize output of  why <- ejscreen_vs_explain(vs)  use this:
+
+ejscreen_vs_explain_summary(why, radius = vs$EJAM$radius[1])
 \n")
+  
+  # ejscreen_vs_explain_summary(why, radius = radius) # if assembling a batch of results you dont want to see this every batch
+  
   invisible(why)
 }
 ########################################################### #
 
 #' EJAM/EJSCREEN comparisons - Summarize explanations for discrepancies in pop
-#'
+#' Summarize output of ejscreen_vs_explain()
 #' @param whyall Output from [ejscreen_vs_explain()]
-#'
+#' @param radius optional radius in miles, for labels on plot and table
+#' @param showmeters set FALSE to hide CDF plot and stats table on quantiles of meters
 #' @return summary table of info, on how many sites had each type of explanation
 #' @examples
 #' vs10 <- ejscreen_vs_ejam(testpoints_10, radius = 3, save_ejscreen_output = F, save_when_report = F, calculate_ratios = F)
 #' why10 <- ejscreen_vs_explain(vs10, ejam_uniq_id = 1:10, pause_on_each_site = F)
-#' ejscreen_vs_explain_summary(why10)
+#' ejscreen_vs_explain_summary(why10, radius = 3)
 #' 
 #' @keywords internal
-#' @export
 #'
-ejscreen_vs_explain_summary = function(whyall) {
+ejscreen_vs_explain_summary = function(whyall, radius = "analyzed radius", showmeters = TRUE) {
   
   ################### #
   cat("
@@ -1129,6 +1137,18 @@ ejscreen_vs_explain_summary = function(whyall) {
 
 ")
   ################### #  
+  if (showmeters) {
+    
+    cat('At', sum(whyall$meters_diff[whyall$why != "pop shown is same!" & !is.na(whyall$why)] < 0 ), 'of those with a discrepancy, the block with largest abs discrepancy in distance was an extra one EJAM added because EJAM estimated distance was < radius i.e., < EJScreen estimate' )
+    
+    cat('At', sum(whyall$meters_diff[whyall$why != "pop shown is same!" & !is.na(whyall$why)] > 0 ), 'of those with a discrepancy, the block with largest abs discrepancy in distance was one EJAM missed because EJAM estimated distance was > radius i.e., > EJScreen estimate' )
+    
+    cat('At', sum(whyall$meters_diff[whyall$why != "pop shown is same!" & !is.na(whyall$why)] == 0 ), 'of those with a discrepancy, it is unclear if the estimate was too high or too low since no obvious explanation was found (or difference was approximately zero meters in a few cases).' )
+    cat("\n")
+    meterstats(whyall = whyall, radius = radius)
+    meters_cdf(whyall = whyall, radius = radius)
+  }
+  
   ejscreen_vs_explain_summary_plot(fulltable)
   
   invisible(fulltable)
@@ -1137,13 +1157,52 @@ ejscreen_vs_explain_summary = function(whyall) {
 
 ejscreen_vs_explain_summary_plot <- function(x) {
   
+  # Helper used by ejscreen_vs_explain_summary()
+  
   barplot(
     x[ 1:(NROW(x) - 1), ]$Number.of.Facilities, 
+    # rownames(x[ 1:(NROW(x) - 1), ])
     names.arg = c("Group of blocks missed/extra", "1 block missed/extra", "No obvious reason", "Pop Counts Identical", "NA"), 
     xlab = "Explanation for Difference in Population Counts", 
     ylab = "Number of Locations", 
     main = paste0("Comparison of EJScreen and EJAM at ", x$Number.of.Facilities[rownames(x) == 'Sum'], " Sites")
   )
+}
+########################################################### #
+
+ejscreen_vs_explain_meters_cdf = function(whyall, radius) {
+  
+  # Helper used by ejscreen_vs_explain_summary()
+  
+  plot(
+    ecdf(whyall$meters_absdiff), 
+    main = paste0("EJAM EJScreen compared within", radius, "miles of ", NROW(whyall), "randomly selected locations"), 
+    ylab = "Cumulative share of all locations", 
+    xlab = paste0("Meters difference between specified radius and calculated distance of extra or missed blocks",
+                  "that explain the difference in population and blockcount (99th percentile shown as gray vertical line)") 
+  )
+  abline(v = 0)
+  abline(h = 0.99, col = "gray")
+  abline(v = quantile(whyall$meters_absdiff, probs = 0.99), col = 'gray')
+}
+########################################################### #
+
+ejscreen_vs_explain_meterstats = function(whyall, radius) {
+  
+  # Helper used by ejscreen_vs_explain_summary()
+  
+  cat("\nMeters discrepancy in block distance for any blocks explaining diff pop and block counts within ",
+      radius, "miles of ",
+      NROW(whyall), "randomly selected locations:\n\n")
+  
+  cat("For blocks explaining any difference in pop and blockcount... \n")
+  for (m in c(50, 100, 200)) {
+    cat("  1 in", round(1 / (sum(whyall$meters_absdiff > m) / NROW(whyall)), 0), "sites had discrepancy of >", m, "meters\n")
+  }
+  cat("  0 in", NROW(whyall), "sites had discrepancy of >", round(max(whyall$meters_absdiff), 0), "meters.\n\n")
+  probs = c(0.75, 0.95, 0.96, 0.97, 0.98, 1 - 1/100, 1 - 1/250, 1 - 1/500, 1 - 1/1000, 1)
+  onein = round(1 / (1 - probs), 0)
+  print(cbind( meters = round(quantile(whyall$meters_absdiff, probs = probs),0), onein = onein)  )
 }
 ########################################################### #
 
@@ -1451,9 +1510,9 @@ ejscreen_vscript <- function(defdir = '.',
   cat("ejscreen_vs_ejam_bysite(vs, pts) \n\n")
   print(  ejscreen_vs_ejam_bysite(vs, pts) )
   cat("\n\n-------------------------------------------------------------------\n\n")
-  cat("\nAlso see ejscreen_vs_explain(vs) to step through sites and check each to see which blocks might explain the pop difference.\n")
+  cat("\nAlso see ejscreen_vs_explain(vs) and then ejscreen_vs_explain() to see which blocks might explain the pop difference.\n")
   sink(NULL)
-  cat("\nAlso see ejscreen_vs_explain(vs) to step through sites and check each to see which blocks might explain the pop difference.\n")
+  cat("\nAlso see ejscreen_vs_explain(vs) and then ejscreen_vs_explain() to see which blocks might explain the pop difference.\n")
   
   # open results in RStudio
   rstudioapi::documentOpen(tfile)

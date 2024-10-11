@@ -29,6 +29,6 @@ same
 EJAM/EJSCREEN comparisons - loop or interactively step through sites to see which blocks may explain difference in population count
 }
 \seealso{
-\code{\link[=ejscreen_vs_explain_summary]{ejscreen_vs_explain_summary()}}
+uses \code{\link[=ejscreen_vs_explain_summary]{ejscreen_vs_explain_summary()}} to show summary
 }
 \keyword{internal}
