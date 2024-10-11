@@ -46,6 +46,8 @@ prompted to select a file from a local drive.
 
 \item{fips}{if used instead of x,y it can specify fips codes of counties, tracts, or blockgroups}
 
+\item{shapefile}{not implemented}
+
 \item{nosave}{logical, if TRUE, sets as FALSE and overrides save_map, save_plot, save_table. Ignored if FALSE.}
 
 \item{nosee}{logical, if TRUE, sets as FALSE and overrides see_map, see_plot, see_table. Ignored if FALSE.}
