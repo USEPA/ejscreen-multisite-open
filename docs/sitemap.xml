@@ -30,6 +30,7 @@
 <url><loc>https://usepa.github.io/EJAM/reference/batch.summarize.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/bgej.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/bgid2fips.html</loc></url>
+<url><loc>https://usepa.github.io/EJAM/reference/bgid_from_blockid.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/bgpts.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/bg_cenpop2020.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/blockgroupstats.html</loc></url>
@@ -119,6 +120,7 @@
 <url><loc>https://usepa.github.io/EJAM/reference/ejscreenRESTbroker.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/ejscreenRESTbroker2table.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/ejscreenRESTbroker2table_na_filler.html</loc></url>
+<url><loc>https://usepa.github.io/EJAM/reference/ejscreen_vs.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/ejscreen_vscript.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/ejscreen_vs_ejam.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/ejscreen_vs_ejam_1var.html</loc></url>
@@ -128,6 +130,8 @@
 <url><loc>https://usepa.github.io/EJAM/reference/ejscreen_vs_ejam_see1map.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/ejscreen_vs_ejam_summary.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/ejscreen_vs_ejam_summary_quantiles.html</loc></url>
+<url><loc>https://usepa.github.io/EJAM/reference/ejscreen_vs_explain.html</loc></url>
+<url><loc>https://usepa.github.io/EJAM/reference/ejscreen_vs_explain_summary.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/epa_programs.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/expand.gridMatrix.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/fill_tbl_full.html</loc></url>

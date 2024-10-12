@@ -45,10 +45,28 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.32.0" id="ejam-2320-ejscreen232-augustseptember-2024">EJAM 2.32.0-EJScreen2.32 (August/September 2024)<a class="anchor" aria-label="anchor" href="#ejam-2320-ejscreen232-augustseptember-2024"></a></h2>
-<ul><li>New data incorporated, to match EJScreen version 2.32 ozone and other data changes/corrections EJScreen released August 2024 as version 2.32</li>
-<li>Bug fixes and enhancements to web app, R functions, and documentation</li>
-<li>Refreshed all documentation of R package help files and vignettes (articles) website</li>
+<h2 class="pkg-version" data-toc-text="2.32.0" id="ejam-2320-ejscreen232-august-october-2024">EJAM 2.32.0-EJScreen2.32 (August-October 2024)<a class="anchor" aria-label="anchor" href="#ejam-2320-ejscreen232-august-october-2024"></a></h2>
+<ul><li>Deployed updates 10/11/2024</li>
+<li>Incorporated new datasets to match EJScreen version 2.32 ozone and other data changes/corrections EJScreen version 2.32 released in August 2024.</li>
+<li>Conducted validation analysis comparing EJAM and EJScreen results for proximity to 2,000 randomly selected FRS sites (3 mile radius).
+<ul><li>Identified possible problem in drinking water indicator, to be resolved.</li>
+<li>Removed % owner occupied housing (pctownedunits) indicator pending clarifications/ corrections in EJScreen calculation.</li>
+<li>Confirmed the displayed demographic indicator values agree for well over 95% of locations, and the environmental indicator values also closely agree at the vast majority of sites. (Exceptions being the two noted above).</li>
+<li>Small differences exist due to differences in methods reltaed to fast analysis in EJAM.</li>
+<li>Any significant discrepancies are being investigated.</li>
+<li>Updated percentile lookup logic to match the recent changes in EJScreen – some edge cases still in progress.</li>
+<li>Improved community report scaling and formatting using decimals and sigfigs to better align with EJScreen.</li>
+<li>Improved logic that identifies which State a site is in.</li>
+<li>Addressed issues in % pre 1960 lead paint indicator</li>
+<li>Improved comparison/validation functions</li>
+</ul></li>
+<li>Fixed known issues in web app, R functions, and examples/ articles.</li>
+<li>Added FIPS code functionality to handle over 40,000 Census Places such as cities and towns.</li>
+<li>Improved file upload read-in validation.</li>
+<li>Improved and updated vignettes (articles) on documentation website (GitHub pages pkgdown site content) and README</li>
+<li>Improved and updated documentation of R packages in help files.</li>
+<li>Adopted shinytest2 to create shiny-based testing of the app, package, and GitHub merges.</li>
+<li>Updated [map_headernames], test output files, names_… vectors.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.3.0" id="ejam-230-ejscreen23-july-2024">EJAM 2.3.0-EJScreen2.3 (July 2024)<a class="anchor" aria-label="anchor" href="#ejam-230-ejscreen23-july-2024"></a></h2>
@@ -94,9 +112,6 @@
 <code><a href="../reference/mapfastej_counties.html">mapfastej_counties()</a></code> now accepts a data.frame not just data.table</li>
 <li>
 <code>fips_valid()</code> handles NA values better and recognizes more problematic fips</li>
-<li>New internal function ejscreen_vscript() for interactively running and comparing results using parameter <code>save_ejscreen_output = TRUE</code> in <code><a href="../reference/ejscreen_vs_ejam.html">ejscreen_vs_ejam()</a></code>
-</li>
-<li>New internal function <code><a href="../reference/ejscreen_vs_ejam_bysite.html">ejscreen_vs_ejam_bysite()</a></code> to show comparison site by site, for 1 indicator</li>
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-2-2-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-2-4"></a></h4>
@@ -104,7 +119,6 @@
 <li>Many new unit tests for fips-related, map-related, and other functions.</li>
 <li>Fixed bug that caused errors in <code><a href="../reference/ejamit_compare_distances.html">ejamit_compare_distances()</a></code> and <code><a href="../reference/ejamit_compare_distances_fulloutput.html">ejamit_compare_distances_fulloutput()</a></code> <a href="https://github.com/USEPA/EJAM/commit/e2f11014e88c0b339f2ae5f60a73d25f769bbccf" class="external-link uri">https://github.com/USEPA/EJAM/commit/e2f11014e88c0b339f2ae5f60a73d25f769bbccf</a>
 </li>
-<li>Fixed bugs that caused <code><a href="../reference/ejscreen_vs_ejam.html">ejscreen_vs_ejam()</a></code> to not report pctownedunits and to have problems with any of x100varnames not being present in ejscreen output.</li>
 <li>Fixed <code><a href="../reference/fips2countyname.html">fips2countyname()</a></code> to return NA for inputs that are not countyfips</li>
 </ul><hr></div>
 </div>
