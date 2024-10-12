@@ -237,7 +237,10 @@ if (!exists('blockgroupstats_new_as_on_ftp') && file.exists(file.path(localfolde
 
 ########################################################### #
 
-# map_headernames check: ####
+## rename colnames ####
+
+############################ #
+# 1st, check  map_headernames info  
 EJAM:::nacounts(blockgroupstats_new)
 cbind(sort(names(blockgroupstats_new)[fixcolnames(names(blockgroupstats_new),'csv','r') == names(blockgroupstats_new)]))
 #         bins (colors on map)
@@ -260,9 +263,9 @@ cbind(sort(names(blockgroupstats_new)[fixcolnames(names(blockgroupstats_new),'cs
 # [15,] "T_DWATER"       
 # [16,] "T_NO2"      
 #   etc etc
-########################################################### #
+############################ #
 
-## rename colnames ####
+# now rename columns
 
 names(blockgroupstats_new)       <-  fixcolnames(names(blockgroupstats_new),       oldtype = 'csv', newtype = 'r') # 
 names(blockgroupstats_new_state) <-  fixcolnames(names(blockgroupstats_new_state), oldtype = 'csv', newtype = 'r') # 
@@ -313,7 +316,7 @@ setdiff(          names(blockgroupstats_new), names(EJAM::blockgroupstats))
 
 ############################################################## #
 
-## save island areas ####
+## archive island areas ####
 ## but drop them from blockgroupstats_new and blockgroupstats_new_state
 
 names(blockgroupstats_new)       <- gsub("id", "OBJECTID", names(blockgroupstats_new))
@@ -371,7 +374,7 @@ write_ipc_file(bg_islandareas, sink = file.path(localfolder, "bg_islandareas.arr
 
 ################################################### # 
 
-## Drop island areas  from blockgroupstats_new and blockgroupstats_new_state ####
+## drop island areas  ####
 ##   AS, GU, MP, VI are in the new blockgroupstats table but bgid will be set to NA for those if they 
 ## are not found in bgpts. 
 
@@ -390,7 +393,7 @@ dim(bgpts)                       # 242,355 rows at this point it had
 
 ################################################# # 
 
-# Create bgfips and bgid columns ####
+## create bgfips and bgid columns ####
 
 blockgroupstats_new$bgfips       <- fips_lead_zero(blockgroupstats_new$OBJECTID)
 blockgroupstats_new_state$bgfips <- fips_lead_zero(blockgroupstats_new$OBJECTID)
@@ -479,7 +482,7 @@ nacounts(blockgroupstats_new)
 ########################################################### #
 ################################################################################ #
 
-# > bgej ####
+# > bgej - Create bgej here.####
 
 ###### MOVE EJ INDEXES FROM blockgroupstats_new and blockgroupstats_new_state
 ## to  a consolidated bgej  table 
@@ -489,26 +492,6 @@ nacounts(blockgroupstats_new)
 
 # dataload_from_pins("bgej")
 # > names( bgej) 
-# [1] "OBJECTID"                                "bgfips"                                  "bgid"
-# [4] "ST"                                      "pop"                                     
-#      "EJ.DISPARITY.pm.eo"                     
-# [7] "EJ.DISPARITY.pm.supp"                    "EJ.DISPARITY.o3.eo"                      "EJ.DISPARITY.o3.supp"
-# [10] "EJ.DISPARITY.dpm.eo"                     "EJ.DISPARITY.dpm.supp"                   "EJ.DISPARITY.cancer.eo"
-# [13] "EJ.DISPARITY.cancer.supp"                "EJ.DISPARITY.resp.eo"                    "EJ.DISPARITY.resp.supp"
-# [16] "EJ.DISPARITY.rsei.eo"                    "EJ.DISPARITY.rsei.supp"                  "EJ.DISPARITY.traffic.score.eo"
-# [19] "EJ.DISPARITY.traffic.score.supp"         "EJ.DISPARITY.pctpre1960.eo"              "EJ.DISPARITY.pctpre1960.supp"
-# [22] "EJ.DISPARITY.proximity.npl.eo"           "EJ.DISPARITY.proximity.npl.supp"         "EJ.DISPARITY.proximity.rmp.eo"
-# [25] "EJ.DISPARITY.proximity.rmp.supp"         "EJ.DISPARITY.proximity.tsdf.eo" "EJ.DISPARITY.proximity.tsdf.supp"     
-# [28] "EJ.DISPARITY.ust.eo"                     "EJ.DISPARITY.ust.supp"                   "EJ.DISPARITY.proximity.npdes.eo"
-# [31] "EJ.DISPARITY.proximity.npdes.supp"       "state.EJ.DISPARITY.pm.eo"                "state.EJ.DISPARITY.pm.supp"
-# [34] "state.EJ.DISPARITY.o3.eo"                "state.EJ.DISPARITY.o3.supp"              "state.EJ.DISPARITY.dpm.eo"
-# [37] "state.EJ.DISPARITY.dpm.supp"             "state.EJ.DISPARITY.cancer.eo"            "state.EJ.DISPARITY.cancer.supp"
-# [40] "state.EJ.DISPARITY.resp.eo"              "state.EJ.DISPARITY.resp.supp"            "state.EJ.DISPARITY.rsei.eo"
-# [43] "state.EJ.DISPARITY.rsei.supp"       "state.EJ.DISPARITY.traffic.score.eo"  "state.EJ.DISPARITY.traffic.score.supp"  
-# [46] "state.EJ.DISPARITY.pctpre1960.eo"    "state.EJ.DISPARITY.pctpre1960.supp"  "state.EJ.DISPARITY.proximity.npl.eo"    
-# [49] "state.EJ.DISPARITY.proximity.npl.supp" "state.EJ.DISPARITY.proximity.rmp.eo" "state.EJ.DISPARITY.proximity.rmp.supp"
-# [52] "state.EJ.DISPARITY.proximity.tsdf.eo"    "state.EJ.DISPARITY.proximity.tsdf.supp"  "state.EJ.DISPARITY.ust.eo"
-# [55] "state.EJ.DISPARITY.ust.supp"  "state.EJ.DISPARITY.proximity.npdes.eo" "state.EJ.DISPARITY.proximity.npdes.supp"
 
 blockgroupstats_new_state <- blockgroupstats_new_state[, c("bgid", "bgfips", names_ej, names_ej_supp)]
 data.table::setDT(blockgroupstats_new_state)
@@ -532,7 +515,40 @@ bgej <- data.table(
 )
 # all.equal(data.frame(bgej)[, names_ej], blockgroupstats_new[,names_ej])
 
+## metadata_add ####
 bgej = metadata_add(bgej)
+
+## do not save via  usethis::use_data(bgej, overwrite = TRUE) - it is a large file
+cat("bgej created in globalenv but not saved yet - will try to save to pins board in later script... \n")
+
+## documentation for bgej ####
+
+dataset_documenter("bgej", 
+                   title = "bgej (DATA) EJScreen EJ Indexes for Census block groups",
+                   description = "bgej is a table of all blockgroups, with the raw scores of the EJ Indexes
+#'   and supplemental EJ Indexes for all the environmental indicators.",
+                   details = "This file is not stored in the package, but is obtained via [dataload_from_pins()].
+#'   
+#'   For documentation on the demographic and environmental data and indicators,
+#'   see [EJScreen documentation](https://www.epa.gov/ejscreen/understanding-ejscreen-results).
+#'   
+#'   See 
+#'     
+#'     dataload_from_pins('bgej')
+#'     
+#'     names(bgej)
+#'   
+#'   The column names are these:
+#'   
+#'     c('bgfips', 'bgid', 'ST', 'pop', 
+#'     names_ej, 
+#'     names_ej_supp, 
+#'     names_ej_state,
+#'     names_ej_supp_state
+#'     )",
+                   saveinpackage = FALSE)
+
+
 
 rm(blockgroupstats_new_state)
 blockgroupstats_new[, c(names_ej, names_ej_supp)] <- NULL
@@ -551,7 +567,7 @@ if (interactive() && askquestions) {
 }
 if (SAVELOCAL) {
   
-  # save bgej local copy for convenience ####
+  ## save bgej local copy for convenience ####
   datawrite_to_local("bgej", localfolder = localfolder)
   
   # ASARROW = TRUE

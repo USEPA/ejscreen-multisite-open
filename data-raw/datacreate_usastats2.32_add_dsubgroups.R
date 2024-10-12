@@ -42,9 +42,6 @@ names_d_subgroups_both <- c(names_d_subgroups_nh, names_d_subgroups_alone)
 # # compare to current names
 # setdiff(names(  usastats), c(names_e, names_d, names_ej  ,     names_ej_supp      ))
 # setdiff(names(statestats), c(names_e, names_d, names_ej_state, names_ej_supp_state))
-# # each lookup now has lookup info for
-# lowlifex, old cancer and resp  indicators, extra demo like asthma, and subgroups_alone
-# not in names_ lists here. ok
 
 # missing from usastats right now: ***
 
@@ -244,7 +241,39 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
   
   usethis::use_data(usastats,   overwrite = T)
   usethis::use_data(statestats, overwrite = T)
-   
+  ################################################ #
+  
+  #  UPDATE THE DOCUMENTATION ####
+  
+  dataset_documenter("usastats",
+                     "usastats (DATA) data.frame of 100 percentiles and means",
+                     "data.frame of 100 percentiles and means (about 100 rows)
+#'   in the USA overall, across all locations (e.g., block groups in [blockgroupstats])
+#'   for a set of indicators such as percent low income.
+#'   Each column is one indicator (or specifies the percentile).
+#'   
+#'   This should be similar to the lookup tables in the gdb on the FTP site of EJScreen,
+#'   except it also has data for the demographic race/ethnicity subgroups.
+#'   
+#'   For details on how the table was made, see source package files
+#'    EJAM/data-raw/datacreate_usastats2.32_add_dsubgroups.R and
+#'    EJAM/data-raw/datacreate_usastats2.32.R
+#'   
+#'   See also [statestats]")
+  
+  dataset_documenter("statestats",
+                     "statestats (DATA) data.frame of 100 percentiles and means for each US State and PR and DC.",
+                     "data.frame of 100 percentiles and means 
+#'   for each US State and PR and DC
+#'   for all the block groups in that zone (e.g., block groups in [blockgroupstats])
+#'   for a set of indicators such as percent low income.
+#'   Each column is one indicator (or specifies the percentile).
+#'   
+#'   This should be similar to the lookup tables in the gdb on the FTP site of EJScreen,
+#'   except it also has data for the demographic race/ethnicity subgroups.
+#'   See also [usastats] for more details.")
+  
+  
   print('now need to rebuild EJAM package with those new datasets and push changes')
   
   cat("FINISHED A SCRIPT\n")

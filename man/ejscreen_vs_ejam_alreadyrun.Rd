@@ -9,9 +9,7 @@ ejscreen_vs_ejam_alreadyrun(
   ejamsite,
   nadrop = FALSE,
   x100fix = TRUE,
-  x100varnames = c(names_d, names_d_avg, names_d_state_avg, names_d_subgroups,
-    names_d_subgroups_avg, names_d_subgroups_state_avg, "pctdisability", "pctownedunits",
-    "pctunder18", "pctover17", "pctmale", "pctfemale")
+  x100varnames = names_pct_as_fraction_ejamit
 )
 }
 \arguments{
@@ -26,63 +24,69 @@ or ejscreenapi_plus(), and also see \code{\link[=ejscreenit_for_ejam]{ejscreenit
 indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,
 prior to rounding and reporting EJAM results here.}
 
-\item{x100varnames}{optional, if x100fix=T, a vector of colnames of x$EJAM to convert from
+\item{x100varnames}{optional, if x100fix = T, a vector of colnames of x$EJAM to convert from
 being scaled as 0 to 1 into rescaled values of 0 to 100, because some
 outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.}
 }
 \value{
-prints summary to console, but returns invisible a list of data frames, with names
+prints summary to console, but returns invisible a list of
+tables (data frames or matrix/arrays), with names
 EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio,
 diff, absdiff, pctdiff, etc.
 
-For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
+For each table, colnames are indicators like pop, blockcount_near_site, etc.
 and rows represent sites analyzed.
 }
 \description{
 Compare EJScreen API vs EJAM stats near site(s) (after results already run)
 }
 \examples{
-  blah = ejscreen_vs_ejam_alreadyrun(
+  vs = ejscreen_vs_ejam_alreadyrun(
     apisite = testoutput_ejscreenapi_plus_5,
     ejamsite = ejamit(testpoints_5, radius = 1, include_ejindexes = TRUE)$results_bysite)
-  ejscreen_vs_ejam_see1(blah, mysite = 1)
+  ejscreen_vs_ejam_see1(vs, mysite = 1)
+  
+  # To see format of output:
+  str(vs)
+  cbind(class.of.table =  sapply(vs,
+   FUN = function(that) paste0(class(that), collapse = ", ")) )
  \dontrun{
  
  # requires data.table
  
  # analyze point(s) in both EJScreen and EJAM
   pts <- testpoints_100[1:5, ]
-  #z <- ejscreen_vs_ejam(testpoints_100[27, ], radius = 3, include_ejindexes = TRUE)
+  #vs <- ejscreen_vs_ejam(testpoints_100[27, ], radius = 3, include_ejindexes = TRUE)
   
   # just 1 point
-  # z <- ejscreen_vs_ejam(pts[5, ], radius = 3, include_ejindexes = TRUE)
+  # vs <- ejscreen_vs_ejam(pts[5, ], radius = 3, include_ejindexes = TRUE)
   
   # multiple points
   # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:
-  z <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
+  vs <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
     
    # same thing but step by step
    api1 <- ejscreenit(pts, radius = 3)
    api1 <- api1$table[5, ]
    ejam1 <- ejamit(pts, radius = 3, include_ejindexes = TRUE)
    ejam1 <- ejam1$results_bysite[5, ]
-   zzz <- ejscreen_vs_ejam_alreadyrun(api1, ejam1)
+   vs <- ejscreen_vs_ejam_alreadyrun(api1, ejam1)
    
    # to keep it as a list of data.frames but just 1 row each now:
-   zlist1 <- lapply(z, function(x) x[myrow, ])
+   zlist1 <- lapply(vs, function(x) x[myrow, ])
    names(zlist1); sapply(zlist1, dim)
    
    # look at a table about just 1 site among those analyzed, e.g., the first one:
    myrow <- 1
-   z1 <- data.frame(sapply(z, function(x) x[myrow, ]))
+   z1 <- data.frame(sapply(vs, function(x) x[myrow, ]))
    # but that creates a data.frame where each column is a list... 
    
-   
+   z <- vs
    
    
    # **** WORK IN PROGRESS ... *** !!!!!  
    
-   
+   # SEE [ejscreen_vs()] for a newer, interactive version
    
    
    # Reported key indicators - which ones do or don't match

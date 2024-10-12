@@ -671,7 +671,7 @@ mapfast_gg <- function(mydf=data.frame(lat = 40, lon = -100)[0,],
 #' @param lat - Anything that can be handled by [sitepoints_from_any()].
 #'   Leave unspecified to interactively browse to a .xlsx file that has lat,lon columns,
 #'   or lat can be a data.frame with lat,lon column names in which case longitude should not be provided,
-#'   such as lat = testpoints[1,], or lat and lon can be separately provided as vectors.
+#'   such as lat = testpoints_10[1,], or lat and lon can be separately provided as vectors.
 #' @param lon longitude, or omit this parameter to provide points as the first parameter.
 #' 
 #' @param zoom zoomed out value could be 3 or 5, zoomed in default is 12

@@ -11,7 +11,7 @@ varinfo(
 )
 }
 \arguments{
-\item{var}{vector of variable names such as c("pctlowinc", "cancer") or c(names_d, names_d_subgroups)
+\item{var}{vector of variable names such as c("pctlowinc", "pm") or c(names_d, names_d_subgroups)
 (and must be found in the column of map_headernames indicated by varnametype parameter below).}
 
 \item{info}{types of metadata/info needed, such as "decimals", "long", etc.

@@ -113,6 +113,7 @@
 #' @param nicenames whether to use long plain english headers in table or R variable names,
 #'   e.g.,  "Particulate Matter (PM 2.5 in ug/m3)" not "pm"
 #' @param fips if used instead of x,y it can specify fips codes of counties, tracts, or blockgroups
+#' @param shapefile not implemented
 #' @param nosave   logical, if TRUE, sets as FALSE and overrides save_map, save_plot, save_table. Ignored if FALSE.
 #' @param nosee    logical, if TRUE, sets as FALSE and overrides see_map, see_plot, see_table. Ignored if FALSE.
 #' @param save_map   logical, whether to save png image file locally
@@ -151,8 +152,7 @@
 #' @examples \dontrun{
 #'  pts <- testpoints_50[1:3, ] # sample data from package
 #'  mapfast(pts)
-#'  #pts <- system.file("testdata/testpoints_12.xlsx",    package="EJAMejscreenapi") 
-#'  #pts <- system.file("testdata/testpoints_5.csv",package="EJAMejscreenapi") 
+#'  #pts <- system.file("testdata/latlon/testpoints_10.xlsx", package="EJAM") 
 #'  if (interactive)
 #'  
 #'  x <- ejscreenit(pts, 
@@ -211,6 +211,7 @@
 #' 
 ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
                        fips = NULL,
+                       shapefile = NULL,
                        nosave = TRUE, nosee = TRUE,
                        save_map    =TRUE, see_map  =TRUE,
                        save_plot   =TRUE, see_plot =TRUE,
@@ -222,6 +223,8 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
                        # codefilesourced='./global.R', codefoldersourced='./R',
                        getstateinfofromplacename = TRUE,
                        ...) {
+  
+  if (!is.null(shapefile)) {warning('shapefile not implemented yet')}
   
   ################################################### #  ################################################### #
   if (nosave) {save_map <- FALSE; save_plot <- FALSE; save_table <- FALSE}
@@ -247,7 +250,7 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
     if (interactiveprompt) {
       junk <- readline('Press any key to go on after viewing this map of input points')
     }
-    # mapfast(testoutput_ejscreenapi_plus_50) is ok, but ejscreenit(pts) fails here ***
+    # mapfast(testoutput_ejscreenapi_plus_5) is ok, but ejscreenit(pts) fails here ***
   }
   
   ################################################### #
@@ -261,6 +264,7 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
   out <- ejscreenapi_plus(pts, radius = radius, mapping_for_names = map_headernames, 
                           usewhichnames = usewhichnames,
                           fips = fips,
+                          shapefile = shapefile,
                           # verbose = FALSE, # ALREADY THE DEFAULT IN ejscreenapi_plus() and putting it here causes problems if user tries to specify a value for it in ejscreenit()
                           calculate_ratios = calculate_ratios,
                           getstatefromplacename = TRUE,
@@ -356,10 +360,8 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
     #
     # NOTE THAT these ratios are already available as columns in the out table, now, via updated ejscreenapi_plus()  :
     
-    
-    
-    names_e_FOR_RATIOS <-  map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e"]
-    names_d_FOR_RATIOS <-  map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d"] # c(names_d, names_d_subgroups) # map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d"]
+    names_e_FOR_RATIOS <- names_e
+    names_d_FOR_RATIOS <- c(names_d, names_d_subgroups) # c(names_d, names_d_subgroups) # map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d"]
     names_d_FOR_RATIOS <- intersect(names_d_FOR_RATIOS, names(out)) # in case subgroups missing for ratios since average was needed to calculate that
     
     us.ratios <- list(
@@ -390,24 +392,13 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
         dev.off()
       }
     }
-    # us.ratios <- us.ratios
-    # boxplots_ratios(state.ratios$ratios_d[ , 'pctlowinc', drop=FALSE], 'pctlowinc', '% low income', towhat_nicename="State averages")
-    # stop('pause here in script')
-    # png(filename = file.path(folder, 'sample_boxplot.png')) # to save graphic as file
-    # boxplots_ratios(state.ratios$ratios_d, 'pctlowinc', '% low income', towhat_nicename="State averages")
-    # dev.off()
   }
-  
   
   names(out) <- fixcolnames(names(out), 'r', usewhichnames)
   
   ################################################### #
   # SAVE as csv OR EXCEL SPREADSHEET ####
   if (save_table) {
-    # write.csv(out, row.names = FALSE, file = file.path(folder, 'testoutput1.csv'))
-    # excelhyperlinks <- paste0('=HYPERLINK("',URLencode(out$pdfurl) ,'","View Report")') # unclear how to force them to evaluate to show as links - can just hit F2 Enter in each Excel cell in that column to fix it, e.g.
-    # Replace that with working code from server.R which prepares excel table correctly ***
-    # openxlsx::write.xlsx(cbind(link=excelhyperlinks, out), file = file.path(folder, 'testout.xlsx'))
     if (interactive()) {
       openxlsx::write.xlsx(out, file = rstudioapi::selectFile(caption = "Save Spreadsheet", path = folder, filter = "*.xlsx", existing = FALSE)) # file.choose())  
     } else {
@@ -431,4 +422,3 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
   if (!exists("outplot")) {outplot <- NULL} # if calculate_ratios = FALSE then plot not created
   return(list(table = out, map = outmap, plot = outplot))
 }
-

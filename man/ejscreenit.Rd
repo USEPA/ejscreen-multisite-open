@@ -10,6 +10,7 @@ ejscreenit(
   radius = 3,
   maxradiusmiles = 10,
   fips = NULL,
+  shapefile = NULL,
   nosave = TRUE,
   nosee = TRUE,
   save_map = TRUE,
@@ -44,6 +45,8 @@ prompted to select a file from a local drive.
 \item{maxradiusmiles}{optional in case you want to use a radius of more than default cap}
 
 \item{fips}{if used instead of x,y it can specify fips codes of counties, tracts, or blockgroups}
+
+\item{shapefile}{not implemented}
 
 \item{nosave}{logical, if TRUE, sets as FALSE and overrides save_map, save_plot, save_table. Ignored if FALSE.}
 
@@ -199,8 +202,7 @@ Also used are
 \dontrun{
  pts <- testpoints_50[1:3, ] # sample data from package
  mapfast(pts)
- #pts <- system.file("testdata/testpoints_12.xlsx",    package="EJAMejscreenapi") 
- #pts <- system.file("testdata/testpoints_5.csv",package="EJAMejscreenapi") 
+ #pts <- system.file("testdata/latlon/testpoints_10.xlsx", package="EJAM") 
  if (interactive)
  
  x <- ejscreenit(pts, 

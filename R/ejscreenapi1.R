@@ -34,6 +34,8 @@
 #' @param wkid optional spatial reference code. https://epsg.io/4326
 #' @param fips if used instead of lon,lat it should be a character FIPS code 
 #'   (counties, tracts, or blockgroups)
+#' @param shapefile not implemented
+#' 
 #' @param format_report_or_json default is "pjson" but could "report" to get URL for a pdf report
 #' @param ipurl IP or URL start
 #' @param getstatefromplacename set to FALSE if you need the exact output of API and
@@ -59,10 +61,13 @@
 #' @export
 #' @keywords internal
 #'  
-ejscreenapi1 <- function(lon, lat, radius = 3, unit ='miles', wkid=4326, 
-                         fips=NULL,
-                         format_report_or_json='pjson', ipurl='ejscreen.epa.gov',
+ejscreenapi1 <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326, 
+                         fips = NULL,
+                         shapefile = NULL,
+                         format_report_or_json = 'pjson', ipurl = 'ejscreen.epa.gov',
                          getstatefromplacename = TRUE) {
+  
+  if (!is.null(shapefile)) {warning('shapefile not implemented yet')}
   
   if (any(!is.null(fips))) {
     radius <- 0
@@ -109,6 +114,7 @@ ejscreenapi1 <- function(lon, lat, radius = 3, unit ='miles', wkid=4326,
   
   ej.data <- try(ejscreenRESTbroker(
     fips = fips, 
+    # shapefile = shapefile, # would need POST not GET
     lon = lon, lat = lat, 
     radius = radius, 
     unit = unitcode, wkid = wkid,

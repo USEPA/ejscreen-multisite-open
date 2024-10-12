@@ -7,16 +7,16 @@
 ejscreen_vs_ejam(
   latlon,
   radius = 3,
+  fips = NULL,
+  shapefile = NULL,
   nadrop = FALSE,
   save_ejscreen_output = "ejscreenapi_plus_out.rda",
-  save_when_report = TRUE,
+  save_when_report = FALSE,
   report_every_n = 250,
   calculate_ratios = FALSE,
   include_ejindexes = TRUE,
   x100fix = TRUE,
-  x100varnames = c(names_d, names_d_avg, names_d_state_avg, names_d_subgroups,
-    names_d_subgroups_avg, names_d_subgroups_state_avg, "pctdisability", "pctownedunits",
-    "pctunder18", "pctover17", "pctmale", "pctfemale"),
+  x100varnames = names_pct_as_fraction_ejamit,
   ...
 )
 }
@@ -26,26 +26,30 @@ and one row per site}
 
 \item{radius}{in miles, used in ejamit() and ejscreenapi_plus()}
 
-\item{save_ejscreen_output}{set to NULL to avoid saving ejscreen results locally.
-If set to a filename, function will prompt in interactive R session
-for a folder to use for saving the .rda results of ejscreenapi_plus()}
+\item{fips}{FIPS code(s) of counties or blockgroups, if not using latlon and radius.}
 
-\item{save_when_report}{see ejscreenapi_plus()}
+\item{save_ejscreen_output}{set to NULL or FALSE to avoid saving ejscreen results locally.
+If specified as a valid path and filename ending in .rda, it saves there.
+If missing, function will prompt in interactive R session
+for a folder to use for saving the .rda results of ejscreenapi}
+
+\item{save_when_report}{see \code{\link[=ejscreenapi_plus]{ejscreenapi_plus()}}, to save progress every so often just in case.}
 
 \item{report_every_n}{see ejscreenapi_plus()}
 
 \item{calculate_ratios}{passed to ejscreenapi_plus() and \code{\link[=ejamit]{ejamit()}}}
 
-\item{x100fix}{whether to multiply x100 the names_d and names_d_subgroups
+\item{include_ejindexes}{passed to ejscreenapi_plus() and \code{\link[=ejamit]{ejamit()}}}
+
+\item{x100fix}{whether to multiply x100 in ejamit() outputs the names_d and names_d_subgroups
 indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,
 prior to rounding and reporting EJAM results here.}
 
-\item{x100varnames}{optional, if x100fix=T, a vector of colnames of x$EJAM to convert from
+\item{x100varnames}{optional, if x100fix = TRUE, a vector of colnames of x$EJAM to convert from
 being scaled as 0 to 1 into rescaled values of 0 to 100, because some
 outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.}
 
-\item{...}{passed to ejamit() as any additional parameters,
-like include_ejindexes = FALSE}
+\item{...}{passed to ejamit() as any additional parameters}
 }
 \value{
 a list of data frames, with names
@@ -64,14 +68,16 @@ For each data.frame, colnames are indicators like pop, blockcount_near_site, etc
 and rows represent sites analyzed.
 }
 \description{
-This is the main function that facilitates comparing
+This is the main function used by \code{\link[=ejscreen_vs]{ejscreen_vs()}} to compare
 EJScreen API vs EJAM stats near site(s)
 }
 \details{
-Note that the EJAM tool/ function called \code{\link[=ejamit]{ejamit()}}
-does not rely on EJScreen to do the calculations
-and instead tries to replicate what EJScreen would do.
-As a result, as of early 2024 at least, while
+Consider using \code{\link[=ejscreen_vs]{ejscreen_vs()}} which does this all interactively.
+
+The EJAM tool/ function called \code{\link[=ejamit]{ejamit()}}
+does not rely on EJScreen's typical single-location approach to do the calculations
+and instead tries to replicate what the EJScreen single-site report would do.
+As a result, while
 \itemize{
 \item \emph{\code{\link[=ejamit]{ejamit()}} is much, much faster than \code{\link[=ejscreenit_for_ejam]{ejscreenit_for_ejam()}}} and
 \item \emph{provides additional information} (distribution of distances by group, etc.)
@@ -80,22 +86,31 @@ As a result, as of early 2024 at least, while
 \emph{\code{\link[=ejamit]{ejamit()}} does not always exactly replicate EJScreen} --
 does not provide 100\% identical results (percentiles, etc.) for
 every indicator in every analysis at every location.
-This is due to slight variations in
+For almost all indicators, at 97\% of sites tested, the difference is
+either zero difference in the reports or is smaller than a 1\% difference.
+There may be edge cases where an indicator differs significantly.
+Any differences are due to slight variations in
 \item details of the spatial calculations (which blocks are nearby,
-sometimes counting 1 extra block as 2.99 miles away while
-EJScreen counts it as outside the 3 mile radius, e.g.)
-\item rounding (how many digits are retained during calculations,
-and how many are shown in final reports)
-\item percentile assignment method (how percentile lookup tables are used,
-how ties are treated in percentile lookup tables, etc.), or
-\item weighted averages or other formulas used for aggregation of blockgroup scores
-(being updated in 2024 to more precisely match the formulas EJScreen uses)
+sometimes counting 1 extra block as 2.995 miles away while
+EJScreen counts it as outside the 3 mile radius, e.g.,
+often differing by just <50 feet out of 3 miles).
+and possibly other factors like
+\item rounding? (how many digits are retained during calculations,
+and how many are shown in final reports via rounding and/or significant digits)
+\item percentile assignment method should be the same now
+(how percentile lookup tables are used,
+how ties are treated in percentile lookup tables, etc.)
+\item possibly other undocumented small differences in some calculation step?
 }
 }
 \examples{
  \dontrun{
  # in RStudio, interactive:
- vs <- ejscreen_vscript()
+ vs <- ejscreen_vs()
+ 
+ # vs filtered to just the ones where rounded pop disagrees
+ table(vs$same_shown$pop)
+ vspopoff <- lapply(vs, function(x) x[!vs$same_shown$pop, ])
  
  pts <- testpoints_100[1:5, ]
    
@@ -130,6 +145,6 @@ how ties are treated in percentile lookup tables, etc.), or
   }
 }
 \seealso{
-\code{\link[=ejscreen_vs_ejam_alreadyrun]{ejscreen_vs_ejam_alreadyrun()}}
+\code{\link[=ejscreen_vs]{ejscreen_vs()}} which does it all interactively, and uses \code{\link[=ejscreen_vs_ejam_alreadyrun]{ejscreen_vs_ejam_alreadyrun()}} if appropriate.
 }
 \keyword{internal}

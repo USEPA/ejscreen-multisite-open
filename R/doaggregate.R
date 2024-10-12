@@ -1,12 +1,14 @@
 #' Summarize environmental and demographic indicators at each location and overall
-#'
-#' @description getblocksnearby() and doaggregate() are the two key functions that run ejamit().
+#' 
+#' @description Used by ejamit() and the shiny app to summarize blockgroups scores at each site and overall.
+#' 
+#' @details
+#' [getblocksnearby()] and doaggregate() are the two key functions that run [ejamit()].
 #'   `doaggregate()` takes a set of sites like facilities and the
 #'   set of blocks that are near each,
 #'   combines those with indicator scores for block groups, and
 #'   aggregates the numbes within each place and across all overall.
-#'
-#' @details
+#'   
 #'   For all examples, see [getblocksnearbyviaQuadTree()]
 #'
 #'   `doaggregate()` is the code run after [getblocksnearby()] (or a related function for
@@ -21,31 +23,67 @@
 #'    - **POPULATION-WEIGHTED MEANS**: for  Environmental indicators, but also any percentage indicator
 #'      for which the universe (denominator) is population count (rather than households, persons age 25up, etc.)
 #'
-#'        ***EJ Indexes**:* The way EJScreen
-#'          does this is apparently finding the pop wtd mean of EJ Index raw scores,
-#'          not the EJ Index formula applied to the summarized demographic score and aggregated envt number.
+#'        ***EJ Indexes**:* The pop wtd mean of EJ Index raw scores.
 #'
-#'    - **CALCULATED BY FORMULA**: Buffer or overall score calculated via formulas using aggregated counts,
-#'          such as percent low income = sum of counts low income / sum of counts of denominator,
-#'          which in this case is the count of those for whom the poverty ratio is known. Assuming no rounding errors,
-#'          this method should give the same result as using a weighted mean of percentages, where the weights are
+#'    - **CALCULATED BY FORMULA**: Buffer or overall score calculated as weighted mean of percentages, where the weights are
 #'          the correct denominator like count of those for whom the poverty ratio is known.
 #'
 #'    - **LOOKED UP**: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
 #'
 #'   This function requires the following datasets:
 #'
-#'    - blockwts: data.table with these columns: blockid , bgid, blockwt
+#'    - [blockwts]: data.table with these columns: blockid , bgid, blockwt
 #'
-#'    - quaddata data.table used to create localtree, a quad tree index of block points
+#'    - [quaddata] data.table used to create localtree, a quad tree index of block points
 #'      (and localtree that is created when package is loaded)
 #'
-#'    - blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
+#'    - [blockgroupstats] - A data.table (such as EJScreen demographic and environmental data by blockgroup)
 #'
+#' @details  # **Identification of nearby residents -- methodology:** ####################################################################
+#'
+#' EJAM uses the same approach as EJScreen does to identify the count and demographics of nearby residents,
+#' so EJScreen technical documentation should be consulted on the approach,
+#' at [EJScreen Technical Info](https://www.epa.gov/ejscreen/technical-information-about-ejscreen "EJScreen Technical Info"){.uri target="_blank" rel="noreferrer noopener"}.
+#' EJAM implements that approach using faster code and data formats, but it
+#' still uses the same high-resolution approach as described in EJScreen documentation
+#' and summarized below.
+#' 
+#' The identification of nearby residents is currently done in a way that includes all 2020 Census blocks whose
+#' "internal point" (a lat/lon provided by the Census Bureau) is within the specified distance of the facility point.
+#' This is taken from the EJScreen block weights file, but can also be independently calculated.
+#'
+#' The summary or aggregation or "rollup" within the buffer is done by calculating the
+#' population-weighted average block group score among all the people residing in the buffer.
+#' The weighting is by population count for variables that are fractions of population,
+#' but other denominators and weights (e.g., households count) are used as appropriate,
+#' as explained in EJScreen technical documentation on the formulas, and
+#' replicated by formulas used in EJAM functions such as doaggregate().
+#'
+#' Since the blockgroup population counts are from American Community Survey (ACS) estimates,
+#' but the block population counts are from a decennial census, the totals for a blockgroup differ.
+#' The amount each partial blockgroup contributes to the buffer's overall score is based on
+#' the estimated number of residents from that blockgroup who are in the buffer.
+#' This is based on the fraction of the blockgroup population that is estimated to be in the buffer,
+#' and that fraction is calculated as the fraction of the blockgroup's decennial census block population
+#' that is in the census blocks inside the buffer.
+#'
+#' A given block is considered entirely inside or entirely outside the buffer,
+#' and those are used to more accurately estimate what fraction of a given block group's
+#' population is inside the buffer. This is more accurate and faster than areal apportionment of block groups.
+#' Census blocks are generally so small relative to typical buffers that this is very accurate -
+#' it is least accurate if a very small buffer distance is specified
+#' in an extremely low density rural area where a block can be geographically large.
+#' Although it is rarely if ever a significant issue (for reasonable, useful buffer sizes),
+#' an even more accurate approach in those cases might be either areal apportionment of blocks,
+#' which is very slow and assumes residents are evenly spread out across the full block's area,
+#' or else an approach that uses higher resolution estimates of residential locations than even
+#' the Decennial census blocks can provide, such as a dasymetric map approach.
+#' 
+#' 
 #' @param sites2blocks data.table of distances in miles between all sites (facilities) and
 #'   nearby Census block internal points, with columns ejam_uniq_id, blockid, distance,
 #'   created by getblocksnearby  function.
-#'   See [sites2blocks_example10pts_1miles] aka [testoutput_getblocksnearby_10pts_1miles] dataset in package, as input to this function
+#'   See [testoutput_getblocksnearby_10pts_1miles] dataset in package, as input to this function
 #' @param sites2states_or_latlon data.table or just data.frame, 
 #'   with columns ejam_uniq_id (each unique one in sites2blocks) and 
 #'   ST (2-character State abbreviation) or lat and lon
@@ -249,6 +287,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     countcols <- unique( intersect(map_headernames$rname[calctype(map_headernames$rname) %in%  "sum of counts"], names(blockgroupstats)))
     
     countcols <- unique(c(
+      "pop", # in case it is in names_wts not names_d_other_count
       names_d_other_count,
       names_d_count,
       subs_count
@@ -721,6 +760,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     results_overall <- cbind(results_overall, results_overall_wtdmeans) # many columns (the popwtd mean cols)
   }
   ############################################### #
+  ## >>> TEMPORARY PATCH UNTIL FORMULA FIXED - SEE ISSUE #498  https://github.com/USEPA/EJAM/issues/498 ####
+  results_overall$pctownedunits <- NA; results_bysite$pctownedunits <- NA
+  
+  results_overall$drinking <- NA; results_bysite$drinking <- NA
+  
+  
+  ############################################### #
   ##     later, for results_overall, will calc state pctiles once we have them for each site
   
   ##################################################### #
@@ -1081,22 +1127,25 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     # use nearest 1 block's state, which is often but not always right if near state line,
     # but in shapefiles case of a polygon covering 2 states has no distance so just whatever happens to be 1st block in list there.
     # and never arises for FIPS case (fips is always just a single state).
-    cat(' *** TEMPORARILY, for circles covering 2 states, using state of nearest block,
-        and for Shapefiles spanning 2 States,  JUST USING 1 OF THE STATES - 
-        work in progress on state identification if not in shiny app and not using ejamit(), 
-        if sites2states_or_latlon is not provided to doaggregate() \n')
+    cat(' *** For now, if sites2states_or_latlon is not provided to doaggregate(),
+        for circles covering 2 states, it will use state of nearest block,
+        and for Shapefiles spanning 2 States, will just use 1 of the States -
+        not selected by area or population, but just whatever happens to be first in the table.
+        This should only arise if not in shiny app and not using ejamit() and 
+        sites2states_or_latlon was not provided to doaggregate() \n')
     # single-state case
     sites2states <- state_from_s2b_bysite(sites2blocks) # works for single-state sites only, NA otherwise
     setDT(sites2states)
     
-    if ("confirmed this works" == "done?") {
+    # if ("confirmed this works" == "done?") {
       # multistate case
       multistate_ids <- sites2states$ejam_uniq_id[is.na(sites2states$ST)]
       others <- state_from_nearest_block_bysite(sites2blocks[ejam_uniq_id %in% multistate_ids, ])
+      # returns data.table with cols ejam_uniq_id,ST and one row per unique id
       ## join those but should replace only one with multistate_ids 
-      ##  NOT RIGHT ???  xxx
+      ##  ???  xxx
       sites2states$ST[is.na(sites2states$ST)] <- others$ST[match(sites2states$ejam_uniq_id[is.na(sites2states$ST)], others$ejam_uniq_id)]
-    }
+    # }
     
   }
 
@@ -1107,17 +1156,22 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #  ##################################################### #
   
   results_bysite[sites2states, ST := ST, on = "ejam_uniq_id"] # check this, including when ST is NA ***
-  results_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  #  results_bysite[, statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  # results_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  
+  results_bysite[ , statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  results_bysite[ , REGION := fips_st2eparegion(fips_state_from_state_abbrev(ST))]
   results_bysite[sites2states, in_how_many_states := in_how_many_states, on = "ejam_uniq_id"]
   
   results_overall$ST <- NA
   results_overall$statename <- NA
+  results_overall$REGION <- NA
   results_overall$ejam_uniq_id <- NA  ## adds blank ejam_uniq_id column to results_overall (no longer tied to include_ejindexes)
   results_overall$in_how_many_states <- length(unique(na.omit(results_bysite$ST)))
   
   # results_bybg_people$ST is created from sites2bgs_plusblockgroupdata_bysite$ST and ST is already in that table 
   # since ST was joined from blockgroupstats around line 569, for each bg, but that is not always 1 state for a given site.
-  sites2bgs_plusblockgroupdata_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  # same as the very slightly slower... fips2statename(fips_state_from_state_abbrev(ST))
+  # sites2bgs_plusblockgroupdata_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  # same as the very slightly slower... fips2statename(fips_state_from_state_abbrev(ST))
+  sites2bgs_plusblockgroupdata_bysite[, statename := fips2statename(fips_state_from_state_abbrev(ST))]
+  sites2bgs_plusblockgroupdata_bysite[, REGION := fips_st2eparegion(fips_state_from_state_abbrev(ST))]
   sites2bgs_plusblockgroupdata_bysite$in_how_many_states <- 1 # since a single blockgroup can only be in one state
   #  ##################################################### #  ##################################################### #
   
@@ -1189,9 +1243,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     
     if ((myvar %in% names(statestats)) && (myvar_to_use %in% names(results_bysite)) ) {
       
-      state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
-        unlist(results_bysite[  , ..myvar_to_use]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST
+      ## check if state assignment is NA, only look for %iles if it is present
+      state.pctile.cols_bysite[!is.na(results_bysite$ST) , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
+        unlist(results_bysite[!is.na(results_bysite$ST)  , ..myvar_to_use]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST[!is.na(results_bysite$ST)]
       )
+      state.pctile.cols_bysite[is.na(results_bysite$ST) , varnames.state.pctile[[i]]] <- NA
+      
       ## These must be done later, as avg of sites:
       # state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
     } else {
@@ -1267,10 +1324,17 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         # us.pctile.cols_overall[   , ejnames_pctile[i]] <- NA
       }
       if (myvar %in% names(statestats)) { # e.g., "state.EJ.DISPARITY.proximity.rmp.supp"
-        state.pctile.cols_bysite[ , ejnames_pctile[i]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
-          unlist(results_bysite[  , ..myvar]),
-          # unlist(cbind(ej_bysite, ej_supp_bysite)[  , ..myvar]),
-          varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST) # should be same count of rows in results_bysite$ST and ej_bysite !
+        
+        ## check if state assignment is NA, only look for %iles if it is present
+        state.pctile.cols_bysite[!is.na(results_bysite$ST) , ejnames_pctile[i]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
+          unlist(results_bysite[!is.na(results_bysite$ST)  , ..myvar_to_use]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST[!is.na(results_bysite$ST)]
+        )
+        state.pctile.cols_bysite[is.na(results_bysite$ST) , ejnames_pctile[i]] <- NA
+        
+        # state.pctile.cols_bysite[ , ejnames_pctile[i]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
+        #   unlist(results_bysite[  , ..myvar]),
+        #   # unlist(cbind(ej_bysite, ej_supp_bysite)[  , ..myvar]),
+        #   varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST) # should be same count of rows in results_bysite$ST and ej_bysite !
         ##  must be done later, as avg of sites:
         # state.pctile.cols_overall[, ejnames_pctile[i]] <- pctile_from_raw_lookup(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
       } else {
@@ -1483,7 +1547,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       'pop',           # '[or names_wts]',
       'sitename',
       'lon', 'lat', # do we want to make consistently lat,lon not lon,lat ??? ***
-      'ST', 'statename', 'REGION',
+      'ST', 'statename', 'in_how_many_states', 'REGION',
       
       
       ## RATIOS to AVG (DEMOG and ENVT) ----------------------------------------\
@@ -1536,17 +1600,22 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       ### D US PCTILE ###
       names_d_pctile,
       names_d_subgroups_nh_pctile,       names_d_subgroups_alone_pctile,
+      names_health_pctile, 
+      
       ### D US AVERAGES ###
       names_d_avg,
       names_d_subgroups_nh_avg,          names_d_subgroups_alone_avg,
+      names_health_avg,
       
       ### D STATE PCTILE ##
       names_d_state_pctile,
       names_d_subgroups_nh_state_pctile, names_d_subgroups_alone_state_pctile,
+      names_health_state_pctile,
+      
       ### D STATE AVERAGES ###
       names_d_state_avg,
       names_d_subgroups_nh_state_avg ,   names_d_subgroups_alone_state_avg,
-      
+      names_health_state_avg,
       
       ## ENVIRONMENTAL ----------------------------------------\
       

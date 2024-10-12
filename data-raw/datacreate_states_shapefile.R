@@ -57,6 +57,16 @@ print(attributes(states_shapefile))
 cat("saving in package\n")
 usethis::use_data(states_shapefile, overwrite = TRUE)
 
+dataset_documenter("states_shapefile", 
+                   title = "This is used to figure out which state contains each point (facility/site).",
+                   seealso = "seealso [state_from_latlon()] [get_blockpoints_in_shape()]",
+                   description = "This is used to figure out which state contains each point (facility/site).",
+                   details = "This is used by [state_from_latlon()] to find which state is associated with each point 
+#'   that the user wants to analyze. That is needed to report indicators in 
+#'   the form of State-specific percentiles 
+#'   (e.g., a score that is at the 80th percentile within Texas).
+#'   It is created by the package via a script at EJAM/data-raw/datacreate_states_shapefile.R
+#'   which downloads the data from Census Bureau.")
 
 ################################################################### # 
 ## alternative way, from EJSCREENbatch   (format differs)

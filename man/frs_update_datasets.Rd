@@ -6,7 +6,7 @@
 \usage{
 frs_update_datasets(
   folder = NULL,
-  folder_save_as_arrow = getwd(),
+  folder_save_as_arrow = ".",
   downloaded_and_unzipped_already = FALSE,
   csvname = "NATIONAL_SINGLE.CSV",
   save_as_arrow_frs = TRUE,
@@ -63,10 +63,16 @@ This takes several minutes to download and clean data files,
 and is used by someone maintaining the EJAM package, to obtain updated
 Facility Registry Service (FRS) data on EPA-regulated sites.
 
-To update the datasets in the R package from local source code,
-use frs_update_datasets(), in conjunction with the EJAM package.
-
 This function is only for a package maintainer/updater or to update a local copy.
+It would normally be called from a script like
+EJAM/data-raw/datacreate_0_UPDATE_ALL_DATASETS.R
+
+These datasets have been stored in a pins board, not as part of the package,
+so the save_as_data_ parameters here are set to FALSE. The updated files can be
+moved to the pins board via the script.
+
+To update the datasets for the R package using local source code,
+use frs_update_datasets(), in conjunction with the EJAM package.
 
 For example to read back in a saved file,
 

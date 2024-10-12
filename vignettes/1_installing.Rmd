@@ -68,14 +68,21 @@ if (!require(remotes)) {install.packages("remotes")}
 remotes::install_github('USEPA/EJAM')
 
 ```
+To install the development version, which may be newer but not yet fully working:
+```{r}
+if (!require(remotes)) {install.packages("remotes")}
+remotes::install_github('USEPA/EJAM', ref = "development")
+```
 
-However, until the repositories are made public, you need to be on VPN and also get a PAT to do this -- see details below.
+
+
+However, until the repository is made public, you need to be on VPN and also get a PAT to do this -- see details below.
 
 ### if you need the full source code or want to build/install in RStudio on your own
 
-There is now no other EJAM-specific package as of 7/2024 that EJAM needs - all of the code is consolidated in the EJAM package.
+The only EPA/EJAM-specific package needed is the EJAM package itself.
 
-The package is only available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM"){.uri target="_blank" rel="noreferrer noopener"} (not CRAN)
+That package is available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM"){.uri target="_blank" rel="noreferrer noopener"} (not CRAN)
 
 -   [EJAM](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM"){.uri target="_blank" rel="noreferrer noopener"}
 
@@ -144,7 +151,7 @@ dataload_from_pins('all')
 # It takes a moment for the large downloads, while EJAM is still in development.
 ```
 
-Attaching the package actually checks for copies in memory first (e.g., `exists("quaddata", envir = globalenv())`), then local disk (using `dataload_from_local()` looking in the data folder of the (source or installed) package, as defined by `EJAM:::app_sys()` which is just a wrapper for `system.file()`), then finally tries to download any still needed, using `dataload_from_pins()`.
+Attaching the package actually checks for copies in memory first (e.g., `exists("quaddata", envir = globalenv())`), then local disk (using [dataload_from_local()] looking in the data folder of the (source or installed) package, as defined by `EJAM:::app_sys()` which is just a wrapper for `system.file()`), then finally tries to download any still needed, using [dataload_from_pins()] for example.
 
 ### Details on the indexing of blocks
 

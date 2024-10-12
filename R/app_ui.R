@@ -6,7 +6,11 @@
 #' @rawNamespace import(shiny, except = c(dataTableOutput, renderDataTable))
 #' @importFrom shinyjs useShinyjs extendShinyjs
 #'
+#'
+#'
 app_ui  <- function(request) {
+  
+  
   
   tagList(
     # golem_add_external_resources() ####
@@ -29,7 +33,7 @@ app_ui  <- function(request) {
       #  we use golem app_sys() to ensure it points to the right folder,
       #  which in source pkg is EJAM/inst/app/www/ejam_styling.css
       # but in installed pkg is EJAM/app/www/ejam_styling.css
-      includeCSS(app_sys('app/www/ejam_styling.css')), #
+      includeCSS(EJAM:::app_sys('app/www/ejam_styling.css')), #
       
       # use friendlier message if user gets disconnected from server
       shinydisconnect::disconnectMessage(
@@ -43,10 +47,12 @@ app_ui  <- function(request) {
       html_header_fmt,
       
       ### title (for app and browser tab) ####
+      
+      
       div(class = "title-panel",
           titlePanel(
-            title = "EJAM (Environmental Justice Analysis Multi-site) Tool v2.32",
-            windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool v2.32"
+            title = paste("EJAM (Environmental Justice Analysis Multi-site) Tool v",ejam_app_version, sep =""),
+            windowTitle = paste("EJAM (Environmental Justice Analysis Multi-site) Tool v", ejam_app_version, sep ="")
           )
       ),
       
@@ -482,8 +488,8 @@ app_ui  <- function(request) {
                              tabPanel(
                                title = "Community Report",
                                
-                               includeCSS(app_sys('report/community_report/communityreport.css')),
-                               includeCSS(app_sys('report/community_report/main.css')),
+                               includeCSS(EJAM:::app_sys('report/community_report/communityreport.css')),
+                               includeCSS(EJAM:::app_sys('report/community_report/main.css')),
                                #includeCSS('inst/report/community_report/communityreport.css'),
                                #includeCSS('inst/report/community_report/main.css'),
                                
@@ -508,10 +514,7 @@ app_ui  <- function(request) {
                                ),
                                div(
                                  style = "background-color: #edeff0; color: black; width: 100%; padding: 10px 20px; text-align: right; margin: 10px 0;",
-                                 p( style = "margin-bottom: 0",
-                                   "Version 2.32 | Report created on ", 
-                                    format(Sys.Date(), '%B %d, %Y'),
-                                 )
+                                 uiOutput("report_version_date")
                                ),
                                br(),
                                tags$div(
@@ -533,6 +536,7 @@ app_ui  <- function(request) {
                                       br(),
                                       div(class = 'navbar1',
                                           navbarPage(
+                                            id="details_subtabs",
                                             title = NULL,
                                             #   navlistPanel(
                                             #   "Results Pages",
@@ -576,7 +580,8 @@ app_ui  <- function(request) {
                                             ### _BARPLOT (AVG SCORES) - tabPanel(title = 'Plot Average Scores' ####
                                             # .
                                             
-                                            tabPanel(title = 'Plot Average Scores',
+                                            tabPanel(id="plot_average", 
+                                                     title = 'Plot Average Scores',
                                                      h4('About this Chart'),
                                                      helpText('These charts show how each demographic group and environmental stressor, in the analyzed locations, compares to its US average.'),
                                                      
@@ -623,7 +628,8 @@ app_ui  <- function(request) {
                                             
                                             ### _HISTOPLOT (RANGE OF SCORES) - tabPanel(title = 'Plot Full Range of Scores' ####
                                             
-                                            tabPanel(title = 'Plot Full Range of Scores',
+                                            tabPanel(id="plot_range", 
+                                                     title = 'Plot Full Range of Scores',
                                                      ### _HISTOGRAM
                                                      #h3(id = 'histogram',"Explore Indicator Distributions"),
                                                      h4('About this Chart'),
@@ -1350,13 +1356,13 @@ golem_add_external_resources <- function() {
   
   golem::add_resource_path(
     "www",
-    app_sys("app/www") #   points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www
+    EJAM:::app_sys("app/www") #   points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www
   )
   tags$head(
     
     # app title ####
     golem::bundle_resources(
-      path = app_sys("app/www"),   #  points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www
+      path = EJAM:::app_sys("app/www"),   #  points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www
       app_title = "EJAM"
     ),
     

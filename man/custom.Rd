@@ -3,7 +3,7 @@
 \docType{data}
 \name{custom}
 \alias{custom}
-\title{a list of variable names for internal use in EJAM}
+\title{for internal use}
 \format{
 An object of class \code{character} of length 2.
 }
@@ -11,6 +11,6 @@ An object of class \code{character} of length 2.
 custom
 }
 \description{
-a list of variable names for internal use in EJAM
+for internal use
 }
 \keyword{datasets}

@@ -4,6 +4,12 @@
 \name{stateinfo}
 \alias{stateinfo}
 \title{stateinfo (DATA) data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)}
+\format{
+An object of class \code{data.frame} with 52 rows and 5 columns.
+}
+\usage{
+stateinfo
+}
 \description{
 52 rows and a few variables: ST is the 2-letter abbreviation,
 statename is the State name, etc.
@@ -11,13 +17,13 @@ statename is the State name, etc.
 \details{
 Created for EJAM by datacreate_stateinfo.R script
 
-Also see \url{https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/release/2020-island-areas-data-products.html}
+Also see \href{https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/release/2020-island-areas-data-products.html}{Census details}
 
-column names: "ST"  "statename"  "ftpname"   "FIPS.ST"   "REGION"
+column names: 'ST'  'statename'  'ftpname'   'FIPS.ST'   'REGION'
 
 Some datasets lack PR. (72)
 
-Many datasets lack these:  AS, GU, MP, VI (codes "60" "66" "69" "78")
+Many datasets lack these:  AS, GU, MP, VI (codes '60' '66' '69' '78')
 
 Almost all datasets lack UM. (74)
 
@@ -35,3 +41,4 @@ Almost all datasets lack UM. (74)
 \seealso{
 \link{stateinfo2} for more columns
 }
+\keyword{datasets}

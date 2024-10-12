@@ -23,7 +23,7 @@
 #' 
 #' @param fips if used instead of lon,lat it should be a character FIPS code vector
 #'   (counties, tracts, or blockgroups)
-#'   
+#' @param shapefile not implemented
 #' @param report_every_n default is to provide an update every so often
 #' @param save_when_report default is FALSE but if TRUE it saves work in progress every so often
 #' @param format_report_or_json do not use
@@ -78,6 +78,7 @@
 #'  
 ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
                              fips = NULL,
+                             shapefile = NULL, # pending
                              report_every_n=100, save_when_report=FALSE, 
                              format_report_or_json='pjson', on_server_so_dont_save_files=FALSE, ipurl='ejscreen.epa.gov',
                              mapping_for_names = NULL, 
@@ -85,6 +86,8 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
                              calculate_ratios=TRUE,
                              verbose=FALSE,
                              getstatefromplacename = TRUE) {
+  
+  if (!is.null(shapefile)) {warning('shapefile not implemented yet')}
   
   if (is.null(mapping_for_names)) {mapping_for_names <- map_headernames} # should be available as data via package or loaded via global.R
   
@@ -107,11 +110,12 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
     lon = lon, lat = lat,
     radius = radius, unit = unit, wkid = wkid, 
     fips = fips,
+    shapefile = shapefile, 
     format_report_or_json = format_report_or_json, ipurl = ipurl,
     report_every_n = report_every_n, save_when_report = save_when_report, 
     on_server_so_dont_save_files = on_server_so_dont_save_files,
     drop_redundant_indicators = TRUE,
-    verbose=verbose,
+    verbose = verbose,
     getstatefromplacename = getstatefromplacename
   ) # possibly could add progress bar as a widget here 
   
@@ -129,6 +133,8 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
   results_table <- cbind(pts, batchtableout) # needed here to allow links to be made 
   results_table <- urls_clusters_and_sort_cols(results_table)
   
+  # results_table <- results_table[, names(results_table) != 'mapurl']   # drop this column that was only useful while viewing uploaded points but is redundant in final results here
+  
   ############################################################## #
   
   # table is renamed here so code will be identical to code in server.R
@@ -136,57 +142,18 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
   
   # colnames in results table are always api version of names
   #   name the columns using the Rfieldnames style  - also ensures any calc_ratios_to_avg() will work right
+  
   names(table_as_displayed) <- fixcolnames(
     namesnow = names(table_as_displayed), 
     oldtype = 'api', # oldtype = "original",
     newtype = 'r',  
     mapping_for_names = mapping_for_names
   )
-  
-  ############################################################# #
-  
-  # ratios section is almost identical to (duplicating) code in app_server ############################################################# #
-  
-  ### Add Ratios to us or state averages ####
-  
-  if (calculate_ratios) {
-    
-    names_e_FOR_RATIOS <- map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e"] # names_e in EJAM pkg
-    names_d_FOR_RATIOS <- map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d"] # names_d in EJAM pkg, 
-    # but not c(names_d, names_d_subgroups) ? # *** CANNOT CALC SUBGROUPS RATIOS SINCE AVERAGE IS NOT AN OUTPUT OF API?
-     
-    ##  ratio to US avg ------------ -
-    
-    # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT IS THE SORT ORDER OF THE VARIABLES !
-    usratios <- calc_ratios_to_avg(table_as_displayed, evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # not subgroups # this was not designed to analyze state percentiles ?
-    eratios <- round(usratios$ratios_e, 4)
-    dratios <- round(usratios$ratios_d, 4)    #  
-    
-    # a PROBLEM HERE IS LIST OF RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES:
-    
-    names(eratios) <- paste0('ratio.to.avg.', names_e_FOR_RATIOS) #map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e_ratio_to_avg"] # names_e_ratio_to_avg  # lacks state percentiles here ****
-    names(dratios) <- paste0('ratio.to.avg.', names_d_FOR_RATIOS)# names_d_ratio_to_avg # c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg) # paste0('ratio.to.avg.', names_d_FOR_RATIOS) # map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d_ratio_to_avg"] # names_d_ratio_to_avg  # lacks state percentiles here ****
-    table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
-    
-    ##  ratio to STATE avg ------------- -
-    
-    st_ratios <- calc_ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
-    eratios <- round(st_ratios$ratios_e, 4)
-    dratios <- round(st_ratios$ratios_d, 4)    # 
-    names(eratios) <- paste0('ratio.to.state.avg.', names_e_FOR_RATIOS) # map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
-    names(dratios) <- paste0('ratio.to.state.avg.', names_d_FOR_RATIOS) # names_d_ratio_to_state_avg # c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg) #  paste0('ratio.to.state.avg.', names_d_FOR_RATIOS) # map_headernames$newnames_ejscreenapi[ map_headernames$varlist == "names_d_ratio_to_state_avg"]
-    table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
-    
-  } # end of ratio calculations 
-  
-  ############################################################## #
-  
-  #  Add commas to numbers for population counts? ####  
-  # if ('totalPop' %in% names(table_as_displayed)) table_as_displayed$totalPop <- prettyNum(table_as_displayed$totalPop, big.mark = ',') 
-  # if ('pop'      %in% names(table_as_displayed)) table_as_displayed$pop      <- prettyNum(table_as_displayed$pop,      big.mark = ',') 
-  # # if ('total population (ACS 5yr file)' %in% names(table_as_displayed)) table_as_displayed[,`total population (ACS 5yr file)`] <- prettyNum(table_as_displayed[,`total population (ACS 5yr file)`], big.mark = ',') 
-  
-  # Instead of tracking down why it happened just remove possible duplicate columns:
+  # remove duplicate columns since pts had lat,lon and renamed geometry.x,.y become second versions of lat,lon
+  if (anyDuplicated(names(table_as_displayed))) {
+    table_as_displayed <- table_as_displayed[, !duplicated(names(table_as_displayed))]
+  }
+  # maybe obsolete but had also been needed:
   if (('lat' %in% names(table_as_displayed)) & ('lat.1' %in% names(table_as_displayed)) ) {
     if (all.equal(table_as_displayed$lat, table_as_displayed$lat.1)) {
       table_as_displayed$lat.1 <- NULL
@@ -197,6 +164,26 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
       table_as_displayed$lon.1 <- NULL
     }
   }
+  ############################################################# #
+  
+  # note: ejscreenapi_plus() vs app_server_EJAMejscreenapi vs MODULE ############################################################# #
+  
+  ### Add Ratios to us or state averages ####
+  
+  if (calculate_ratios) {
+    table_as_displayed <- calc_ratios_to_avg_for_ejscreenapi(table_as_displayed = table_as_displayed)
+  } # end of ratio calculations 
+  
+  ############################################################## #
+  
+  
+  
+  
+  
+  #-_Commas for pop count ####
+  # if ('totalPop' %in% names(table_as_displayed)) table_as_displayed$totalPop <- prettyNum(table_as_displayed$totalPop, big.mark = ',') 
+  # if ('pop'      %in% names(table_as_displayed)) table_as_displayed$pop      <- prettyNum(table_as_displayed$pop,      big.mark = ',') 
+  # # if ('total population (ACS 5yr file)' %in% names(table_as_displayed)) table_as_displayed[,`total population (ACS 5yr file)`] <- prettyNum(table_as_displayed[,`total population (ACS 5yr file)`], big.mark = ',') 
   
   if (interactive() & verbose) {
     # note that  ejscreenit()  already 
@@ -216,6 +203,13 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
     # boxplots_ratios(calc_ratios_to_avg(x), wheretext = "nearby")
   }
   
+  names(table_as_displayed) <- fixcolnames(
+    namesnow = names(table_as_displayed), 
+    oldtype = 'r', # original
+    newtype = usewhichnames, # towhichnames = usewhichnames, 
+    mapping_for_names = mapping_for_names
+  )
+  # for some reason it does not fix ratio column names the first time??
   names(table_as_displayed) <- fixcolnames(
     namesnow = names(table_as_displayed), 
     oldtype = 'r', # original

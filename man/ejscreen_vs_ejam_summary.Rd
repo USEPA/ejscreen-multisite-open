@@ -5,9 +5,9 @@
 \title{EJAM/EJSCREEN comparisons - see summary stats after using ejscreen_vs_ejam()}
 \usage{
 ejscreen_vs_ejam_summary(
-  z = ejscreen_vs_ejam(),
+  z = NULL,
   myvars = colnames(z$EJAM),
-  tol = 0.01,
+  tol = 0.05,
   prob = 0.95,
   na.rm = TRUE
 )
@@ -76,6 +76,10 @@ EJAM/EJSCREEN comparisons - see summary stats after using ejscreen_vs_ejam()
   vs100 <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
   
   ejscreen_vs_ejam_see1(vs100, mysite = 1)
+  
+  # see site with largest \% disagreement:
+  ejscreen_vs_ejam_see1(vs, 'pop', mysite = which.max(vs$abspctdiff$pop))
+  
   vs100$diff$blockcount_near_site
   sum100 <- ejscreen_vs_ejam_summary(vs100, tol = 0.01)
   s100 <- sum100[ , c(1, 6:12)]

@@ -15,7 +15,7 @@ speedtest(
   test_doaggregate = TRUE,
   test_batch.summarize = FALSE,
   logging = FALSE,
-  logfolder = getwd(),
+  logfolder = ".",
   logfilename = "log_n_datetime.txt",
   honk_when_ready = TRUE,
   saveoutput = FALSE,

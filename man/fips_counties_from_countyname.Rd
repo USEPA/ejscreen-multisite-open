@@ -4,7 +4,7 @@
 \alias{fips_counties_from_countyname}
 \title{get FIPS for a county based on part of the countyname and state abbrev}
 \usage{
-fips_counties_from_countyname(countyname_start, ST = NULL)
+fips_counties_from_countyname(countyname_start, ST = NULL, exact = FALSE)
 }
 \arguments{
 \item{countyname_start}{first few letters of countyname to look for via grep("^x", )
@@ -13,17 +13,20 @@ like "Johnson" or "Johnson County". Ignores case.}
 \item{ST}{two letter abbreviation of State, such as "TX" -- Can only be
 omitted if the 1st parameter has the full name and ST like
 "Harris County, TX". Ignores case.}
+
+\item{exact}{set TRUE to require exact matches, FALSE to allow partial matches
+in which case outputs might differ from inputs in length and not be 1-to-1}
 }
 \value{
 the county FIPS (5 digits long with leading zero if needed, as character)
-but can return more than one guess per input name
+but can return more than one guess per input name!
 }
 \description{
 get FIPS for a county based on part of the countyname and state abbrev
 }
 \examples{
- fips2name(fips_counties_from_countyname("Har", "TX")) # finds 4 matches
- fips_counties_from_countyname("Har",               "TX")    # finds 4 matches
+ fips2name(fips_counties_from_countyname("Har", "TX")) # finds 5 matches
+ fips_counties_from_countyname("Har",               "TX")    # finds 5  matches
  fips_counties_from_countyname("Harris",            "TX")    # finds 2 matches
  fips_counties_from_countyname("Harris ",           "TX")    # finds 1 match
  fips_counties_from_countyname("Harris County",     "TX")    # same

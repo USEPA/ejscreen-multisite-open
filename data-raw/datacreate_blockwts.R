@@ -65,7 +65,7 @@ warning("Note that the file from EJScreen team lacks area info for blocks, while
 ### POSSIBLE LIMITATION OF relying on manually obtained weights table from ejscreen team
 ### is that calculating custom proximity scores like proxistat() does require area of blocks
 ### to do small distance adjustments, but the file from EJScreen team lacks that info.
-### WeightTables_2020_CT2022_fix.gdb.zip  below, does NOT have info on size (square meters) of blocks.
+### Weight Table below, does NOT have info on size (square meters) of blocks.
 ### FILE LACKS area, SO CANNOT CALCULATE block_radius_miles that EJAM 2.2 used.
 ### So custom proximity scores like proxistat() will not be possible without the full info from Census Bureau.
 ### when effective radius adjustment turns out to be needed, 
@@ -143,20 +143,29 @@ if (!do_update) {
     # B) use file from EJScreen team, not Census Bureau ####
     
     # WeightTables_2020_CT2022_fix.gdb.zip file was provided directly by the EJScreen team for use here.
+    # WeightTables_2020_CT2022_09032024.gdb.zip file was provided directly as an update on 9/4/24
+    # (corrected for missing 19 blockgroups)
+    # From	xxxxxxxxxx@epa.gov
+    # Sent On	9/4/24 9:31:29 AM
+    # Subject	 Updated Weight Table
+    # Message	 Those “missing” 19 BGs came out the ID misassignment for about 50,000 blocks for CT. Their IDs were incorrectly assigned. Census doesn't have 2022 block IDs for CT. They were generated based on 2022 BG IDs. Thanks for reporting them! The update was made to the block weight table. Let us know if you have any questions.
+    # 
     # importing the downloaded gdb.zip file of block weights used by EJScreen version 2.32
     message("Not downloading block data from Census using package census2020download")
     message("Trying to use a local file that had been manually obtained from EJScreen team as gdb.zip")
 
     mydir = "~/../Downloads"
-    fname = "WeightTables_2020_CT2022_fix.gdb.zip"
+    # fname = "WeightTables_2020_CT2022_fix.gdb.zip" # had 19 problems
+    fname = "WeightTables_2020_CT2022_09032024.gdb.zip" # new, 9/4/24
     fpath = file.path(mydir, fname)
     fpath = rstudioapi::selectFile(path = fpath, filter = "gdb.zip (*.gdb.zip)")
-    #  \Downloads\WeightTables_2020_CT2022_fix.gdb.zip
     if (!file.exists(fpath)) {stop("file not found: ", fpath)}
     # library(EJAM)
     library(sf)
     print(st_layers(fpath))
     # >  st_layers(fpath)
+    
+    #### BEFORE 9/4/24:
     # Driver: OpenFileGDB 
     # Available layers:
     #                        layer_name geometry_type features fields crs_name
@@ -164,6 +173,10 @@ if (!do_update) {
     # 2 COUNTY20_CENTROIDS_WEIGHTS_2022         Point     3222      6    NAD83
     # 3     BG20_CENTROIDS_WEIGHTS_2022         Point   242335      6    NAD83
     # 4  TRACT20_CENTROIDS_WEIGHTS_2022         Point    85395      6    NAD83
+    
+    #### AFTER 9/4/24:
+    
+    
     ## read the layer of interest
     layname = "BLOCK20_CENTROIDS_WEIGHTS_2022"
     if (!layname %in% st_layers(fpath)$name) {stop("layer not found: ", layname)}
@@ -240,6 +253,34 @@ if (!do_update) {
     blockpoints  <- mylistoftables$blockpoints
     blockwts     <- mylistoftables$blockwts
     quaddata     <- mylistoftables$quaddata
+    
+    for (myvar in names(mylistoftables)) {
+      if (rstudioapi::isAvailable()) {rstudioapi::documentOpen(paste0('./R/data_', myvar, '.R'))}
+    }
+    cat("REMEMBER TO MANUALLY UPDATE THE DOCUMENTATION IN data_bgid2fips.R 
+        but use NULL at end since it is not saved in package so it is not an exported object\n")
+    # OR USE 
+    # dataset_documenter('bgid2fips', saveinpackage = FALSE)
+    
+    cat("REMEMBER TO MANUALLY UPDATE THE DOCUMENTATION IN data_blockid2fips.R
+    but use NULL at end since it is not saved in package so it is not an exported object\n")
+    # OR USE 
+    # dataset_documenter('blockid2fips', saveinpackage = FALSE)
+    
+    cat("REMEMBER TO MANUALLY UPDATE THE DOCUMENTATION IN data_blockpoints.R
+        but use NULL at end since it is not saved in package so it is not an exported object\n") 
+    # OR USE 
+    # dataset_documenter('blockpoints', saveinpackage = FALSE)
+    
+    cat("REMEMBER TO MANUALLY UPDATE THE DOCUMENTATION IN data_blockwts.R 
+        but use NULL at end since it is not saved in package so it is not an exported object\n")
+    # OR USE 
+    # dataset_documenter('blockwts', saveinpackage = FALSE)
+    
+    cat("REMEMBER TO MANUALLY UPDATE THE DOCUMENTATION IN data_quaddata.R
+        but use NULL at end since it is not saved in package so it is not an exported object\n")
+    # OR USE 
+    # dataset_documenter('quaddata', saveinpackage = FALSE)
     
     # want to keep the objects in memory? OK - may use to run EJAM functions like recreating testoutput data
     rm(mylistoftables, blocks)

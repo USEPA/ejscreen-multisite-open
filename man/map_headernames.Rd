@@ -3,36 +3,37 @@
 \docType{data}
 \name{map_headernames}
 \alias{map_headernames}
-\title{map_headernames is an essential dataset providing a table of metadata
-about all the indicators and variables of interest used in EJAM and the ejscreen-related functions.}
+\title{map_headernames provides metadata about all indicators in EJAM/EJScreen}
+\format{
+An object of class \code{data.frame} with 635 rows and 76 columns.
+}
+\usage{
+map_headernames
+}
 \description{
-map_headernames is an essential dataset providing a table of metadata
-about all the indicators and variables of interest used in EJAM and the ejscreen-related functions.
+map_headernames provides metadata about all indicators in EJAM/EJScreen
 }
 \details{
-map_headernames is a n IMPORTANT TABLE THAT STORES INFORMATION ABOUT THE NAMES OF VARIABLES,
+This is an IMPORTANT TABLE that provides information about each variable (indicator), such as the following:
+\itemize{
+\item names as used in geodatabase files (original data source)
+\item names as used in the outputs of the EJScreen API
+\item names as used in the R code
+\item names as used in short labels of graphics
+\item names as used in table headers (long versions to provide full descriptions of the variables)
+\item category of variable, for purposes of grouping similar ones like those in names_d or names_d_pctile
+\item info about rounding decimal places, significant digits, percentage format, etc.
+\item method for aggregating the value across blockgroups (sum, weighted mean, what is the weight, etc.)
+\item etc.
+}
 
-INCLUDING ALTERNATIVE VERSIONS OF THE NAMES AS USED IN GEODATABASE FILES,
-
-IN THE CODE, SHORT VERSIONS FOR LABELS OF GRAPHICS,
-
-LONG VERSIONS TO PROVIDE FULL DESCRIPTIONS OF THE VARIABLES,
-
-TYPE OF VARIABLE FOR PURPOSES OF GROUPING SIMILAR ONES, ETC. ETC.
-
-It was created from a spreadsheet of the same name, that is in a data-raw folder.
-
-Several helper functions are used to query it such as \code{\link[=fixcolnames]{fixcolnames()}} and many functions rely on it.
-
-You can see examples of what it contains like this, for example:
+It was created from a spreadsheet of the same name, that is in a data-raw folder. Several helper functions are used to query it such as \code{\link[=fixcolnames]{fixcolnames()}} and many functions rely on it. You can see examples of what it contains like this, for example:
 
 \code{data.frame(t(map_headernames[1:2, ]))}
 }
 \examples{
   #   See how many variables are on each list, for example: 
   \dontrun{
-  
-  
   data.table::setDT(copy(map_headernames))[, .(
     variables = .N, 
     has_apiname = sum(apiname != ""), 
@@ -40,7 +41,6 @@ You can see examples of what it contains like this, for example:
     has_acsname = sum(acsname != "")
     ), 
  keyby = c("raw_pctile_avg", "DEJ", "ratio.to", "pctile.", "avg.",  "varlist" )]
-  
   
  # Which sources provide which key variables or indicators? 
  
@@ -68,3 +68,7 @@ You can see examples of what it contains like this, for example:
   }
  
 }
+\seealso{
+\code{\link[=varinfo]{varinfo()}} \code{\link[=fixcolnames]{fixcolnames()}} \code{\link[=varin_map_headernames]{varin_map_headernames()}} \code{\link[=varlist2names]{varlist2names()}}
+}
+\keyword{datasets}

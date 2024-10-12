@@ -1,3 +1,8 @@
+
+# Now see probably-newer full app server (not module) code here:
+#   app_server_EJAMejscreenapi()
+
+
 ################################################ ################################################# #
 ################################################ ################################################# #
 #
@@ -30,7 +35,7 @@ if (testing_ejscreenapi_module) {
           # shiny::textOutput("testinfo2"),
  # EJAM:::mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2),
 
-          mod_ejscreenapi_ui("TESTID",
+ EJAM:::mod_ejscreenapi_ui("TESTID",  # since it is not exported and this test is a script not a function, you have to use ::: to access it
 
                              simpleradius_default_for_ui = 2
                              ),
@@ -51,8 +56,8 @@ if (testing_ejscreenapi_module) {
   ######################### #
   TEST_SERVER <- function(input, output, session) {
 
-  # x <- EJAM:::mod_ejscreenapi_server(
-    x <-        mod_ejscreenapi_server(
+  x <- EJAM:::mod_ejscreenapi_server(  # since it is not exported and this test is a script not a function, you have to use ::: to access it
+    # x <-        mod_ejscreenapi_server(
                   "TESTID",
 
                   default_points_shown_at_startup_react = reactive(testpoints_5[1:2,]),
@@ -81,7 +86,7 @@ if (testing_ejscreenapi_module) {
   }
   ######################### #
 
-  shinyApp(ui = TEST_UI, server = TEST_SERVER) # Try module in mini/test app
+  shinyApp(ui = TEST_UI, server = TEST_SERVER) # This is how you can try the module as a mini/test app
 
 
   # note you cannot wrap ui and server code in a single function when using modules
@@ -96,11 +101,14 @@ if (testing_ejscreenapi_module) {
 ################################################ ################################################# #
 
 # NOTE  ####
-# If a module needs to use a reactive expression, the outer function should take the reactive expression as a parameter.
-# If a module wants to return reactive expressions to the calling app, then return a list of reactive expressions from the function.
-# If a module needs to access an input that isn’t part of the module, the
-#   containing app should pass the input value wrapped in a reactive expression (i.e. reactive(...)):
+# If a module needs to USE a reactive expression, the 
+#   outer function should take the reactive expression as a parameter. 
+#
+# If a module needs to access an input$ that isn’t part of the module, the
+#   containing app should pass the input$ value wrapped in a reactive expression (i.e. reactive(...)):
 #   myModule("myModule1", reactive(input$checkbox1))
+#
+# If a module wants to return reactive expressions to the calling app, then return a list of reactive expressions from the function.
 
 # ____________________________ ### #
 # ________________________________________________________ ####
@@ -410,7 +418,7 @@ mod_ejscreenapi_ui <- function(id,
 #' mod_ejscreenapi_server
 #'
 #' @noRd
-mod_ejscreenapi_server <- function(id,
+mod_ejscreenapi_server <- function(id, session,
                                    # default_radius_react,
                                    # default_points_react = NULL, # do we wrap NULL in reactive() in this case?
                                    default_points_shown_at_startup_react,
@@ -433,10 +441,25 @@ mod_ejscreenapi_server <- function(id,
   shiny::moduleServer( id, function(input, output, session) {
     ns <- session$ns
 
-
-    ## from here on it was initially based on code from ejscreenapi package app_server.R, starting from
-    ##   app_server <- function(input, output, session) {
-
+# Compare and consolidate/ merge these - unclear which is newer, and they may each have some updates others dont:
+    #  - mod_ejscreenapi_server()      in MODULE_ejscreenapi.R 
+    #  - app_server_EJAMejscreenapi()  in app_server_EJAMejscreenapi.R  - was deployable server code
+    #  - "standalone" branch of the old EJAMejscreenapi package/ repo, that was the deployed app.
+    #
+    ## Code in nonexported mod_ejscreenapi_server() was initially based on the former
+    ##  EJAMejscreenapi package version of app_server(), which was also the starting point for 
+    ##  EJAM package version of app_server_EJAMejscreenapi()
+    ##
+    ##  So the code below was copied from the app server body, right after this line:
+    ##       app_server <- function(input, output, session) {
+     
+    ###       or....
+    ### To use that non-module server function here wrapped as a module, try this: 
+    #
+    # app_server_EJAMejscreenapi(input = input, output = output, session = session) 
+    # stop()
+    
+    
     output$testinfo_sessionuser <- renderPrint(session$user)
 
     asynchronous <- FALSE
@@ -469,14 +492,15 @@ mod_ejscreenapi_server <- function(id,
     }), input$echobutton)
 
     #  pts() = (in module's own namespace) the Uploaded points /locations ####
+    ############################################################# #
+    ############################################################# #
+    ############################################################# #
+    
     pts <- shiny::reactive({
+      
       # THIS GETS UPDATED WHEN THERE IS A CHANGE IN input$pointsfile
       ## if not uploaded yet, show default example. ####
       if (is.null(input$pointsfile)) {
-        # if (exists("default_points_react")) {
-        #   pts_filecontents <- default_points_react()
-        # } else {
-        # pts_filecontents <- default_points_shown_at_startup  # defined in global.R
         pts_filecontents <- default_points_shown_at_startup_react()  # defined in global.R
         # }
       } else {
@@ -608,9 +632,14 @@ mod_ejscreenapi_server <- function(id,
 
       pts_filecontents
     }) # END OF pts() reactive
-
-    ################################################################################################### #
+    ############################################################# #
+    ############################################################# #
+    ############################################################# #
+    
     # >>>>>> RADIUS input: UI and text and limit for radius slider: Miles / Km ####
+    # Used either typed in radius or slider ####
+    #  allow radius to get typed into a text box as an alternative !!! ***
+    
     if (!exists("minradius")) {minradius <- 0.5}
     if (!exists("stepradius")) {stepradius <-  0.05 }
     output$radius_slider <- renderUI({sliderInput(inputId = ns("radius_via_slider"),
@@ -674,9 +703,12 @@ mod_ejscreenapi_server <- function(id,
       # USE SIMPLIFIED INPUT OF RADIUS UNTIL FIX MODULE USE OF TEXT VS SLIDER INPUTS
       radius_miles <- reactive({ input$SIMPLERADIUS })
     }
+    ############################################################# #
+    ############################################################# #
+    ############################################################# #
     # . ####
 
-    ## _... Text about point counts, radius in km, etc. ####
+    ## _... Output Text about point counts, radius in km, etc. ####
 
     output$count       <- renderText({paste0(NROW(pts()),    ' points have been uploaded.')})
     # is this always identical to number of points in results table, since fills in row even if bad lat/lon? not sure it does!
@@ -764,7 +796,8 @@ mod_ejscreenapi_server <- function(id,
           ))
           ############################################################## #
 
-          # NOTE  need to REPLACE THIS SECTION OF CODE WITH  ejscreenit()
+          # NOTE MAY REPLACE THIS SECTION OF CODE WITH ejscreenapi_plus() which does this itself  :
+          #   or maybe even use  ejscreenit() or ejscreenit_for_ejam()  
 
           # *_EJScreen API Get Results*  ####
           # BUT IT DOES NOT SUPPORT updateProgress like ejscreenapi() does, so far.
@@ -805,6 +838,7 @@ mod_ejscreenapi_server <- function(id,
             ### Put best cols 1st ####
             results_table <- cbind(pts(), results_table) # this would be a problem if we did not isolate or use bindEvent
             results_table <- urls_clusters_and_sort_cols(results_table)
+            
             results_table <- results_table[, names(results_table) != 'mapurl']   # drop this column that was only useful while viewing uploaded points but is redundant in final results here
           }
           ############################################################## #
@@ -856,6 +890,7 @@ mod_ejscreenapi_server <- function(id,
 
         # colnames in results table are always api version of names
         #_Rename columns from original format to use R-friendly names ## ##
+        
         names(table_as_displayed) <- fixcolnames(
           namesnow = names(table_as_displayed),
           oldtype = 'api', # because results_table()  never has renamed colnames
@@ -868,47 +903,21 @@ mod_ejscreenapi_server <- function(id,
         ############################################################# ############################################################## #
         ############################################################# ############################################################## #
 
-        ############################################################# #
-        # # ratios section is almost identical to code in ejscreenapi_plus()
-        #
+        # note: ejscreenapi_plus() vs app_server_EJAMejscreenapi vs MODULE ############################################################# #
+        
         # ### Add Ratios to us or state averages ####
         #
         if (input$include_ratios ) {
-
-          names_e_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_e"]  # this should be identical to names_e or namez$e
-          names_d_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_d"]  # this should be identical to names_d or namez$d
-          names_d_subgroups_FOR_RATIOS <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups"]  # same as names_d_subgroups or namez$d_subgroups
-
-          ##  ratio to US avg -------------
-
-          # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT THE SORT ORDER IS OF THE VARIABLES !
-          usratios <- calc_ratios_to_avg(table_as_displayed,
-                                    evarnames = names_e_FOR_RATIOS,
-                                    dvarnames = names_d_FOR_RATIOS)   # lacks subgroups and supplementary ?
-          eratios <- round(usratios$ratios_e, 4)
-          dratios <- round(usratios$ratios_d, 4)    # lacks subgroups and supplementary ?
-
-          # switch from names of indicators to names of the ratios of those indicators?
-          # a PROBLEM HERE IS LIST OF RATIO VARIABLES MUST BE SORTED IN SAME ORDER AS BASE LIST OF E OR D VARIABLES:
-
-          names(eratios) <-   map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_e_FOR_RATIOS) # names_e_ratio_to_avg  # lacks state percentiles here ****
-          names(dratios) <-   map_headernames$rname[ map_headernames$varlist == "names_d_ratio_to_avg"] #  paste0('ratio.to.state.avg.', names_d_FOR_RATIOS) # names_d_ratio_to_avg  # lacks state percentiles here ****
-          table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
-
-          ##  ratio to STATE avg --------------
-
-          st_ratios <- calc_ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
-          eratios <- round(st_ratios$ratios_e, 4)
-          dratios <- round(st_ratios$ratios_d, 4)    # lacks subgroups and supplementary ?
-          names(eratios) <- map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
-          names(dratios) <- map_headernames$rname[ map_headernames$varlist == "names_d_ratio_to_state_avg"]
-          table_as_displayed <- cbind(table_as_displayed, dratios, eratios)
-
+          table_as_displayed <- calc_ratios_to_avg_for_ejscreenapi(table_as_displayed = table_as_displayed)
         } # end of ratio calculations
-
 
         ############################################################## #
 
+        
+        
+        
+        ############################################################## #
+        
         #-_Commas for pop count ####
         if ('totalPop' %in% names(table_as_displayed)) table_as_displayed$totalPop <- prettyNum(round(table_as_displayed$totalPop, 0), big.mark = ',')
         if ('pop'      %in% names(table_as_displayed)) table_as_displayed$pop      <- prettyNum(round(table_as_displayed$pop, 0),      big.mark = ',')
@@ -918,9 +927,6 @@ mod_ejscreenapi_server <- function(id,
 
     }) # end of table_as_displayed_reactive
     ## end of table_as_displayed_reactive  <<<<<<<< ####
-
-
-
 
     #   output$rendered_results_table <- DT::renderDT ####
     output$rendered_results_table <- DT::renderDT({
@@ -961,7 +967,7 @@ mod_ejscreenapi_server <- function(id,
 
 
 
-    ## Which Popups & Table are ready? uploaded pts vs. results  ####
+    ## Show inputs or results, whatever was just updated ####
     # keeps track of which is latest one updated, to display that
     most_recently_changed <- reactiveVal('upload')
     observe(label = 'results_changed', {
@@ -988,8 +994,8 @@ mod_ejscreenapi_server <- function(id,
     #####################   #####################   #####################   #################### #
     #####################   #####################   #####################   #################### #
     # . ####
-    # DOWNLOAD TABLE with Excel formatting + Links!* ####
-
+    ## Downloading the Table + Excel format + Links!* ####
+    
     ### Buttons to Rename table header row -show only if results ready ####
     output$renameButton_ui <- renderUI({
 
@@ -1038,9 +1044,7 @@ mod_ejscreenapi_server <- function(id,
           #
           currentnametype <- input$usewhichnames
           pctile_colnums <-  which('pctile' ==  fixcolnames(names(table_as_displayed), oldtype = currentnametype, newtype = 'jsondoc_shortvartype') ) # this should get what type each is.
-          # pctile_colnums <- which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$oldname)])
-          # pctile_colnums <- union(pctile_colnums, which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$longname)]))
-
+         
           # fix URLs to work in csv pulled into Excel or in Excel files (as opposed to datatable shown in web brwsr)
           table_as_displayed$`EJScreen Report` <- gsub('.*(http.*)\", target=.*', '\\1', table_as_displayed$`EJScreen Report`)
           table_as_displayed$`EJScreen Map` <- gsub('.*(http.*)\", target=.*', '\\1', table_as_displayed$`EJScreen Map`)
@@ -1085,6 +1089,8 @@ mod_ejscreenapi_server <- function(id,
       )
     }), input$tabletips_button )
 
+    # ____________________________________________________________________ ####### 
+    
     # ______________________  ####
     # . ####
     # 3. MAP  ####################
@@ -1099,6 +1105,20 @@ mod_ejscreenapi_server <- function(id,
     cluster_color   <- reactiveVal(cluster_color_default)
     highlight_color <- reactiveVal(highlight_color_default)
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     ### is_clustered (where one may double-count people):  ####
 
     is_clustered <- reactive({
@@ -1113,13 +1133,21 @@ mod_ejscreenapi_server <- function(id,
 
     ### Data for popups for map #############################################
 
+    popup_to_show <- reactive({
+      # Whether to display popups on map using uploaded point data or results of EJ stats run.
+      # cat('\n', 'The value of most_recently_changed() is now ', most_recently_changed(), '\n', file = stderr())
+      if (most_recently_changed() == 'results') {x <- (popup_ejstats())}
+      if (most_recently_changed() == 'upload')  {x <- (popup_uploadedpoints())}
+      x
+    })
+    
     popup_uploadedpoints <- reactive({
       #  RESTRICT NUMBER OF POINTS MAPPED AND POPUPS TOO, HERE, BASED ON CAP input$max_pts_map
       popup_from_uploadedpoints(
         pts()[1:min( input$max_pts_map, NROW(pts())), ]
       )
-      #mapfast(column_names = 'all')
     })
+    
     popup_ejstats <- reactive({
       # cat('recalculating popup_ejstats since results table changed\n')
       #  create popups for map, using EJ stats from buffer analysis
@@ -1135,13 +1163,6 @@ mod_ejscreenapi_server <- function(id,
         mypopup <- NULL # popup_uploadedpoints()
       }
       mypopup
-    })
-    popup_to_show <- reactive({
-      # Whether to display popups on map using uploaded point data or results of EJ stats run.
-      # cat('\n', 'The value of most_recently_changed() is now ', most_recently_changed(), '\n', file = stderr())
-      if (most_recently_changed() == 'results') {x <- (popup_ejstats())}
-      if (most_recently_changed() == 'upload')  {x <- (popup_uploadedpoints())}
-      x
     })
 
     ################################################### #
@@ -1273,6 +1294,7 @@ mod_ejscreenapi_server <- function(id,
     ## Boxplots ####
     #
     # output$plot1out <- shiny::renderCachedPlot({
+    
     output$plot1out <- shiny::renderPlot({
       req(results_table())
       out <- results_table()
@@ -1286,7 +1308,7 @@ mod_ejscreenapi_server <- function(id,
     } )
     # }, cache = "session", cacheKeyExpr = {list(out)})
 
-    # } # original server
+    # } # original server has this bracket
 
     ## Use Alt-O in RStudio to fold code, then expand top level to see sections.
     ## Use Ctrl-Shift-O in RStudio to view the document Outline panel
@@ -1294,7 +1316,17 @@ mod_ejscreenapi_server <- function(id,
     # ______________________  ####
     # . ####
 
-
+    ################################################################################################### # # 
+    #   END OF WHAT WAS IN app_server_EJAMejscreenapi.R
+    ################################################################################################### # # 
+    
+    
+    
+    
+    
+    
+    
+    
     ## RETURN a TABLE as OUTPUT OF moduleServer() function that is within the overall server code of the module MODULE ####
     # see example at https://shiny.posit.co/r/articles/improve/modules/
 

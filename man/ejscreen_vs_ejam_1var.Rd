@@ -2,17 +2,17 @@
 % Please edit documentation in R/ejscreen_vs_ejam_.R
 \name{ejscreen_vs_ejam_1var}
 \alias{ejscreen_vs_ejam_1var}
-\title{EJAM/EJSCREEN comparisons - see results for 1 INDICATOR after using ejscreen_vs_ejam()}
+\title{EJAM/EJSCREEN comparisons - see results at every site, for 1 INDICATOR after using ejscreen_vs_ejam()}
 \usage{
 ejscreen_vs_ejam_1var(
   vs,
-  varname = names_these[4],
+  varname = "pop",
   info = c("EJSCREEN", "EJAM", "ratio", "diff", "absdiff", "pctdiff", "abspctdiff")[c(1,
-    2, 5)]
+    2, 5, 6)]
 )
 }
 \arguments{
-\item{vs}{output of ejscreen_vs_ejam() or ejscreen_vscript()}
+\item{vs}{output of ejscreen_vs_ejam() or ejscreen_vs()}
 
 \item{varname}{}
 
@@ -26,5 +26,6 @@ diff, absdiff, pctdiff, etc.
 and rows represent sites analyzed.
 }
 \description{
-EJAM/EJSCREEN comparisons - see results for 1 INDICATOR after using ejscreen_vs_ejam()
+EJAM/EJSCREEN comparisons - see results at every site, for 1 INDICATOR after using ejscreen_vs_ejam()
 }
+\keyword{internal}

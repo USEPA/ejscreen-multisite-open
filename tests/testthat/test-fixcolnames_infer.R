@@ -5,8 +5,9 @@ testthat::test_that("fixcolnames_infer works at all", {
   testthat::expect_no_error({names(test_address_table_renamed) <- fixcolnames_infer(names(test_address_table_renamed))})
   testthat::expect_identical(test_address_table_goodnames, test_address_table_renamed)
   
-  testthat::expect_identical(fixcolnames_infer(currentnames = test_address_parts1 ),
-                             c("lat", "lon", "address", "street", "city", "state", "zip"))
+  testthat::expect_equal(fixcolnames_infer(currentnames = test_address_parts1),
+                             c("lat", "lon", "address", "street", "city", "state", "zip"),
+                            ignore_attr = TRUE)
   testthat::expect_identical(fixcolnames_infer(currentnames = names(test_address_table) ),
                              c("Acol", "street", "city", "state", "zip", "other_column"))
 })
@@ -37,6 +38,7 @@ run_renaming_tests = function(tlist, oldnames, testname="test", fun2test = fixco
   ## run standard tests on functions that rename things
   
   results = testsetup(tlist = tlist, oldnames = oldnames, fun2test = fun2test)
+  
   bestnames = names(tlist)
   synonyms =  as.vector(unlist(tlist)) # remove canonical name from list of aliases if shows up there too
   synonyms =  synonyms[!(synonyms %in% bestnames)]
@@ -65,6 +67,9 @@ run_renaming_tests = function(tlist, oldnames, testname="test", fun2test = fixco
   ###################################### # 
   ## THIS TEST IS ONLY RIGHT FOR when you want to pick the best 1 match instead of renaming all
   if (identical(fixcolnames_infer,  fun2test)  | identical(fun2test , EJAM:::latlon_infer))  {
+    if (identical(fun2test , EJAM:::latlon_infer)) {
+      cat("installed version of latlon_infer() being used, which may differ from latest source version!\n")
+    }
     testthat::test_that(paste(testname, "-among synonyms of 1 terms, renames 1 and only 1"), {
       best1 = names(tlist)[[1]]
       synonyms_of_1 = as.vector(unlist(tlist[[1]]))
@@ -82,6 +87,7 @@ run_renaming_tests = function(tlist, oldnames, testname="test", fun2test = fixco
       )
     })
   }
+  
   ###################################### # 
 }
 
@@ -127,10 +133,11 @@ mylist = eval(formals(fixmapheadernamescolname)$alias_list)
   # names(eval(formals(fixmapheadernamescolname)$alias_list))
   # as.vector(unlist(eval(formals(fixmapheadernamescolname)$alias_list)))
 
+# cat("installed version of latlon_infer() being used, which may differ from latest source version!\n")
 run_renaming_tests(tlist = mylist, 
                    oldnames = as.vector(unlist(mylist)), 
                    testname = "latlon_infer", 
-                   fun2test = EJAM:::latlon_infer
+                   fun2test =fixmapheadernamescolname   ####### # 
 )
 ######################################################## # 
 

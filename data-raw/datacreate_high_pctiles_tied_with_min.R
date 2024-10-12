@@ -56,6 +56,9 @@ high_pctiles_tied_with_min <- datacreate_high_pctiles_tied_with_min(usastats, st
 high_pctiles_tied_with_min <- metadata_add(high_pctiles_tied_with_min)
 usethis::use_data(high_pctiles_tied_with_min, overwrite = TRUE)
 
+dataset_documenter("high_pctiles_tied_with_min",
+                   "high_pctiles_tied_with_min (DATA) internal data used to handle cases where multiple places are tied for the lowest indicator score")
+
 cat("FINISHED A SCRIPT\n")
 cat("\n In globalenv() so far: \n\n")
 print(ls())
