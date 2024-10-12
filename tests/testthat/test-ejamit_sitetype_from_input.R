@@ -2,15 +2,15 @@
   # ejamit() test cases for 3 site types: sitepoints, fips, shapefile 
   
   
-  ## Confirmed  ejamit() could successfully use the function ejamit_sitetype_check() to examine the params passed to ejamit()
+  ## Confirmed  ejamit() could successfully use the function ejamit_sitetype_from_input() to examine the params passed to ejamit()
   ## and it would work as expected instead of having the code be inside ejamit()
   ## The missing and NULL params in outer func ejamit() do in fact get reported as missing() and NULL in the inner _check() func when passed like this.
   
-  # example of how ejamit() could use the function ejamit_sitetype_check() 
+  # example of how ejamit() could use the function ejamit_sitetype_from_input() 
   
   ejamit_test = function(sitepoints, fips=NULL, shapefile=NULL) {
     
-    sitetype <- ejamit_sitetype_check(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
+    sitetype <- ejamit_sitetype_from_input(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
     
     
     cat("          is sitepoints reported as missing?   ")

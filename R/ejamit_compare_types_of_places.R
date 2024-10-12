@@ -87,7 +87,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   
   ########################################################## # 
   # note this means latlon vs fips vs shp, not type in the sense of which group (subset) that is specified via typeofsite param
-  sitetype <- ejamit_sitetype_check(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
+  sitetype <- ejamit_sitetype_from_input(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
   ########################################################## # 
   
   if (sitetype == 'fips') {

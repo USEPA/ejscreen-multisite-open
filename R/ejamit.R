@@ -186,7 +186,7 @@ ejamit <- function(sitepoints,
                    ...
 ) {
 
-  sitetype <- ejamit_sitetype_check(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
+  sitetype <- ejamit_sitetype_from_input(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
 
   # * POLYGONS / SHAPEFILES ####
   
