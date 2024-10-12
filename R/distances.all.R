@@ -158,8 +158,8 @@
 #' @export
 #' 
 distances.all <- function(frompoints, topoints, units='miles',
-                              return.crosstab=FALSE, return.rownums=TRUE, return.latlons=TRUE, as.df=TRUE, 
-                              use_sf=TRUE) {
+                              return.crosstab=FALSE, return.rownums=TRUE, return.latlons=TRUE, as.df=TRUE  
+                               ) {
   
   if (!(units %in% c('km', 'miles'))) {stop('units must be "miles" or "km" ')}
   km.per.mile <- convert_units(1, 'miles', 'km') # about 1.60934
@@ -183,22 +183,13 @@ distances.all <- function(frompoints, topoints, units='miles',
   originalto <- topoints
   frompoints[from_na, ] <- c(0,0) # replace NA with 0 so that spatialpoints will not stop with error
   topoints[to_na, ]     <- c(0,0)
-  if (use_sf) {
+
     # DEFAULT IS METERS now !
     frompoints.sf = sf::st_as_sf(frompoints, coords = c('lon','lat'), crs = "epsg:4326")
     topoints.sf   = sf::st_as_sf(topoints,   coords = c('lon','lat'), crs = "epsg:4326")
     results.matrix <- sf::st_distance(frompoints.sf, topoints.sf ) # maybe try tolerance = 1  for 1 meter tolerance to possibly speed it up
     rm(frompoints.sf, topoints.sf)
-  } else {
-    warning('This required loading the sp pkg that is being phased out, for the 
-            functions CRS, SpatialPoints, and spDists 
-            (but note sp still needed since leaflet still depends on sp as of 9/2023')
-    # DEFAULT IS KM HERE
-    # frompoints.sp <- SpatialPoints(coords = data.frame(x = frompoints[,'lon'], y = frompoints[,'lat']), proj4string= CRS("+proj=longlat +datum=WGS84")) # 4326 is just the EPSG identifier of WGS84.
-    # topoints.sp   <- SpatialPoints(coords = data.frame(x = topoints[,'lon'],   y = topoints[,'lat']),   proj4string= CRS("+proj=longlat +datum=WGS84"))
-    # results.matrix <- spDists(frompoints.sp, topoints.sp, longlat=TRUE) # result is in kilometers so far
-    # rm(frompoints.sp, topoints.sp)
-  }
+
   
   # NA HANDLING 
   frompoints <- originalfrom
@@ -208,15 +199,13 @@ distances.all <- function(frompoints, topoints, units='miles',
   rm(originalfrom, originalto)
   
   if (units == 'miles') {
-    if (use_sf) {
-      results.matrix <- (results.matrix / km.per.mile ) / 1000 # because sf func returns meters by default
-    } else {
-       results.matrix <- results.matrix / km.per.mile 
-    }
+    
+    results.matrix <- (results.matrix / km.per.mile ) / 1000 # because sf func returns meters by default
+    
   } else {
-    if (use_sf) {
-      results.matrix <-  results.matrix / 1000 # to get kilometers
-    }
+    
+    results.matrix <-  results.matrix / 1000 # to get kilometers
+    
   }
   if (return.crosstab) {
     # if crosstab=TRUE, ignore return.rownums and return.latlons

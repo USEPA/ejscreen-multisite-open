@@ -887,7 +887,7 @@ fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact=FAL
 
 #' helper function - get county FIPS from exact countyname including, ST abbrev
 #' used by fips_counties_from_countyname()
-#' @param countyname_start exact (case-insensitive) name of 
+#' @param fullname exact (case-insensitive) name of 
 #'   county comma state abbreviation, 
 #'   like "Johnson County, TX". Ignores case.
 #' @seealso [fips_counties_from_countyname()]

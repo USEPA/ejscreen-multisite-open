@@ -22,6 +22,10 @@ dataload_from_aws(
 \arguments{
 \item{varnames}{character vector of the quoted names of the data objects like blockwts or quaddata}
 
+\item{ext}{like ".arrow" file extension}
+
+\item{fun}{like "arrow::read_ipc_file" or "load" to use when reading}
+
 \item{envir}{e.g., globalenv() or parent.frame()}
 
 \item{mybucket}{where in AWS, like}

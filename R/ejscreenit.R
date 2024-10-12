@@ -221,7 +221,7 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
                        nicenames = TRUE, # e.g.,  "Particulate Matter (PM 2.5 in ug/m3)" not "pm"
                        folder=".",
                        # codefilesourced='./global.R', codefoldersourced='./R',
-                       getstateinfofromplacename = TRUE,
+                       getstatefromplacename = TRUE,
                        ...) {
   
   if (!is.null(shapefile)) {warning('shapefile not implemented yet')}

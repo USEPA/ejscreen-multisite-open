@@ -11,8 +11,7 @@ distances.all(
   return.crosstab = FALSE,
   return.rownums = TRUE,
   return.latlons = TRUE,
-  as.df = TRUE,
-  use_sf = TRUE
+  as.df = TRUE
 )
 }
 \arguments{

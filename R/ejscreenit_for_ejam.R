@@ -8,6 +8,9 @@
 #' @param radius in miles
 #' @param fips fips code (or possibly a vector of fips codes)
 #' @param shapefile not implemented
+#' @param fillmissingcolumns optional. set to TRUE if you want the output
+#'   to have exactly all the same columns as the EJAM table would, and
+#'   fill in with NA values all the columns not provided by EJScreen API.
 #' @param ... passed to ejscreenit() 
 #' @seealso [ejscreen_vs_ejam()] [ejscreenapi2ejam_format()] which it uses.
 #' @return a data.table that looks like output of ejamit()$results_bysite

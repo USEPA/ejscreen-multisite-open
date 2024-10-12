@@ -100,8 +100,8 @@
 #'   using a sum of counts, like, for example, the number of people for whom a
 #'   poverty ratio is known, the count of which is the exact denominator needed
 #'   to correctly calculate percent low income.
-#' @param popmeancols character vector of names of variables to aggregate within a buffer
-#'   using population weighted mean.
+#' @param wtdmeancols character vector of names of variables to aggregate within a buffer
+#'   using a population weighted mean or other type of weighted mean.
 #' @param calculatedcols character vector of names of variables to aggregate within a buffer
 #'   using formulas that have to be specified.
 #' @param subgroups_type Optional (uses default). Set this to
@@ -145,7 +145,8 @@
 #'
 doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
                         radius=NULL,
-                        countcols=NULL, wtdmeancols=NULL, calculatedcols=NULL, subgroups_type='nh',
+                        countcols=NULL, wtdmeancols=NULL, calculatedcols=NULL,
+                        subgroups_type='nh',
                         include_ejindexes=FALSE, calculate_ratios = TRUE,
                         extra_demog=TRUE, need_proximityscore=FALSE,
                         infer_sitepoints=FALSE,
@@ -862,7 +863,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ##################################################### #
   # CALCULATE PERCENT DEMOGRAPHICS FROM SUMS OF COUNTS, via FORMULAS  [hardcoded here, for now]
   #
-  # but should do that using weighted means based on info on cbind(popmeancols,wtscols) 
+  # but should do that using weighted means 
   # as in EJAM/data-raw/datacreate_formulas.R
   # and/or
   # a list of formulas like formulas_all

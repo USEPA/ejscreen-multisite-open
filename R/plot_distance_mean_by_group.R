@@ -28,6 +28,7 @@
 #'    data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup.
 #'   If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
 #'   If returnwhat is "plot" then it returns the plot object as needed for table_xls_format() ?
+#' @param graph logical optional, set to FALSE to not show the barplot and only save the file of it
 #' @seealso [distance_by_group()] [distance_by_group_plot()]
 #' @return see parameter returnwhat
 #' @inherit distance_by_group_plot examples
@@ -57,7 +58,7 @@ plot_distance_mean_by_group <- function(results_bybg_people,
     )
   }
   
-  if(all(is.nan(results_bybg_people$distance_min_avgperson))){
+  if (all(is.nan(results_bybg_people$distance_min_avgperson))) {
     warning('distance_min_avgperson contains only NaN values')
     return(NA)
   }
@@ -127,7 +128,8 @@ plot_distance_mean_by_group <- function(results_bybg_people,
 ################################################################################# #
 
 #' Avg distance of each demog group (of multiple groups) - Table or Plot
-#' @return see [plot_distance_mean_by_group()]
+#' @inherit plot_distance_mean_by_group
+#' @inheritParams plot_distance_mean_by_group
 #' @export
 #'
 plot_distance_by_group <- plot_distance_mean_by_group
@@ -142,7 +144,7 @@ plot_distance_by_group <- plot_distance_mean_by_group
 #' @inherit plot_distance_mean_by_group
 #' @inherit distance_by_group_plot examples
 #'
-#' @aliases distance_by_group
+#' @aliases distance_by_group plot_distance_by_group
 #'
 #' @export
 #'
@@ -166,6 +168,7 @@ distance_mean_by_group <- function(results_bybg_people,
 ################################################################################# #
 
 #' See plot_distance_mean_by_group()
+#' @inherit plot_distance_mean_by_group
 #' @return  See [plot_distance_mean_by_group()]
 #' @export
 #'

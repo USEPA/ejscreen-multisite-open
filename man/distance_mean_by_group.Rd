@@ -3,6 +3,7 @@
 \name{distance_mean_by_group}
 \alias{distance_mean_by_group}
 \alias{distance_by_group}
+\alias{plot_distance_by_group}
 \title{Avg distance of each demog group (of multiple groups) - Table or Plot}
 \usage{
 distance_mean_by_group(
@@ -24,6 +25,8 @@ distance_mean_by_group(
 data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup.
 If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
 If returnwhat is "plot" then it returns the plot object as needed for table_xls_format() ?}
+
+\item{graph}{logical optional, set to FALSE to not show the barplot and only save the file of it}
 }
 \value{
 see parameter returnwhat
