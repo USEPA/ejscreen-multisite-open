@@ -2,24 +2,23 @@
 
 -   Deployed updates 10/11/2024
 -   Incorporated new datasets to match EJScreen version 2.32 ozone and other data changes/corrections EJScreen version 2.32 released in August 2024.
+-   Fixed known issues in web app, R functions, and examples or articles.
+-   Improved and updated vignettes (articles) on documentation website (GitHub pages pkgdown site content) and README
+-   Improved and updated documentation of R packages in help files.
 -   Conducted validation analysis comparing EJAM and EJScreen results for proximity to 2,000 randomly selected FRS sites (3 mile radius).
     - Identified possible problem in drinking water indicator, to be resolved.
-    - Removed % owner occupied housing (pctownedunits) indicator pending clarifications/ corrections in EJScreen calculation.
+    - Removed % owner occupied housing (pctownedunits) indicator pending clarifications/ corrections re: EJScreen calculation.
     - Confirmed the displayed demographic indicator values agree for well over 95% of locations, and the environmental indicator values also closely agree at the vast majority of sites. (Exceptions being the two noted above).
-    - Small differences exist due to differences in methods reltaed to fast analysis in EJAM. 
-    - Any significant discrepancies are being investigated.
     - Updated percentile lookup logic to match the recent changes in EJScreen – some edge cases still in progress.
     - Improved community report scaling and formatting using decimals and sigfigs to better align with EJScreen.
     - Improved logic that identifies which State a site is in.
     - Addressed issues in % pre 1960 lead paint indicator
     - Improved comparison/validation functions
--   Fixed known issues in web app, R functions, and examples/ articles.
--   Added FIPS code functionality to handle over 40,000 Census Places such as cities and towns.
+-   Added FIPS code functionality (not yet in web app) to handle over 40,000 Census Places such as cities and towns.
 -   Improved file upload read-in validation.
--   Improved and updated vignettes (articles) on documentation website (GitHub pages pkgdown site content) and README
--   Improved and updated documentation of R packages in help files.
+-   Corrected several unit tests and added new ones.
 -   Adopted shinytest2 to create shiny-based testing of the app, package, and GitHub merges.
--   Updated [map_headernames], test output files, names_... vectors.
+-   Updated [map_headernames], test output files, names_... vectors, etc.
 
 # EJAM 2.3.0-EJScreen2.3 (July 2024)
 
