@@ -69,7 +69,7 @@ It uses 100 * quantile(y, probs = prob, type = 1)
 EJAM/EJSCREEN comparisons - see summary stats after using ejscreen_vs_ejam()
 }
 \examples{
-  dontrun{
+  \dontrun{
   pts <- testpoints_n(100, weighting = 'frs')
   
   # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:

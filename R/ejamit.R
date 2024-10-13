@@ -82,6 +82,8 @@
 #'
 #'   * **count_of_blocks_near_multiple_sites**  additional detail
 #'
+#'   * **sitetype** indicates if analysis used latlon, fips, or shp
+#'   
 #' @examples
 #' 
 #' # See examples in vignettes/ articles at https://usepa.github.io/EJAM/index.html
