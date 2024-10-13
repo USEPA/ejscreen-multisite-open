@@ -528,6 +528,11 @@ ejamit <- function(sitepoints,
   out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
   
   ###################################### #
+  ## report the sitetype ####
+  
+  out$sitetype <- sitetype
+  
+  ###################################### #
   if (interactive() & !silentinteractive & !in_shiny) {
     
     #* show summary in RStudio ####
