@@ -15,7 +15,7 @@
 frs_from_regid <- function(regid) {
   
   if (!exists("frs")) dataload_from_pins("frs")
-  frs[match(regid, frs$REGISTRY_ID), ] # to return results in same order as search terms were provided
+  frs[match(regid, frs$REGISTRY_ID, nomatch=0), ] # to return results in same order as search terms were provided
   # frs[REGISTRY_ID %in% regid, ]
 }
 ########################################## # 
@@ -37,10 +37,10 @@ frs_from_regid <- function(regid) {
 #' 
 #' @export
 #' 
-frs_from_programid <- function(programid) {
+frs_from_programid <- function(programname, programid) {
   
   if (!exists("frs")) dataload_from_pins("frs")
-  regid <- latlon_from_programid(programid)$REGISTRY_ID
+  regid <- latlon_from_programid(programname,programid)$REGISTRY_ID
   frs[match(regid, REGISTRY_ID), ] # try to return results in same order as search terms were provided
 }
 ########################################## # 
