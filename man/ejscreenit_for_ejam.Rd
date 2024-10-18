@@ -22,6 +22,10 @@ ejscreenit_for_ejam(
 
 \item{shapefile}{not implemented}
 
+\item{fillmissingcolumns}{optional. set to TRUE if you want the output
+to have exactly all the same columns as the EJAM table would, and
+fill in with NA values all the columns not provided by EJScreen API.}
+
 \item{...}{passed to ejscreenit()}
 }
 \value{

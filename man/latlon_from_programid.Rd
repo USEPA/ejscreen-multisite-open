@@ -7,9 +7,13 @@
 latlon_from_programid(programname, programid)
 }
 \arguments{
-\item{programname}{acronym for EPA program, as found in \code{epa_programs}}
+\item{programname}{name of EPA program that the programid is from:
+"RCRAINFO" is the programname and "XJW000000174" is the programid
+if the full record was  RCRAINFO:XJW000000174}
 
-\item{programid}{program system ID, such as "XJW000012435"}
+\item{programid}{like "XJW000000174"
+"RCRAINFO" is the programname and "XJW000000174" is the programid
+if the full record was  RCRAINFO:XJW000000174}
 }
 \value{
 data.table with lat  lon  REGISTRY_ID  program   pgm_sys_id
@@ -23,16 +27,35 @@ assigned by an information management system that represents a
 facility site, waste site, operable unit, or other feature tracked by that
 Environmental Information System.
 
+see \link{epa_programs} for a list of programs and their acronyms and a count
+of FRS facilities under each.
+Also see a simple lilst of names like this:
+as.vector(epa_programs)
+or
+sort(unique(frs_by_programid$program))
+
+There are roughly 3.5 million records in \link{frs_by_programid} but only
+about 2.7 million unique pgm_sys_id values because the same number
+may be used under different program types, like RCRAINFO AND EGRID.
+
+These are two distinct facilities both using the number 1:
+
+latlon_from_programid('EGRID', 1)
+latlon_from_programid('ICIS', 1)
+
 Also note the FRS API:
 \url{https://www.epa.gov/frs/facility-registry-service-frs-api}
 \url{https://www.epa.gov/frs/frs-rest-services}
 }
 \examples{
- test <- data.frame(programname = c('STATE','FIS','FIS'),
-                    programid = c('#5005','0-0000-01097','0-0000-01103'))
- latlon_from_programid(test$programname, test$programid)
-
- latlon_from_regid(latlon_from_programid(test$programname, test$programid)[,REGISTRY_ID])
- latlon_from_programid(test$programname, test$programid)[,.(lat,lon)]
-
+ ids = c("00603DSCFPRD459", "00603MCRNTRD11K", "00605VNMRBMONTA" )
+ latlon_from_programid("TRIS", ids) 
+ 
+ latlon_from_programid('EGRID', 1) 
+ latlon_from_programid('ICIS', 1)
+ 
+ # ambiguous to only use the number! 354362 is used by two programs here:
+ frs_by_programid[match(testids_program_sys_id, frs_by_programid$pgm_sys_id), ]
+ frs_by_programid[frs_by_programid$pgm_sys_id \%in\% testids_program_sys_id, ]
+ 
 }

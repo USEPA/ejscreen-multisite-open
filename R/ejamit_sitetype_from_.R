@@ -13,7 +13,7 @@
 ############################ ############################# #
 
 
-#' helper to infer what type of sites were analyzed by looking at params given as input to ejamit()
+#' helper to infer what type of sites were analyzed by looking at params given as INPUT to ejamit()
 #'
 #' @param sitepoints  parameter as was passed to [ejamit()]
 #' @param fips  parameter as was passed to [ejamit()]
@@ -25,7 +25,7 @@
 #' @keywords internal
 #' @noRd
 #'
-ejamit_sitetype_check <- function(sitepoints, fips=NULL, shapefile=NULL) { 
+ejamit_sitetype_from_input <- function(sitepoints, fips=NULL, shapefile=NULL) { 
   
   if (!is.null(shapefile)) {
     sitetype <- "shp"
@@ -45,5 +45,34 @@ ejamit_sitetype_check <- function(sitepoints, fips=NULL, shapefile=NULL) {
     message("ejamit() will try to help select a latlon file")
   }
   return(sitetype)
+}
+############################ ############################# #
+############################ ############################# #
+
+
+#' helper to infer what type of sites were analyzed by looking at OUTPUT of ejamit()
+#'
+#' @param out from ejamit()
+#'
+#' @return "latlon", "fips", or "shp"
+#' 
+#' @keywords internal
+#' @noRd
+#' 
+ejamit_sitetype_from_output = function(out) {
+  
+  if ("sitetype" %in% names(out)) {
+    return(out$sitetype)
+    # implementing that via a change in ejamit() 
+    # but server would need to do it separately when ejamit not used there (fips may use ejamit in server but shp or latlon may not)
+    # - cannot do in doaggregate() alone and cannot easily save in sites2blocks output of getblocks...
+  }
+  
+  if (all(!is.na(out$results_bysite$lat))) {return("latlon")}
+  
+  if (all(fips_valid(out$results_bysite$ejam_uniq_id))) {return("fips")}
+  
+  return("shp") 
+  
 }
 ############################ ############################# #

@@ -51,7 +51,11 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ejscreen_vs_ejam_see1</span><span class="op">(</span><span class="va">z</span>, myvars <span class="op">=</span> <span class="va">names_d</span>, mysite <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ejscreen_vs_ejam_see1</span><span class="op">(</span></span>
+<span>  <span class="va">z</span>,</span>
+<span>  myvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ejam_uniq_id"</span>, <span class="st">"pop"</span>, <span class="va">names_d</span><span class="op">)</span>,</span>
+<span>  mysite <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -59,7 +63,7 @@
 
 
 <dl><dt id="arg-z">z<a class="anchor" aria-label="anchor" href="#arg-z"></a></dt>
-<dd><p>output of ejscreen_vs_ejam() or ejscreen_vscript()</p></dd>
+<dd><p>output of ejscreen_vs_ejam() or ejscreen_vs()</p></dd>
 
 
 <dt id="arg-myvars">myvars<a class="anchor" aria-label="anchor" href="#arg-myvars"></a></dt>
@@ -76,7 +80,12 @@ such as</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a table showing one row per indicator, and columns like EJSCREEN, EJAM, ratio, etc.</p>
+    <p>a table showing one row per indicator, and columns like EJSCREEN, EJAM, ratio, etc.,
+but see str() because it is a list in matrix form</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>see also ejscreen_vs_ejam_bysite() and ejscreen_vs_explain()</p>
     </div>
 
     <div class="section level2">

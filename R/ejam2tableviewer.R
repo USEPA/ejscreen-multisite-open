@@ -1,6 +1,6 @@
 #' See ejamit()$results_bysite in interactive table in RStudio viewer pane
 #'
-#' @param x output of ejamit(), or one table like ejamit()$results_overall,
+#' @param out output of ejamit(), or one table like ejamit()$results_overall,
 #'   or subset like ejamit()$results_bysite[7,]
 #' @param fname optional. path and filename of the html file to save the table to, 
 #'   or it uses tempdir() if not specified. Set it to NULL to prevent saving a file.
@@ -13,7 +13,7 @@
 #'   
 #' @export
 #'
-ejam2tableviewer = function(out, fname, maxrows = 1000, launch_browser = TRUE) {
+ejam2tableviewer = function(out, fname = 'automatic', maxrows = 1000, launch_browser = TRUE) {
   
   if (!interactive()) {launch_browser <- FALSE} # but that means other functions cannot override this while not interactive.
   
@@ -45,19 +45,46 @@ ejam2tableviewer = function(out, fname, maxrows = 1000, launch_browser = TRUE) {
   
   # For now at least, do not try to save file if in shiny app!
   if (!shiny::isRunning()) {
+  
+    # save/try save if (fname missing) or (fname  provided and not null) 
+    if (missing(fname)) {trysave <- TRUE} else  {if (!is.null(fname)) {trysave <- TRUE}}
     
-    if (missing(fname)) {
-      # if fname was missing, create name. later save it in temp dir
-      fname <- create_filename(ext = ".html", file_desc = "results_bysite", buffer_dist = x$radius.miles[1])
-      ## paste0(dirname(file.path(tempdir(), "ejamtable.html")), "/", "ejamtable.html")
-    }
+    if (trysave)  {
+    # (NULL would mean do not save and do not browse)
     
-    if (!is.null(fname)) {
+    # Validate folder and or file 
       
+    validfoldernotfile = function(x) {x = file.info(x)$isdir; x[is.na(x)] <- FALSE; return(x)}
+      # BAD folder or missing param  
+      if (missing(fname) || 
+          (  !validfoldernotfile(dirname(fname))) ) {
+        if ( !validfoldernotfile(dirname(fname))) {
+          warning("ignoring filename because path was invalid")
+        }
+        fname <- create_filename(ext = ".html", file_desc = "results_bysite", buffer_dist = x$radius.miles[1])
+        fname <- file.path(tempdir(), fname)
+      } else {
+        # good folder NOT WITH a filename, define a filename fname in that folder
+        if (validfoldernotfile(fname)) {
+          mydir = fname
+          fname <- create_filename(ext = ".html", file_desc = "results_bysite", buffer_dist = x$radius.miles[1])
+          fname = file.path(mydir, fname)
+        } else {
+          # good folder, WITH a filename w good extension, that may not yet exist?
+          if (validfoldernotfile(dirname(fname)) & tools::file_ext(fname) == "html") {
+            # all set
+          } else {
+            # good folder, WITH BAD extension
+            if (validfoldernotfile(dirname(fname)) & !tools::file_ext(fname) == "html") {
+              warning("wrong extension, so adding .html")
+              fname = paste0(fname, ".html")
+            }
+          }
+        }
+      }
       # save file:
       htmlwidgets::saveWidget(dt, fname)    
       
-      # explain to user:
       cat("\n")
       cat("Interactive table of sites is saved here: ", fname, '\n')
       cat(paste0("To open that folder: browseURL('", dirname(fname), "')\n"))
@@ -67,7 +94,6 @@ ejam2tableviewer = function(out, fname, maxrows = 1000, launch_browser = TRUE) {
       if (!shiny::isRunning() && launch_browser) {
         browseURL(fname)
       }
-      
     }
   }
   

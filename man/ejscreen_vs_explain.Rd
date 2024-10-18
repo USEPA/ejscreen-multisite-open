@@ -13,7 +13,7 @@ ejscreen_vs_explain(
 )
 }
 \arguments{
-\item{vs}{The output of \code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}} or \code{\link[=ejscreen_vscript]{ejscreen_vscript()}}}
+\item{vs}{The output of \code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}} or \code{\link[=ejscreen_vs]{ejscreen_vs()}}}
 
 \item{pause_on_each_site}{set FALSE to avoid tapping key to advance to each next one}
 

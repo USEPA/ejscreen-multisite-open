@@ -50,7 +50,6 @@ state_from_nearest_block_bysite <- function(s2b) {
 #' Takes 3 seconds to find state for 1k points, so a faster alternative would be useful
 #' @param lon longitudes vector
 #' @param lat latitudes vector
-#' @param shapefile shapefile of US States, in package already
 #' @seealso [states_shapefile] [get_blockpoints_in_shape()] [state_from_sitetable()]
 #' @return Returns data.frame: ST, statename, FIPS.ST, REGION, n
 #'   as many rows as elements in lat or lon
@@ -64,7 +63,9 @@ state_from_nearest_block_bysite <- function(s2b) {
 #'
 #' @export
 #'
-state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
+state_from_latlon <- function(lat, lon) {
+  
+ #  states_shapefile   <- EJAM::states_shapefile
   
   # if just a table was provided try to accept that- could use latlon_from_anything() but that may be slower and overkill
   if (missing(lon) && !missing(lat) && is.data.frame(lat) && "lon" %in% names(lat) && "lat" %in% names(lat)) {

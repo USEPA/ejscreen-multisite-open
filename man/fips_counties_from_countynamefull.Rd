@@ -8,7 +8,7 @@ used by fips_counties_from_countyname()}
 fips_counties_from_countynamefull(fullname)
 }
 \arguments{
-\item{countyname_start}{exact (case-insensitive) name of
+\item{fullname}{exact (case-insensitive) name of
 county comma state abbreviation,
 like "Johnson County, TX". Ignores case.}
 }
