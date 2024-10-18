@@ -498,30 +498,37 @@ test_that("fips_counties_from_state_abbrev() works", {
       expect_true(
         unique(fips2state_abbrev( fips_counties_from_state_abbrev("pr") )) == "PR"
       )
-      expect_true(
-        unique(fips2state_abbrev( fips_counties_from_state_abbrev("vi") )) == "VI"
-      )
-      expect_true(
-        unique(fips2state_abbrev( fips_counties_from_state_abbrev("GU") )) == "GU"
-      )
-      expect_true(
-        unique(fips2state_abbrev( fips_counties_from_state_abbrev("MP") )) == "MP"
-      )    
+      ## Commenting out since island areas are dropped from EJAM in v2.32
+      # expect_true(
+      #   unique(fips2state_abbrev( fips_counties_from_state_abbrev("vi") )) == "VI"
+      # )
+      # expect_true(
+      #   unique(fips2state_abbrev( fips_counties_from_state_abbrev("GU") )) == "GU"
+      # )
+      # expect_true(
+      #   unique(fips2state_abbrev( fips_counties_from_state_abbrev("MP") )) == "MP"
+      # )    
       
       expect_true(
         is.na(fips_counties_from_state_abbrev("UM"))#  NO data for U.S. Minor Outlying Islands 
       )
       
-      expect_warning(
+      expect_warning(expect_warning(
+        expect_warning(
         fips_counties_from_state_abbrev("text")
-      )
-      expect_warning(fips_counties_from_state_abbrev(13))
-      expect_warning(fips_counties_from_state_abbrev(c(NA, "RI")))
-      
+      )))
+      expect_warning(expect_warning(
+        expect_warning(fips_counties_from_state_abbrev(13))
+      ))
+      expect_warning(expect_warning(
+        expect_warning(fips_counties_from_state_abbrev(c(NA, "RI")))
+      ))
       
       expect_true(
         is.na(
+          suppressWarnings(
           fips_counties_from_state_abbrev("text")
+          )
         ) # PROBABLY SHOULD BUT DOES NOT RETURN NA, just empty
       )
     })
@@ -542,26 +549,29 @@ test_that("fips_counties_from_statename() works", {
         expect_true(
           unique(fips2state_abbrev( fips_counties_from_statename("PUERto rico") )) == "PR"
         )
-        expect_true(
-          unique(fips2state_abbrev( fips_counties_from_statename("U.S. Virgin Islands") )) == "VI"
-        )
-        expect_true(
-          unique(fips2state_abbrev( fips_counties_from_statename("GUAM") )) == "GU"
-        )
-        expect_true(
-          unique(fips2state_abbrev( fips_counties_from_statename("Northern Mariana Islands") )) == "MP"
-        )    
+        ## Commenting out since island areas are currently dropped from EJAM in v2.32
+        # expect_true(
+        #   unique(fips2state_abbrev( fips_counties_from_statename("U.S. Virgin Islands") )) == "VI"
+        # )
+        # expect_true(
+        #   unique(fips2state_abbrev( fips_counties_from_statename("GUAM") )) == "GU"
+        # )
+        # expect_true(
+        #   unique(fips2state_abbrev( fips_counties_from_statename("Northern Mariana Islands") )) == "MP"
+        # )    
         
         expect_true(
           is.na(fips_counties_from_statename("U.S. Minor Outlying Islands"))  #  NO data for U.S. Minor Outlying Islands 
         )
         
-        expect_warning(fips_counties_from_statename("text"))
+        expect_warning(expect_warning(expect_warning(fips_counties_from_statename("text"))))
         expect_true(
-          is.na(fips_counties_from_statename("text"))   # DOES NOT RETURN NA, just empty
+          suppressWarnings(
+           is.na(fips_counties_from_statename("text"))   # DOES NOT RETURN NA, just empty
+          )
         )
-        expect_warning(fips_counties_from_statename(13))
-        expect_warning(fips_counties_from_statename(c(NA, "Montana")))
+        expect_warning(expect_warning(expect_warning(fips_counties_from_statename(13))))
+        expect_warning(expect_warning(expect_warning(fips_counties_from_statename(c(NA, "Montana")))))
       })
     })
   })
