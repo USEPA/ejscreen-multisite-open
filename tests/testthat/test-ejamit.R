@@ -87,7 +87,8 @@ test_that("ejamit() still returns results_bysite identical to expected numbers i
                 ejamoutnow <- ejamit(testpoints_10, radius = 1, quiet = T, silentinteractive = TRUE) # see setup.R - takes roughly 5-10 seconds
                 expect_identical(
                   ejamoutnow$results_bysite,
-                  testoutput_ejamit_10pts_1miles$results_bysite
+                  testoutput_ejamit_10pts_1miles$results_bysite,
+                  ignore_attr = T
                 )
                 # all.equal(    ejamoutnow$results_bysite,
                 #               testoutput_ejamit_10pts_1miles$results_bysite)

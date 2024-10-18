@@ -27,11 +27,13 @@ frs_from_regid <- function(regid) {
 
 #' Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites
 #' 
-#' @param programid vector of one or more EPA Program ID codes used by FRS 
+#' @inheritParams latlon_from_programid
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'    "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 #' @examples
-#'  x = frs_from_programid(testids_program_sys_id)
+#'  test <- data.frame(programname = c('STATE','FIS','FIS'),
+#'                     programid = c('#5005','0-0000-01097','0-0000-01103'))
+#'  x = frs_from_programid(test$programname, test$programid)
 #'  x
 #'  mapfast(x)
 #' 

@@ -847,7 +847,7 @@ fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact=FAL
     exactmatches = fips_counties_from_countynamefull(cfull)
   })
   ### cfull = cfull[!is.na(exactmatches)]
-  # countyname_start_unmatched = countyname_start[is.na(exactmatches)]
+  countyname_start_unmatched = countyname_start[is.na(exactmatches)]
   # stnow = stnow[is.na(exactmatches)]
   # 
   # exactmatches <- exactmatches[!is.na(exactmatches)]

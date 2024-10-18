@@ -10,16 +10,17 @@
 #'   <https://www.epa.gov/frs/facility-registry-service-frs-api>
 #'   <https://www.epa.gov/frs/frs-rest-services>
 #'
-#' @param programid like "XJW000012435"
+#' @param programname acronym for EPA program, as found in `epa_programs`
+#' @param programid program system ID, such as "XJW000012435"
 #'
 #' @return data.table with lat  lon  REGISTRY_ID  program   pgm_sys_id
 #' @examples 
-#'  latlon_from_programid(testids_program_sys_id)
-#'  latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
-#'  pids <- c("7-0540-00003", "354362", "1513529", "485659", "LAG750956", 
-#'    "CAC002995519", "3601252181", "3601439158")
-#'  latlon_from_regid(latlon_from_programid(pids)[,REGISTRY_ID])
-#'  latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1", "asdfsdf"))[,.(lat,lon)]
+#'  test <- data.frame(programname = c('STATE','FIS','FIS'),
+#'                     programid = c('#5005','0-0000-01097','0-0000-01103'))
+#'  latlon_from_programid(test$programname, test$programid)
+#'
+#'  latlon_from_regid(latlon_from_programid(test$programname, test$programid)[,REGISTRY_ID])
+#'  latlon_from_programid(test$programname, test$programid)[,.(lat,lon)]
 #'
 #' @export
 #'
