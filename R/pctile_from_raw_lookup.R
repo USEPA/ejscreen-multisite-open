@@ -172,7 +172,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     return(rep(NA, length(myvector)))
   }
   # warn if looks like maybe units mismatch ####
-  if (max(myvector, na.rm = TRUE) > 1 & max(lookup[,varname.in.lookup.table], na.rm = TRUE) <= 1) {
+  if (any(!is.na(myvector)) && max(myvector, na.rm = TRUE) > 1 & max(lookup[,varname.in.lookup.table], na.rm = TRUE) <= 1) {
     warning("Raw scores are > 1, but lookup table values are not. Check if percentages should be expressed as fractions (0 to 1.00) instead of as integers 0-100, for ", varname.in.lookup.table)
   }
 
@@ -229,7 +229,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     # WARN if raw score < PCTILE 0, in lookup ! ####
     # WARN if a raw value < minimum raw value listed in lookup table (which should be percentile zero). Why would that table lack the actual minimum? when created it should have recorded the min of each indic in each zone as the 0 pctile for that indic in that zone.
     # *** COULD IT BE THAT UNITS ARE MISMATCHED?  e.g., QUERY IS FOR RAW VALUE OF 0.35 (FRACTION OF 1) BUT LOOKUP TABLE USES RAW VALUES LIKE 35 (PERCENT. FRACTION OF 100) ?
-    belowmin <- (whichinterval[zone == z] == 0) ## is that doing what is expected? interval 0 from findInterval should mean the raw value was smaller than the first entry in lookup, row 1 aka PCTILE 0
+    belowmin <- (myvector_selection < min(myvector_lookup)) 
     if (any(belowmin, na.rm = TRUE)) {
       whichinterval[zone == z][!is.na(belowmin) & belowmin]  <- 1 # which means 0th percentile
       warning("Some raw values were < min (0th PCTILE) seen in the percentile lookup table (you should confirm myvector and lookup are in same units, like percents reported as 0.00 to 1.00 versus as 0 to 100!), so percentile will be reported as 0, in zone = ", z, " for ", varname.in.lookup.table, ".")
@@ -243,8 +243,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     
     
     #set percentile to zero if myvector_selection <= 0
-    percentiles_reported[myvector_selection <= 0] <- 0
-    
+    percentiles_reported[zone == z][myvector_selection <= 0] <- 0
   } # end of loop over zones ####
 
   return(percentiles_reported)

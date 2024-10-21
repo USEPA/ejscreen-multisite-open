@@ -1,21 +1,31 @@
+############################################################# # ############################################################# # 
+############################################################# # ############################################################# # 
 
 # SOURCE-ABLE SCRIPT  TO  REBUILD PACKAGE DOCUMENTATION AND vignettes  (articles) using pkgdown
 
 # setup ####
 
-doask = TRUE # or #     doask = FALSE 
+#doask = TRUE   # or #  
+doask = FALSE 
+if (!interactive()) {doask <- FALSE}
 
 # defaults
 dotests       = FALSE
-doinstall     = FALSE
-dodocument    = TRUE
-doloadall_not_library = FALSE
-dopreviewonly = TRUE  #  do  pkgdown::build_site()  not  pkgdown::build_site_github_pages
+dodocument    = TRUE  # in case we just edited help or exports or func names !
+doinstall     = TRUE # but skips document and vignettes
+doloadall_not_library = TRUE  # (happens after install if that is being done here)
+dopreviewonly = TRUE  # always.  do  pkgdown::build_site()  not  pkgdown::build_site_github_pages
 
 golem::detach_all_attached()
 
 require(devtools)
 require(pkgdown)
+############################################################# # ############################################################# # 
+############################################################# # ############################################################# # 
+
+
+
+
 
 ############################################################# # 
 # For documentation on set up of a pkgdown website,
@@ -58,11 +68,11 @@ require(pkgdown)
 if (doask & interactive() & rstudioapi::isAvailable()) {dotests <- utils::askYesNo("Do you want to run tests 1st?")}
 if (is.na(dotests)) {stop('stopped')}
 
-if (doask & interactive()  & rstudioapi::isAvailable() ) {doinstall <- utils::askYesNo("Do you want to re-install the package?")}
-if (is.na(doinstall)) {stop('stopped')}
-
-if (doask & interactive()  & rstudioapi::isAvailable() ) {dodocument <- utils::askYesNo("Do document()?")}
+if (doask & interactive()  & rstudioapi::isAvailable() ) {dodocument <- utils::askYesNo("Do document() now since just installing via this script wont do document() ?")}
 if (is.na(dodocument)) {stop('stopped')}
+
+if (doask & interactive()  & rstudioapi::isAvailable() ) {doinstall <- utils::askYesNo("Do you want to re-install the package? does not redo document()")}
+if (is.na(doinstall)) {stop('stopped')}
 
 if (doask & interactive()  & rstudioapi::isAvailable() ) {doloadall_not_library  <- utils::askYesNo("do load_all() instead of library(EJAM) ?")}
 if (is.na(doloadall_not_library)) {stop('stopped')}
@@ -74,7 +84,11 @@ if (is.na(doloadall_not_library)) {stop('stopped')}
 
 # TEST ? ####
 
-if (dotests) {source("./tests/manual_nonalphabetical.R")}
+if (dotests) {
+  source("./tests/manual_nonalphabetical.R")
+  # test_interactively(ask = doask & interactive() )
+  test_interactively(ask = TRUE) # we would want to do this interactively even if the rest of docs updating is not asking
+  }
 
 # ? check() ? 
 # devtools::check() 
@@ -85,6 +99,21 @@ if (dotests) {source("./tests/manual_nonalphabetical.R")}
 # ? devtools::test() 
 
 ## [ FAIL 7 | WARN 7 | SKIP 1 | PASS 617 ] as of 5/13/24
+#################### # #################### # #################### # #################### # 
+if (dodocument) {
+  
+  # README ####
+  
+  rmarkdown::render("README.Rmd")  # renders .Rmd to create a  .md file that works in github as a webpage
+  
+  # build_rmd() would take a couple minutes as it installs the package in a temporary library
+  # build_rmd() would just be a wrapper around rmarkdown::render() that 1st installs a temp copy of pkg, then renders each .Rmd in a clean R session.
+  #################### # #################### # #################### # #################### # 
+  
+  # DOCUMENT ####
+  
+  document()
+}
 #################### # #################### # #################### # #################### # 
 
 # INSTALL? ####
@@ -137,21 +166,6 @@ if (doinstall) {
 
 EJAM:::rmost(notremove = c('dotests', "dataload_pin_available", 'dopreviewonly', 'dodocument', 'doask', 'doinstall', 'doloadall_not_library'))
 
-#################### # #################### # #################### # #################### # 
-if (dodocument) {
-  
-# README ####
-
-rmarkdown::render("README.Rmd")  # renders .Rmd to create a  .md file that works in github as a webpage
-
-# build_rmd() would take a couple minutes as it installs the package in a temporary library
-# build_rmd() would just be a wrapper around rmarkdown::render() that 1st installs a temp copy of pkg, then renders each .Rmd in a clean R session.
-#################### # #################### # #################### # #################### # 
-
-# DOCUMENT ####
-
-document()
-}
 #################### # #################### # #################### # #################### # 
 
 # LOAD ALL FROM SOURCE  ####

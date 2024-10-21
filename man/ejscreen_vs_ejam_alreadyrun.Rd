@@ -2,7 +2,7 @@
 % Please edit documentation in R/ejscreen_vs_ejam_.R
 \name{ejscreen_vs_ejam_alreadyrun}
 \alias{ejscreen_vs_ejam_alreadyrun}
-\title{EJAM/EJSCREEN comparisons}
+\title{EJAM/EJSCREEN comparisons - used by ejscreen_vs()}
 \usage{
 ejscreen_vs_ejam_alreadyrun(
   apisite,
@@ -36,105 +36,21 @@ diff, absdiff, pctdiff, etc.
 
 For each table, colnames are indicators like pop, blockcount_near_site, etc.
 and rows represent sites analyzed.
+@details
+See \code{\link[=ejscreen_vs]{ejscreen_vs()}} for a more complete, interactive way to do this.
 }
 \description{
-Compare EJScreen API vs EJAM stats near site(s) (after results already run)
+Compare EJScreen API vs EJAM stats at tested sites (after results already run)
 }
 \examples{
   vs = ejscreen_vs_ejam_alreadyrun(
     apisite = testoutput_ejscreenapi_plus_5,
     ejamsite = ejamit(testpoints_5, radius = 1, include_ejindexes = TRUE)$results_bysite)
   ejscreen_vs_ejam_see1(vs, mysite = 1)
-  
-  # To see format of output:
-  str(vs)
-  cbind(class.of.table =  sapply(vs,
-   FUN = function(that) paste0(class(that), collapse = ", ")) )
- \dontrun{
- 
- # requires data.table
- 
- # analyze point(s) in both EJScreen and EJAM
-  pts <- testpoints_100[1:5, ]
-  #vs <- ejscreen_vs_ejam(testpoints_100[27, ], radius = 3, include_ejindexes = TRUE)
-  
-  # just 1 point
-  # vs <- ejscreen_vs_ejam(pts[5, ], radius = 3, include_ejindexes = TRUE)
-  
-  # multiple points
-  # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:
-  vs <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
-    
-   # same thing but step by step
-   api1 <- ejscreenit(pts, radius = 3)
-   api1 <- api1$table[5, ]
-   ejam1 <- ejamit(pts, radius = 3, include_ejindexes = TRUE)
-   ejam1 <- ejam1$results_bysite[5, ]
-   vs <- ejscreen_vs_ejam_alreadyrun(api1, ejam1)
-   
-   # to keep it as a list of data.frames but just 1 row each now:
-   zlist1 <- lapply(vs, function(x) x[myrow, ])
-   names(zlist1); sapply(zlist1, dim)
-   
-   # look at a table about just 1 site among those analyzed, e.g., the first one:
-   myrow <- 1
-   z1 <- data.frame(sapply(vs, function(x) x[myrow, ]))
-   # but that creates a data.frame where each column is a list... 
-   
-   z <- vs
-   
-   
-   # **** WORK IN PROGRESS ... *** !!!!!  
-   
-   # SEE [ejscreen_vscript()] for a newer, interactive version
-   
-   
-   # Reported key indicators - which ones do or don't match
-   # when comparing EJSCREEN and EJAM results?
-   keyreportnames <- c('pop', names_these, 
-     paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
-     paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
-   )  
-   rname <- colnames(z$EJAM)
-   z1[rname \%in\% keyreportnames &  z1$same_shown, ]
-   z1[rname \%in\% keyreportnames & !z1$same_shown & !is.na(z1$EJSCREEN), ]
-  
-   # Reported (rounded) numbers match:
-   z[z$same_shown , ]
-   # Reports disagree: 
-   #  (and not just because of percentages being of 100 vs of 1.00)
-   z[!z$same_shown & !is.na(z$EJSCREEN) & z$ratio != 0.01, ] 
-   # Reports disagree if percentages reported as 0-100 vs fractions 0-1.00
-   z[z$ratio == 0.01 & !is.na(z$ratio), ]
-   
-   
-   # site number 1
-   z1 <- sapply(z, function(x) (x[1,]))
-    # Reported key indicators - which ones do or don't match
-   # when comparing EJSCREEN and EJAM results?
-   keyreportnames <- c('pop', names_these, 
-     paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
-     paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
-   )
-   z1[z1$rname \%in\% keyreportnames &  z1$same_shown, ]
-   z1[z1$rname \%in\% keyreportnames & !z1$same_shown & !is.na(z1$EJSCREEN), ]
-   
-   # Reported (rounded) numbers match:
-   z1[z1$same_shown , ]
-   # Reports disagree: 
-   #  (and not just because of percentages being of 100 vs of 1.00)
-   z1[!z1$same_shown & !is.na(z1$EJSCREEN) & z1$ratio != 0.01, ] 
-   # Reports disagree if percentages reported as 0-100 vs fractions 0-1.00
-   z1[z1$ratio == 0.01 & !is.na(z1$ratio), ]
-   
-   # Comparing across sites:
-   
-   # .... to be continued ...
-   
-  }
+ vsum = ejscreen_vs_ejam_summary(vs)
    
 }
 \seealso{
-\code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}}
+\code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}}  \code{\link[=ejscreen_vs]{ejscreen_vs()}}
 }
 \keyword{internal}

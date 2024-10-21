@@ -187,15 +187,14 @@ ejamit <- function(sitepoints,
                    testing = FALSE,
                    ...
 ) {
-  
-  sitetype <- ejamit_sitetype_check(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
+
+  sitetype <- ejamit_sitetype_from_input(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
   if (interactive() && !silentinteractive) {cat("Type of sites provided:", sitetype, '\n')}
-  
+
   # * POLYGONS / SHAPEFILES ####
   
   if (sitetype == "shp") {
     
-
     ## . check shp ####
 
     # something like this could replace similar code in server: ***
@@ -300,7 +299,7 @@ ejamit <- function(sitepoints,
       fips = fips,  # these get retained as ejam_uniq_id for the fips case.
       inshiny = inshiny,
 
-      need_blockwt = need_blockwt+++
+      need_blockwt = need_blockwt
     )
     if (nrow(mysites2blocks) == 0) {
       return(NULL)

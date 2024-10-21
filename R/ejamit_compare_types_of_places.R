@@ -87,7 +87,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   
   ########################################################## # 
   # note this means latlon vs fips vs shp, not type in the sense of which group (subset) that is specified via typeofsite param
-  sitetype <- ejamit_sitetype_check(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
+  sitetype <- ejamit_sitetype_from_input(sitepoints = sitepoints, fips = fips, shapefile = shapefile)
   ########################################################## # 
   
   if (sitetype == 'fips') {
@@ -202,7 +202,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
     
     cat("Type", i, "of", length(types), "=", types[i], " -- ")
     
-    if (sitetype == "latlon") {sitepoints_subset = sitepoints[typeofsite == types[i], ]} else {sitepoints_subset = NULL}
+    if (sitetype == "latlon") {sitepoints_subset = sitepoints[typeofsite == types[i], ,drop=F]} else {sitepoints_subset = NULL}
     if (sitetype == "fips")   {fips_subset       = fips[      typeofsite == types[i]  ]} else {fips_subset       = NULL}
     if (sitetype == "shp")    {shapefile_subset  = shp[       typeofsite == types[i], ]} else {shapefile_subset  = NULL}
     
@@ -241,7 +241,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
     sitecount_bytype[[i]] <- NROW(results_bysite[[i]]) 
     
     ndone <- ndone + sitecount_bytype[[i]]
-    cat("Finished", ndone, "of", sum(sitecount_bytype), "sites. ") # check this 
+    cat("Finished", ndone, "of", sum(unlist(sitecount_bytype)), "sites. ") # check this 
     junk <- speedreport(began, Sys.time(), ndone)
   }
   cat("\n\n")
@@ -306,12 +306,12 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
       sitetype  = out$types,
       sitecount = out$sitecount_bytype,
       pop = round(out$results_bytype$pop, table_rounding_info("pop")),
-      round(out$results_bytype[, 
+      table_round(out$results_bytype[,
                                names_d_ratio_to_state_avg,
                                ## or else
-                               # c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg), 
-                               
-                               with = FALSE],  table_rounding_info(names_d_ratio_to_state_avg))
+                               # c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+
+                               with = FALSE,],  var = names_d_ratio_to_state_avg)
     )
   )
   cat("Use  ejam2excel(out)  to view results, and see the types of sites compared, one row each, in the Overall tab\n")

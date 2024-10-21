@@ -8,50 +8,85 @@
 # IF FILE NOT PROVIDED, DOES NOT ASK TO CONFIRM THE DEFAULT FILENAME IS OK 
 # IF FOLDER NOT PROVIDED... IT ASKS TO CONFIRM THE DEFAULT FOLDER IS OK IF INTERACTIVE, SO SKIP THAT case IN THESE TESTS.
 
-# ***  note if interactive it would try to prompt for folder even if folder specified  but not if fname specified 
-# ## skip because it interactively interrupts testing to confirm folder
-# 
-# test_that("ejam2shapefile ok if save=T no folder specified", {
-#   expect_no_error({
-#     suppressWarnings({
-#       suppressMessages({
-#         junk = capture_output({
-#           
-#           # save TRUE - note if interactive it tries to prompt for folder
-#           x <- ejam2shapefile(testoutput_ejamit_10pts_1miles, save = TRUE )
-#           shp = shapefile_from_any(x)
-#           # map_shapes_leaflet(shp)
-#           
-#         })
-#       })
-#     })
-#   })
-#   expect_true(file.exists(x))
-#   expect_true("sf" %in% class(shp))
-#   expect_equal(NROW(shp), 10)
-# })
+if (interactive() & !exists("noquestions")) {
+  if ( askYesNo("run tests where you have to interactively specify a folder for shapefiles?")) {
+    noquestions = FALSE
+  }  else {
+    noquestions <- TRUE
+  }
+} else {
+  noquestions = TRUE
+}
 
-# ## skip because it interactively interrupts testing to confirm folder
+# ***  note if interactive it normally tries to prompt for shapefile folder in some cases  
 
-# test_that("ejam2shapefile ok if use defaults - interactively pick folder", {
-#   expect_no_error({
-#     suppressWarnings({
-#       suppressMessages({
-#         junk = capture_output({
-#           
-#           # note if interactive it tries to prompt for folder
-#           x = ejam2shapefile(testoutput_ejamit_10pts_1miles )
-#           # zip::zip_list(x) # not required by EJAM pkg
-#           shp <- shapefile_from_any(x)
-#           
-#         })
-#       })
-#     })
-#   })
-#   expect_true(file.exists(x))
-#   expect_true("sf" %in% class(shp))
-#   expect_equal(NROW(shp), 10)
-# })
+test_that("ejam2shapefile ok if save=T", {
+  
+  testthat::skip_if(noquestions) 
+  
+  expect_no_error({
+    suppressWarnings({
+      suppressMessages({
+        junk = capture_output({
+          
+          # save TRUE - note if interactive it tries to prompt for folder
+          x <- ejam2shapefile(testoutput_ejamit_10pts_1miles, save = TRUE)
+          shp = shapefile_from_any(x)
+          # map_shapes_leaflet(shp)
+          
+        })
+      })
+    })
+  })
+  expect_true(file.exists(x))
+  expect_true("sf" %in% class(shp))
+  expect_equal(NROW(shp), 10)
+})
+
+test_that("ejam2shapefile ok if use defaults", {
+  
+  testthat::skip_if(noquestions) 
+  
+  expect_no_error({
+    suppressWarnings({
+      suppressMessages({
+        junk = capture_output({
+          
+          # defaults - note if interactive it tries to prompt for folder
+          x = ejam2shapefile(testoutput_ejamit_10pts_1miles)
+          # zip::zip_list(x) # not required by EJAM pkg
+          shp <- shapefile_from_any(x)
+        })
+      })
+    })
+  })
+  expect_true(file.exists(x))
+  expect_true("sf" %in% class(shp))
+  expect_equal(NROW(shp), 10)
+})
+
+test_that("ejam2shapefile ok if use defaults", {
+  
+  testthat::skip_if(noquestions) 
+  
+  expect_no_error({
+    suppressWarnings({
+      suppressMessages({
+        junk = capture_output({
+          
+          # provide fname - note if interactive it tries to prompt for folder
+          x = ejam2shapefile(testoutput_ejamit_10pts_1miles, fname = "test.shp")
+          # zip::zip_list(x) # not required by EJAM pkg
+          shp <- shapefile_from_any(x)
+          
+        })
+      })
+    })
+  })
+  expect_true(file.exists(x))
+  expect_true("sf" %in% class(shp))
+  expect_equal(NROW(shp), 10)
+})
 ########################################################################## # 
 
 # no prompt if folder is specified, or if save=F    
@@ -59,8 +94,10 @@
 
 test_that("ejam2shapefile ok if save=F", {
   expect_no_error({
-    # save FALSE
-    shp <- ejam2shapefile(testoutput_ejamit_10pts_1miles, save = FALSE)
+    expect_warning( # some specified varnames not found
+      # save FALSE
+      {shp <- ejam2shapefile(testoutput_ejamit_10pts_1miles, save = FALSE)}
+    )
     # map_shapes_leaflet(shp)
   })
   expect_true("sf" %in% class(shp))

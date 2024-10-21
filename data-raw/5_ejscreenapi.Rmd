@@ -219,7 +219,7 @@ ejscreen_vs_ejam_see1(
   myvars = c('pop', "blockcount_near_site"))
 ejscreen_vs_ejam_see1(vs, mysite = 1, 
                       myvars = c('lowlifex', "Demog.Index.Supp"))
-ejscreen_vs_ejam_see1map(1, x = vs)
+ejscreen_vs_ejam_see1map(vs, 1)
 
 
 # or to see some related info:

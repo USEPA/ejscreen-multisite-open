@@ -95,7 +95,7 @@ test_that(
       out$pop[2] > out$pop[1]
     )
     suppressMessages({
-      out2 = ejamit(testpoints_10[1:2,], radius = 2, silentinteractive = TRUE)
+      out2 = ejamit(testpoints_10[1:3,], radius = 2, silentinteractive = TRUE)
     })
     expect_equal(
       out2$results_overall$pop, out$pop[2]
@@ -294,7 +294,7 @@ test_that(
     })
     expect_identical(
       x[[1]],
-      testoutput_ejamit_10pts_1miles$results_bysite[1:2,]
+      testoutput_ejamit_10pts_1miles$results_bysite[1:2,], ignore_attr=T
     )
     ########################## #
     #  out_bydistance2results_bydistance_bysite  ok

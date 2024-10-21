@@ -218,7 +218,7 @@ Except, if Counties were analyzed, see  mapfastej_counties() \n')
       if (file.exists(zipname)) {file.remove(zipname)}
       zipfullpath <- paste0(normalizePath(folder), "\\", zipname)
       zip(zipfullpath, files = file.path(tds, fnames), extras = c('-j', '-D')) 
-      # unzip from tempdir to folder specified by parameter.
+      #  
       # -D should prevent storing Directory info, 
       # -j is supposed to use no path info so files are all in root of .zip and there are not folders inside the .zip
       if (!file.exists(zipfullpath)) {stop('could not create zip file at ', zipfullpath)}

@@ -17,7 +17,7 @@ test_that('warns if no alias found, returns the same data frame',{
 # only the best alias is renamed
 # only lat and lon get numeric cleaning with latlon_as.numeric
 test_that('only the best alias #1',{
-  expect_warning({
+  expect_message({
     val <- latlon_df_clean(data.frame("a" = "-100.75%", "LONG" = 200, "Longitude" = " 175 ", "lat" = "$35"))
   }, regexp = "Replaced column names")
   expect_equal(names(val), c('a', 'LONG', 'lon', 'lat', 'valid'))
@@ -42,9 +42,14 @@ test_that('warn invalid longitude', {
 
 # only the best alias is converted/used
 test_that('only the best alias #2', {
-  expect_warning( expect_warning({
+  ## 4 warnings and a message carried over from internal functions
+  expect_message(
+    expect_warning(
+      expect_warning( 
+        expect_warning(
+          expect_warning({
     val <- latlon_df_clean(data.frame("a" = "-100.75%", "LONGITUDE" = 200, "Long" = " 175 ", "lat" = "$35"))
-  }))
+  })))))
   expect_equal(names(val), c('a', 'lon', 'Long', 'lat', 'valid'))
 })
 
@@ -65,19 +70,19 @@ test_that('case variants left alone', {
   )
   expect_equal(val$valid, FALSE)
 
-  suppressWarnings( expect_warning({
+  suppressWarnings( expect_message({
     val <- latlon_df_clean(data.frame("a" = "-100.75%", "longing" = 200, "Lat" = " 175 ", "lat" = 35, "Lon" = "-66.4"))
   }, regexp = "Replaced column names"))
 
   # lat lon can be cleaned, $35 interpreted as 35, "Lat" ignored.
-  suppressWarnings(expect_warning({
+  suppressWarnings(expect_message({
     val <- latlon_df_clean(data.frame("a" = "-100.75%", "longing" = 200, "Lat" = " 175 ", "lat" = "$35", "Lon" = "-66.4"))
   }, regexp = "Replaced column names"))
   expect_equal(val$lat, 35)
 
   suppressWarnings(expect_warning( # infer col names
     expect_warning( # removing characters coerced to NA
-      expect_warning({ # invalid lat/lon
+      expect_message({ # invalid lat/lon
         val <- latlon_df_clean(data.frame("a" = "-100.75%", "longing" = 200, "Lat" = " 175 ", "lat" = "$b", "Lon" = "-66.4"))
       }, regexp = "Replaced column names")
     )))
@@ -102,11 +107,15 @@ test_that('case variants left alone', {
 
 # case variants of a single alias are converted to preferred word (if pref not found), creating dupes!  warn!
 test_that('case variants converted from long to lon and LONG to lon, so 2 cols have same name, lon', {
-  expect_warning( # infer column name
-    expect_warning( # duplicated lon
-      expect_warning({ # invalid lat/lon
-        val <- latlon_df_clean(data.frame('LONG' = " 1 ", 'long' = " 2 ", 'lat' = " 3 "))
+  expect_warning(
+    expect_warning(
+      expect_warning(
+        expect_warning( # infer column name
+          expect_warning( # duplicated lon
+            expect_message({ # invalid lat/lon
+              val <- latlon_df_clean(data.frame('LONG' = " 1 ", 'long' = " 2 ", 'lat' = " 3 "))
         })))
+  )))
   expect_equal(names(val), c('lon','lon','lat', 'valid'))
 })
 
@@ -116,20 +125,28 @@ test_that('case variants converted from long to lon and LONG to lon, so 2 cols h
 # updated function to remove .1 from column names before passing to latlon_infer
 # this prompts warning for duplicated lon columns
 test_that('dupes renamed and warn', {
+  expect_warning(
+    expect_warning(
+      expect_warning(
   expect_warning( # duplicated lon
     expect_warning( # infer names
-      expect_warning({ # invalid lat/lon
+      expect_message({ # invalid lat/lon
         val <- latlon_df_clean(data.frame('LONG' = " 1 ,", 'LONG' = " 2, ", "lat" = ",  35"))
         })))
+      )))
   expect_equal(names(val), c('lon','lon', "lat", "valid"))
 })
 
 # same issue as previous test
 test_that('dupes left as dupes', {
+  expect_warning(
+    expect_warning(
+      expect_warning(
   expect_warning( # duplicated lat
     expect_warning({ # invalid lat/lon
       val <- latlon_df_clean(data.frame('lat' = " 1 ,", 'lat' = " 2, ", 'lon' = ", 3"))
       }))
+      )))
   expect_equal(names(val), c('lat','lat','lon', 'valid'))
   expect_true(val$valid == FALSE)
 })

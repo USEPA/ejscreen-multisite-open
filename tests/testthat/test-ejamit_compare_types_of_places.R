@@ -38,8 +38,11 @@ test_that("ejamit_compare_types_of_places works", {
 ############################################################ #
 test_that("works if only 1 point", {
   pts1 <- data.frame(testpoints_10[1,])
+  
+  expect_no_error({
   junk <- capture_output({
-    out <- ejamit_compare_types_of_places(pts1, typeofsite = 1)   
+    out <- ejamit_compare_types_of_places(pts1, typeofsite = 'A')   
+  })
   })
   
   

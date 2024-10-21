@@ -49,6 +49,8 @@ prompts RStudio user interactively asking where to save the downloaded file}
 
 \item{radius_or_buffer_in_miles}{optional radius in miles}
 
+\item{buffer_desc}{description of location to use in labels, like "Selected Locations"}
+
 \item{radius_or_buffer_description}{optional text phrase describing places analyzed}
 
 \item{hyperlink_colnames}{optional names of columns with URLs}

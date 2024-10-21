@@ -315,8 +315,7 @@ naics_from_code <- function(mycodes, children = FALSE) {
 #' @param children logical, if TRUE, also return all the subcategories - where NAICS starts with the same digits
 #' @param ignore.case see [grepl()]
 #' @param fixed should it be an exact match? see [grepl()]
-#' @param search_on_naics_website whether to query on naics website for more hits than just search for text in industry title
-#' @seealso [naics_subcodes_from_code()] [naics_from_code()]  [naics_from_name()]  [naics_from_any()]
+#' @seealso [naics_findwebscrape()] [naics_subcodes_from_code()] [naics_from_code()]  [naics_from_name()]  [naics_from_any()]
 #' @examples
 #'  data.table::fintersect(naics_from_any( "manufac"), naics_from_any("chem"))
 #' @return a subset of the [naicstable] data.table (not just the codes column)

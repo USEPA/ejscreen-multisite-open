@@ -29,8 +29,8 @@ resaving_testpoints_helpdocs  <- TRUE
 resaving_testpoints_bad       <- FALSE
 
 recreating_getblocksnearby    <- TRUE  # eg if block data changed, or if recreating_doaggregate_output = TRUE below
-resaving_getblocksnearby_rda  <- TRUE
-resaving_getblocksnearby_helpdocs <- TRUE
+resaving_getblocksnearby_rda  <- F
+resaving_getblocksnearby_helpdocs <- F
 
 recreating_doaggregate_output <- TRUE # eg if other indicators added to outputs
 if (recreating_doaggregate_output) {recreating_getblocksnearby <- TRUE} # needed
