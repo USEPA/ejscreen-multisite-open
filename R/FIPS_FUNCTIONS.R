@@ -934,7 +934,7 @@ fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact = T
     exactmatches = fips_counties_from_countynamefull(cfull, exact = TRUE)
   })
   ### cfull = cfull[!is.na(exactmatches)]
-  # countyname_start_unmatched = countyname_start[is.na(exactmatches)]
+  countyname_start_unmatched = countyname_start[is.na(exactmatches)]
   # stnow = stnow[is.na(exactmatches)]
   # 
   # exactmatches <- exactmatches[!is.na(exactmatches)]
@@ -974,7 +974,7 @@ fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact = T
 
 #' helper function - get county FIPS from exact countyname including, ST abbrev
 #' used by fips_counties_from_countyname()
-#' @param countyname_start exact (case-insensitive) name of 
+#' @param fullname exact (case-insensitive) name of 
 #'   county comma state abbreviation, 
 #'   like "Johnson County, TX". Ignores case.
 #' @param exact set to FALSE to use grep, but that can return more than one per input

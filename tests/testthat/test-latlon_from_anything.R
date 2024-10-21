@@ -131,12 +131,12 @@ testthat::test_that("latlon_from_anything works with csv", {
 testthat::test_that("latlon_from_anything works with xlsx", {
   
   fname <- system.file("./testdata/latlon/testpoints_10.xlsx", package = "EJAM")
-  fname <- "./inst/testdata/latlon/testpoints_10.xlsx"
+  #fname <- "./inst/testdata/latlon/testpoints_10.xlsx"
   skip_if(!file.exists(fname))
   
-  expect_no_error({
+  expect_no_error(
     x <- latlon_from_anything(fname)
-  })  
+  )  
   
 })
 ################################################ #

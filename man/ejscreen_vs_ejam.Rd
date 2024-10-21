@@ -2,7 +2,7 @@
 % Please edit documentation in R/ejscreen_vs_ejam_.R
 \name{ejscreen_vs_ejam}
 \alias{ejscreen_vs_ejam}
-\title{EJAM/EJSCREEN comparisons}
+\title{EJAM/EJSCREEN comparisons - compare EJScreen API vs EJAM stats at tested sites}
 \usage{
 ejscreen_vs_ejam(
   latlon,
@@ -68,40 +68,12 @@ For each data.frame, colnames are indicators like pop, blockcount_near_site, etc
 and rows represent sites analyzed.
 }
 \description{
-This is the main function used by \code{\link[=ejscreen_vs]{ejscreen_vs()}} to compare
-EJScreen API vs EJAM stats near site(s)
+Used by \code{\link[=ejscreen_vs]{ejscreen_vs()}}
 }
 \details{
 Consider using \code{\link[=ejscreen_vs]{ejscreen_vs()}} which does this all interactively.
 
-The EJAM tool/ function called \code{\link[=ejamit]{ejamit()}}
-does not rely on EJScreen's typical single-location approach to do the calculations
-and instead tries to replicate what the EJScreen single-site report would do.
-As a result, while
-\itemize{
-\item \emph{\code{\link[=ejamit]{ejamit()}} is much, much faster than \code{\link[=ejscreenit_for_ejam]{ejscreenit_for_ejam()}}} and
-\item \emph{provides additional information} (distribution of distances by group, etc.)
-\item \emph{features} (histograms, spreadsheet with heatmaps, etc.)
-\item \emph{flexibility} (easy for analysts using R to customize analysis, etc.),
-\emph{\code{\link[=ejamit]{ejamit()}} does not always exactly replicate EJScreen} --
-does not provide 100\% identical results (percentiles, etc.) for
-every indicator in every analysis at every location.
-For almost all indicators, at 97\% of sites tested, the difference is
-either zero difference in the reports or is smaller than a 1\% difference.
-There may be edge cases where an indicator differs significantly.
-Any differences are due to slight variations in
-\item details of the spatial calculations (which blocks are nearby,
-sometimes counting 1 extra block as 2.995 miles away while
-EJScreen counts it as outside the 3 mile radius, e.g.,
-often differing by just <50 feet out of 3 miles).
-and possibly other factors like
-\item rounding? (how many digits are retained during calculations,
-and how many are shown in final reports via rounding and/or significant digits)
-\item percentile assignment method should be the same now
-(how percentile lookup tables are used,
-how ties are treated in percentile lookup tables, etc.)
-\item possibly other undocumented small differences in some calculation step?
-}
+\code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}} and \code{\link[=ejscreen_vs_ejam_alreadyrun]{ejscreen_vs_ejam_alreadyrun()}} are used by \code{\link[=ejscreen_vs]{ejscreen_vs()}}
 }
 \examples{
  \dontrun{
@@ -112,36 +84,8 @@ how ties are treated in percentile lookup tables, etc.)
  table(vs$same_shown$pop)
  vspopoff <- lapply(vs, function(x) x[!vs$same_shown$pop, ])
  
- pts <- testpoints_100[1:5, ]
-   
-  # This step can take a long time, 
-  # almost 1 minute / 20 points, as it uses the EJScreen API:
-  #z <- ejscreen_vs_ejam(
-    testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
-  z <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
-  
-  EJAM:::ejscreen_vs_ejam_summary(z)
-  
-  # see one site
-  ejscreen_vs_ejam_see1(z, mysite = 1)
-  
-   # Reported key indicators - which ones do or don't match
-   # when comparing EJSCREEN and EJAM results?
-   keyreportnames <- c('pop', names_these, 
-     paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
-     paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
-   )
-   z$EJAM[z$EJAM$rname \%in\% keyreportnames &  z$same_shown, ]
-   z[z$rname \%in\% keyreportnames & !z$same_shown & !is.na(z$EJSCREEN), ]
-  
-   # Reported (rounded) numbers match:
-   z[z$same_shown , -1]
-   # Reports disagree: 
-   #  (and not just because of percentages being of 100 vs of 1.00)
-   z[!z$same_shown & !is.na(z$EJSCREEN) & z$ratio != 0.01, -1] 
-   # Reports disagree if percentages reported as 0-100 vs fractions 0-1.00
-   z[z$ratio == 0.01 & !is.na(z$ratio), -1]
-   
+ pts2 <- testpoints_100[1:2, ]
+ vs2 <- ejscreen_vs_ejam(pts2, radius = 1, save_ejscreen_output = F )
   }
 }
 \seealso{

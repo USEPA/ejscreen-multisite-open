@@ -49,6 +49,8 @@ full table of sorted distances of blockgroups,
 cumulative count of demog groups at that block group's distance.
 If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
 If returnwhat is "plot" then it returns the plot object as needed for table_xls_format()}
+
+\item{...}{other parameters passed through to \code{\link[=points]{points()}}}
 }
 \value{
 see \code{\link[=distance_by_group_plot]{distance_by_group_plot()}}

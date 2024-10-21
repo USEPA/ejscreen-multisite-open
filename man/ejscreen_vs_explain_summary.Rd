@@ -9,7 +9,7 @@ ejscreen_vs_explain_summary(
   whyall,
   radius = "analyzed radius",
   showmeters = TRUE,
-  showpop = TRUE
+  showpop = FALSE
 )
 }
 \arguments{
@@ -32,7 +32,7 @@ Summarize output of ejscreen_vs_explain()
 \examples{
 vs10 <- ejscreen_vs_ejam(testpoints_10, radius = 3, save_ejscreen_output = F, save_when_report = F, calculate_ratios = F)
 why10 <- ejscreen_vs_explain(vs10, ejam_uniq_id = 1:10, pause_on_each_site = F)
-ejscreen_vs_explain_summary(why10, radius = 3)
+whysum <- ejscreen_vs_explain_summary(why10, radius = 3)
 
 }
 \keyword{internal}
