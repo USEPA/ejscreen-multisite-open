@@ -146,7 +146,7 @@ tdat[is.na(tdat$test) & !is.na(tdat$R) & "data_" != substr(tdat$name, 1,5), ] |>
 # 50 fixcolnames2related                        R/fixcolnames2related.R                        NA        
 # 51 fixmapheadernamescolname                   R/fixmapheadernamescolname.R                   NA        
 # 52 fixnames_aliases                           R/fixnames_aliases.R                           NA        
-# 53 fix_pctcols_x100                           R/fix_pctcols_x100.R                           NA 
+#    53 fix_pctcols_x100   R/fix_pctcols_x100.R             renamed to be table_x100.R, table_x100()
 
 # 54 frs_active_ids                             R/frs_active_ids.R                             NA        
 # 55 frs_clean                                  R/frs_clean.R                                  NA        
