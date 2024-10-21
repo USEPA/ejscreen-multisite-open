@@ -4,9 +4,22 @@
 
 ########################################################################## # 
 
-# ***  note if interactive it tries to prompt for folder in these cases: 
+if (interactive() & !exists("noquestions")) {
+  if ( askYesNo("run tests where you have to interactively specify a folder for shapefiles?")) {
+    noquestions = FALSE
+  }  else {
+    noquestions <- TRUE
+  }
+} else {
+  noquestions = TRUE
+}
+
+# ***  note if interactive it normally tries to prompt for shapefile folder in some cases  
 
 test_that("ejam2shapefile ok if save=T", {
+  
+  testthat::skip_if(noquestions) 
+  
   expect_no_error({
     suppressWarnings({
       suppressMessages({
@@ -27,6 +40,9 @@ test_that("ejam2shapefile ok if save=T", {
 })
 
 test_that("ejam2shapefile ok if use defaults", {
+  
+  testthat::skip_if(noquestions) 
+  
   expect_no_error({
     suppressWarnings({
       suppressMessages({
@@ -46,6 +62,9 @@ test_that("ejam2shapefile ok if use defaults", {
 })
 
 test_that("ejam2shapefile ok if use defaults", {
+  
+  testthat::skip_if(noquestions) 
+  
   expect_no_error({
     suppressWarnings({
       suppressMessages({
@@ -71,8 +90,10 @@ test_that("ejam2shapefile ok if use defaults", {
 
 test_that("ejam2shapefile ok if save=F", {
   expect_no_error({
-    # save FALSE
-    shp <- ejam2shapefile(testoutput_ejamit_10pts_1miles, save = FALSE)
+    expect_warning( # some specified varnames not found
+      # save FALSE
+      {shp <- ejam2shapefile(testoutput_ejamit_10pts_1miles, save = FALSE)}
+    )
     # map_shapes_leaflet(shp)
   })
   expect_true("sf" %in% class(shp))

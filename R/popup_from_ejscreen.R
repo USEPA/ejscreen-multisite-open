@@ -16,7 +16,7 @@
 #'   - EJ Indexes
 #'   - web link(s) to map or report
 #'
-#' @param out like ejamit()$results_bysite, not ejamit().
+#' @param out like ejamit()$results_bysite, but also it can be full list from ejamit().
 #'   The table of raw data in data.frame form, with results of EJ analysis.
 #' @param linkcolname Name of one column in the table that has links to some URL
 #' @param linkcolname2 Another like linkcolname

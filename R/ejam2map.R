@@ -6,7 +6,9 @@
 #' @details Gets radius by checking ejamitout$results_overall$radius.miles
 #' You can use browse=TRUE to save it as a shareable .html file
 #' and see it in your web browser.
-#' @inheritParams mapfast
+#' @param ejamitout output of ejamit()
+#' @param radius radius in miles
+#' @param browse logical optional whether to open the web browser to view the map
 #' @return like what [mapfastej()] returns
 #' @examples
 #' pts = testpoints_100

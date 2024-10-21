@@ -9,9 +9,9 @@
 #' @return like what [mapfast()] returns
 #' @export
 #'
-mapfastej <- function(...) {
+mapfastej <- function(mydf, radius = 3, column_names = 'ej', labels = column_names, browse = FALSE, color = "#03F") {
 
-  mapfast(..., column_names = 'ej')
+  mapfast(mydf = mydf, radius = radius, column_names = column_names, labels = labels, browse = browse, color = color)
 }
 ############################################################################ #
 

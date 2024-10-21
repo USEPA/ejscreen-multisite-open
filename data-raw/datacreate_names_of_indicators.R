@@ -1,6 +1,7 @@
 
 #  EJAM/data-raw/datacreate_names_of_indicators.R
 
+library(usethis)
 ########################################################################################################## #
 # ***
 #   to be eventually replaced with a newer approach... see issue #491

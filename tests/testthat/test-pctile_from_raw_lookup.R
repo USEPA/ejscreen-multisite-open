@@ -96,7 +96,7 @@ test_that('multiple zero minimums return zero',{
                                   lookup = mylookup 
                                   )
   })
-  expect_equal(val, c(  56, 56, 61 ,86, 98))
+  expect_equal(val, c(  0, 56, 61 ,86, 98))
 })
  
 # #   If the value is less than the cutpoint listed as percentile 0,
@@ -114,4 +114,17 @@ test_that('below min returns zero with warning??',{
     })
   
   expect_equal(val, c(0, 4, 4, 5))
+})
+
+
+
+test_that('order does not affect pctiles',{
+  
+     bysite <-  testoutput_ejamit_10pts_1miles$results_bysite
+     bysite <- bysite[c(2:10, 1),]
+    val <- pctile_from_raw_lookup(myvector = bysite$pctnhaiana,
+                                  varname.in.lookup.table = "pctnhaiana",
+                                  lookup = statestats, zone = bysite$ST)
+  
+  expect_equal(val, testoutput_ejamit_10pts_1miles$results_bysite$state.pctile.pctnhaiana[c(2:10, 1)])
 })

@@ -96,7 +96,10 @@ test_that('case of query text only matters, if ignore.case = FALSE', {
 # this gives a warning
 test_that('fixed = TRUE makes case matter, even if ignore.case = TRUE',{
   expect_warning({x <- frs_from_naics(c("Silver Ore"), fixed = TRUE)})
-  expect_warning({y <- frs_from_naics(c("silver ore"), fixed = TRUE)})
+  ## all lowercase produces 2 warnings for some reason
+  expect_warning(
+    expect_warning(y <- frs_from_naics(c("silver ore"), fixed = TRUE))
+  )
 
   expect_equal(nrow(y), 0)
   expect_equal(nrow(x),

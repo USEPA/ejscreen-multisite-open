@@ -5,7 +5,7 @@
 \alias{map_headernames}
 \title{map_headernames provides metadata about all indicators in EJAM/EJScreen}
 \format{
-An object of class \code{data.frame} with 635 rows and 73 columns.
+An object of class \code{data.frame} with 635 rows and 76 columns.
 }
 \usage{
 map_headernames

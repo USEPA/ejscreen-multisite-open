@@ -3,7 +3,6 @@
 #' utility - write data objects to pins board in .arrow format
 #' 
 #' @param varnames vector of quoted names of datasets, like c("bgej", "bgid2fips")
-#' @param fnames optional vector of file names including extension like ".arrow", but without a path.
 #' @param justchecking can set to TRUE to just see a list of what pins are stored in that board
 #' @param silent set to TRUE to suppress cat() msgs to console
 #' @param type "arrow"
