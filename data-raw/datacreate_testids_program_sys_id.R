@@ -1,4 +1,20 @@
 #################################### #
+# helper function to save datasets as .xlsx
+
+savex <-  function(x, folder = "./inst/testdata", fname = "example.xlsx")  {
+  
+  # use openxlsx::write.xlsx() instead of writexl package function called write_xlsx()
+  # writexl is zero dependency package for writing xlsx files that is light weight,
+  # but we already have imported openxlsx package to use more features like formatting it offers for xlsx download in app,
+  # so may as well just use that to write xlsx and maybe can avoid dependency on writexl.
+  
+  if (!dir.exists(folder)) {stop("tried to save .xlsx but folder does not exist: ", folder)}
+  fpath <- file.path(folder, fname)
+  openxlsx::write.xlsx(x, file = fpath, overwrite = TRUE)
+  if (!file.exists(fpath)) {stop("tried but could not save ", fpath)} else {cat("saved ", fpath, "\n")}
+}
+
+#################################### #
 ## script to create dataset
 
 #################################### #
@@ -16,7 +32,7 @@ print(x[grepl("id", x$Item), ])
 
 #################################### #
 
-# create the dataset ####
+# create testids_program_sys_id ####
 
 testids_program_sys_id <- c(
   "7-0540-00003", "354362", "1513529", "485659", "LAG750956", 
@@ -26,7 +42,7 @@ if (anyNA( frs_from_programid(testids_program_sys_id)$lat )) {stop("some of the 
 ## or  
 # latlon_from_programid(testids_program_sys_id)
 
-# metadata ####
+## metadata ####
 
 ## requires first load_all() or require() or EJAM::: to access the function
 testids_program_sys_id <- metadata_add(testids_program_sys_id) 
@@ -36,31 +52,40 @@ testids_program_sys_id <- metadata_add(testids_program_sys_id)
 # all.equal(testids_registry_id, EJAM::testids_registry_id)
 all.equal(testids_program_sys_id, EJAM::testids_program_sys_id)
 
-# use_data() ####
+## use_data() ####
 
 usethis::use_data(testids_program_sys_id, overwrite = TRUE)
 
-##################### #
+## Documentation ####
 
-# write.xlsx ####
+filecontents <- paste0(
+  "#' @name ", "testids_program_sys_id", " 
+#' @docType data
+#' @title test data, EPA program system ID numbers to try using
+#' @details 
+#'  Just for convenience, installed with the package
+'testids_program_sys_id'
+"
+)
+fname = paste0("./R/data_", "testids_program_sys_id", ".R")
+writeChar(filecontents, con = fname)             
+stopifnot(file.exists(fname))
 
-# use openxlsx::write.xlsx() instead of writexl package function called write_xlsx()
-# writexl is zero dependency package for writing xlsx files that is light weight,
-# but we already have imported openxlsx package to use more features like formatting it offers for xlsx download in app,
-# so may as well just use that to write xlsx and maybe can avoid dependency on writexl.
-
-savex <-  function(x, folder = "./inst/testdata", fname = "example.xlsx")  {
-  if (!dir.exists(folder)) {stop("tried to save .xlsx but folder does not exist: ", folder)}
-  fpath <- file.path(folder, fname)
-  openxlsx::write.xlsx(x, file = fpath, overwrite = TRUE)
-  if (!file.exists(fpath)) {stop("tried but could not save ", fpath)} else {cat("saved ", fpath, "\n")}
-}
+## write.xlsx ####
 
 x <- frs_from_programid(testids_program_sys_id)[, c("PGM_SYS_ACRNMS", "PRIMARY_NAME")]
 savex(x, "./inst/testdata/programid",  "testids_program_sys_id_8.xlsx")
 rm(x)
 rm(savex)
 #################################### #
+cat('
+    REMEMBER TO RECREATE PACKAGE DOCUMENTATION:
+    devtools::document()  # for .Rd help files. or Clean and INSTALL package
+    see EJAM/data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R  for the documentation website
+    devtools::build_manual()  # for pdf manual
+    postdoc::render_package_manual()  # for html manual
+    \n')
+
 ## check what was just created (or was already) in SOURCE package
 
 if (1 == 0) {

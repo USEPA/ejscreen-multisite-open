@@ -38,7 +38,7 @@ fname = map2browser(x)
 # browseURL(dirname(fname)) # to open the temp folder
 # file.copy(fname, "./map.html") # to copy map file to working directory
 
-out <- testoutput_ejscreenapi_plus_50
+out <- testoutput_ejscreenapi_plus_5
 mapfastej(out)
 }
 }

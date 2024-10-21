@@ -4,6 +4,12 @@
 \name{testpoints_overlap3}
 \alias{testpoints_overlap3}
 \title{test points data.frame with columns note, lat, lon}
+\format{
+An object of class \code{data.frame} with 3 rows and 4 columns.
+}
+\usage{
+testpoints_overlap3
+}
 \description{
 test points data.frame with columns note, lat, lon
 }
@@ -11,9 +17,11 @@ test points data.frame with columns note, lat, lon
 examples of test points for testing functions that need lat lon,
 with 3 overlapping 1-mile radius circles. To view these points:
 
-pts <- testpoints_overlap3
+\if{html}{\out{<div class="sourceCode">}}\preformatted{ pts <- testpoints_overlap3
 
-mapfast(pts, radius = 1)
-
-plotblocksnearby(pts, radius = 1)
+ mapfast(pts, radius = 1)  
+   
+ plotblocksnearby(pts, radius = 1)
+}\if{html}{\out{</div>}}
 }
+\keyword{datasets}

@@ -13,7 +13,7 @@ popup_from_ejscreen(
 )
 }
 \arguments{
-\item{out}{like ejamit()$results_bysite, not ejamit().
+\item{out}{like ejamit()$results_bysite, but also it can be full list from ejamit().
 The table of raw data in data.frame form, with results of EJ analysis.}
 
 \item{linkcolname}{Name of one column in the table that has links to some URL}

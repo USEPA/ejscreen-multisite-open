@@ -17,15 +17,15 @@
 #'   When it was still using sp and not sf package, it was 
 #'     (30-40 seconds for 
 #'     100 million distances, but slow working with results so large),
-#'  Sys.time(); x=distances.all(testpoints(1e5), testpoints(1000), 
+#'  Sys.time(); x=distances.all(testpoints_n(1e5), testpoints_n(1000), 
 #'    return.crosstab=TRUE); Sys.time()  
 #'  
 #'        IF NO PROCESSING OTHER THAN CROSSTAB 
-#'  Sys.time(); x=distances.all(testpoints(1e6), testpoints(100),
+#'  Sys.time(); x=distances.all(testpoints_n(1e6), testpoints_n(100),
 #'     return.crosstab=TRUE); Sys.time() 
 #'  
 #'        (1m x 100, or 100k x 1000) 
-#'  Sys.time(); x=distances.all(testpoints(1e6), testpoints(300), 
+#'  Sys.time(); x=distances.all(testpoints_n(1e6), testpoints_n(300), 
 #'    return.crosstab=TRUE); Sys.time() 
 #'     seconds for 300 million pairs.  
 #'   plus_____ seconds or so for x[x>100] <- Inf  
@@ -34,11 +34,11 @@
 #'         
 #'            About xxx seconds per site for 11m blocks?  
 #'            
-#'     Sys.time(); x=distances.all(testpoints(1e5), testpoints(1000), 
+#'     Sys.time(); x=distances.all(testpoints_n(1e5), testpoints_n(1000), 
 #'       units='miles',return.rownums=TRUE); Sys.time() 
 #'   xxx SECONDS IF DATA.FRAME ETC. DONE 
 #'       TO FORMAT RESULTS AND GET ROWNUMS
-#'    Sys.time(); x=distances.all(testpoints(1e5), testpoints(1000), 
+#'    Sys.time(); x=distances.all(testpoints_n(1e5), testpoints_n(1000), 
 #'      units='miles',return.rownums=TRUE)$d; Sys.time()
 #'    xxx SECONDS IF DATA.FRAME ETC. DONE 
 #'       TO FORMAT RESULTS AND GET ROWNUMS IN distances.all 
@@ -158,8 +158,8 @@
 #' @export
 #' 
 distances.all <- function(frompoints, topoints, units='miles',
-                              return.crosstab=FALSE, return.rownums=TRUE, return.latlons=TRUE, as.df=TRUE, 
-                              use_sf=TRUE) {
+                              return.crosstab=FALSE, return.rownums=TRUE, return.latlons=TRUE, as.df=TRUE  
+                               ) {
   
   if (!(units %in% c('km', 'miles'))) {stop('units must be "miles" or "km" ')}
   km.per.mile <- convert_units(1, 'miles', 'km') # about 1.60934
@@ -183,22 +183,13 @@ distances.all <- function(frompoints, topoints, units='miles',
   originalto <- topoints
   frompoints[from_na, ] <- c(0,0) # replace NA with 0 so that spatialpoints will not stop with error
   topoints[to_na, ]     <- c(0,0)
-  if (use_sf) {
+
     # DEFAULT IS METERS now !
     frompoints.sf = sf::st_as_sf(frompoints, coords = c('lon','lat'), crs = "epsg:4326")
     topoints.sf   = sf::st_as_sf(topoints,   coords = c('lon','lat'), crs = "epsg:4326")
     results.matrix <- sf::st_distance(frompoints.sf, topoints.sf ) # maybe try tolerance = 1  for 1 meter tolerance to possibly speed it up
     rm(frompoints.sf, topoints.sf)
-  } else {
-    warning('This required loading the sp pkg that is being phased out, for the 
-            functions CRS, SpatialPoints, and spDists 
-            (but note sp still needed since leaflet still depends on sp as of 9/2023')
-    # DEFAULT IS KM HERE
-    # frompoints.sp <- SpatialPoints(coords = data.frame(x = frompoints[,'lon'], y = frompoints[,'lat']), proj4string= CRS("+proj=longlat +datum=WGS84")) # 4326 is just the EPSG identifier of WGS84.
-    # topoints.sp   <- SpatialPoints(coords = data.frame(x = topoints[,'lon'],   y = topoints[,'lat']),   proj4string= CRS("+proj=longlat +datum=WGS84"))
-    # results.matrix <- spDists(frompoints.sp, topoints.sp, longlat=TRUE) # result is in kilometers so far
-    # rm(frompoints.sp, topoints.sp)
-  }
+
   
   # NA HANDLING 
   frompoints <- originalfrom
@@ -208,15 +199,13 @@ distances.all <- function(frompoints, topoints, units='miles',
   rm(originalfrom, originalto)
   
   if (units == 'miles') {
-    if (use_sf) {
-      results.matrix <- (results.matrix / km.per.mile ) / 1000 # because sf func returns meters by default
-    } else {
-       results.matrix <- results.matrix / km.per.mile 
-    }
+    
+    results.matrix <- (results.matrix / km.per.mile ) / 1000 # because sf func returns meters by default
+    
   } else {
-    if (use_sf) {
-      results.matrix <-  results.matrix / 1000 # to get kilometers
-    }
+    
+    results.matrix <-  results.matrix / 1000 # to get kilometers
+    
   }
   if (return.crosstab) {
     # if crosstab=TRUE, ignore return.rownums and return.latlons

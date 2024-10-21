@@ -261,7 +261,7 @@ Create random test data points in States of LA and TX
 # p1k <- testpoints_n(1000)
 # mapfast(p1k)
 
-mapfast(testpoints_n(300, ST_needed = c('LA','TX'), weighting = 'bg'), radius = 0.1) 
+mapfast(testpoints_n(300, ST = c('LA','TX'), weighting = 'bg'), radius = 0.1) 
 # weighting = "frs" better represents regulated facilities,
 # but requires loading the (large) frs dataset
 ```

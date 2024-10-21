@@ -57,7 +57,8 @@
 #' 
 #' @param fips if used instead of lon,lat it should be a character FIPS code vector
 #'   (counties, tracts, or blockgroups)
-#'   
+#' @param shapefile not implemented
+#' 
 #' @param report_every_n Should it report ETA snd possibly save interim file after every n points
 #' @param save_when_report optional, write .rdata file to working directory 
 #'   with results so far, after ever n points, to have most results even if it crashes
@@ -94,6 +95,7 @@
 #'  
 ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
                         fips = NULL,
+                        shapefile = NULL,
                         report_every_n=1000, save_when_report=FALSE, 
                         format_report_or_json='pjson', on_server_so_dont_save_files=FALSE, 
                         ipurl='ejscreen.epa.gov', updateProgress=NULL, drop_redundant_indicators=TRUE, 
@@ -101,6 +103,8 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
                         verbose=TRUE,
                         getstatefromplacename = TRUE
 ) {
+  
+  if (!is.null(shapefile)) {warning('shapefile not implemented yet')}
   
   if (any(!is.null(fips))) {
     radius <- 0
@@ -136,6 +140,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
           radius = radius, 
           unit = unit, wkid = wkid,
           fips = fips,
+          shapefile = shapefile, # something for shapefiles would require POST not GET
           format_report_or_json = "report")
       )
     } else {
@@ -160,9 +165,8 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
   on.exit({if (!finished_without_crashing) {
     if (!on_server_so_dont_save_files) {
       save(outlist, file = file.path(tdir, 'saved_this_before_crash.rdata'))
-      if (verbose) {
-        cat("see ", file.path(tdir, 'saved_this_before_crash.rdata'), "\n")
-      }}
+      cat("see ", file.path(tdir, 'saved_this_before_crash.rdata'), "\n")
+    }
   } })
   
   # emptyresults will let us return empty row if no valid result near a point ####
@@ -370,9 +374,14 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
   # if (drop_redundant_indicators) { # already done above
   #   results <- results[, !(names(results) %in% map_headernames$api_synonym)] # this was removing P_HISP with no copy by another name!
   # }
-  
+  # drop this synonym still here
+  if (all(c("RAW_D_LIFEEXP", "RAW_HI_LIFEEXP")  %in% names(results))) {results$RAW_HI_LIFEEXP <- NULL}
   if (nicenames) {
     names(results) <- fixcolnames(names(results) , "api", 'long') # but downstream functions mostly expect rname format
+  }
+  if (anyDuplicated(names(results))) {
+    warning("These column names are duplicates - possibly an error renaming them:", 
+            paste0(sort(names(results)[names(results) %in% names(results)[duplicated(names(results))]]), collapse = ","))
   }
   # Return results invisibly ####
   invisible(results)

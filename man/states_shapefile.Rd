@@ -3,7 +3,13 @@
 \docType{data}
 \name{states_shapefile}
 \alias{states_shapefile}
-\title{states_shapefile (DATA) US States boundaries 2020 shapefile from TIGER}
+\title{This is used to figure out which state contains each point (facility/site).}
+\format{
+An object of class \code{sf} (inherits from \code{data.frame}) with 56 rows and 15 columns.
+}
+\usage{
+states_shapefile
+}
 \description{
 This is used to figure out which state contains each point (facility/site).
 }
@@ -16,5 +22,6 @@ It is created by the package via a script at EJAM/data-raw/datacreate_states_sha
 which downloads the data from Census Bureau.
 }
 \seealso{
-\code{\link[=state_from_latlon]{state_from_latlon()}} \code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}}
+seealso \code{\link[=state_from_latlon]{state_from_latlon()}} \code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}}
 }
+\keyword{datasets}

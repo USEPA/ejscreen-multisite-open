@@ -52,7 +52,7 @@ test_that("colname like 'id' fails to be recognized as regid, since too ambiguou
 # gives FALSE if colname is valid other than REGISTRY_ID but no valid numbers in alias col used
 test_that("colname not REGISTRY_ID but seems to be ok alias, so check done for invalid numbers, so returns FALSE if invalid number", {
   testthat::expect_false(suppressWarnings(
-    frs_is_valid(data.frame(regid = 1, "PRIMARY_NAME" = "testname")))
+    frs_is_valid(data.frame(regid = NA, "PRIMARY_NAME" = "testname")))
   )
 })
 

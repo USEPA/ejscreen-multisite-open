@@ -2,30 +2,24 @@
 #' @title frs_by_mact (DATA) MACT NESHAP subpart(s) that each EPA-regulated site is subject to
 #' @description 
 #'    This is a data.table with one row per site -- MACT subpart pair, 
-#'    so it has multiple rows for one site if the site is covered by multiple subparts. It has been joined with frs_by_programid to get latlons for matching facilities.
+#'    so it has multiple rows for one site if the site is covered by multiple subparts. 
+#'    It has been joined with frs_by_programid to get latlons for matching facilities.
 #'  @details  
 #'  
-#'  There are about 112k rows here but only about 83k unique program IDs in this table, 
-#'  
+#'   This file is not stored in the package, but is obtained via [dataload_from_pins()].
+#'
+#'  There are about 115k rows here but only about 86k unique program IDs in this table, 
 #'  which is from the ECHO data download of ICIS Air and AFS. 
-#'  
 #'  The programid column here should be found in the pgm_sys_id column in frs_by_programid, 
-#'  
-#'  but as of 6/14/23 only a little over half of them were found there, so this is work in progress
-#'  
-#'  to be resolved. 
-#'  
-#'  
+#'  but as of mid 2024 only 55k of them were found there. 
+#'  ```
 #'   table(frs_by_mact$programid %in% frs_by_programid$pgm_sys_id)
+#' FALSE  TRUE 
+#' 59944 55429 
+#'   ```
+#'   Also note we have found some typos in downloaded data from ECHO/FRS, such as 
 #'   
-#'  FALSE  TRUE 
-#'  
-#'  56497 55411 
-#'   
-#'   
-#'   Also there are some typos in the downloaded dataset from ECHO/FRS, such as 
-#'   
-#'   "WOOD PERSERVING AREA SOURCES"
+#'   "WOOD PERSERVING AREA SOURCES" instead of "WOOD PRESERVING AREA SOURCES"
 #'   
 #' @examples  
 #'   mact_table
@@ -38,5 +32,5 @@
 #'   frs_by_mact[, howmany := .N, by="programid"][order(howmany), ] 
 #'   table(frs_by_mact[, howmany := .N, by="programid"][order(howmany), howmany])
 #'   
-#' @seealso [mact_table] [frs_by_programid]  [frs]
+#' @seealso [dataload_from_pins()] [mact_table] [frs_by_programid]  [frs]
 NULL

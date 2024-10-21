@@ -16,3 +16,6 @@ default_points_shown_at_startup <- structure(
 
 usethis::use_data(default_points_shown_at_startup, overwrite = TRUE)
 
+dataset_documenter("default_points_shown_at_startup",
+  title = "Default Points Shown at Startup"
+)

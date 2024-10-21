@@ -39,7 +39,7 @@
 #'
 calc_ratios_to_avg <- function(out, 
                           evarnames = names_e, 
-                          dvarnames = c(names_d, names_d_subgroups),
+                          dvarnames = c(names_d, names_d_subgroups), # could add  names_health[1:2] i.e., "pctdisability"    "lowlifex" ?
                           zone.prefix = c('', 'state.')[1], 
                           # specify "state." for state.avg.indicator and blank for avg.indicator as variable names
                           avg.evarnames=paste0(zone.prefix, 'avg.', evarnames), 
@@ -69,7 +69,9 @@ calc_ratios_to_avg <- function(out,
   if (all(names_d_subgroups %in% dvarnames)) {
     if (zone.prefix == "") {
       if (!(all(names_d_subgroups_avg %in%  names(out)) & all(names_d_subgroups %in%  names(usastats)))) {
-        out[, names_d_subgroups_avg] <- usastats[usastats$PCTILE == "mean", names_d_subgroups]
+        message("US averages for demog subgroups like pcthisp not found (note they are not provided by the EJScreen API)
+        so looking up and adding those, and rescaling as 0-100, which is how ejscreen tables store percentages though not how ejamit() does")
+        out[, names_d_subgroups_avg] <-  100 * usastats[usastats$PCTILE == "mean", names_d_subgroups]
       }
     }
     if (zone.prefix == "state.") {
@@ -77,7 +79,10 @@ calc_ratios_to_avg <- function(out,
         # check if ST is in colnames of out
         if ("ST" %in% names(out)) {
         # if it is, use it to look up mean by ST for each of names_d_subgroups and put into out[, names_d_subgroups_state_avg]
-          out[, names_d_subgroups_state_avg] <- statestats_means_bystates(out$ST, names_d_subgroups)
+          message("State averages for demog subgroups like pcthisp not found (note they are not provided by the EJScreen API)
+        so looking up and adding those, and rescaling as 0-100, which is how ejscreen tables store percentages though not how ejamit() does")
+          
+          out[, names_d_subgroups_state_avg] <- 100 * statestats_means_bystates(out$ST, names_d_subgroups)
         } else {
             warning("state averages of demog subgroups were not found in out, but cannot look up those averages since ST not found in colnames of out")
           out[, names_d_subgroups_state_avg] <- NA

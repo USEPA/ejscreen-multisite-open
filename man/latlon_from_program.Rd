@@ -9,7 +9,7 @@ Find all FRS sites in a program like RCRAINFO, TRIS, or others}
 latlon_from_program(query)
 }
 \arguments{
-\item{program}{like "RMP", "RCRAINFO", "TRIS", "RMP", or others.}
+\item{query}{like "RMP", "RCRAINFO", "TRIS", "RMP", or others.}
 }
 \value{
 data.table with lat  lon  REGISTRY_ID  program -- but not pgm_sys_id

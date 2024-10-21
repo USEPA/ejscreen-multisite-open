@@ -31,7 +31,7 @@ xls_formatting_api <- function(df, hyperlink_cols=NULL,
   # NEED TO MERGE THIS WITH EJAM  ::xls_formatting() and EJAM  ::xls_formatting2()
   #
   ########################################################  #
-  # pre-prep for excel (in app_server.R for EJAMejscreenapi package)
+  # pre-prep for excel (was in app_server.R of former ejscreenapi-related package)
   #
   ### need to test this, but it should id which columns in results_table() are pctile type according to map_headernames
   ### and it assumes that right here the colnames are the type that can be found in map_headernames$oldnames

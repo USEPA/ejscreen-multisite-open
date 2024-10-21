@@ -4,20 +4,16 @@
 #'
 #' @param output_df, single row of results table from doaggregate -
 #'   either results_overall or one row of bysite
-#' @param e, variable name of indicator to pull from results,
+#' @param Rname, variable name of indicator to pull from results,
 #'   such as 'pm', 'pctlowinc', 'Demog.Index'
 #' @param longname, nicer name of indicator to use in table row;
 #'   can include HTML sub/superscripts
 #'
 #' @keywords internal
 #'
-
-
-
 fill_tbl_row <- function(output_df, Rname, longname) {
   
   id_col <- "selected-variables"
-  
   
   hdr_names <- c('value','state-average',
                  'percentile-in-state','usa average','percentile-in-usa')
@@ -25,12 +21,11 @@ fill_tbl_row <- function(output_df, Rname, longname) {
   Rnames <- paste0(c('', 'state.avg.', 'state.pctile.', 'avg.', 'pctile.'),
                        Rname)
   
-  cur_vals <- if ('data.table' %in% class(output_df)){
+  cur_vals <- if ('data.table' %in% class(output_df)) {
     sapply(Rnames, function(v) output_df[, ..v])
-  }else{
+  } else {
     sapply(Rnames, function(v) output_df[,v])
   }
-  
   
   txt <- paste0(
     "<tr>",
@@ -38,11 +33,10 @@ fill_tbl_row <- function(output_df, Rname, longname) {
     id_col,'\">',
     longname,'</td>',
     paste0('\n','<td headers=\"data-indicators-table-', hdr_names, '\">', cur_vals, '</td>',
-           collapse=""),'\n</tr>')
+           collapse = ""),'\n</tr>')
   
   return(txt)
 }
-
 ################################################################### #
 
 
@@ -59,22 +53,17 @@ fill_tbl_row <- function(output_df, Rname, longname) {
 #'
 fill_tbl_row_ej <- function(output_df, Rname, longname) {
   
-  
   id_col <- 'selected-variables'
   
+  hdr_names <- c('percentile-in-state','percentile-in-usa')
   
-  hdr_names <- c('value',
-                 'percentile-in-state','percentile-in-usa')
+  Rnames <- paste0(c('state.pctile.','pctile.'), Rname)
   
-  Rnames <- paste0(c('','state.pctile.','pctile.'), Rname)
-  
-  cur_vals <- if ('data.table' %in% class(output_df)){
+  cur_vals <- if ('data.table' %in% class(output_df)) {
     sapply(Rnames, function(v) ifelse(v %in% names(output_df), output_df[,..v], NA))
   } else{
     sapply(Rnames, function(v) ifelse(v %in% names(output_df), output_df[, v], NA))
   }
-  
-  
   
   txt <- paste0(
     "<tr>",
@@ -82,7 +71,7 @@ fill_tbl_row_ej <- function(output_df, Rname, longname) {
     id_col,'\">',
     longname,'</td>',
     paste0('\n','<td headers=\"data-indicators-table-', hdr_names, '\">', cur_vals, '</td>',
-           collapse=""),'\n</tr>')
+           collapse = ""),'\n</tr>')
   
   return(txt)
 }
@@ -175,7 +164,6 @@ fill_tbl_full_ej <- function(output_df) {
   <thead id=\"data-indicators-table-header\" class=\"color-alt-table-header\">
   <tr>
   <th id=\"data-indicators-table-selected-variables\" scope=\"col\">SELECTED VARIABLES</th>
-  <th id=\"data-indicators-table-value\" scope=\"col\">VALUE</th>
   <th id=\"data-indicators-table-percentile-in-state\" scope=\"col\">PERCENTILE<br> IN STATE</th>
   <th id=\"data-indicators-table-percentile-in-usa\" scope=\"col\">PERCENTILE<br> IN USA</th>
   </tr>
@@ -196,6 +184,9 @@ fill_tbl_full_ej <- function(output_df) {
   Rnames_ej <-namesbyvarlist(varlist = 'names_ej')$rname
   
   longnames_ej <- fixcolnames(Rnames_ej, oldtype = 'r', newtype = 'long')
+  longnames_ej <- gsub("US type of raw score for ", "", longnames_ej)
+  # we combine values & percentiles on the same row
+  # remove mention of raw score from longname so it applies to the whole row
   
   tbl_rows_ej <- sapply(seq_along(Rnames_ej),
                         function(x) {
@@ -214,6 +205,9 @@ fill_tbl_full_ej <- function(output_df) {
   Rnames_ej_supp <- namesbyvarlist(varlist = 'names_ej_supp')$rname
   
   longnames_ej_supp <- fixcolnames(Rnames_ej_supp, oldtype = 'r', newtype = 'long')
+  longnames_ej_supp <- gsub("US type of raw score for ", "", longnames_ej_supp)
+  # we combine values & percentiles on the same row
+  # remove mention of raw score from longname so it applies to the whole row
   
   tbl_rows_ej_supp <- sapply(seq_along(Rnames_ej_supp),
                         function(x) {
@@ -270,7 +264,7 @@ fill_tbl_row_subgroups <- function(output_df, Rname, longname) {
   
   txt <-  paste0(txt, '\n', paste0('<td headers=\"data-indicators-table-',
                                    hdr_names,'\">',
-                                   cur_val,'%','</td>'))
+                                   cur_val,'</td>'))
   
   
   txt <- paste0(txt, '\n','</tr>')

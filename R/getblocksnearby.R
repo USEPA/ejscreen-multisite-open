@@ -28,6 +28,7 @@
 #'    The blocks are pre-indexed for the whole USA, via the data object quadtree aka localtree
 #'
 #' @inheritParams getblocksnearbyviaQuadTree
+#' @param parallel Not implemented
 #' @param ...  passed to [getblocksnearbyviaQuadTree()] or other such functions
 #' @return data.table like testoutput_getblocksnearby_10pts_1miles, with
 #'   columns named "ejam_uniq_id", "blockid", "distance", etc.
@@ -99,7 +100,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07, radius_donut
   cat("Analyzing", NROW(sitepoints), "points, radius of", radius, "miles around each.\n")
 
   ################################################################################## #
-  # wrapper to make it simple to (later?) switch between functions to use for this, clustered vs not, etc.
+  # wrapper to make it simple to (possibly later) switch between functions to use for this, clustered vs not, etc.
 
   if (!parallel) {
     x <- getblocksnearbyviaQuadTree(sitepoints = sitepoints, radius = radius, maxradius = maxradius,

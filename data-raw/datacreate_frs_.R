@@ -64,3 +64,18 @@ for (varname in frs_vars) {
 # THAT IS DONE BY  datawrite_to_pins() 
 
 # and copy to any local folder being used to cache them, e.g., EJAM/data folder
+
+cat("Note this should not be saved as a dataset in the package.\n")
+
+cat("UPDATE THE DOCUMENTATION MANUALLY in data_frs.R BUT USE NULL AT THE END SINCE IT IS NOT AN OBJECT STORED IN THE PACKAGE\n")
+if (rstudioapi::isAvailable()) {
+  for (myvar in frs_vars) {
+    rstudioapi::documentOpen(paste0('./R/data_', myvar, '.R'))
+  }
+}
+# or... 
+# for (myvar in frs_vars) {
+# dataset_documenter(myvar, 
+#                    # but these docs are complicated and best edited in the doc itself
+#                    saveinpackage = FALSE)
+# }

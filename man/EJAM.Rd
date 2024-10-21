@@ -6,143 +6,31 @@
 \alias{EJAM-package}
 \title{EJAM - Environmental Justice Analysis Multisite tool}
 \description{
-EJAM provides functions and data for very fast proximity analysis
-for a large number of locations, or "buffers", summarizing conditions at each location.
-It summarizes conditions as the conditions for the average resident in the buffer at that location.
-A buffer or location here is defined as the area within a specified distance of a specified site.
-A site of facility in this package is defined as a single geographic point (by latitude and longitude).
-
-The functions here will be somewhat generalized, but the specific datasets included here enable an
-environmental justice (EJ) proximity analysis of US EPA's EJScreen data, including
-environmental indicators (e.g., local traffic score, or estimated PM2.5 concentration)
-and demographic indicators (e.g., percent low-income),
-for the populations estimated to live within a specified distance (e.g., 1 mile) from
-one or more sites, typically EPA-regulated facilities.
-This means the tools can provide the same information that an EJScreen standard report provides,
-but for a large number of reports (one for each site).
+EJAM provides a way to run hundreds or thousands of EJScreen-style reports all at once, very quickly.
+It is also an R package, with functions and data for very fast analysis of areas defined by
+proximity to points like regulated facilities, areas defined as shapefiles/polygons,
+or areas specified as Census units (e.g., Counties).
 }
-\section{\strong{Documentation of Functions and How to Use EJAM}}{
-See \url{https://usepa.github.io/EJAM/index.html} for
-a complete reference document on all functions, and
+\section{\strong{What is EJAM and How to do EJ Analysis with the EJAM R Package}}{
+\href{https://usepa.github.io/EJAM/index.html}{EJAM package documentation} provides
+an overview of EJAM, a complete reference document on all functions, and
 articles (vignettes) introducing key functions and how to use them.
 }
 
-\section{\strong{Data Sources for Demographic and Environmental Indicators} ***this will be moved/added to a vignette}{
-For documentation on the sources, definitions, and vintage of the
+\section{\strong{Data Sources -- Demographic and Environmental Indicators}}{
+\href{https://www.epa.gov/ejscreen/understanding-ejscreen-results}{EJScreen documentation} provides
+information about the sources, definitions, and vintage of the
 demographic and environmental data and indicators used by
-EJScreen and EJAM, see \url{https://www.epa.gov/ejscreen/understanding-ejscreen-results}.
+EJScreen/EJAM.
 
-Each year, EJScreen and EJAM are updated to use newer demographic and environmental data,
+Each year, EJScreen/EJAM are updated to use newer demographic and environmental data,
 and some indicators may be added, dropped, or revised during those updates.
 For details on these updates and changes to datasets and indicators,
-please see \url{https://www.epa.gov/ejscreen} and in particular note the
+please see \href{https://www.epa.gov/ejscreen}{EJScreen} and in particular note the
 information about updates and changes here:
-\href{https://www.epa.gov/ejscreen/ejscreen-change-log}{EJScreen Change Log}{.uri target="_blank" rel="noreferrer noopener"}
-
-The American Community Survey 5-year summary file data are updated by
-the United States Census Bureau annually, after which EJScreen and EJAM are updated.
-\itemize{
-\item The August 2024 releases are called version 2.32 (EJAM/EJScreen) and use ACS 2018-2022.
-}
-}
-
-\section{\strong{Key Functions:}}{
-\itemize{
-\item \strong{\code{\link[=run_app]{run_app()}}} Launch the web app (R Shiny interface)
-\item \strong{\code{\link[=ejamit]{ejamit()}}} Get results (tables, maps, plots) without the web app interface, largely by using these key functions:
-\item \href{https://usepa.github.io/EJAM/reference/index.html#key-functions}{key functions}
-\item \href{https://usepa.github.io/EJAM/reference/index.html}{full documentation of all functions and datasets}
-}
-}
-
-\section{\strong{Data files used for distance calculation:}}{
-\itemize{
-\item \link{quaddata}
-\item see \code{\link[=dataload_from_pins]{dataload_from_pins()}}
-
-localtree is the index made from quaddata via \code{\link[=indexblocks]{indexblocks()}} (using the SearchTrees package)
-}
-
-Those are used in getblocksnearby with some sitepoints to create a temporary object called sites2blocks:
-}
-
-\section{\strong{Summarizing indicators in buffers:}}{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{  INPUT IS  `sites2blocks`,
-  OUTPUT IS results_overall, results_bysite, and other summary stats  ####
-}\if{html}{\out{</div>}}
-\itemize{
-\item \strong{\code{\link[=doaggregate]{doaggregate()}}} = function(sites2blocks) This summarizes in each buffer and for all unique residents across all buffers.
-\item \strong{\link{blockgroupstats}} a data.table with 220k rows (blockgroups) and hundreds of indicator columns.
-Will need bgid not just bgfips, to join to blockwts$bgid
-Needs to be updated each time EJScreen is updated.
-\item \strong{\link{bgej}} a data.table like blockgroupstats but for the EJ Index raw scores.
-\item \strong{\link{usastats}} and \strong{\link{statestats}}  data.table lookup of 100 percentiles and means
-(for each indicator in blockgroupstats, and bgej) in each zone (USA, or a state or DC, PR).
-Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen package file lookupUSA and lookupStates
-\item \strong{blockwts} see \code{\link[=dataload_from_pins]{dataload_from_pins()}}
-Required by \code{\link[=doaggregate]{doaggregate()}}. A data.table of 6-8m rows
-\itemize{
-\item blockwt  The fraction of parent blockgroup decennial pop that is in this one block
-\item block_radius_miles squared times pi would equal the land plus water area in square miles
-\item blockid (integer key  for join to sites2blocks)
-\item bgid   integer key instead of bgfips - For sum(blockwt), by=bgid, and for join to blockgroupstats$bgid.
-bgid is more efficient than bgfips. bgfips is not here but is in a bgid2fips data.table
-}
-}
-}
-
-\section{\strong{Output results for user:}}{
-\code{\link[=ejamit]{ejamit()}} (or \code{\link[=doaggregate]{doaggregate()}}) provides the following outputs:
-\itemize{
-\item \strong{results_overall}   one row data.table, like results_bysite, but just one row with
-aggregated results for all unique residents.
-\item \strong{results_bysite}   results for individual sites (buffers) - a data.table of results,
-one row per ejam_uniq_id (i.e., each site analyzed), one column per indicator
-\item \strong{results_bybg_people}  results for each block group, to allow for showing the distribution of each
-indicator across everyone within each demographic group.
-\item \strong{longnames}  descriptive long names for the indicators in the above outputs
-\item \strong{count_of_blocks_near_multiple_sites}  additional detail
-}
-}
-
-\section{\strong{Identification of nearby residents -- methodology:}}{
-EJAM uses the same approach as EJScreen does to identify the count and demographics of nearby residents,
-so EJScreen technical documentation should be consulted on the approach,
-at \href{https://www.epa.gov/ejscreen/technical-information-about-ejscreen}{EJScreen Technical Info}{.uri target="_blank" rel="noreferrer noopener"}.
-EJAM implements that approach using faster code and data formats, but it
-still uses the same high-resolution approach as described in EJScreen documentation
-and summarized below.
-
-The identification of nearby residents is currently done in a way that includes all 2020 Census blocks whose
-"internal point" (a lat/lon provided by the Census Bureau) is within the specified distance of the facility point.
-This is taken from the EJScreen block weights file, but can also be independently calculated.
-
-The summary or aggregation or "rollup" within the buffer is done by calculating the
-population-weighted average block group score among all the people residing in the buffer.
-The weighting is by population count for variables that are fractions of population,
-but other denominators and weights (e.g., households count) are used as appropriate,
-as explained in EJScreen technical documentation on the formulas, and
-replicated by formulas used in EJAM functions such as doaggregate().
-
-Since the blockgroup population counts are from American Community Survey (ACS) estimates,
-but the block population counts are from a decennial census, the totals for a blockgroup differ.
-The amount each partial blockgroup contributes to the buffer's overall score is based on
-the estimated number of residents from that blockgroup who are in the buffer.
-This is based on the fraction of the blockgroup population that is estimated to be in the buffer,
-and that fraction is calculated as the fraction of the blockgroup's decennial census block population
-that is in the census blocks inside the buffer.
-
-A given block is considered entirely inside or entirely outside the buffer,
-and those are used to more accurately estimate what fraction of a given block group's
-population is inside the buffer. This is more accurate and faster than areal apportionment of block groups.
-Census blocks are generally so small relative to typical buffers that this is very accurate -
-it is least accurate if a very small buffer distance is specified
-in an extremely low density rural area where a block can be geographically large.
-Although it is rarely if ever a significant issue (for reasonable, useful buffer sizes),
-an even more accurate approach in those cases might be either areal apportionment of blocks,
-which is very slow and assumes residents are evenly spread out across the full block's area,
-or else an approach that uses higher resolution estimates of residential locations than even
-the Decennial census blocks can provide, such as a dasymetric map approach.
+\href{https://www.epa.gov/ejscreen/ejscreen-change-log}{EJScreen Change Log}.
+Demographics are from the American Community Survey 5-year summary file data that are updated by
+the United States Census Bureau annually and then used in EJScreen/EJAM.
 }
 
 \seealso{
@@ -153,3 +41,4 @@ Useful links:
 }
 
 }
+\keyword{internal}

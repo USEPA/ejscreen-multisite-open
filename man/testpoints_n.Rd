@@ -7,9 +7,10 @@
 testpoints_n(
   n = 10,
   weighting = c("frs", "pop", "area", "bg", "block"),
-  dt = TRUE,
-  ST_needed = NULL,
-  validonly = TRUE
+  region = NULL,
+  ST = NULL,
+  validonly = TRUE,
+  dt = TRUE
 )
 }
 \arguments{
@@ -19,18 +20,32 @@ testpoints_n(
 
 Note the default is frs, but you may want to use pop even though it is slower.
 \itemize{
-\item pop or people = Average Person: random person among all US residents (block point of residence per 2020 Census)
+\item pop or people (slow) = Average Person: random person among all US residents (block point of residence per 2020 Census)
 \item frs or facility = Average Facility: random EPA-regulated facility from actives in Facility Registry Service (FRS)
 \item bg = Average Blockgroup: random US Census block group (internal point like a centroid)
 \item block = Average Block: random US Census block (internal point like a centroid)
 \item area or place = Average Place: random point on a map (internal point of avg blockgroup weighted by its square meters size)
 }}
 
-\item{dt}{logical, whether to return a data.table (DEFAULT) instead of normal data.frame}
+\item{region}{optional vector of EPA Regions (1-10) to pick from only some regions.}
 
-\item{ST_needed}{optional, can be a character vector of 2 letter State abbreviations to pick from only some States.}
+\item{ST}{optional, can be a character vector of 2 letter State abbreviations to pick from only some States.
+#' @examples
+mapfast(testpoints_n(300, ST = c('LA','MS')) )
+\dontrun{
+n=2
+for (d in c(TRUE,FALSE)) {
+  for (w in c('frs', 'pop', 'area', 'bg', 'block')) {
+    cat("n=",n,"  weighting=",w, "  dt=",d,"\n\n")
+    print(x <- testpoints_n(n, weighting = w, dt = d)); print(class(x))
+    cat('\n')
+  }
+}
+}}
 
 \item{validonly}{return only points with valid lat/lon coordinates. Defaults to TRUE.}
+
+\item{dt}{logical, whether to return a data.table (DEFAULT) instead of normal data.frame}
 }
 \value{
 data.frame or data.table with columns lat, lon in decimal degrees, and
@@ -40,18 +55,4 @@ any other columns that are in the table used (based on weighting)
 Get data.table of Random Points (lat lon) for Testing/ Benchmarking/ Demos, weighted in various ways.
 The weighting can be specified so that each point reflects the average EPA-regulated
 facility, blockgroup, block, place on the map, or US resident.
-}
-\examples{
-mapfast(testpoints_n(300, ST_needed = c('LA','MS')) )
-\dontrun{
-n=2
-for (d in c(TRUE,FALSE)) {
-  for (w in c('frs', 'pop', 'area', 'bg', 'block')) {
-    cat("n=",n,"  weighting=",w, "  dt=",d,"\n\n")
-    print(x <- testpoints_n(n,w,d)); print(class(x))
-    cat('\n')
-  }
-}
-}
- 
 }

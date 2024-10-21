@@ -4,9 +4,8 @@
 #' @param ... arguments to pass to golem_opts.
 #'   This can be used to pass some of the variables that otherwise would be set to
 #'   defaults defined in global.R, and currently can include the following:
-#'   
+#'   ```
 #'   run_app(
-#'   
 #'     default_default_miles=3.1, 
 #'     default_max_miles=31, 
 #'     default_max_mb_upload=100, 
@@ -14,18 +13,16 @@
 #'     advanced=TRUE, 
 #'     testing=TRUE, 
 #'     shiny.testmode=TRUE, 
-#'     
 #'     # and this will be implemented at some point: 
-#'     
-#'     sitepoints = mytable such as [testpoints_100]
+#'     sitepoints = mytable such as testpoints_100
 #'     ## or maybe
-#'     ## sitepoints = "path\latlondata.xlsx"
+#'     ## sitepoints = 'latlondata.xlsx'
 #'   )
-#'   
+#'   ```
 #'   This uses an internal function global_or_param()
 #'   
 #' @inheritParams shiny::shinyApp
-#' @return An object that represents the app. Printing the object or passing it to runApp() will run the app.
+#' @return An object that represents the app. Printing the object or passing it to [runApp()] will run the app.
 #' @seealso [app_run_EJAM()]
 #' @aliases app_run_EJAM
 #' 

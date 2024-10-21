@@ -233,8 +233,8 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
     z <- mapfast(mapinfo, radius = 0.005, ...) #  %>% 
     
     if (really_sitepoints) {
-      # overall circle centered on each site, to show radius of search
-      z <- leaflet::addCircles(z, lat = xpt$lat, lng = xpt$lon, radius = meters_per_mile * radius, color = "gray",
+      # overall circle centered on each site, to show radius of search   (units in meters for circles, and pixels for circle markers)
+      z <- leaflet::addCircles(z, lat = xpt$lat, lng = xpt$lon, radius = meters_per_mile *  as.vector(radius), color = "gray",
                                fillOpacity = 0.06, fillColor = "gray", opacity = 0.7  ) #  %>% # overall circle
       # site point in center of each circle
       z <- leaflet::addCircleMarkers( z, lat = xpt$lat, lng = xpt$lon, radius = 10, color = "red", opacity = 0.75) # %>%  # in pixels for center of circle=point 

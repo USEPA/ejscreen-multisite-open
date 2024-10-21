@@ -4,12 +4,19 @@
 \name{SIC}
 \alias{SIC}
 \title{SIC (DATA) named list of all SIC code numbers and category name for each}
+\format{
+An object of class \code{character} of length 1117.
+}
+\usage{
+SIC
+}
 \description{
 SIC (DATA) named list of all SIC code numbers and category name for each
 }
 \details{
-see \url{https://siccode.com}
+Also see \href{https://siccode.com}{SIC info}
 }
 \seealso{
 \link{SIC} \link{sictable} \code{\link[=sic_categories]{sic_categories()}}
 }
+\keyword{datasets}
