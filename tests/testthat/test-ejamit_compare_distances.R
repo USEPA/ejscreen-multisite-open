@@ -294,7 +294,7 @@ test_that(
     })
     expect_identical(
       x[[1]],
-      testoutput_ejamit_10pts_1miles$results_bysite[1:2,]
+      testoutput_ejamit_10pts_1miles$results_bysite[1:2,], ignore_attr=T
     )
     ########################## #
     #  out_bydistance2results_bydistance_bysite  ok

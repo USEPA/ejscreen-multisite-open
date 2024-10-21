@@ -53,7 +53,7 @@ sitepoints_from_any <- function(anything, lon_if_used, interactiveprompt = TRUE)
   
   ## check for ejam_uniq_id column;  add if not present
   if ('ejam_uniq_id' %in% names(sitepoints)) {
-    if (!all.equal(sitepoints$ejam_uniq_id, seq_along(sitepoints$ejam_uniq_id))) {
+    if (!isTRUE(all.equal(sitepoints$ejam_uniq_id, seq_along(sitepoints$ejam_uniq_id)))) {
       message("Note that ejam_uniq_id was already in sitepoints, and might not be 1:NROW(sitepoints), which might cause issues")
     }
   }

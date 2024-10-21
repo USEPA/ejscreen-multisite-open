@@ -115,3 +115,16 @@ test_that('below min returns zero with warning??',{
   
   expect_equal(val, c(0, 4, 4, 5))
 })
+
+
+
+test_that('order does not affect pctiles',{
+  
+     bysite <-  testoutput_ejamit_10pts_1miles$results_bysite
+     bysite <- bysite[c(2:10, 1),]
+    val <- pctile_from_raw_lookup(myvector = bysite$pctnhaiana,
+                                  varname.in.lookup.table = "pctnhaiana",
+                                  lookup = statestats, zone = bysite$ST)
+  
+  expect_equal(val, testoutput_ejamit_10pts_1miles$results_bysite$state.pctile.pctnhaiana[c(2:10, 1)])
+})
