@@ -6,7 +6,7 @@ if (1 == 0) {
   
   #                  to try it out
   # RUN THIS MINI APP ####
-  runApp(list(ui = ui_placespicker, server = server_placespicker),
+  shiny::runApp(list(ui = ui_placespicker, server = server_placespicker),
          test.mode = TRUE, quiet = TRUE)
   
 }

@@ -5,12 +5,14 @@
 \title{helper function - get county FIPS from exact countyname including, ST abbrev
 used by fips_counties_from_countyname()}
 \usage{
-fips_counties_from_countynamefull(fullname)
+fips_counties_from_countynamefull(fullname, exact = TRUE)
 }
 \arguments{
 \item{fullname}{exact (case-insensitive) name of
 county comma state abbreviation,
 like "Johnson County, TX". Ignores case.}
+
+\item{exact}{set to FALSE to use grep, but that can return more than one per input}
 }
 \value{
 the county FIPS (5 digits long with leading zero if needed, as character)

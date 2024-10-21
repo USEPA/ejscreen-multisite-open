@@ -15,7 +15,8 @@ mapfast(
 }
 \arguments{
 \item{mydf}{data.frame or data.table with lat and lon columns or
-columns that \code{\link[=latlon_infer]{latlon_infer()}} can infer to be that}
+columns that \code{\link[=latlon_infer]{latlon_infer()}} can infer to be that,
+or where ejam_uniq_id values are US County FIPS codes}
 
 \item{radius}{in miles, converted to meters and passed to leaflet::addCircles()}
 

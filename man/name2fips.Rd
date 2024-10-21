@@ -7,7 +7,7 @@
 \title{Get FIPS codes from names of states or counties
 inverse of fips2name(), 1-to-1 map statename, ST, countyname to FIPS of each}
 \usage{
-name2fips(x)
+name2fips(x, exact = TRUE)
 }
 \arguments{
 \item{x}{vector of 1 or more exact names of states or ST abbreviations or
@@ -15,6 +15,9 @@ countynames that include the comma and state abbrev., like
 "Harris County, TX"
 (not the same as where ST is separate in \code{\link[=fips_counties_from_countyname]{fips_counties_from_countyname()}})
 Ignores case.}
+
+\item{exact}{must match exactly but set to FALSE if you want partial matching
+and possibly more than one result for a query term x}
 }
 \value{
 vector of character fips codes
@@ -23,9 +26,17 @@ vector of character fips codes
 Get FIPS codes from names of states or counties
 inverse of fips2name(), 1-to-1 map statename, ST, countyname to FIPS of each
 }
+\details{
+CAUTION - for cities/ towns/ CDPs/ etc. (census places), this
+currently assumes a placename,ST occurs only once per state,
+but there are exceptions like Denver township, MI occurs twice for example,
+in 2 different counties of same state.
+}
 \examples{
 name2fips(c("de", "NY"))
 name2fips("rhode island")
 name2fips(c("delaware", "NY"))
+name2fips(c("Magnolia town, DE", "Delaware City city, DE"))
+name2fips(c('denver',  "new york" ), exact = F)
 
 }
