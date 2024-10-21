@@ -10,11 +10,11 @@ fill_tbl_row(output_df, Rname, longname)
 \item{output_df, }{single row of results table from doaggregate -
 either results_overall or one row of bysite}
 
+\item{Rname, }{variable name of indicator to pull from results,
+such as 'pm', 'pctlowinc', 'Demog.Index'}
+
 \item{longname, }{nicer name of indicator to use in table row;
 can include HTML sub/superscripts}
-
-\item{e, }{variable name of indicator to pull from results,
-such as 'pm', 'pctlowinc', 'Demog.Index'}
 }
 \description{
 Write a demog. or envt. indicator to an html table row

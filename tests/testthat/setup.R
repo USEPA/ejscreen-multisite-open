@@ -125,7 +125,7 @@ apinow$`Seconds elapsed obtaining data` <- NULL
 # outrest       <- ejscreenRESTbroker(lon = testlon, lat = testlat, radius = testradius)
 # outrest2table <- ejscreenRESTbroker2table(outrest, getstatefromplacename = TRUE)
 # out1          <- ejscreenapi1(lon = testlon,  lat = testlat, radius = testradius) # CAN SOMETIMES TAKE 30 SECONDS, SOMETIMES 5 SECONDS
-# out_api       <- ejscreenapi(lon = test2lon, lat = test2lat, radius = testradius, on_server_so_dont_save_files = TRUE, save_when_report = FALSE)
+suppressMessages( out_api       <- ejscreenapi(lon = test2lon, lat = test2lat, radius = testradius, on_server_so_dont_save_files = TRUE, save_when_report = FALSE)
 # x <- try(ejscreenRESTbroker(lon = testpoints_5$lon[1], lat = testpoints_5$lat[1], radius = testradius))
 # missing_api_results <- inherits(x, "try-error")
 

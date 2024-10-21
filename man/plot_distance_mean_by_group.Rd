@@ -20,6 +20,8 @@ plot_distance_mean_by_group(
 
 \item{demoglabel}{vector of labels like "Low Income Residents" etc.}
 
+\item{graph}{logical optional, set to FALSE to not show the barplot and only save the file of it}
+
 \item{returnwhat}{If returnwhat is "table", invisibly returns a
 data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup.
 If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir

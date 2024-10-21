@@ -79,14 +79,6 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, radius_donut_low
   # and buffer_indexdistance defined here in code but is never used anywhere...  
   # buffer_indexdistance <- ceiling(radius / indexgridsize)
   
-  if (class(quadtree) != "QuadTree") {
-    if (shiny::isRunning()) {
-      warning('quadtree must be an index created with indexblocks() or indexpoints(pts), from SearchTrees package with treeType = "quad" and dataType = "point"')
-      return(NULL)
-    } else {
-      stop('quadtree must be an index created with indexblocks() or indexpoints(pts), from SearchTrees package with treeType = "quad" and dataType = "point"')
-    }
-  }
   if (missing(sitepoints)) {
     if (shiny::isRunning()) {
       warning("sitepoints missing - see getblocksnearby()")
@@ -96,6 +88,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, radius_donut_low
     }
   }
   stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
+  
   if (missing(quadtree)) {
     if (shiny::isRunning()) {
       warning("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")
@@ -104,7 +97,15 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, radius_donut_low
       stop("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")
     }
   }
-  if (class(quadtree) != "QuadTree") {stop('quadtree=localtree is not class quadtree.  - see getblocksnearby() and indexblocks()')}
+  if (class(quadtree) != "QuadTree") {
+    if (shiny::isRunning()) {
+      warning('quadtree must be an index created with indexblocks() or indexpoints(pts), from SearchTrees package with treeType = "quad" and dataType = "point"')
+      return(NULL)
+    } else {
+      stop('quadtree must be an index created with indexblocks() or indexpoints(pts), from SearchTrees package with treeType = "quad" and dataType = "point"')
+    }
+  }
+  
   if (missing(radius)) {warning("radius missing so using default radius of 3 miles")}
   stopifnot(is.numeric(radius), radius <= 100, radius >= 0, length(radius) == 1,
             is.numeric(radius_donut_lower_edge), radius_donut_lower_edge <= 100, radius_donut_lower_edge >= 0, length(radius_donut_lower_edge) == 1)

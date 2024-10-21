@@ -19,6 +19,7 @@
 #' @param ok2plot optional logical, passed to  [table_xls_format()], whether safe to try and plot or set FALSE if debugging plot problems
 #' @param in.testing optional logical
 #' @param radius_or_buffer_in_miles optional radius in miles
+#' @param buffer_desc description of location to use in labels, like "Selected Locations"
 #' @param in.analysis_title optional title as character string
 #' @param react.v1_summary_plot optional - a plot object
 #' @param radius_or_buffer_description optional text phrase describing places analyzed

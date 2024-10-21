@@ -8,9 +8,7 @@ articles:
   2_quickstart: 2_quickstart.html
   3_analyzing: 3_analyzing.html
   4_advanced: 4_advanced.html
-  5_ejscreenapi: 5_ejscreenapi.html
-  6_future_plans: 6_future_plans.html
-last_built: 2024-09-26T19:07Z
+last_built: 2024-09-30T20:52Z
 urls:
   reference: https://usepa.github.io/EJAM/reference
   article: https://usepa.github.io/EJAM/articles

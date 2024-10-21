@@ -403,7 +403,9 @@ x
 
 Plot to compare sites, for just one demographic indicator
 
-This plot shows that % low income among residents at sites 5 and 6 is more than twice the relevant State average. It is near average at several other sites, and is less than half the State average at sites 4 and 10.
+This plot shows that % low income among residents at sites 5 and 6 is more than
+twice the relevant State average. It is near average at several other sites, and
+is less than half the State average at sites 4 and 10.
 
 ```{r ejam2barplot_sites10, fig.cap="Example of ejam2barplot_sites()", fig.alt="Example of ejam2barplot_sites() showing to state average percent low income, one bar per site, where sites 5 and 6 have ratios above 2", eval=TRUE, echo=TRUE}
 ejam2barplot_sites(out, "ratio.to.state.avg.pctlowinc", topn = 10, sortby = F)
@@ -411,7 +413,6 @@ ejam2barplot_sites(out, "ratio.to.state.avg.pctlowinc", topn = 10, sortby = F)
 ## For raw values at key sites:
 # ejam2barplot_sites(out, "pctlowinc")
 ```
-
 
 ### WITHIN MULTIPLE DISTANCES - COMPARING RADIUS CHOICES
 
@@ -535,15 +536,16 @@ site.
 ### Cumulative Distribution plots of groups as *a continuous function of distance*
 
 Out of all the residents within the area analyzed, see how some are mostly
-nearby and others are further away, as a CDF plot. This shows the share of each 
-demographic group residing at various distances from sites, with distance from nearest
-site on the x axis and the cumulative share of each group on the y axis (of all residents
-within 10 miles, what percent have a site within X miles?). It compares everyone nearby
-to just those who are among the percent low income, and shows that,
-for example, a larger share of all the low income population within 10 miles actually
-live within about 6 miles than is the case for everyone within 10 miles. In other 
-words, within the 10 mile radius circles, more of the low income residents are
-closer to a site than are the non-low income residents or all residents.
+nearby and others are further away, as a CDF plot. This shows the share of each
+demographic group residing at various distances from sites, with distance from
+nearest site on the x axis and the cumulative share of each group on the y axis
+(of all residents within 10 miles, what percent have a site within X miles?). It
+compares everyone nearby to just those who are among the percent low income, and
+shows that, for example, a larger share of all the low income population within
+10 miles actually live within about 6 miles than is the case for everyone within
+10 miles. In other words, within the 10 mile radius circles, more of the low
+income residents are closer to a site than are the non-low income residents or
+all residents.
 
 ```{r distance_by_group_plot1, fig.cap="Example of using distance_by_group_plot()", eval=TRUE}
  # out <- ejamit(testpoints_10, radius = 10)
@@ -566,8 +568,9 @@ single demographic group, one group at a time, and comparing these groups.
 
 *Mean distance* of each group, at the *OVERALL LIST of sites* as a whole
 
-To see a table of demographic indicators, showing the mean distance for each group,
-compared to distance for those not in that demographic group:
+To see a table of demographic indicators, showing the mean distance for each
+group, compared to distance for those not in that demographic group:
+
 ```{r distance_mean_by_group_1, eval=TRUE}
 
 out <- testoutput_ejamit_1000pts_1miles
@@ -584,13 +587,13 @@ print(distance_mean_by_group(
 ```
 
 To see a barplot, comparing just race/ethnicity groups:
+
 ```{r plot_distance_mean_by_group999, fig.cap="Example of using plot_distance_mean_by_group()", fig.alt="Example of using plot_distance_mean_by_group() showing 8 race ethnic subgroups on x axis and average distance for those in group as ratio to distance for residents not in given group, with yellow bars for hispanic and hawaiian/PI nonhispanic yellow meaning they are closer than overall average resident and orange for American Indian nonhispanic alone meaning they are only 93% as far as everyone else, 0.64 vs 0.69 miles away", eval=TRUE}
 plot_distance_mean_by_group(out$results_bybg_people, 
                        demogvarname = names_d_subgroups,
                        demoglabel = fixcolnames(names_d_subgroups, "r", "shortlabel")
                        )
 ```
-
 
 ### Site by site comparison
 
@@ -733,7 +736,10 @@ To help consider this uncertainty, EJAM reports how many block centroids were
 found inside each area (inside a circular buffer defined by the selected radius,
 or inside a polygon that is from a shapefile). That count of blocks is found in
 a column of the spreadsheet output provided by the web app and also the table
-called results_bysite that is one output of the ejamit() function:
+called results_bysite that is one output of the ejamit() function.
+
+You could also [Map all sites with popup at each saying how many blocks were
+found nearby] and therefore might have more uncertainty in counts nearby.
 
 ```{r barplot_How_many_blocks_are_within_1_mile, fig.cap="How many blocks are within 1 mile of these 1,000 facilities?", fig.alt="barplot with count of facilities on y axis, 4 bars showing around 150 sites have <10 blocks within 1 mile, same for about 10-29 blocks nearby, around 300 sites have 30-100 blocks nearby, and >400 sites have over 100 blocks nearby"}
 # out <- ejamit(testpoints_1000, radius = 1)
@@ -754,7 +760,10 @@ barplot(
 
 For more details about distance adjustments, overlaps of circles, etc.
 
-This function prints a very large amount of diagnostic information, and provides a barplot histogram showing in this case that almost none of the 1000 sites have zero blocks within a mile but roughly 10-15% have under 10 blocks nearby and a similar share have only 10-29 blocks nearby.
+This function prints a very large amount of diagnostic information, and provides
+a barplot histogram showing in this case that almost none of the 1000 sites have
+zero blocks within a mile but roughly 10-15% have under 10 blocks nearby and a
+similar share have only 10-29 blocks nearby.
 
 ```{r diagnosticsdetails, eval=FALSE, echo=TRUE}
 # (Printed information is lengthy)
@@ -845,8 +854,10 @@ x <- getblocks_diagnostics(sites2blocks)
 
 #### Map 1 site to inspect the blocks nearby
 
-Clicking on a block point provides a popup window showing information such as this:
-```
+Clicking on a block point provides a popup window showing information such as
+this:
+
+```         
 blockfips: 131850102031056
 blockid: 1788737
 blocklat: 30.9913730000001
@@ -970,28 +981,29 @@ summary(s2b_stats)
 ## done previously:
 # radius <- 3
 # sitepoints <- testpoints_100
-# sites2blocks <- getblocksnearby(sitepoints, radius, quadtree = localtree, quiet = TRUE)
-# s2b_stats <- sites2blocks[ , .(
-#   avgDistance = round(mean(distance), 2),
-#   blocksfound = .N, 
-#   blocks_within_1mile = sum(distance <= 1),
-#   blocks_within_0.75   = sum(distance <= 0.75),
-#   blocks_within_0.25  = sum(distance <= 0.25)
-# ), by = 'ejam_uniq_id'][order(blocksfound), ]
-# setorder(s2b_stats, ejam_uniq_id)
 
-if (!('ejam_uniq_id' %in% names(sitepoints))) {
-  sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
-}
-s2b_stats <- merge(sitepoints, s2b_stats, by = "ejam_uniq_id")
+out <- ejamit(sitepoints = sitepoints, 
+              radius = radius, include_ejindexes = F)
+
+few <- out$results_bysite$blockcount_near_site < 30
+
+mapthis <- cbind(
+  sitepoints, 
+  out$results_bysite[, c(
+    "pop", "bgcount_near_site", "blockcount_near_site"
+    )],
+  NOTE = ifelse(few, "< 30 blocks here", "")
+  )
 
 # Show in red the sites with very few blocks nearby, suggesting more uncertainty in demographic counts
 
-few <- s2b_stats$blocks_within_1mile < 30
-mm <- mapfast(s2b_stats, radius = radius)
+mm <- mapfast(mapthis, radius = radius, color = 'navy')
 mm |> leaflet::addCircles(
-  lng = s2b_stats$lon[few], 
-  lat = s2b_stats$lat[few], color = "red", popup = popup_from_any(s2b_stats[few, ]))  
+    lng = mapthis$lon[few], 
+    lat = mapthis$lat[few], 
+    color = "red", radius = radius * 2 * meters_per_mile,
+    popup = popup_from_any(mapthis[few, ])
+)
 ```
 
 #### Some places have very few -- if any -- blocks within 1 mile
@@ -1016,19 +1028,21 @@ leastdense <- s2b_stats$ejam_uniq_id[order(
 ```
 
 ```{r, doplotblocksnotshowoutput, fig.cap="Map very high density area with 4,596 blocks near the site, via plotblocksnearby()", eval=TRUE, echo=FALSE}
-plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
+# radius <- 3
+sitepoints <- testpoints_100
+plotblocksnearby(sitepoints = sitepoints[densest, ])
 ```
 
 ```{r showplotblockscommandnotdoit, eval=FALSE, echo=TRUE, include=TRUE}
-plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
+plotblocksnearby(sitepoints = sitepoints[densest, ])
 ```
 
 ```{r, doplotblocksnotshowoutput_lowdensity, fig.cap="Map very low density area with 11 blocks near the site, via plotblocksnearby()", eval=TRUE, echo=FALSE}
-plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == leastdense, ])
+plotblocksnearby(sitepoints = sitepoints[ leastdense, ])
 ```
 
 ```{r showplotblockscommandnotdoit_lowdensity, eval=FALSE, echo=TRUE, include=TRUE}
-plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == leastdense, ])
+plotblocksnearby(sitepoints = sitepoints[ leastdense, ])
 ```
 
 Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the
