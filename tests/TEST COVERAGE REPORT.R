@@ -289,7 +289,7 @@ tdat[!is.na(tdat$test) & !is.na(tdat$R), c("R", "test")] |> print(n = 500)
 # 4 R/ejamit.R                         tests/testthat/test-ejamit.R                        
 # 5 R/ejamit_compare_distances.R       tests/testthat/test-ejamit_compare_distances.R      
 # 6 R/ejamit_compare_types_of_places.R tests/testthat/test-ejamit_compare_types_of_places.R
-# 7 R/ejamit_sitetype_check.R          tests/testthat/test-ejamit_sitetype_check.R         
+   # 7 R/ejamit_sitetype_check.R          tests/testthat/test-ejamit_sitetype_check.R         renaming to ejamit_sitetype_from_input
 # 8 R/ejscreenapi.R                    tests/testthat/test-ejscreenapi.R                   
 # 9 R/ejscreenapi1.R                   tests/testthat/test-ejscreenapi1.R                  
 # 10 R/ejscreenapi_plus.R               tests/testthat/test-ejscreenapi_plus.R              

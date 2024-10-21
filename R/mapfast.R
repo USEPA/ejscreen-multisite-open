@@ -9,9 +9,9 @@
 #' @return like what [mapfast()] returns
 #' @export
 #'
-mapfastej <- function(...) {
+mapfastej <- function(mydf, radius = 3, column_names = 'ej', labels = column_names, browse = FALSE, color = "#03F") {
 
-  mapfast(..., column_names = 'ej')
+  mapfast(mydf = mydf, radius = radius, column_names = column_names, labels = labels, browse = browse, color = color)
 }
 ############################################################################ #
 
@@ -55,9 +55,11 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
   if (column_names[1] == 'ej') {
     
     ejcols <- c(names_ej, names_ej_state, names_ej_supp, names_ej_supp_state)
-    if(!all(ejcols %in% names(mydf))){
-      warning('Not all EJ columns found. Please provide a different dataset.')
-      return(NA)
+    if (!all(ejcols %in% names(mydf))) {
+      warning('Not all EJ columns found. Using NA values for all EJ indexes in map popups.')
+      ejna <- data.frame(matrix(ncol = length(ejcols), nrow = NROW(mydf)))
+      names(ejna) <- ejcols
+      mydf <- cbind(mydf, ejna)
     }
     # popup_from_ejscreen() code was written to assume rnames (as from ejscreenapi_plus) not longnames (as from ejscreenit),
     # so try to accomodate that here if user provided output of ejscreenit() or long names in general
@@ -68,9 +70,9 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
   } else if (column_names[1] == 'all') {
     mypop <- popup_from_df(mydf)
   } else {
-      if(!all(column_names %in% names(mydf))){
-        warning('Not all column_names found. Mapping without popups. Please provide a different list to include popups.')
-        mypop <- NULL
+      if (!all(column_names %in% names(mydf))) {
+        warning('Not all column_names found. Using actual colnames of table.')
+        mypop <- popup_from_df(mydf)
       } else {
         mypop <- popup_from_df(mydf, column_names = column_names, labels = labels)
       }

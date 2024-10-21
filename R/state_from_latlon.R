@@ -50,7 +50,6 @@ state_from_nearest_block_bysite <- function(s2b) {
 #' Takes 3 seconds to find state for 1k points, so a faster alternative would be useful
 #' @param lon longitudes vector
 #' @param lat latitudes vector
-#' @param shapefile shapefile of US States, in package already
 #' @seealso [states_shapefile] [get_blockpoints_in_shape()] [state_from_sitetable()]
 #' @return Returns data.frame: ST, statename, FIPS.ST, REGION, n
 #'   as many rows as elements in lat or lon
@@ -64,7 +63,9 @@ state_from_nearest_block_bysite <- function(s2b) {
 #'
 #' @export
 #'
-state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
+state_from_latlon <- function(lat, lon) {
+  
+ #  states_shapefile   <- EJAM::states_shapefile
   
   # if just a table was provided try to accept that- could use latlon_from_anything() but that may be slower and overkill
   if (missing(lon) && !missing(lat) && is.data.frame(lat) && "lon" %in% names(lat) && "lat" %in% names(lat)) {
@@ -151,6 +152,20 @@ state_from_blockid_table <- function(dt_with_blockid) {
 ##################################################################################################### #
 
 
+#' given vector of blockids, get bgid of each (the parent block group)
+#'
+#' @param blockid vector of block ids like in blockwts data.table or blockpoints
+#'
+#' @return vector of bgid values
+#' 
+#' @keywords internal
+#'
+bgid_from_blockid = function(blockid) {
+  blockwts[data.table(blockid = blockid), .(bgid, blockid), on = "blockid"]$bgid
+  }
+##################################################################################################### #
+
+
 #' given vector of blockids, get state abbreviation of each
 #' unused. Not needed if you have sites2blocks table that includes a bgid column
 #' 
@@ -191,7 +206,7 @@ state_from_blockid <- function(blockid) {
 #' @export
 #'
 state_from_fips_bybg <- function(fips, uniqueonly=FALSE) {
-  warning("This function provides the states of ALL blockgroups within the FIPS, not just one state per fips. see also fips2state_abbrev() ")
+  message("This function provides the states of ALL blockgroups within the FIPS, not just one state per fips. see also fips2state_abbrev() ")
   fips <- fips_bg_from_anyfips(fips) # returns all the blockgroups fips codes that match, such as all bg in the state or county
   x <- stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
   if (uniqueonly) {return(unique(x))} else {return(x)}

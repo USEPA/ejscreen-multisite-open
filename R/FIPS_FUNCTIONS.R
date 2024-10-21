@@ -381,11 +381,11 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
   ## create named vector of FIPS codes (names used as location id)
   # *** see also fixnames_aliases() and fixcolnames_infer()
   fips_alias <- c('fips', 'FIPS', 'Fips', 'fips_code', 'fipscode',
-                  'blockfips', 
-                  'bgfips', 'blockgroupfips', 'blockgroup_fips', 'blockgroup_fips_code',
-                  'FIPS.TRACT', 'tractfips', 'tract_fips',
+                  'statefips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST',
                   'countyfips', 'FIPS.COUNTY',
-                  'statefips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST'
+                  'FIPS.TRACT', 'tractfips', 'tract_fips',
+                  'bgfips', 'blockgroupfips', 'blockgroup_fips', 'blockgroup_fips_code',
+                  'blockfips'
   )
   if (any(tolower(colnames(fips_table)) %in% fips_alias)) {
     firstmatch <- intersect(fips_alias, colnames(fips_table))[1]
@@ -847,7 +847,7 @@ fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact=FAL
     exactmatches = fips_counties_from_countynamefull(cfull)
   })
   ### cfull = cfull[!is.na(exactmatches)]
-  # countyname_start_unmatched = countyname_start[is.na(exactmatches)]
+  countyname_start_unmatched = countyname_start[is.na(exactmatches)]
   # stnow = stnow[is.na(exactmatches)]
   # 
   # exactmatches <- exactmatches[!is.na(exactmatches)]
@@ -887,7 +887,7 @@ fips_counties_from_countyname <- function(countyname_start, ST = NULL, exact=FAL
 
 #' helper function - get county FIPS from exact countyname including, ST abbrev
 #' used by fips_counties_from_countyname()
-#' @param countyname_start exact (case-insensitive) name of 
+#' @param fullname exact (case-insensitive) name of 
 #'   county comma state abbreviation, 
 #'   like "Johnson County, TX". Ignores case.
 #' @seealso [fips_counties_from_countyname()]

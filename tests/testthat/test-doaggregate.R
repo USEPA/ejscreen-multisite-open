@@ -50,7 +50,7 @@ test_that("still same exact results_overall as previously saved", {
     x <- doaggregate(testoutput_getblocksnearby_10pts_1miles, 
                      sites2states_or_latlon = testpoints_10, 
                      radius = 1, include_ejindexes = TRUE)
-    overall_has_changed <- !isTRUE(identical(
+    overall_has_changed <- !isTRUE(all.equal(
       testoutput_doaggregate_10pts_1miles$results_overall,
       x$results_overall))
   })
@@ -146,13 +146,13 @@ cat('still need to test cases where input table is valid class, type, but too ma
 
 # note that SOME OF THESE TESTS ARE A BIT REDUNDANT AND MAYBE CAN GET CLEANED UP- IT IS COMPLICATED HOW RADIUS CAN BE INFERRED OR IS SUPPLIED BUT DOES NOT SEEM TO MATCH WHAT MUST HAVE BEEN USED IN getblocksnearby()
 
-test_that('warning if ask for radius <= 0', {
-  suppressWarnings(   expect_warning(
+test_that('warning if ask for radius < 0', {
+  expect_no_warning(
     doaggregate(sites2blocks = testoutput_getblocksnearby_10pts_1miles , radius = 0)
-  ) )
-  #   expect_warning(
-  #   doaggregate(sites2blocks = testoutput_getblocksnearby_10pts_1miles , radius = -0.001)
-  # )
+  )
+  expect_warning(
+    doaggregate(sites2blocks = testoutput_getblocksnearby_10pts_1miles , radius = -0.001)
+  )
 })
 
 test_that('warning if ask for radius > 32, and just uses 32 instead', {

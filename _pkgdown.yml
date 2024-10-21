@@ -43,14 +43,19 @@ articles:
   - '`3_analyzing`'
   - '`4_advanced`'
 reference:
-- title: "Key Functions"
-  desc: "The Main High-Level Functions in EJAM"
+- title: "Key Functions for Starting an Analysis"
+  desc: "Starting the Analysis"
   contents:
   - EJAM
   - app_run_EJAM
   - ejamit
   - ejamit_compare_distances
   - ejamit_compare_types_of_places
+  - app_run_EJAMejscreenapi
+  - ejscreenit_for_ejam
+- title: "Key Functions for Viewing Results"
+  desc: "Viewing the Results"
+  contents:
   - ejam2excel
   - ejam2report
   - ejam2map
@@ -63,7 +68,6 @@ reference:
   - ejam2tableviewer
   - ejam2table_tall
   - ejam2shapefile
-  - ejscreenit_for_ejam
 - title: "Specify Points by Lat/Lon"
   desc: "Utilities for working with latitude/ longitude or address"
   contents:
@@ -360,11 +364,10 @@ reference:
 - title: "Utilities / Misc."
   contents:
   - run_app
-  - dataload_from_local
   - dataload_from_pins
   - dataload_from_urlpins
+  - dataload_from_local
   - dataload_from_aws
-  - ejampackages
 - title: "EJScreen API"
   desc: "EJAM-EJScreen and using the EJScreen API"
   contents:
@@ -384,7 +387,7 @@ reference:
   - datawrite_to_pins
   - datawrite_to_local
   - colcounter
-  - ejscreen_vscript
+  - ejscreen_vs
   - ejscreen_vs_ejam_1var
   - ejscreen_vs_ejam
   - ejscreenapi2ejam_format
@@ -421,8 +424,6 @@ reference:
   - testoutput_ejscreenapi_1pts_1miles
   - testoutput_ejscreenRESTbroker_1pts_1miles
   - format_ejamit_columns
-  - table_round
-  - table_rounding_info
   - table_order_variables
   - custom_ejamit
   - custom_doaggregate
@@ -566,3 +567,6 @@ reference:
   - shapefile_filepaths_validize
   - shapefile_from_json
   - sitepoints_from_anything
+  - table_round
+  - table_rounding_info
+  - ejampackages
