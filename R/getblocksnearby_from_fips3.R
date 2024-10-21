@@ -22,7 +22,7 @@
 #'   # y=doaggregate(x)
 #' @seealso [getblocksnearby()] [fips_bgs_in_fips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
 #' 
-#' @export
+#' @keywords internal
 #'
 getblocksnearby_from_fips3 <- function(fips, inshiny = FALSE, need_blockwt = TRUE) {
   

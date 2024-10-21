@@ -7,9 +7,13 @@
 frs_from_programid(programname, programid)
 }
 \arguments{
-\item{programname}{acronym for EPA program, as found in \code{epa_programs}}
+\item{programname}{name of EPA program that the programid is from:
+"RCRAINFO" is the programname and "XJW000000174" is the programid
+if the full record was  RCRAINFO:XJW000000174}
 
-\item{programid}{program system ID, such as "XJW000012435"}
+\item{programid}{like "XJW000000174"
+"RCRAINFO" is the programname and "XJW000000174" is the programid
+if the full record was  RCRAINFO:XJW000000174}
 }
 \value{
 relevant rows of the data.table called frs, which has column names that are

@@ -1,6 +1,5 @@
 
 
-#' @export
 #' @keywords internal
 #' 
 fips_bgs_in_fips1 <- function(fips) {
