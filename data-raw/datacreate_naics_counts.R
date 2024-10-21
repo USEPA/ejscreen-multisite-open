@@ -32,3 +32,8 @@ naics_counts <- tibble::enframe(NAICS,value = 'NAICS') %>%
 # naics_counts <- metadata_add(naics_counts)
 attr(naics_counts, "date_saved_in_package") <- as.character(Sys.Date())
 usethis::use_data(naics_counts, overwrite = TRUE)
+
+dataset_documenter("naics_counts",
+                   title = "naics_counts (DATA) data.frame with regulated facility counts for each industry code",
+                   description = "data.frame with regulated facility counts for each NAICS code, with and without subcodes, and labels that include the site counts",
+                   details = "This has all available NAICS codes, the count of sites for each of them in the frs data, both on their own and including all subcodes. Used by EJAM shiny app for dropdown menu.")

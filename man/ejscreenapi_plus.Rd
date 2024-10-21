@@ -11,6 +11,7 @@ ejscreenapi_plus(
   unit = "miles",
   wkid = 4326,
   fips = NULL,
+  shapefile = NULL,
   report_every_n = 100,
   save_when_report = FALSE,
   format_report_or_json = "pjson",
@@ -37,6 +38,8 @@ or data.frame or data.table with lat,lon}
 
 \item{fips}{if used instead of lon,lat it should be a character FIPS code vector
 (counties, tracts, or blockgroups)}
+
+\item{shapefile}{not implemented}
 
 \item{report_every_n}{default is to provide an update every so often}
 

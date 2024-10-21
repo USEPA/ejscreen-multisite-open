@@ -51,6 +51,7 @@ format_ejamit_columns <- function(df, nms=c()){
     colname <- nms[i]
     cur_value <- df[[colname]]
     
+    
     if(!is.numeric(cur_value)){
       warning(paste("Skipping non numeric:", colname))
       next
@@ -81,6 +82,7 @@ format_ejamit_columns <- function(df, nms=c()){
     
   }
   
+  df[is.na(df)] <- "N/A"
   return(df)
   #names(formatted_values) <- nms
   #return(formatted_values)

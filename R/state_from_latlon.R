@@ -50,7 +50,6 @@ state_from_nearest_block_bysite <- function(s2b) {
 #' Takes 3 seconds to find state for 1k points, so a faster alternative would be useful
 #' @param lon longitudes vector
 #' @param lat latitudes vector
-#' @param shapefile shapefile of US States, in package already
 #' @seealso [states_shapefile] [get_blockpoints_in_shape()] [state_from_sitetable()]
 #' @return Returns data.frame: ST, statename, FIPS.ST, REGION, n
 #'   as many rows as elements in lat or lon
@@ -64,7 +63,9 @@ state_from_nearest_block_bysite <- function(s2b) {
 #'
 #' @export
 #'
-state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
+state_from_latlon <- function(lat, lon) {
+  
+ #  states_shapefile   <- EJAM::states_shapefile
   
   # if just a table was provided try to accept that- could use latlon_from_anything() but that may be slower and overkill
   if (missing(lon) && !missing(lat) && is.data.frame(lat) && "lon" %in% names(lat) && "lat" %in% names(lat)) {
@@ -110,17 +111,12 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
 ##################################################################################################### #
 
 
-#' given data.table with blockid column, get state abbreviation of each block
-#' unused. If, as in sites2blocks tables, bgid is a column, it uses that.
+#' state_from_blockid_table was used in some special cases e.g., in testpoints_n()
 #'
+#' given data.table with blockid column, get state abbreviation of each - not used?
 #' @param dt_with_blockid
 #'
 #' @return vector of ST info like AK, CA, DE, etc.
-#' @details
-#'  It is much faster than using latlon to identify state.
-#'  see examples for unexported  state_from_blockid() 
-#' 
-#' @seealso unexported state_from_blockid() and [state_from_s2b_bysite()]
 #'
 #' @examples
 #' x = sample(blockpoints$blockid, 3)
@@ -135,10 +131,11 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
 #' @keywords internal
 #'
 state_from_blockid_table <- function(dt_with_blockid) {
-   
+  
+  ## TEMPORARILY UPDATED BUT FURTHER EDITS IN BRANCH TO BE MERGED SOON
+  
   if ("bgid" %in% names(dt_with_blockid)) {
     
-    message("found bgid column and assuming it is valid so we do not have to use blockid to get ST")
     return(blockgroupstats[dt_with_blockid, ST, on = "bgid"])
     
   } else {
@@ -148,23 +145,30 @@ state_from_blockid_table <- function(dt_with_blockid) {
     # then use bgid to get ST from blockgroupstats table
     
     return(blockgroupstats[blockwts[dt_with_blockid, .(bgid, blockid), on = "blockid"], ST, on = "bgid"])
+    
   }
   
 }
 ##################################################################################################### #
 
 
+#' given vector of blockids, get bgid of each (the parent block group)
+#'
+#' @param blockid vector of block ids like in blockwts data.table or blockpoints
+#'
+#' @return vector of bgid values
+#' 
+#' @keywords internal
+#'
+bgid_from_blockid = function(blockid) {
+  blockwts[data.table(blockid = blockid), .(bgid, blockid), on = "blockid"]$bgid
+  }
+##################################################################################################### #
+
+
 #' given vector of blockids, get state abbreviation of each
 #' unused. Not needed if you have sites2blocks table that includes a bgid column
-#'
-#' @details This is much faster than using latlon to identify state
 #' 
-#'  test1000 = blockpoints[sample(seq_len(NROW(blockpoints)), 1000), ]
-#' 
-#'  system.time({ state_from_blockid(test1000$blockid) })
-#'  
-#'  system.time({ state_from_latlon(lat = test1000$lat, lon = test1000$lon) })
-#'  
 #' @param blockid vector of blockid values as from EJAM in a table called blockpoints
 #' @seealso unexported state_from_blockid_table() 
 #' @return vector of ST info like AK, CA, DE, etc.
@@ -175,19 +179,6 @@ state_from_blockid_table <- function(dt_with_blockid) {
 #' 
 #' all.equal(state_from_blockid(x), state_from_blockid_table(blockpoints[blockid %in% x, ]))
 #' 
-#' ## How many of the 8 million+ blockpoints are in each state?
-#' 
-#' data.table(ST = state_from_blockid(blockpoints$blockid))[, .(blockcount = .N), by = "ST"]
-#' 
-#' test1000 = blockpoints[sample(seq_len(NROW(blockpoints)), 999), ]
-#' test1000 = rbind(test1000, blockpoints[blockid == 915525, ]) # at least 1 from CA
-#' test1000$ST = state_from_blockid(test1000$blockid) 
-#'  mapfast(test1000, color = "green") %>% 
-#'    addCircles(
-#'      lat = test1000$lat[test1000$ST == "CA"], 
-#'      lng = test1000$lon[test1000$ST == "CA"], 
-#'      color = "red")
-#'      
 #' @keywords internal
 #'
 state_from_blockid <- function(blockid) {
@@ -212,11 +203,11 @@ state_from_blockid <- function(blockid) {
 #' @seealso [fips2state_abbrev()] to get just one state per FIPS
 #' @return vector of 2-character state abbreviations like CA,CA,CA,MD,MD,TX
 #'
-#' @keywords internal
+#' @export
 #'
 state_from_fips_bybg <- function(fips, uniqueonly=FALSE) {
-  warning("This function provides the states of ALL blockgroups within the FIPS, not just one state per fips. see also fips2state_abbrev() ")
-  fips <- fips_bgs_in_fips(fips) # returns all the blockgroups fips codes that match, such as all bg in the state or county
+  message("This function provides the states of ALL blockgroups within the FIPS, not just one state per fips. see also fips2state_abbrev() ")
+  fips <- fips_bg_from_anyfips(fips) # returns all the blockgroups fips codes that match, such as all bg in the state or county
   x <- stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
   if (uniqueonly) {return(unique(x))} else {return(x)}
 }

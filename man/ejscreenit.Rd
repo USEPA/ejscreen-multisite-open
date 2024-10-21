@@ -10,6 +10,7 @@ ejscreenit(
   radius = 3,
   maxradiusmiles = 10,
   fips = NULL,
+  shapefile = NULL,
   nosave = TRUE,
   nosee = TRUE,
   save_map = TRUE,
@@ -22,7 +23,7 @@ ejscreenit(
   calculate_ratios = TRUE,
   nicenames = TRUE,
   folder = ".",
-  getstateinfofromplacename = TRUE,
+  getstatefromplacename = TRUE,
   ...
 )
 }
@@ -44,6 +45,8 @@ prompted to select a file from a local drive.
 \item{maxradiusmiles}{optional in case you want to use a radius of more than default cap}
 
 \item{fips}{if used instead of x,y it can specify fips codes of counties, tracts, or blockgroups}
+
+\item{shapefile}{not implemented}
 
 \item{nosave}{logical, if TRUE, sets as FALSE and overrides save_map, save_plot, save_table. Ignored if FALSE.}
 
@@ -72,11 +75,11 @@ e.g.,  "Particulate Matter (PM 2.5 in ug/m3)" not "pm"}
 \item{folder}{full path of directory in which to save files like map, plot, table
 Default is working directory.}
 
-\item{...}{passed to \code{\link[=ejscreenapi_plus]{ejscreenapi_plus()}}}
-
 \item{getstatefromplacename}{set to FALSE if you need the exact output of API and
 TRUE if you want to try to extract ST abbrev and statename from the placename field,
 which is more likely to be correct than the stateAbbr and stateName fields in the API output.}
+
+\item{...}{passed to \code{\link[=ejscreenapi_plus]{ejscreenapi_plus()}}}
 }
 \value{
 Returns a list with map, boxplot, table
@@ -199,8 +202,7 @@ Also used are
 \dontrun{
  pts <- testpoints_50[1:3, ] # sample data from package
  mapfast(pts)
- #pts <- system.file("testdata/testpoints_12.xlsx",    package="EJAMejscreenapi") 
- #pts <- system.file("testdata/testpoints_5.csv",package="EJAMejscreenapi") 
+ #pts <- system.file("testdata/latlon/testpoints_10.xlsx", package="EJAM") 
  if (interactive)
  
  x <- ejscreenit(pts, 

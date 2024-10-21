@@ -3,9 +3,17 @@
 \docType{data}
 \name{naics_counts}
 \alias{naics_counts}
-\title{naics_counts (DATA) data.frame with counts for each NAICS code, with and without subcodes, and labels that include the site counts}
-\description{
-This is a data frame containing 2200 NAICS codes (as of 3/2024), the count of sites for each of them in the frs data, both on their own and including all subcodes. Used by EJAM shiny app for dropdown menu.
-
-@seealso \link{frs_by_naics}
+\title{naics_counts (DATA) data.frame with regulated facility counts for each industry code}
+\format{
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 2200 rows and 6 columns.
 }
+\usage{
+naics_counts
+}
+\description{
+data.frame with regulated facility counts for each NAICS code, with and without subcodes, and labels that include the site counts
+}
+\details{
+This has all available NAICS codes, the count of sites for each of them in the frs data, both on their own and including all subcodes. Used by EJAM shiny app for dropdown menu.
+}
+\keyword{datasets}

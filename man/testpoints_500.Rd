@@ -11,16 +11,6 @@ An object of class \code{data.frame} with 500 rows and 4 columns.
 testpoints_500
 }
 \description{
-Examples of what could be input to functions
-that needs points specified by lat lon
-}
-\details{
-Just for convenience, these are installed with the package, and are
-the equivalent of results of reading the .xlsx test data files.
-}
-\seealso{
-\link{testpoints_5} \link{testpoints_50} \link{testpoints_500}
-
-\link{testoutput_ejscreenit_5} \link{testoutput_ejscreenit_50} \link{testoutput_ejscreenit_500}
+test points data.frame with columns sitenumber, lat, lon
 }
 \keyword{datasets}

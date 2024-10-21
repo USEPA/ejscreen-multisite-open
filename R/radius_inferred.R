@@ -46,7 +46,7 @@ radius_inferred <- function(s2b = NULL, decimalsreported = 2,
   
   #  guesstimate <- round(max(s2b$distance, na.rm = TRUE), 1)  # this was a simplified way to get a rough estimate for radius but now uses radius_inferred()
   
-  if (is.null(s2b)) {s2b <- data.table::copy( sites2blocks_example1000pts_1miles)}
+  if (is.null(s2b)) {s2b <- data.table::copy(testoutput_doaggregate_1000pts_1miles)}
   if (!data.table::is.data.table(s2b)) { data.table::setDT(s2b)}
   # setorder(s2b, -distance) # would alter by reference the passed data.table in the calling environment, I think
  

@@ -2,7 +2,7 @@
 % Please edit documentation in R/app_run_EJAMejscreenapi.R
 \name{app_run_EJAMejscreenapi}
 \alias{app_run_EJAMejscreenapi}
-\title{Launch EJAMejscreenapi web app in RStudio}
+\title{Launch EJAM ejscreenapi web app in RStudio}
 \usage{
 app_run_EJAMejscreenapi(
   onStart = NULL,
@@ -37,7 +37,7 @@ for more information on bookmarking your app.}
 See \code{?golem::get_golem_options} for more details}
 }
 \description{
-Launch EJAMejscreenapi web app in RStudio
+Launch EJAM ejscreenapi web app in RStudio
 }
 \details{
 app_run_EJAM()                 is like run_app() for the EJAM shiny app run from the EJAM package

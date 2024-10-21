@@ -4,6 +4,13 @@
 \name{ejampackages}
 \alias{ejampackages}
 \title{ejampackages (DATA) list of names of key EJAM-related R packages}
+\format{
+An object of class \code{character} of length 1.
+}
+\usage{
+ejampackages
+}
 \description{
 ejampackages (DATA) list of names of key EJAM-related R packages
 }
+\keyword{datasets}

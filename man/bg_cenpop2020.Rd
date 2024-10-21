@@ -3,10 +3,15 @@
 \docType{data}
 \name{bg_cenpop2020}
 \alias{bg_cenpop2020}
-\title{bg_cenpop2020 (DATA) data.table with all US Census 2020 block groups, Census 2020 population count,
-and lat/lon of Census2020-population-weighted centroid of block group}
+\title{bg_cenpop2020 (DATA) data.table with all US Census 2020 block groups}
+\format{
+An object of class \code{data.table} (inherits from \code{data.frame}) with 242335 rows and 5 columns.
+}
+\usage{
+bg_cenpop2020
+}
 \description{
-bg_cenpop2020 (DATA) data.table with all US Census 2020 block groups, Census 2020 population count,
+data.table with all US Census 2020 block groups, Census 2020 population count,
 and lat/lon of Census2020-population-weighted centroid of block group
 }
 \details{
@@ -15,3 +20,4 @@ also see attributes(bg_cenpop2020) for source URL and date
 \seealso{
 \link{blockgroupstats}
 }
+\keyword{datasets}

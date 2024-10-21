@@ -254,6 +254,34 @@ if (!do_update) {
     blockwts     <- mylistoftables$blockwts
     quaddata     <- mylistoftables$quaddata
     
+    for (myvar in names(mylistoftables)) {
+      if (rstudioapi::isAvailable()) {rstudioapi::documentOpen(paste0('./R/data_', myvar, '.R'))}
+    }
+    cat("REMEMBER TO MANUALLY UPDATE THE DOCUMENTATION IN data_bgid2fips.R 
+        but use NULL at end since it is not saved in package so it is not an exported object\n")
+    # OR USE 
+    # dataset_documenter('bgid2fips', saveinpackage = FALSE)
+    
+    cat("REMEMBER TO MANUALLY UPDATE THE DOCUMENTATION IN data_blockid2fips.R
+    but use NULL at end since it is not saved in package so it is not an exported object\n")
+    # OR USE 
+    # dataset_documenter('blockid2fips', saveinpackage = FALSE)
+    
+    cat("REMEMBER TO MANUALLY UPDATE THE DOCUMENTATION IN data_blockpoints.R
+        but use NULL at end since it is not saved in package so it is not an exported object\n") 
+    # OR USE 
+    # dataset_documenter('blockpoints', saveinpackage = FALSE)
+    
+    cat("REMEMBER TO MANUALLY UPDATE THE DOCUMENTATION IN data_blockwts.R 
+        but use NULL at end since it is not saved in package so it is not an exported object\n")
+    # OR USE 
+    # dataset_documenter('blockwts', saveinpackage = FALSE)
+    
+    cat("REMEMBER TO MANUALLY UPDATE THE DOCUMENTATION IN data_quaddata.R
+        but use NULL at end since it is not saved in package so it is not an exported object\n")
+    # OR USE 
+    # dataset_documenter('quaddata', saveinpackage = FALSE)
+    
     # want to keep the objects in memory? OK - may use to run EJAM functions like recreating testoutput data
     rm(mylistoftables, blocks)
     gc()

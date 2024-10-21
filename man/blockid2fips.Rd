@@ -7,18 +7,16 @@
 blockid2fips (DATA) Census FIPS codes of blocks
 }
 \details{
-This is a VERY large file, used only when essential.
-
-For documentation on EJScreen, see (https://www.epa.gov/ejscreen)
+For documentation on EJScreen, see \href{https://www.epa.gov/ejscreen}{EJScreen documentation}
 
 blockid2fips is a table of all census blocks, with the FIPS codes.
 
 It also has a column
-called blockid that can join it to other block datasets.
+called \code{blockid} that can join it to other block datasets.
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{dataload_from_pins('blockid2fips')
-
-names(blockid2fips)
-dim(blockid2fips)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{  dataload_from_pins('blockid2fips')
+  
+  names(blockid2fips)
+  dim(blockid2fips)
 }\if{html}{\out{</div>}}
 }

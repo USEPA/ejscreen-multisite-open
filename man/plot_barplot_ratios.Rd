@@ -6,7 +6,7 @@
 \usage{
 plot_barplot_ratios(
   ratio.to.us.d.overall,
-  names2plot_friendly = NULL,
+  shortlabels = NULL,
   mycolorsavailable = c("gray", "yellow", "orange", "red"),
   main = "Demographics at the Analyzed Locations Compared to US Overall"
 )
@@ -15,7 +15,7 @@ plot_barplot_ratios(
 \item{ratio.to.us.d.overall}{named list of a few ratios to plot, but see \code{\link[=ejam2barplot]{ejam2barplot()}}
 for an easier way to specify which indicator to show.}
 
-\item{names2plot_friendly}{names to use for plot - should be same length as named list ratio.to.us.d.overall}
+\item{shortlabels}{names to use for plot - should be same length as named list ratio.to.us.d.overall}
 
 \item{mycolorsavailable}{leave as default}
 

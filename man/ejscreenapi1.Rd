@@ -11,6 +11,7 @@ ejscreenapi1(
   unit = "miles",
   wkid = 4326,
   fips = NULL,
+  shapefile = NULL,
   format_report_or_json = "pjson",
   ipurl = "ejscreen.epa.gov",
   getstatefromplacename = TRUE
@@ -29,6 +30,8 @@ ejscreenapi1(
 
 \item{fips}{if used instead of lon,lat it should be a character FIPS code
 (counties, tracts, or blockgroups)}
+
+\item{shapefile}{not implemented}
 
 \item{format_report_or_json}{default is "pjson" but could "report" to get URL for a pdf report}
 
