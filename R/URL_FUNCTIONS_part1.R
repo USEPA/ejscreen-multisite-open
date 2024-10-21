@@ -252,11 +252,11 @@ url_ejscreen_report <- function(lat='', lon='', radius='', as_html=FALSE, linkte
   } else {
     
     # Flexibly allow for user to provide latlon as 1 table or as 2 vectors or 1 filename or 1 interactively selected file
-    
+    if (!(!missing(lat) && all(is.na(lat)))) {
     latlon_table <- sitepoints_from_anything(lat, lon, interactiveprompt = interactiveprompt)[ , c("lat","lon")]
     lat <- latlon_table$lat
     lon <- latlon_table$lon
-    
+    }
     # error checking lat lon radius
     
     latlon_radius_validate_lengths <- function(lat, lon, radius) {

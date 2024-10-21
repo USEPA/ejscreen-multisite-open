@@ -2,14 +2,14 @@
 % Please edit documentation in R/ejscreen_vs_ejam_.R
 \name{ejscreen_vs_ejam_alreadyrun}
 \alias{ejscreen_vs_ejam_alreadyrun}
-\title{EJAM/EJSCREEN comparisons}
+\title{EJAM/EJSCREEN comparisons - used by ejscreen_vs()}
 \usage{
 ejscreen_vs_ejam_alreadyrun(
   apisite,
   ejamsite,
   nadrop = FALSE,
   x100fix = TRUE,
-  x100varnames = names_pct_as_fraction_ejscreenit
+  x100varnames = names_pct_as_fraction_ejamit
 )
 }
 \arguments{
@@ -24,111 +24,33 @@ or ejscreenapi_plus(), and also see \code{\link[=ejscreenit_for_ejam]{ejscreenit
 indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,
 prior to rounding and reporting EJAM results here.}
 
-\item{x100varnames}{optional, if x100fix=T, a vector of colnames of x$EJAM to convert from
+\item{x100varnames}{optional, if x100fix = T, a vector of colnames of x$EJAM to convert from
 being scaled as 0 to 1 into rescaled values of 0 to 100, because some
 outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.}
 }
 \value{
-prints summary to console, but returns invisible a list of data frames, with names
+prints summary to console, but returns invisible a list of
+tables (data frames or matrix/arrays), with names
 EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio,
 diff, absdiff, pctdiff, etc.
 
-For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
+For each table, colnames are indicators like pop, blockcount_near_site, etc.
 and rows represent sites analyzed.
+@details
+See \code{\link[=ejscreen_vs]{ejscreen_vs()}} for a more complete, interactive way to do this.
 }
 \description{
-Compare EJScreen API vs EJAM stats near site(s) (after results already run)
+Compare EJScreen API vs EJAM stats at tested sites (after results already run)
 }
 \examples{
-  blah = ejscreen_vs_ejam_alreadyrun(
+  vs = ejscreen_vs_ejam_alreadyrun(
     apisite = testoutput_ejscreenapi_plus_5,
     ejamsite = ejamit(testpoints_5, radius = 1, include_ejindexes = TRUE)$results_bysite)
-  ejscreen_vs_ejam_see1(blah, mysite = 1)
- \dontrun{
- 
- # requires data.table
- 
- # analyze point(s) in both EJScreen and EJAM
-  pts <- testpoints_100[1:5, ]
-  #z <- ejscreen_vs_ejam(testpoints_100[27, ], radius = 3, include_ejindexes = TRUE)
-  
-  # just 1 point
-  # z <- ejscreen_vs_ejam(pts[5, ], radius = 3, include_ejindexes = TRUE)
-  
-  # multiple points
-  # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:
-  z <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
-    
-   # same thing but step by step
-   api1 <- ejscreenit(pts, radius = 3)
-   api1 <- api1$table[5, ]
-   ejam1 <- ejamit(pts, radius = 3, include_ejindexes = TRUE)
-   ejam1 <- ejam1$results_bysite[5, ]
-   zzz <- ejscreen_vs_ejam_alreadyrun(api1, ejam1)
-   
-   # to keep it as a list of data.frames but just 1 row each now:
-   zlist1 <- lapply(z, function(x) x[myrow, ])
-   names(zlist1); sapply(zlist1, dim)
-   
-   # look at a table about just 1 site among those analyzed, e.g., the first one:
-   myrow <- 1
-   z1 <- data.frame(sapply(z, function(x) x[myrow, ]))
-   # but that creates a data.frame where each column is a list... 
-   
-   
-   
-   
-   # **** WORK IN PROGRESS ... *** !!!!!  
-   
-   
-   
-   
-   # Reported key indicators - which ones do or don't match
-   # when comparing EJSCREEN and EJAM results?
-   keyreportnames <- c('pop', names_these, 
-     paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
-     paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
-   )  
-   rname <- colnames(z$EJAM)
-   z1[rname \%in\% keyreportnames &  z1$same_shown, ]
-   z1[rname \%in\% keyreportnames & !z1$same_shown & !is.na(z1$EJSCREEN), ]
-  
-   # Reported (rounded) numbers match:
-   z[z$same_shown , ]
-   # Reports disagree: 
-   #  (and not just because of percentages being of 100 vs of 1.00)
-   z[!z$same_shown & !is.na(z$EJSCREEN) & z$ratio != 0.01, ] 
-   # Reports disagree if percentages reported as 0-100 vs fractions 0-1.00
-   z[z$ratio == 0.01 & !is.na(z$ratio), ]
-   
-   
-   # site number 1
-   z1 <- sapply(z, function(x) (x[1,]))
-    # Reported key indicators - which ones do or don't match
-   # when comparing EJSCREEN and EJAM results?
-   keyreportnames <- c('pop', names_these, 
-     paste0('pctile.', c(names_these, names_ej, names_ej_supp)), 
-     paste0('state.pctile.', c(names_these, names_ej, names_ej_supp))
-   )
-   z1[z1$rname \%in\% keyreportnames &  z1$same_shown, ]
-   z1[z1$rname \%in\% keyreportnames & !z1$same_shown & !is.na(z1$EJSCREEN), ]
-   
-   # Reported (rounded) numbers match:
-   z1[z1$same_shown , ]
-   # Reports disagree: 
-   #  (and not just because of percentages being of 100 vs of 1.00)
-   z1[!z1$same_shown & !is.na(z1$EJSCREEN) & z1$ratio != 0.01, ] 
-   # Reports disagree if percentages reported as 0-100 vs fractions 0-1.00
-   z1[z1$ratio == 0.01 & !is.na(z1$ratio), ]
-   
-   # Comparing across sites:
-   
-   # .... to be continued ...
-   
-  }
+  ejscreen_vs_ejam_see1(vs, mysite = 1)
+ vsum = ejscreen_vs_ejam_summary(vs)
    
 }
 \seealso{
-\code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}}
+\code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}}  \code{\link[=ejscreen_vs]{ejscreen_vs()}}
 }
 \keyword{internal}

@@ -5,7 +5,7 @@
 \title{EJAM/EJSCREEN comparisons - see quantiles over tested sites, of a stat like ratio of EJAM/EJSCREEN}
 \usage{
 ejscreen_vs_ejam_summary_quantiles(
-  z,
+  vs,
   mystat = c("ratio", "diff", "absdiff", "pctdiff", "abspctdiff")[1],
   myvars = c("pop", names_these),
   probs = (0:20)/20,
@@ -14,13 +14,13 @@ ejscreen_vs_ejam_summary_quantiles(
 )
 }
 \arguments{
-\item{z}{output of ejscreen_vs_ejam()}
+\item{vs}{output of ejscreen_vs_ejam()}
 
 \item{mystat}{just one (not more than 1) of these: "ratio", "diff", "absdiff", "pctdiff", "abspctdiff"}
 
-\item{myvars}{optional vector of indicators, to check just a subset of the colnames found in z$EJAM and z$EJSCREEN,
+\item{myvars}{optional vector of indicators, to check just a subset of the colnames found in vs$EJAM and vs$EJSCREEN,
 such as myvars = c(names_d, names_d_subgroups)
-or myvars = grep("pctile", colnames(z$EJAM), value = T)}
+or myvars = grep("pctile", colnames(vs$EJAM), value = T)}
 
 \item{probs}{optional vector of probabilities 0 to 1 to pass to quantile()}
 

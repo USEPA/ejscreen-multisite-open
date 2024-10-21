@@ -52,6 +52,10 @@ read_and_clean_points <- function(filepath, default_points=NULL) {
   
   pts_filecontents <- read_csv_or_xl(filepath)
   
+  if(is.null(pts_filecontents)){
+    stop("No pts_filecontents loaded")
+  }
+  
   # if uploaded with zero length somehow, return default points or NULL ####
   if (0 == length(pts_filecontents)) {
     pts_filecontents <- default_points  # was defined in global.R  

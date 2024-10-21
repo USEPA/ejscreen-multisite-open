@@ -231,8 +231,8 @@ gc()
 
 # Save the work-in-progress tables as data in ./data/ .rda  for now just to
 # make sure we do not accidentally load_all() and start using the old versions again
-use_data(usastats, overwrite = TRUE)
-use_data(statestats, overwrite = TRUE)
+use_data(usastats, overwrite = TRUE) # this happens again with updated versions in next datacreate_ script!
+use_data(statestats, overwrite = TRUE) # this happens again with updated versions in next datacreate_ script!
 
 
 cat("FINISHED A SCRIPT\n")

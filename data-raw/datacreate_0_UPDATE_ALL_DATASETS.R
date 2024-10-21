@@ -98,7 +98,7 @@ if (0 == 1) {  # collapsable list
          "datacreate_map_headernames.R", "datacreate_names_of_indicators.R", "datacreate_names_pct_as_fraction.R", "datacreate_metadata4pins.R", 
          "datacreate_blockwts.R", "datacreate_bg_cenpop2020.R", "datacreate_bgpts.R", "datacreate_states_shapefile.R", "datacreate_stateinfo.R", "datacreate_stateinfo2.R", "datacreate_islandareas.R", "datacreate_censusplaces.R", 
          "datacreate_blockgroupstats2.32.R", "datacreate_blockgroupstats2.32_add_d_acs22columns.R",  "datacreate_blockgroupstats2.32_recalc_language.R",
-         "datacreate_usastats2.32.R", "datacreate_usastats2.32_add_dsubgroups.R", "datacreate_avg.in.us.R", "datacreate_high_pctiles_tied_with_min.R", "datacreate_formulas.R", "datacreate_test_address.R", "datacreate_testpoints_testoutputs.R", 
+         "datacreate_usastats2.32.R", "datacreate_usastats2.32_add_dsubgroups.R", "datacreate_avg.in.us.R", "datacreate_high_pctiles_tied_with_min.R", "datacreate_formulas.R", "datacreate_test_address_table.R", "datacreate_testpoints_testoutputs.R", 
          "datacreate_default_points_shown_at_startup.R", "datacreate_testpoints_5_50_500.R", "datacreate_ejscreenRESTbroker2table_na_filler.R", "datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R",
          "datacreate_frs_.R", "datacreate_frs_by_mact.R", "datacreate_frs_by_sic.R", "datacreate_frsprogramcodes.R", "datacreate_epa_programs.R", "datacreate_testids_program_sys_id.R", "datacreate_testids_registry_id.R", "datacreate_naics_counts.R", "datacreate_naicstable.R", "datacreate_SIC.R", "datacreate_sic_counts.R", "datacreate_sictable.R", 
          "datacreate_lat_alias.R", "datacreate_ejampackages.R", "datacreate_meters_per_mile.R"
@@ -156,9 +156,9 @@ if (0 == 1) {  # collapsable list
   documentOpen('./data-raw/datacreate_high_pctiles_tied_with_min.R')  # ok
   ##  calculations and examples of outputs
   documentOpen('./data-raw/datacreate_formulas.R')                    # was in progress; maybe not used yet
-  documentOpen('./data-raw/datacreate_test_address.R')       # ok
+  documentOpen('./data-raw/datacreate_test_address_table.R')       # ok
   documentOpen('./data-raw/datacreate_testpoints_testoutputs.R')      # confirm new datasets/functions/indicators work here
-  # from the original  EJAMejscreenapi  package
+  # from the original  EJAM ejscreenapi  test data
   documentOpen('./data-raw/datacreate_default_points_shown_at_startup.R')            
   documentOpen('./data-raw/datacreate_testpoints_5_50_500.R')            
   documentOpen('./data-raw/datacreate_ejscreenRESTbroker2table_na_filler.R')         
@@ -206,7 +206,20 @@ if (!is.null(x)) {
   cat("\n As of", as.character(Sys.Date()), "\n\n")
   x = x[order(x$created), ]
   rownames(x) <- NULL
-  print(x)
+  print(x)  
+  
+  pin_seen <- x$name
+  pin_expected = c(
+    'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
+    'bgej', 'bgid2fips', # note that 'bg_cenpop2020' and 'bgpts' are in EJAM/data/ not pins
+    'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"
+  )
+  if (length(setdiff2(pin_seen, pin_expected)) > 0 ) {
+    message("Expected to see on pin board but not there: ", paste0(setdiff(pin_expected, pin_seen), collapse = ", "))
+    message("See on on pin board but not expected: ", paste0(setdiff(pin_seen, pin_expected), collapse = ", "))
+  }
+  rm(pin_seen, pin_expected, x)
+}
   
   # As of 2024-08-29 
   
@@ -224,18 +237,7 @@ if (!is.null(x)) {
   # 10         quaddata                       quaddata data for EJAM arrow   218.36M 2024-08-22 18:35:52             2.32     TRUE
   # 11             bgej             bgej data from EJScreen for EJAM arrow    84.94M 2024-08-22 18:54:56             2.32     TRUE
   
-  pin_seen <- x$name
-  pin_expected = c(
-    'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-    'bgej', 'bgid2fips', # note that 'bg_cenpop2020' and 'bgpts' are in EJAM/data/ not pins
-    'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"
-  )
-  if (length(setdiff2(pin_seen, pin_expected)) > 0 ) {
-    message("Expected to see on pin board but not there: ", paste0(setdiff(pin_expected, pin_seen), collapse = ", "))
-    message("See on on pin board but not expected: ", paste0(setdiff(pin_seen, pin_expected), collapse = ", "))
-  }
-  rm(pin_seen, pin_expected, x)
-}
+
 ######################################### ########################################## #
 ######################################### ########################################## #
 # ~------------------------------------------- ####
@@ -428,7 +430,7 @@ if (askquestions && interactive()) {
 }
 
 source_maybe("datacreate_blockgroupstats2.32.R") # (also starts making usastats,statestats!!)
-# created bgej (with metadata, and saved it locally but not to pins yet)
+# created bgej (with metadata and documentation, and saved it locally but not to pins yet)
 ### bgej to pins ####
 ######################################### #
 if (askquestions && interactive()) {
@@ -551,13 +553,13 @@ source_maybe("datacreate_formulas.R")
 
 ## Test data & examples of outputs ####
 ######################################### #
-### datacreate_test_address.R #### 
-# rstudioapi::documentOpen('./data-raw/datacreate_test_address.R')  
-source_maybe("datacreate_test_address.R")
-
+### datacreate_test_address_table.R #### 
+# rstudioapi::documentOpen('./data-raw/datacreate_test_address_table.R')  
+source_maybe("datacreate_test_address_table.R")
+# creates several objects
 
 ############################### pause here
-############################### 
+############################## # 
 
 # save.image(file.path(localfolder, "work in progress.rda"))
 
@@ -598,18 +600,17 @@ system.time({
    source("./tests/manual_nonalphabetical.R") # answering Yes to running ALL tests
 # })
 
-############################### 
-############################### 
+############################## # 
+############################## # 
 
 
 ######################################### #
 ### datacreate_testpoints_testoutputs.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_testpoints_testoutputs.R")
-cat( "NOT WORKING YET IN V.2.32:  datacreate_testpoints_testoutputs.R  \n"   )
 source_maybe("datacreate_testpoints_testoutputs.R")
 
 # ~------------------------------------------- ####
-## EJAMejscreenapi info ####
+## related to ejscreenapi  ####
 ######################################### #
 
 ### datacreate_default_points_shown_at_startup.R ####
@@ -624,7 +625,6 @@ source_maybe('datacreate_ejscreenRESTbroker2table_na_filler.R')
 
 ### datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R  ####
 # rstudioapi::documentOpen("./data-raw/datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R")
-cat( "NOT WORKING YET IN V.2.32:  datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R  \n"   )
 source_maybe('datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R')
 
 ######################################### ########################################## #
@@ -863,5 +863,5 @@ devtools::load_all()
 # DOCUMENTATION WEBSITE UPDATE #### 
 cat("\n\n You may want to use 'datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R' now \n\n")
 #  rstudioapi::documentOpen("./data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R")
-
+source_maybe("./data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R")
 ########################################## ######################################### # 

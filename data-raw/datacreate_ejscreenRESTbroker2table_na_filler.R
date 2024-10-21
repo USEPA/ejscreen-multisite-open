@@ -11,6 +11,9 @@ ejscreenRESTbroker2table_na_filler <- metadata_add(ejscreenRESTbroker2table_na_f
 usethis::use_data(ejscreenRESTbroker2table_na_filler, overwrite = TRUE)
 
 #document it
+dataset_documenter("ejscreenRESTbroker2table_na_filler",
+  "used to fill in NA values in correctly-formatted output of [ejscreenRESTbroker2table()] when no data are available"
+)
 
 # dput(ejscreenRESTbroker2table_na_filler)
 

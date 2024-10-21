@@ -4,6 +4,12 @@
 \name{formulas_d}
 \alias{formulas_d}
 \title{formulas_d (DATA) table of formulas to aggregate or calculate indicators}
+\format{
+An object of class \code{character} of length 130.
+}
+\usage{
+formulas_d
+}
 \description{
 These formulas can describe how each indicator is calculated from
 other variables like counts or how it is aggregated as a weighted mean, etc.
@@ -12,5 +18,6 @@ other variables like counts or how it is aggregated as a weighted mean, etc.
 Created for EJAM by datacreate_formulas.R script
 
 Can be used by \code{\link[=calc_ejam]{calc_ejam()}} for aggregation or to create a derived custom
-indicator for all US blockgroups based on counts obtained from the ACS.
+indicator for all US blockgroups based on counts obtained from the ACS.)
 }
+\keyword{datasets}

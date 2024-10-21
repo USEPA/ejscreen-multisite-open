@@ -35,8 +35,6 @@ datawrite_to_pins(
 stored in envt variable CONNECT_SERVER or be registered via the rsconnect package).
 Note if auth = "envvar" then it looks for CONNECT_SERVER to get name of server which
 needs to be the full url starting with https:// - see help for board_connect}
-
-\item{fnames}{optional vector of file names including extension like ".arrow", but without a path.}
 }
 \value{
 varnames vector

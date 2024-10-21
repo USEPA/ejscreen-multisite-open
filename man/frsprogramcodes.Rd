@@ -4,6 +4,12 @@
 \name{frsprogramcodes}
 \alias{frsprogramcodes}
 \title{frsprogramcodes DATA EPA programs listed in Facility Registry Service}
+\format{
+An object of class \code{data.frame} with 13 rows and 2 columns.
+}
+\usage{
+frsprogramcodes
+}
 \description{
 \if{html}{\out{<div class="sourceCode">}}\preformatted{data.frame
 
@@ -48,3 +54,4 @@ Also see \href{https://www.epa.gov/frs/frs-data-sources}{EPA documentation descr
 \seealso{
 \link{frs}
 }
+\keyword{datasets}

@@ -19,7 +19,6 @@
 #'   but if demogvarname is not specified here as a parameter,
 #'   this info could also be specified by the subgroups_type parameter here.
 #'   If neither is specified, the function will try to use a default
-#'   (which may not reflect any changes being made during development of EJAM if default_subgroups_type is in flux)
 #' @param demoglabel friendly text names for labelling graphic, like "Low income residents"
 #' @param colorlist colors like "red" etc. for the demographic groups of interest
 #' @param coloroverall color like "gray" for everyone as a whole
@@ -28,24 +27,36 @@
 #'   cumulative count of demog groups at that block group's distance.
 #'   If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
 #'   If returnwhat is "plot" then it returns the plot object as needed for table_xls_format()
+#' @param ... other parameters passed through to [points()]
 #' @seealso [distance_by_group()] [ejamit()] for examples
 #' @aliases plot_distance_cdf_by_group
 #' @return see returnwhat parameter
 #' @examples
 #'  y <- ejamit(testpoints_100, radius = 3)
+#'  
+#'  # see barplot and table comparing groups to see which are closer to sites analyzed
 #'  plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
+#'  
+#'  # table - proximity of sites for just one demog group vs rest of population
 #'  print(distance_by_group(y$results_bybg_people,
-#'    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
-#'  distance_by_group_plot(y$results_bybg_people,
-#'    demogvarname = 'pctlowinc', demoglabel = 'Low Income')
-#'  xyz = distance_by_group_plot(y$results_bybg_people) #
-#'  tail(round(xyz,3))
-#'  tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here
-#'    for White Alone is 2.15 miles, but >60% of Black Alone have a site that close.
-#'  tail(xyz[xyz$pctba <= 0.501, ]) #  Median distance to nearest site here
-#'    for Black Alone is 1.85 miles
-#'  round(tail(xyz[xyz$dist <=1, ]), 3) #  11% of White have a site within 1 mile,
-#'    compared to 18.7% of Asian who do.
+#'    demogvarname = 'pctlowinc'))
+#'    
+#'  # plot cumulative share of group by distance vs overall population
+#'   distance_by_group_plot(y$results_bybg_people,
+#'      demogvarname = 'pctlowinc' )
+#'      
+#'  # plot cum. shares for two groups  
+#'  # about 14% of black and 12% of asian residents have a site within 1 mile. 
+#'  # 29% vs 21% have a site within 1.5 miles.
+#'  round(xyz[findInterval(c(1, 1.5),  xyz$dist), ], 3) 
+#'  
+#'  # plot is too busy for all groups at once so this is a way to tap through them 1 by 1
+#'  these = c(names_d, names_d_subgroups)
+#'  for (i in 1:length(these)) {
+#'    readline("press any key to see the next plot")
+#'    print(distance_by_group_plot(y$results_bybg_people, demogvarname = these[i]) )
+#'  }
+#'  
 #'
 #' @export
 #'
@@ -70,7 +81,7 @@ distance_by_group_plot <- function(
   }
 
   # Figure out what demog variables to use for plot
-  if (!is.null(demogvarname)) {
+  if (is.null(demogvarname)) {
     if (!is.null(subgroups_type)) {
       # user specified a type
       if (subgroups_type == "nh")    {demogvarname <- names_d_subgroups_nh}    # namez$d_subgroups_nh}
@@ -90,6 +101,11 @@ distance_by_group_plot <- function(
           demogvarname <- names_d_subgroups_nh  # namez$d_subgroups_nh
         }
       }
+    } else {
+      # use default demogvarname
+      demogvarname <- c(names_d, names_d_subgroups)  # too many for this plot? this was default in related function
+      # demogvarname <- names_d[1]  # just 1
+      # demogvarname <- names_d_subgroups # a few
     }
   } else {
     # validate this user-provided demogvarname below to confirm those colnames exists
@@ -138,7 +154,7 @@ distance_by_group_plot <- function(
   }
 
   # SHOULD IT USE distance_avg or distance_min_avgperson ?? ***
-
+# maybe should only work with x[, c(..demogvarname , 'distance_min_avgperson')]  not all columns now? ***
   # if Inf distance in that min_avgperson column (not sure why it happens), just use distance_min which seems to have valid numbers.
   fixthese = (is.infinite(x$distance_min_avgperson) | is.na(x$distance_min_avgperson))
   if (any(fixthese)) {
@@ -183,7 +199,7 @@ distance_by_group_plot <- function(
        xlab = "Distance from nearest site (for the avg resident in the blockgroup)",
        ylab = paste0("Of all the residents within ", radius_miles," miles, what % have a site within X miles?"),
        ylim = c(0, 100))
-
+if (length(demogvarname) > 1) {
   for (i in 2:length(demogvarname)) {
 
     # distance_cdf_by_group_plot  is not written in a way that makes it easy to vectorize, so this could be rewritten
@@ -194,7 +210,7 @@ distance_by_group_plot <- function(
            pch = c(0:6,15:25, 7:14)[i], # various base R shapes for the points
            ...)
   }
-
+}
   legend("topleft", legend =  demoglabel, lty =  c("dotted", rep("solid", length(colorlist))) , pt.bg = c(coloroverall, colorlist),  col = c(coloroverall, colorlist), pch =  c(NA_integer_, 1:6,15:25, 7:14)[1:length(demogvarname)])
 
   # }

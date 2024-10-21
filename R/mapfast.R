@@ -9,9 +9,9 @@
 #' @return like what [mapfast()] returns
 #' @export
 #'
-mapfastej <- function(...) {
-  
-  mapfast(..., column_names = 'ej')
+mapfastej <- function(mydf, radius = 3, column_names = 'ej', labels = column_names, browse = FALSE, color = "#03F") {
+
+  mapfast(mydf = mydf, radius = radius, column_names = column_names, labels = labels, browse = browse, color = color)
 }
 ############################################################################ #
 
@@ -62,28 +62,22 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     
     ejcols <- c(names_ej, names_ej_state, names_ej_supp, names_ej_supp_state)
     if (!all(ejcols %in% names(mydf))) {
-      if (!any(ejcols %in% names(mydf))) {
-        # mypop <- popup_from_ejscreen(mydf) # use this if   popup_from_ejscreen() is made able to handle missing
-        mypop <- popup_from_df(mydf) ## ignoring labels here?
-        warning('No EJ columns found. Popups will use all columns. Ignoring column_names and labels.')
-      } else {
-        # mypop <- popup_from_ejscreen(mydf) # use this if   popup_from_ejscreen() is made able to handle missing
-        mypop <- popup_from_df(mydf) ## ignoring labels here?
-        warning('Not all EJ columns found. Popups will use all columns. Ignoring column_names and labels.')
-      }
-    } else {
-      mypop <- popup_from_ejscreen(mydf)
+
+      warning('Not all EJ columns found. Using NA values for all EJ indexes in map popups.')
+      ejna <- data.frame(matrix(ncol = length(ejcols), nrow = NROW(mydf)))
+      names(ejna) <- ejcols
+      mydf <- cbind(mydf, ejna)
     }
     
   } else if (column_names[1] == 'all') {
     mypop <- popup_from_df(mydf)
   } else {
-    if (!all(column_names %in% names(mydf))) {
-      warning('Not all column_names found. Popups will use all columns. Ignoring column_names and labels.')
-      mypop <- popup_from_df(mydf)
-    } else {
-      mypop <- popup_from_df(mydf, column_names = column_names, labels = labels)
-    }
+      if (!all(column_names %in% names(mydf))) {
+        warning('Not all column_names found. Using actual colnames of table.')
+        mypop <- popup_from_df(mydf)
+      } else {
+        mypop <- popup_from_df(mydf, column_names = column_names, labels = labels)
+      }
   }
   ######################################## # 
   

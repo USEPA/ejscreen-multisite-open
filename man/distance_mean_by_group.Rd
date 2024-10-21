@@ -3,6 +3,7 @@
 \name{distance_mean_by_group}
 \alias{distance_mean_by_group}
 \alias{distance_by_group}
+\alias{plot_distance_by_group}
 \title{Avg distance of each demog group (of multiple groups) - Table or Plot}
 \usage{
 distance_mean_by_group(
@@ -24,6 +25,8 @@ distance_mean_by_group(
 data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup.
 If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
 If returnwhat is "plot" then it returns the plot object as needed for table_xls_format() ?}
+
+\item{graph}{logical optional, set to FALSE to not show the barplot and only save the file of it}
 }
 \value{
 see parameter returnwhat
@@ -51,19 +54,30 @@ appropriate estimate of the distance, hence this adjustment is made in EJAM \cod
 }
 \examples{
  y <- ejamit(testpoints_100, radius = 3)
+ 
+ # see barplot and table comparing groups to see which are closer to sites analyzed
  plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
+ 
+ # table - proximity of sites for just one demog group vs rest of population
  print(distance_by_group(y$results_bybg_people,
-   demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
- distance_by_group_plot(y$results_bybg_people,
-   demogvarname = 'pctlowinc', demoglabel = 'Low Income')
- xyz = distance_by_group_plot(y$results_bybg_people) #
- tail(round(xyz,3))
- tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here
-   for White Alone is 2.15 miles, but >60\% of Black Alone have a site that close.
- tail(xyz[xyz$pctba <= 0.501, ]) #  Median distance to nearest site here
-   for Black Alone is 1.85 miles
- round(tail(xyz[xyz$dist <=1, ]), 3) #  11\% of White have a site within 1 mile,
-   compared to 18.7\% of Asian who do.
+   demogvarname = 'pctlowinc'))
+   
+ # plot cumulative share of group by distance vs overall population
+  distance_by_group_plot(y$results_bybg_people,
+     demogvarname = 'pctlowinc' )
+     
+ # plot cum. shares for two groups  
+ # about 14\% of black and 12\% of asian residents have a site within 1 mile. 
+ # 29\% vs 21\% have a site within 1.5 miles.
+ round(xyz[findInterval(c(1, 1.5),  xyz$dist), ], 3) 
+ 
+ # plot is too busy for all groups at once so this is a way to tap through them 1 by 1
+ these = c(names_d, names_d_subgroups)
+ for (i in 1:length(these)) {
+   readline("press any key to see the next plot")
+   print(distance_by_group_plot(y$results_bybg_people, demogvarname = these[i]) )
+ }
+ 
 
 }
 \seealso{

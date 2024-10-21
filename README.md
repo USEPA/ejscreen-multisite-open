@@ -5,70 +5,58 @@ EJAM Environmental Justice Analysis Multisite tool
 
 <!-- README.md is generated from README.Rmd. Please edit Rmd not md  -->
 <!-- badges: start -->
-<!-- or we could comment out the badge  -->
-
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-
+<!-- or we could comment out the badge 
+&#10;[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+ -->
 <!-- badges: end -->
 
-EJAM makes it easy to see demographic and environmental information
-summarized in and across any list of places in the nation. Using EJAM is
-like running an EJScreen report, but for hundreds or thousands of
-places, all at the same time. EJAM lets you quickly check a summary
-report, explore interactive maps, tables, and plots, and download a
-summary or detailed spreadsheet. The GIS methods are as accurate as what
-EJScreen uses but highly optimized to be very fast.
+EJAM is the EJ Analysis Multi-site (EJAM) tool provided by the United
+States Environmental Protection Agency (US EPA). It lets you easily and
+quickly see demographic and environmental information aggregated within
+and across hundreds or thousands of places, all at the same time.
 
-[The EJAM R Package for Analysts and
-Developers](#the-ejam-r-package-for-analysts-and-developers) written in
-the R programming language, with source code on GitHub. When used in
-RStudio, the EJAM package provides functions to help analysts work with
-block group data, points, and polygons, to very quickly aggregate and
-compare large numbers of locations. Note that EJAM also can be used as a
-web app by R/RStudio users if the package is installed and the shiny app
-is launched locally on a user’s own computer.
-
-EJScreen will be able to leverage EJAM’s technology to provide public
-access to batches of reports. EJAM itself is not an app running on a
-public website. A user-friendly interface will be made available to the
-public in the future, as part of EJScreen (based on EJAM code). EJAM was
-being tested for internal use at EPA as of early 2024.
-
-EJAM is provided by the US Environmental Protection Agency (US EPA), and
-is being actively developed so that new versions will continue to be
-tested and released over time.
+### What is EJAM?
 
 - [What is EJAM?](https://usepa.github.io/EJAM/articles/0_whatis.html)
 
-## EJAM as a Web App
+### EJAM as a Web App
 
 - [Using EJAM as a Web
   App](https://usepa.github.io/EJAM/articles/0_webapp.html) <!-- 
-      -   EJAM beta test is accessible only if at EPA offices or on VPN
-  -->
+              -   EJAM beta test is accessible only if at EPA offices or on VPN
+          -->
 
-## The EJAM R Package for Analysts and Developers
+### EJAM as a Software Toolkit for Analysts and Developers
 
-- [1. Installing the EJAM R
+[The EJAM R Package for Analysts and
+Developers](https://github.com/USEPA/EJAM?tab=readme-ov-file#the-ejam-r-package-for-analysts-and-developers)
+written in the [R programming language](https://www.r-project.org/),
+with source code on GitHub. When used in RStudio, the EJAM package
+provides functions to help analysts work with block group data, points,
+and polygons, to very quickly aggregate and compare large numbers of
+locations. Note that EJAM also can be used as a web app by R/RStudio
+users if the package is installed and the shiny app is launched locally
+on a user’s own computer.
+
+- [Installing the R
   package](https://usepa.github.io/EJAM/articles/1_installing.html)
 
-- [2. Quick Start Guide to the EJAM R
-  package](https://usepa.github.io/EJAM/articles/2_quickstart.html)
+- [Quick Start
+  Guide](https://usepa.github.io/EJAM/articles/2_quickstart.html)
 
-- [3. Basics of Using EJAM for Analysis in
+- [Basics of Using EJAM for Analysis in
   RStudio](https://usepa.github.io/EJAM/articles/3_analyzing.html)
 
-- [4. Advanced Features in the EJAM R
-  package](https://usepa.github.io/EJAM/articles/4_advanced.html)
+- [Advanced
+  Features](https://usepa.github.io/EJAM/articles/4_advanced.html)
 
-- [Reference Manual Documenting all EJAM Package Functions and
+- [Reference Manual - EJAM R Functions and
   Data](https://usepa.github.io/EJAM/articles/index.html)
 
-- [GitHub Repository - Code and Data, at
-  USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")
+- [GitHub Repository - Code and
+  Data](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")
 
-## Open-Source Code Policy
+### Open-Source Code Policy
 
 Effective August 8, 2016, the <a
 href="https://obamawhitehouse.archives.gov/sites/default/files/omb/memoranda/2016/m_16_21.pdf"
@@ -99,7 +87,7 @@ href="https://www.epa.gov/developers/open-source-software-and-epa-code-repositor
 class="uri" target="_blank" rel="noreferrer noopener">EPA’s Interim Open
 Source Code Guidance</a>.
 
-## Contributing
+### Contributing
 
 - [How to
   Contribute](https://github.com/USEPA/EJAM/blob/master/CONTRIBUTING.md)
@@ -108,12 +96,12 @@ Source Code Guidance</a>.
     the EJAM shiny app, and provide feedback, or to share code, and we
     welcome your suggestions or contributions.
 
-## License
+### License
 
 By submitting a pull request or issue, you are agreeing to comply with a
 waiver of copyright interest.
 
-## Disclaimer for App
+### Disclaimer for App
 
 This software/application has been approved for release by the U.S.
 Environmental Protection Agency (USEPA). Although the software has been
@@ -126,7 +114,7 @@ is released on condition that neither the USEPA nor the U.S. Government
 shall be held liable for any damages resulting from its authorized or
 unauthorized use.
 
-## Disclaimer for GitHub Repository Content
+### Disclaimer for GitHub Repository Content
 
 The United States Environmental Protection Agency (EPA) GitHub project
 code is provided on an “as is” basis and the user assumes responsibility
@@ -139,7 +127,7 @@ endorsement, recommendation or favoring by EPA. The EPA seal and logo
 shall not be used in any manner to imply endorsement of any commercial
 product or activity by EPA or the United States Government.
 
-## Contact
+### Contact
 
 If you have questions or comments, please contact Mark Corrales
 (corrales.mark@epa.gov).

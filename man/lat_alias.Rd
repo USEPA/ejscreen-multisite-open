@@ -5,6 +5,13 @@
 \alias{lat_alias}
 \alias{lon_alias}
 \title{lat_alias, lon_alias (DATA) Synonyms for lat and lon}
-\description{
-lists of synonyms for "latitude" and "longitude" used when guessing which column is what in user-provided tables of coordinates
+\format{
+An object of class \code{character} of length 7.
 }
+\usage{
+lat_alias
+}
+\description{
+lists of synonyms for 'latitude' and 'longitude' used when guessing which column is what in user-provided tables of coordinates
+}
+\keyword{datasets}

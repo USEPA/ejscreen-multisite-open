@@ -4,10 +4,12 @@
 \alias{frs_from_programid}
 \title{Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites}
 \usage{
-frs_from_programid(programid)
+frs_from_programid(programname, programid)
 }
 \arguments{
-\item{programid}{vector of one or more EPA Program ID codes used by FRS}
+\item{programname}{acronym for EPA program, as found in \code{epa_programs}}
+
+\item{programid}{program system ID, such as "XJW000012435"}
 }
 \value{
 relevant rows of the data.table called frs, which has column names that are
@@ -17,7 +19,9 @@ relevant rows of the data.table called frs, which has column names that are
 Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites
 }
 \examples{
- x = frs_from_programid(testids_program_sys_id)
+ test <- data.frame(programname = c('STATE','FIS','FIS'),
+                    programid = c('#5005','0-0000-01097','0-0000-01103'))
+ x = frs_from_programid(test$programname, test$programid)
  x
  mapfast(x)
 

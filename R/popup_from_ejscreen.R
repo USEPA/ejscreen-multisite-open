@@ -16,7 +16,7 @@
 #'   - EJ Indexes
 #'   - web link(s) to map or report
 #'
-#' @param out like ejamit()$results_bysite, not ejamit().
+#' @param out like ejamit()$results_bysite, but also it can be full list from ejamit().
 #'   The table of raw data in data.frame form, with results of EJ analysis.
 #' @param linkcolname Name of one column in the table that has links to some URL
 #' @param linkcolname2 Another like linkcolname
@@ -38,6 +38,7 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   
   ############################################ #
   # SPECIFY indicators/VARIABLE NAMES  ####
+ 
   names_d_pop <- names_d
   names_d_nice_pop      <- fixcolnames(names_d_pop, 'r', 'shortlabel')
   names_d_pctile_pop       <- names_d_pctile

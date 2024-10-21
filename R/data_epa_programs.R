@@ -18,4 +18,4 @@
 #'   `epa_programs_counts[fed == TRUE, ][order(-N), ][1:25, ]`
 #'
 #'   Also see [frs_by_programid]
-NULL
+'epa_programs'

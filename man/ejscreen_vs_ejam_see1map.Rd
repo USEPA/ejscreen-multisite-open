@@ -2,31 +2,57 @@
 % Please edit documentation in R/ejscreen_vs_ejam_.R
 \name{ejscreen_vs_ejam_see1map}
 \alias{ejscreen_vs_ejam_see1map}
-\title{EJAM/EJSCREEN comparisons - see map and tables of blocks near a site to explain discrepancy in pop and blocks}
+\title{EJAM/EJSCREEN comparisons - Try to explain discrepancy in pop and blocks via map and tables of blocks near a site}
 \usage{
-ejscreen_vs_ejam_see1map(n = 1, x, overlay_blockgroups = FALSE, ...)
+ejscreen_vs_ejam_see1map(
+  vs,
+  n = 1,
+  overlay_blockgroups = FALSE,
+  radius = NULL,
+  map = TRUE,
+  extramiles2check = 0.08,
+  extra_blocks2check_almost_at_radius = 5,
+  extra_blocks2check_beyond_radius = 5,
+  ...
+)
 }
 \arguments{
-\item{n}{row number in x$EJAM of site to check}
+\item{vs}{results from  vs <- ejscreen_vs_ejam(testpoints_10, radius = 3, include_ejindexes = TRUE)}
 
-\item{x}{results from  x <- ejscreen_vs_ejam(testpoints_10, radius =3, include_ejindexes = TRUE)}
+\item{n}{row number in vs$EJAM of site to check}
 
 \item{overlay_blockgroups}{optional, set TRUE to see overlay of boundaries of parent blockgroups,
 noting that you have to click to turn off the layer for block point info popups to work}
 
+\item{map}{set to FALSE to suppress drawing map but still return block-level info}
+
+\item{extramiles2check}{miles of additional radius to look in for possible extra blocks that may have been missed by EJAM}
+
+\item{extra_blocks2check_almost_at_radius}{how many blocks to check that are almost as far as radius,
+in addition to the number that the blockcount is off by}
+
+\item{extra_blocks2check_beyond_radius}{how many blocks to check that are almost just beyond radius,
+in addition to the number that the blockcount is off by}
+
 \item{...}{passed to \code{\link[=plotblocksnearby]{plotblocksnearby()}}}
 }
 \value{
-Just draws map and shows tables and returns output of ejscreen_vs_ejam_see1()
+Just draws map and shows tables and returns the table of blocks near the site
+and info on how much the distance and pop count differ from what EJAM thinks
+is the actual exact radius, with possible explanation of discrepancy
+between ejscreen api and ejam estimate,
+but you may also want the output of ejscreen_vs_ejam_see1()
 }
 \description{
-EJAM/EJSCREEN comparisons - see map and tables of blocks near a site to explain discrepancy in pop and blocks
+EJAM/EJSCREEN comparisons - Try to explain discrepancy in pop and blocks via map and tables of blocks near a site
 }
 \examples{
 dontrun{
-  z <- ejscreen_vs_ejam(testpoints_10, radius = 3, include_ejindexes = TRUE)
-  ejscreen_vs_ejam_see1map(3, z, overlay_blockgroups = TRUE)
+  vs <- ejscreen_vs_ejam(testpoints_10, radius = 3, include_ejindexes = TRUE)
+  ejscreen_vs_ejam_see1map(vs, n = 3, overlay_blockgroups = TRUE)
  }
-
+}
+\seealso{
+\code{\link[=ejscreen_vs_explain]{ejscreen_vs_explain()}}
 }
 \keyword{internal}

@@ -55,83 +55,53 @@ if (!exists("blockid2fips") || !exists("frs")) {
 indexblocks()
 ```
 
-# Key Functions
+This article provides examples of how to use EJAM in RStudio, especially how to use more specialized functions to find specific places to analyze, such as EPA-regulated facilities defined in various ways, and how to explore the results in more detail than the web app can provide.
 
--   **`run_app()`** to launch the web app locally (to run in RStudio on a single computer rather than on a server)
+# Running a Basic Analysis
 
--   **`ejamit()`** provides most results in just one function, and they can be viewed using `ejam2report()` and `ejam2excel()`. Sample input to `ejamit()` is in `testpoints_10` and sample output is in `testoutput_ejamit_10pts_1miles`. `ejamit()` especially relies on `getblocksnearby()` and `doaggregate()`:
+-   **`run_app()`** launches the web app locally (to run in RStudio on a single computer rather than on a server)
 
--   `getblocksnearby()` takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in `testpoints_100`, and sample output is in `testoutput_getblocksnearby_10pts_1miles`
+-   **`ejamit()`** provides most results in just one function (if you already have a list of places to analyze), as shown in the [Quick Start Guide](https://usepa.github.io/EJAM/articles/2_quickstart.html)
 
--   `get_blockpoints_in_shape()` does the same for polygons, finding blocks in each. 
+# Tools for Exploring Results
 
--   `doaggregate()` takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in `testoutput_getblocksnearby_10pts_1miles` and sample output is in `testoutput_doaggregate_10pts_1miles`
+For a standard analysis, the basic tools like `ejam2report()`, `ejam2excel()`, `ejam2map()`, etc. let you explore results, as shown in the [Quick Start Guide](https://usepa.github.io/EJAM/articles/2_quickstart.html).
 
-# Key groups of functions
+If you want more ways to visualize and dig into results, examples are provided below in the sections on [EXPLORING RESULTS] and [VISUALIZATION OF FINDINGS (PLOTS)]. For example, you can check which groups or which facilities have notable findings.
 
-The EJAM package reference manual has a complete list of documented functions, grouped by category. There are several categories of functions listed there:
+# Tools for Selecting Locations to Analyze
 
--   Key Functions `ejamit()`, `ejam2report()`, `ejam2excel()`, `ejam2map()`, `ejam2ratios()`, `ejam2table_tall()`
--   Specify Points by Lat/Lon
--   Specify Facilities by ID
--   Specify Facility Type
--   Specify Places by Shapefile
--   Specify Counties, etc./FIPS tools
--   Blocks, Distances, Residents - e.g., `getblocksnearby()`
--   Calculating and Aggregating
--   Viewing Results (using the overall functions above)
--   Test Data (if EJAM is installed, try `browseURL(system.file("testdata", package = "EJAM"))`)
--   Utilities for finding URL or API info
--   etc.
+EJAM offers a variety of ways to specify the places to be analyzed and compared. The web app helps you select locations in several ways.
 
-Also see `data("EJAM")` and see ?`dataload_from_pins()` and `usastats`, `statestats`
+If you are working in RStudio, and you already have identified the points or areas to analyze, the [ejamit()] function will accept 1) point coordinates, 2) a shapefile, or 3) a list of FIPS codes.
 
-# POINTS & NEARBY RESIDENTS
+However, if you first need to get the points (lat, lon values), or you need a more in-depth, custom approach to finding facilities or Census places to analyze, there are several groups of functions to help with that, as shown in all the examples below. They are also shown in the [EJAM package reference manual](https://usepa.github.io/EJAM/reference/index.html), by category.
 
-EJAM offers a variety of ways to specify the places to be analyzed and compared. Once you specify some list of places, EJAM will analyze them as a whole (overall), and also individually so that you can compare places to each other.
+You can specify locations for analysis in a variety of ways:
 
-Places analyzed and compared can be any of the following:
+-   **Near each point:** Specify points and analyze residents who are [NEAR EACH POINT (PROXIMITY ANALYSIS)]
+    -   [**Latitude and Longitude**]
+    -   [**Facilities by ID**] can be defined [by Facility, using EPA Registry ID] or [by Facility, using EPA Program System ID]
+    -   [**Facilities by Type**] can be defined [by Industry (NAICS)] or [Facilities by Type] or by Clean Air Act source category defined by [by MACT Subpart (hazardous air pollutant source category)]
+-   **Within each polygon:** Specify areas of any size and shape to analyze residents within each polygon/zone/area (based on shapefiles or Census FIPS codes)
+    -   **within areas or zones** on a map if you have GIS data in [SHAPEFILES] - Polygons (from shapefiles) could for example define redlining zones, higher risk areas based on modeling, etc.
+    -   **within Census units like cities or Counties** defined using [FIPS CODES] - Census Units such as Counties or other types of Census Units are defined by FIPS code (e.g., Counties in one State).
 
--   Points, defining all residents within X miles of each point
--   Polygons (from shapefiles), such as redlining zones, higher risk areas based on modeling, etc.
--   Census Units such as Counties or other types of Census Units defined by FIPS code (e.g., Counties in one State)
+# NEAR EACH POINT (PROXIMITY ANALYSIS)
 
-Groups will be available in another type of analysis, not yet implemented. Groups will let you get statistics for each group, to compare categories of places. Whole groups of points/ polygons/ census areas will be treated as the units of analysis. This will allow you to define groups of points, for example, and get a summary for each group, such as residents near any of the facilities of one type. This enables comparison of categories of places, such as analyzing 3 types of facilities at once with results aggregated for each type, or comparing redlining zones grouped by grade, or comparing areas with some feature (poor air quality, or receiving grants, etc.) versus areas without that trait, all limited to one State or Region, for example.
+## Latitude and Longitude
 
-To analyze points and the circular areas around each one, you can specify the points in two basic ways:
-
--   A list of points defined by coordinates or by EPA ID numbers for each point
--   All points that are the locations of EPA-regulated facilities of a certain type. The categories that can be used include the following:
--   EPA Program (e.g., all greenhouse gas reporting facilities)
--   Industry type, based on NAICS code (e.g., )
-
-## Compare all Points in a Category
-
-## Specify points (where you want to center the circular buffers)
-
-You can define locations as all residents within X miles of any one or more of the specified points, and you can define those points in a few ways. One way is to upload a table of coordinates -- latitude and longitude for each point, one row per site, with columns called lat and lon (or some synonyms that work).
+You can define locations as all residents within X miles of any one or more of the specified points, and you can define those points in a few ways. One way is to upload a table of coordinates -- latitude and longitude for each point, one row per site, with columns called lat and lon (or some synonyms that work). There are also [more detailed functions for working with latlon coordinates.](https://usepa.github.io/EJAM/reference/index.html#specify-points-by-lat-lon)
 
 The simplest way to do that in the RStudio console is something like `x <- ejamit()`, which prompts you to upload a spreadsheet with lat lon columns, and asks you for the radius.
 
-You can also specify a set of facilities by uploading their Registry ID numbers in a table, or using other identifiers. For example, there is a function `latlon_from_programid()` in the examples below.
+As explained below, you can get the latitudes and longitudes of EPA-regulated facilities if you want to specify a set of facilities by uploading their Registry ID numbers in a table, or using other identifiers. For example, there is a function `latlon_from_programid()` in the examples below.
 
-You can define circular buffers around a set of EPA-regulated facilities in a few other ways as well, such as by NAICS (or SIC) industry names or codes, EPA program covering the set of facilities (e.g., all greenhouse gas reporters), or a Clean Air Act MACT subpart.
+You can also get coordinates in a few other ways, such as by NAICS (or SIC) industry names or codes, EPA program covering the set of facilities (e.g., all greenhouse gas reporters), or a Clean Air Act MACT subpart.
 
-### by Industry (NAICS)
+## Facilities by ID
 
-You can specify sites by NAICS, but it is important to note the FRS lacks NAICS info for many regulated facilities!
-
-```{r naics_from_any, eval = TRUE}
-naics_from_any("paint and coating", children = T)
-## note latlon_from_naics() requires the frs_by_naics dataset, which it tries to load on demand.
-# head(latlon_from_naics(325510)) # has about 1,000 facilities
-
-## All sectors with this phrase in their NAICS title
-#
-#  x <- ejamit(frs_from_naics("paint and coating"), 1)
-```
-
-See many more examples of working with NAICS, in a section below.
+EPA-regulated facilities can be found in the Facility Registry Services by identification number.
 
 ### by Facility, using EPA Registry ID
 
@@ -161,6 +131,25 @@ if (exists("frs_by_programid")) {
   latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
 }
 ```
+
+## Facilities by Type
+
+### by Industry (NAICS) {data-link="by Industry (NAICS)"}
+
+You can specify sites by NAICS, but it is important to note the FRS lacks NAICS info for many regulated facilities!
+
+```{r naics_from_any, eval = TRUE} 
+naics_from_any("paint and coating", children = T) 
+## note latlon_from_naics() requires the frs_by_naics dataset, which it tries to load on demand. 
+# head(latlon_from_naics(325510)) 
+# has about 1,000 facilities  
+#
+# All sectors with this phrase in their NAICS title
+# 
+#  x <- ejamit(frs_from_naics("paint and coating"), 1)}
+```
+
+See many more [Working with NAICS Codes (Industry Codes)], in a section below.
 
 ### by EPA Regulatory Program
 
@@ -354,14 +343,7 @@ See shapefile_from_any() and related functions:
 
 ```{r notrun_shapefile_functionlist, eval=FALSE, echo=TRUE}
 shapefile_from_any()
-shapefile_from_gdbzip()
-shapefile_from_gdb()
-shapefile_from_json()
-shapefile_from_filepaths()
-shapefile_from_folder()
-shapefile_filepaths_from_folder()
-shapefile_filepaths_valid()
-shapefile_clean()
+
 shapefile_from_sitepoints()
 shape_buffered_from_shapefile()
 shape_buffered_from_shapefile_points()
@@ -506,7 +488,6 @@ head(
 #   , 12)
 ```
 
-
 ## Just one site, all the indicators
 
 ```{r ejam2table_tall_1}
@@ -514,7 +495,6 @@ head(
   ejam2table_tall(out2, sitenumber = 1)
   , 20)
 ```
-
 
 #### See indicators aggregated over all people across all sites
 
@@ -532,16 +512,17 @@ cbind(overall = as.list( out$results_overall[ , ..names_d_pctile])); cat("\n")
 # cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile])); cat("\n")
 ```
 
-
 # VISUALIZATION OF FINDINGS (PLOTS)
 
-
 ## Indicators
-
 
 ### Barplot showing which indicator is most elevated overall
 
 ```{r barplot_d, eval=TRUE}
+#| fig.alt: >
+#|   Barplot of ratios of demographic indicators at selected sites to State averages. 
+#|   It is a series of bars where some are above a ratio of 1, and one is more than 2
+#|   times the State average of supplemental demographic index.
 out <- testoutput_ejamit_1000pts_1miles
 
 ejam2barplot(out,
@@ -552,12 +533,16 @@ ejam2barplot(out,
 ### Histogram of indicators distribution over all people across all sites
 
 ```{r histo, eval = TRUE}
+#| fig.alt: >
+#|   Histogram of distribution of scores nearby, in ten decile bins, as percentiles versus a
+#|   flat line representing the US overall, an expected count of 100 sites per decile,
+#|   out of 1,000 sites total. 
+#|   Bars in the first three deciles (low traffic scores) are above the expected 100 line,
+#|   meaning these sites have an overrepresentation of sites with low traffic scores
+#|   compared to the US overall.
 hist(out$results_bysite$pctile.traffic.score, 10, xlab = "Local traffic scores (expressed as a percentile)", 
      ylab = "count of sites in each bin, out of 1,000 sites", freq = TRUE, 
      main = "Actual distribution of scores nearby, as percentiles, 
      vs flat line = USA overall")
 abline(h = nrow(out$results_bysite)/10)
 ```
-
-
-

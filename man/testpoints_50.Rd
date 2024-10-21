@@ -11,8 +11,7 @@ An object of class \code{data.frame} with 50 rows and 4 columns.
 testpoints_50
 }
 \description{
-Examples of what could be input to functions
-that needs points specified by lat lon
+Examples of what could be inputs to functions that need points specified by lat lon
 }
 \details{
 Just for convenience, these are installed with the package, and are

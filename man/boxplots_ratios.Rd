@@ -6,7 +6,7 @@
 \usage{
 boxplots_ratios(
   x,
-  selected_dvar_colname = "Demog.Index",
+  selected_dvar_colname = varlist2names("names_d")[1],
   selected_dvar_nicename = selected_dvar_colname,
   towhat_nicename = "US average",
   wheretext = "Near"
@@ -16,7 +16,7 @@ boxplots_ratios(
 \item{x}{data.frame that is the output of ejscreen analysis, for example:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{x <- ejscreenit(testpoints_5)$table
-x <- testoutput_ejscreenapi_plus_50
+x <- testoutput_ejscreenapi_plus_5
 }\if{html}{\out{</div>}}}
 
 \item{selected_dvar_colname}{default is "Demog.Index"}

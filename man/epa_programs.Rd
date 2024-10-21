@@ -4,6 +4,12 @@
 \name{epa_programs}
 \alias{epa_programs}
 \title{epa_programs (DATA) named vector with program counts}
+\format{
+An object of class \code{character} of length 97.
+}
+\usage{
+epa_programs
+}
 \description{
 This is a named vector of EPA programs that lists the programs and has names with programs and program counts. Used by EJAM shiny app for dropdown menu.
 }
@@ -23,3 +29,4 @@ Also see \href{https://www.epa.gov/frs/frs-data-sources}{EPA documentation descr
 Also see \link{frs_by_programid}
 }
 }
+\keyword{datasets}
