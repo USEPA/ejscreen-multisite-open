@@ -52,8 +52,8 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ejscreen_vs_ejam_see1map</span><span class="op">(</span></span>
+<span>  <span class="va">vs</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  <span class="va">x</span>,</span>
 <span>  overlay_blockgroups <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  radius <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  map <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -68,12 +68,12 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
-<dd><p>row number in x$EJAM of site to check</p></dd>
+<dl><dt id="arg-vs">vs<a class="anchor" aria-label="anchor" href="#arg-vs"></a></dt>
+<dd><p>results from  vs &lt;- ejscreen_vs_ejam(testpoints_10, radius = 3, include_ejindexes = TRUE)</p></dd>
 
 
-<dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>results from  x &lt;- ejscreen_vs_ejam(testpoints_10, radius =3, include_ejindexes = TRUE)</p></dd>
+<dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
+<dd><p>row number in vs$EJAM of site to check</p></dd>
 
 
 <dt id="arg-overlay-blockgroups">overlay_blockgroups<a class="anchor" aria-label="anchor" href="#arg-overlay-blockgroups"></a></dt>

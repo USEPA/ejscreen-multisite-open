@@ -4,7 +4,13 @@
 \alias{generate_html_header}
 \title{Build HTML header for community report}
 \usage{
-generate_html_header(analysis_title, totalpop, locationstr, in_shiny = FALSE)
+generate_html_header(
+  analysis_title,
+  totalpop,
+  locationstr,
+  in_shiny = FALSE,
+  report_title = "EJScreen-EJAM Multisite Report"
+)
 }
 \arguments{
 \item{analysis_title, }{title to use in header of report}
@@ -14,6 +20,8 @@ generate_html_header(analysis_title, totalpop, locationstr, in_shiny = FALSE)
 \item{locationstr, }{description of the location(s) analyzed}
 
 \item{in_shiny, }{whether the function is being called in or outside of shiny - affects location of header}
+
+\item{report_title}{generic name of this type of report, to be shown at top, like "EJScreen-EJAM Multisite Report"}
 }
 \description{
 Build HTML header for community report

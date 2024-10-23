@@ -3,7 +3,7 @@
 # if not already done in .onAttach() step, do this now as app launches
 dataload_from_pins(varnames = c("blockpoints", "blockwts", "quaddata"))
 indexblocks()
-                   
+
 # Note: Do not set defaults for a module UNTIL INSIDE THE MODULE 
 #    EJAM ejscreenapi module uses its own global.R file:
 #   source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))
@@ -77,21 +77,21 @@ marker_cluster_cutoff  <- 1 * 1000  # *** EJAM only not api; for leaflet markerC
 default_max_pts_map   <- 5 * 1000
 maxmax_pts_map       <- 15 * 1000 # max we will show on map
 
- # input$max_pts_showtable uses these as its starting value and max allowed value
- default_max_pts_showtable <- 1000 # max to show in interactive viewer. It drops the rest.
- maxmax_pts_showtable  <- 5 * 1000 # 10k is extremely slow. check server side vs client side
+# input$max_pts_showtable uses these as its starting value and max allowed value
+default_max_pts_showtable <- 1000 # max to show in interactive viewer. It drops the rest.
+maxmax_pts_showtable  <- 5 * 1000 # 10k is extremely slow. check server side vs client side
 
-  # input$max_pts_run uses these as its starting value and max allowed value
- default_max_pts_run  <-  1 * 1000 # initial cap but can adjust in advanced tab
- maxmax_pts_run       <- 15 * 1000 # absolute max you can analyze here, even with advanced tab
+# input$max_pts_run uses these as its starting value and max allowed value
+default_max_pts_run  <-  1 * 1000 # initial cap but can adjust in advanced tab
+maxmax_pts_run       <- 15 * 1000 # absolute max you can analyze here, even with advanced tab
 
- # input$max_shapes_map uses these as its starting value and max allowed value
-  default_max_shapes_map <- 159 # TX has 254 counties, but no other state exceeds 159. EJAM::blockgroupstats[ , data.table::uniqueN(substr(bgfips, 1,5)), by = ST][order(V1), ]
- maxmax_shapes_map <- 254  # TX has 254 counties
+# input$max_shapes_map uses these as its starting value and max allowed value
+default_max_shapes_map <- 159 # TX has 254 counties, but no other state exceeds 159. EJAM::blockgroupstats[ , data.table::uniqueN(substr(bgfips, 1,5)), by = ST][order(V1), ]
+maxmax_shapes_map <- 254  # TX has 254 counties
 
- use_shapefile_from_any <-  FALSE # newer code when ready will handle more spatial formats like .json etc.
- 
- ## ------------------------ Radius options  #####
+use_shapefile_from_any <-  FALSE # newer code when ready will handle more spatial formats like .json etc.
+
+## ------------------------ Radius options  #####
 
 #   radius miles for slider input where user specifies radius. Note 5 km is 3.1 miles, 10 km is 6.2 miles ; and 10 miles is 16 kilometers (10 * meters_per_mile/1000). 50 km is too much/ too slow.
 minradius  <- 0.50 # miles -- significant uncertainty as radius shrinks, at least if blockgroups are small such as if # of blockgroups in circle << 30.
@@ -142,7 +142,7 @@ default_include_extraindicators <- TRUE
 
 ##  Map colors, weights, opacity (for ejscreenapi module?) ####
 ### in ejscreenapi global.R:
- default_circleweight <- 4
+default_circleweight <- 4
 # opacitymin   <- 0
 # opacitymax   <- 0.5
 # opacitystep  <- 0.025
@@ -204,7 +204,7 @@ default_subgroups_type <- 'nh'
 default_need_proximityscore <- FALSE # need_proximityscore is a param in doaggregate() or ejamit()
 default_include_ejindexes   <- TRUE # include_ejindexes is a param in doaggregate() or ejamit()
 default_extra_demog <- TRUE # extra_demog is a param in  doaggregate() or ejamit(),
-  # label = "Need extra indicators from EJScreen v2.2 report, on language, age groups, gender, percent with disability, poverty, etc.",
+# label = "Need extra indicators from EJScreen v2.2 report, on language, age groups, gender, percent with disability, poverty, etc.",
 
 
 ######################################################## #
@@ -262,7 +262,7 @@ default.an_thresh_comp2 = 90
 # threshold.default <- c('comp1' = 90, 'comp2' = 80)
 
 ######################################################## #
-  ## QUANTILES ...  can be used by inputId 'an_list_pctiles'    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
+## QUANTILES ...  can be used by inputId 'an_list_pctiles'    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
 probs.default.selected <- c(   0.25,            0.80,     0.95)   #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
 probs.default.values   <- c(0, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99, 1)  #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
 probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', zero.print = '0')
@@ -281,20 +281,22 @@ probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', z
 ## info text for "About EJAM" tab ####
 intro_text <- tagList(
   # tags$p("For more information about EJAM:"),
-  h2( a(href = "https://usepa.github.io/EJAM/articles/0_whatis.html", "What is EJAM?", target = '_blank', rel = 'noreferrer noopener') ),
-  p("EJAM is a tool developed by the United States Environmental Protection Agency (US EPA) that makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using EJAM is like running an EJScreen report, but for hundreds or thousands of places, all at the same time."),
-  p("This provides interactive results and a formatted, ready-to-share report with written explanations of the results, tables, and graphics. The report can provide EJ-related information about people who live in communities near any of the industrial facilities on a list, for example."),
+  h2( a(href = "https://usepa.github.io/EJAM/articles/0_whatis.html",
+        "What is EJScreen's EJAM?", 
+        target = "_blank", rel = "noreferrer noopener") ),
+  p("EJScreen's multisite tool (EJAM) is a tool developed by the United States Environmental Protection Agency (US EPA) that makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using this tool is like getting a typical EJScreen report, but for hundreds or thousands of places, all at the same time."),
+  p("This provides interactive results and a formatted, ready-to-share report with tables, graphics, and a map. The report can provide EJ-related information about people who live in communities near any of the industrial facilities on a list, for example."),
   br(),
   br()
 )
 # intro_text <- tagList(
-#   tags$p("EPA has developed a number of different tools for mapping and analysis of information related to environmental justice (EJ), including EJScreen and EJAM. "),
+#   tags$p("EPA has developed a number of different resources for mapping and analysis of information related to environmental justice (EJ), including EJScreen. "),
 #   tags$p("EJScreen provides a dataset with environmental, demographic, and EJ indicators for each Census block group in the US. \n"),
 #   tags$p("EJScreen can provide a report summarizing those values for the average resident within some distance (e.g., 1 mile) from a specified point."),
 #   tags$p("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. "),
-#   tags$p("EJAM allows users to select a set of areas (e.g., via shapefiles) or the areas near facilities defined by NAICs industrial category codes or by uploading a list of point locations."),
+#   tags$p("EJScreen's multisite tool (EJAM) allows users to select a set of areas (e.g., via shapefiles) or the areas near facilities defined by NAICs industrial category codes or by uploading a list of point locations."),
 #   tags$p("EJAM then provides a summary report for all residential locations near the selected facilities."),
-#   tags$p("See in-app info/tips, and the EJAM and EJScreen documentation for more about the tools and datasets (indicators)."),
+#   tags$p("See in-app info/tips, and the EJAM-specific and general EJScreen documentation for more about the tools and datasets (indicators)."),
 #   tags$p("Programmers can see the ", a(href = 'https://github.com/USEPA/EJAM?tab=readme-ov-file#readme', "Github repository and README"),
 #          " document, or the R package ", a(href = 'https://usepa.github.io/EJAM/index.html', "EJAM documentation"), " including walkthroughs and reference on functions and data.")
 # )
@@ -543,19 +545,19 @@ shp_help_msg <- '
 
 html_header_fmt <- tagList(
   #################################################################################################################### #
-
-
+  
+  
   # WHERE TO FIND THIS template  #
   # browseURL("https://github.com/USEPA/webcms/blob/main/utilities/r/OneEPA_template.R")
   # but also see
   # https://www.epa.gov/themes/epa_theme/pattern-lab/patterns/pages-standalone-template/pages-standalone-template.rendered.html
   # START OF ONEEPA SHINY APP WEB UI TEMPLATE to insert within your fluid page
   #################################################################################################################### #
-
+  
   tags$html(class = "no-js", lang = "en"),
-
+  
   ### head ####
-
+  
   tags$head(
     HTML(
       "<!-- Google Tag Manager -->
@@ -569,12 +571,12 @@ html_header_fmt <- tagList(
     ),
     tags$meta(charset="utf-8"),
     tags$meta(property="og:site_name", content="US EPA"),
-
+    
     #tags$link(rel = "stylesheet", type = "text/css", href = "css/uswds.css"),
     tags$link(rel="stylesheet", type = "text/css", href = "https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/css/uswds.min.css", integrity="sha512-ZKvR1/R8Sgyx96aq5htbFKX84hN+zNXN73sG1dEHQTASpNA8Pc53vTbPsEKTXTZn9J4G7R5Il012VNsDEReqCA==", crossorigin="anonymous", referrerpolicy="no-referrer"),
     tags$link(rel="canonical", href="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
     tags$link(rel="shortlink", href="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
-
+    
     tags$meta(property="og:url", content="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
     tags$meta(property="og:url", content="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
     tags$meta(property="og:image", content="https://www.epa.gov/sites/all/themes/epa/img/epa-standard-og.jpg"),
@@ -590,21 +592,21 @@ html_header_fmt <- tagList(
     tags$meta(name="HandheldFriendly", content="true"),
     tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
     tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
-
+    
     ## APP TITLE could be defined here, or if using golem package, in golem_add_external_resources() within app_ui.R ####
     #
     # tags$title('EJAM | US EPA'),
     tags$meta(name = "application-name", content = "EJAM"),
-
+    
     ## EPA FAVICONS - but can be specified in (and this would conflict with) golem_add_external_resources() within app_ui.R ####
-
+    
     # try to let app_ui.R define the main favicon instead of using the EPA one....
     # tags$link(rel="icon",                      href="https://www.epa.gov/themes/epa_theme/images/favicon-32.png", sizes="32x32"),
     # tags$link(rel="icon", type="image/x-icon", href="https://www.epa.gov/themes/epa_theme/images/favicon.ico"),
-
+    
     tags$meta(name="msapplication-TileColor", content="#FFFFFF"),
     tags$meta(name="msapplication-TileImage", content="https://www.epa.gov/themes/epa_theme/images/favicon-144.png"),
-
+    
     tags$meta(name="msapplication-config", content="https://www.epa.gov/themes/epa_theme/images/ieconfig.xml"),
     tags$link(rel="apple-touch-icon-precomposed", sizes="196x196", href="https://www.epa.gov/themes/epa_theme/images/favicon-196.png"),
     tags$link(rel="apple-touch-icon-precomposed", sizes="152x152", href="https://www.epa.gov/themes/epa_theme/images/favicon-152.png"),
@@ -613,9 +615,9 @@ html_header_fmt <- tagList(
     tags$link(rel="apple-touch-icon-precomposed", sizes="114x114", href="https://www.epa.gov/themes/epa_theme/images/favicon-114.png"),
     tags$link(rel="apple-touch-icon-precomposed", sizes="72x72", href="https://www.epa.gov/themes/epa_theme/images/favicon-72.png"),
     tags$link(rel="apple-touch-icon-precomposed", href="https://www.epa.gov/themes/epa_theme/images/favicon-180.png"),
-
-
-
+    
+    
+    
     tags$link(rel="preload", href="https://www.epa.gov/themes/epa_theme/fonts/source-sans-pro/sourcesanspro-regular-webfont.woff2", as="font", crossorigin="anonymous"),
     tags$link(rel="preload", href="https://www.epa.gov/themes/epa_theme/fonts/source-sans-pro/sourcesanspro-bold-webfont.woff2", as="font", crossorigin="anonymous"),
     tags$link(rel="preload", href="https://www.epa.gov/themes/epa_theme/fonts/merriweather/Latin-Merriweather-Bold.woff2", as="font", crossorigin="anonymous"),
@@ -631,7 +633,7 @@ html_header_fmt <- tagList(
     tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/tree-child.module.css?r6lsex"),
     tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/themes/epa_theme/css/styles.css?r6lsex"),
     tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/themes/epa_theme/css-lib/colorbox.min.css?r6lsex"),
-
+    
     tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds-init.min.js'),
     #fix container-fluid that boostrap RShiny uses
     tags$style(HTML(
@@ -646,16 +648,22 @@ html_header_fmt <- tagList(
               margin-left: 30px;
           }'
     ))
-  ),
-
+  ), 
+  
   ### Body tag and Site Header ####
 
-  tags$body(class="path-themes not-front has-wide-template", id="top",
-            tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds.min.js')),
+  tags$body(
+    class = "path-themes not-front has-wide-template", id = "top",
+    tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds.min.js')
+  
+    )    ,    
+ 
+######################################################################## #
+  
   HTML(
     '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
         <a id="skip-to-main" href="#main" class="skiplinks__link visually-hidden focusable">Skip to main content</a>
-      </div>
+     </div>
 
   	<!-- Google Tag Manager (noscript) -->
   	<noscript><iframe src=https://www.googletagmanager.com/ns.html?id=GTM-L8ZB
@@ -663,8 +671,13 @@ html_header_fmt <- tagList(
   	<!-- End Google Tag Manager (noscript) -->
 
       <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
+
+<!--
+
       <section class="usa-banner" aria-label="Official government website">
+
         <div class="usa-accordion">
+
           <header class="usa-banner__header">
             <div class="usa-banner__inner">
               <div class="grid-col-auto">
@@ -679,6 +692,7 @@ html_header_fmt <- tagList(
               </button>
             </div>
           </header>
+
           <div class="usa-banner__content usa-accordion__content" id="gov-banner">
             <div class="grid-row grid-gap-lg">
               <div class="usa-banner__guidance tablet:grid-col-6">
@@ -701,8 +715,13 @@ html_header_fmt <- tagList(
               </div>
             </div>
           </div>
+
         </div>
+
       </section>
+
+-->
+
       <div>
         <div class="js-view-dom-id-epa-alerts--public">
           <noscript>
@@ -718,10 +737,15 @@ html_header_fmt <- tagList(
           </noscript>
         </div>
       </div>
+
       <header class="l-header">
+
         <div class="usa-overlay"></div>
         <div class="l-constrain">
+
+<!--
           <div class="l-header__navbar">
+
             <div class="l-header__branding">
               <a class="site-logo" href="/" aria-label="Home" title="Home" rel="home">
                 <span class="site-logo__image">
@@ -732,6 +756,7 @@ html_header_fmt <- tagList(
               </a>
               <button class="usa-menu-btn usa-button l-header__menu-button">Menu</button>
             </div>
+
             <div class="l-header__search">
               <form class="usa-search usa-search--small usa-search--epa" method="get" action="https://search.epa.gov/epasearch">
                 <div role="search">
@@ -750,8 +775,11 @@ html_header_fmt <- tagList(
                 </div>
               </form>
             </div>
+
           </div>
+-->
         </div>
+<!--
         <div class="l-header__nav">
           <nav class="usa-nav usa-nav--epa" role="navigation" aria-label="EPA header navigation">
             <div class="usa-nav__inner">
@@ -771,11 +799,18 @@ html_header_fmt <- tagList(
             </div>
           </nav>
         </div>
+-->
       </header>
-      <main id="main" class="main" role="main" tabindex="-1">'
-  ),
 
-  ### Individual Page Header ####
+
+      <main id="main" class="main" role="main" tabindex="-1">'
+  
+    )    ,   #   comment  out when excluding html below
+  
+  ########################################################################## #
+  
+  ### Contact Us - Header ####
+  
   HTML(
     '<div class="l-page  has-footer">
         <div class="l-constrain">
@@ -784,201 +819,206 @@ html_header_fmt <- tagList(
               <div class="web-area-title"></div>
             </div>
             <div class="l-page__header-last">
+<!--
               <a href="#" style="text-decoration: underline;" class="header-link">Contact Us</a>
+-->              
             </div>
           </div>
           <article class="article">'
   )
-)
+  
+) # END OF   html_header_fmt()
+########################################################################## #
 
 html_footer_fmt <- tagList(
-  ### Individual Page Footer ####
-
-  HTML(
-    '</article>
-      </div>
-      <div class="l-page__footer">
-        <div class="l-constrain">
-          <p><a href="#" style="text-decoration: underline;">Contact Us</a> to ask a question, provide feedback, or report a problem.</p>
-        </div>
-      </div>
-    </div>'
-  ),
-
-  ### Site Footer ####
-  HTML(
-    '</main>
-        <footer class="footer" role="contentinfo">
-        <div class="l-constrain">
-          <img class="footer__epa-seal" src="https://www.epa.gov/themes/epa_theme/images/epa-seal.svg" alt="United States Environmental Protection Agency" height="100" width="100">
-          <div class="footer__content contextual-region">
-            <div class="footer__column">
-              <h2>Discover.</h2>
-              <ul class="menu menu--footer">
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/accessibility" class="menu__link">Accessibility</a>
-                </li>
-                <!--li class="menu__item"><a href="#" class="menu__link">EPA Administrator</a></li-->
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/planandbudget" class="menu__link">Budget &amp; Performance</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/contracts" class="menu__link">Contracting</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/home/wwwepagov-snapshots" class="menu__link">EPA www Web Snapshot</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/grants" class="menu__link">Grants</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/ocr/whistleblower-protections-epa-and-how-they-relate-non-disclosure-agreements-signed-epa-employees" class="menu__link">No FEAR Act Data</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/web-policies-and-procedures/plain-writing" class="menu__link">Plain Writing</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/privacy" class="menu__link">Privacy</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/privacy/privacy-and-security-notice" class="menu__link">Privacy and Security Notice</a>
-                </li>
-              </ul>
-            </div>
-            <div class="footer__column">
-              <h2>Connect.</h2>
-              <ul class="menu menu--footer">
-                <li class="menu__item">
-                  <a href="https://www.data.gov/" class="menu__link">Data.gov</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/office-inspector-general/about-epas-office-inspector-general" class="menu__link">Inspector General</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/careers" class="menu__link">Jobs</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/newsroom" class="menu__link">Newsroom</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/data" class="menu__link">Open Government</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.regulations.gov/" class="menu__link">Regulations.gov</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/newsroom/email-subscriptions-epa-news-releases" class="menu__link">Subscribe</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.usa.gov/" class="menu__link">USA.gov</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.whitehouse.gov/" class="menu__link">White House</a>
-                </li>
-              </ul>
-            </div>
-            <div class="footer__column">
-              <h2>Ask.</h2>
-              <ul class="menu menu--footer">
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/home/forms/contact-epa" class="menu__link">Contact EPA</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/web-policies-and-procedures/epa-disclaimers" class="menu__link">EPA Disclaimers</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/aboutepa/epa-hotlines" class="menu__link">Hotlines</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/foia" class="menu__link">FOIA Requests</a>
-                </li>
-                <li class="menu__item">
-                  <a href="https://www.epa.gov/home/frequent-questions-specific-epa-programstopics" class="menu__link">Frequent Questions</a>
-                </li>
-              </ul>
-              <h2>Follow.</h2>
-              <ul class="menu menu--social">
-                <li class="menu__item">
-                  <a class="menu__link" aria-label="EPA’s Facebook" href="https://www.facebook.com/EPA">
-                    <!-- svg class="icon icon--social" aria-hidden="true" -->
-                    <svg class="icon icon--social" aria-hidden="true" viewBox="0 0 448 512" id="facebook-square" xmlns="http://www.w3.org/2000/svg">
-                      <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#facebook-square"></use-->
-                      <path fill="currentcolor" d="M400 32H48A48 48 0 000 80v352a48 48 0 0048 48h137.25V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.27c-30.81 0-40.42 19.12-40.42 38.73V256h68.78l-11 71.69h-57.78V480H400a48 48 0 0048-48V80a48 48 0 00-48-48z"></path>
-                    </svg>
-                    <span class="usa-tag external-link__tag" title="Exit EPA Website">
-                      <span aria-hidden="true">Exit</span>
-                      <span class="u-visually-hidden"> Exit EPA Website</span>
-                    </span>
-                  </a>
-                </li>
-                <li class="menu__item">
-                  <a class="menu__link" aria-label="EPA’s Twitter" href="https://twitter.com/epa">
-                    <!-- svg class="icon icon--social" aria-hidden="true" -->
-                    <svg class="icon icon--social" aria-hidden="true" viewBox="0 0 448 512" id="twitter-square" xmlns="http://www.w3.org/2000/svg">
-                      <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#twitter-square"></use -->
-                      <path fill="currentcolor" d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-48.9 158.8c.2 2.8.2 5.7.2 8.5 0 86.7-66 186.6-186.6 186.6-37.2 0-71.7-10.8-100.7-29.4 5.3.6 10.4.8 15.8.8 30.7 0 58.9-10.4 81.4-28-28.8-.6-53-19.5-61.3-45.5 10.1 1.5 19.2 1.5 29.6-1.2-30-6.1-52.5-32.5-52.5-64.4v-.8c8.7 4.9 18.9 7.9 29.6 8.3a65.447 65.447 0 01-29.2-54.6c0-12.2 3.2-23.4 8.9-33.1 32.3 39.8 80.8 65.8 135.2 68.6-9.3-44.5 24-80.6 64-80.6 18.9 0 35.9 7.9 47.9 20.7 14.8-2.8 29-8.3 41.6-15.8-4.9 15.2-15.2 28-28.8 36.1 13.2-1.4 26-5.1 37.8-10.2-8.9 13.1-20.1 24.7-32.9 34z"></path>
-                    </svg>
-                    <span class="usa-tag external-link__tag" title="Exit EPA Website">
-                      <span aria-hidden="true">Exit</span>
-                      <span class="u-visually-hidden"> Exit EPA Website</span>
-                    </span>
-                  </a>
-                </li>
-                <li class="menu__item">
-                  <a class="menu__link" aria-label="EPA’s Youtube" href="https://www.youtube.com/user/USEPAgov">
-                    <!-- svg class="icon icon--social" aria-hidden="true" -->
-                    <svg class="icon icon--social" aria-hidden="true" viewBox="0 0 448 512" id="youtube-square" xmlns="http://www.w3.org/2000/svg">
-                      <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#youtube-square"></use -->
-                      <path fill="currentcolor" d="M186.8 202.1l95.2 54.1-95.2 54.1V202.1zM448 80v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h352c26.5 0 48 21.5 48 48zm-42 176.3s0-59.6-7.6-88.2c-4.2-15.8-16.5-28.2-32.2-32.4C337.9 128 224 128 224 128s-113.9 0-142.2 7.7c-15.7 4.2-28 16.6-32.2 32.4-7.6 28.5-7.6 88.2-7.6 88.2s0 59.6 7.6 88.2c4.2 15.8 16.5 27.7 32.2 31.9C110.1 384 224 384 224 384s113.9 0 142.2-7.7c15.7-4.2 28-16.1 32.2-31.9 7.6-28.5 7.6-88.1 7.6-88.1z"></path>
-                    </svg>
-                    <span class="usa-tag external-link__tag" title="Exit EPA Website">
-                      <span aria-hidden="true">Exit</span>
-                      <span class="u-visually-hidden"> Exit EPA Website</span>
-                    </span>
-                  </a>
-                </li>
-                <li class="menu__item">
-                  <a class="menu__link" aria-label="EPA’s Flickr" href="https://www.flickr.com/photos/usepagov">
-                    <!-- svg class="icon icon--social" aria-hidden="true" -->
-                    <svg class="icon icon--social" aria-hidden="true" viewBox="0 0 448 512" id="flickr-square" xmlns="http://www.w3.org/2000/svg">
-                      <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#flickr-square"></use -->
-                      <path fill="currentcolor" d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM144.5 319c-35.1 0-63.5-28.4-63.5-63.5s28.4-63.5 63.5-63.5 63.5 28.4 63.5 63.5-28.4 63.5-63.5 63.5zm159 0c-35.1 0-63.5-28.4-63.5-63.5s28.4-63.5 63.5-63.5 63.5 28.4 63.5 63.5-28.4 63.5-63.5 63.5z"></path>
-                    </svg>
-                    <span class="usa-tag external-link__tag" title="Exit EPA Website">
-                      <span aria-hidden="true">Exit</span>
-                      <span class="u-visually-hidden"> Exit EPA Website</span>
-                    </span>
-                  </a>
-                </li>
-                <li class="menu__item">
-                  <a class="menu__link" aria-label="EPA’s Instagram" href="https://www.instagram.com/epagov">
-                    <!-- svg class="icon icon--social" aria-hidden="true" -->
-                    <svg class="icon icon--social" aria-hidden="true" viewBox="0 0 448 512" id="instagram-square" xmlns="http://www.w3.org/2000/svg">
-                      <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#instagram-square"></use -->
-                      <path fill="currentcolor" xmlns="http://www.w3.org/2000/svg" d="M224 202.66A53.34 53.34 0 10277.36 256 53.38 53.38 0 00224 202.66zm124.71-41a54 54 0 00-30.41-30.41c-21-8.29-71-6.43-94.3-6.43s-73.25-1.93-94.31 6.43a54 54 0 00-30.41 30.41c-8.28 21-6.43 71.05-6.43 94.33s-1.85 73.27 6.47 94.34a54 54 0 0030.41 30.41c21 8.29 71 6.43 94.31 6.43s73.24 1.93 94.3-6.43a54 54 0 0030.41-30.41c8.35-21 6.43-71.05 6.43-94.33s1.92-73.26-6.43-94.33zM224 338a82 82 0 1182-82 81.9 81.9 0 01-82 82zm85.38-148.3a19.14 19.14 0 1119.13-19.14 19.1 19.1 0 01-19.09 19.18zM400 32H48A48 48 0 000 80v352a48 48 0 0048 48h352a48 48 0 0048-48V80a48 48 0 00-48-48zm-17.12 290c-1.29 25.63-7.14 48.34-25.85 67s-41.4 24.63-67 25.85c-26.41 1.49-105.59 1.49-132 0-25.63-1.29-48.26-7.15-67-25.85s-24.63-41.42-25.85-67c-1.49-26.42-1.49-105.61 0-132 1.29-25.63 7.07-48.34 25.85-67s41.47-24.56 67-25.78c26.41-1.49 105.59-1.49 132 0 25.63 1.29 48.33 7.15 67 25.85s24.63 41.42 25.85 67.05c1.49 26.32 1.49 105.44 0 131.88z"></path>
-                    </svg>
-                    <span class="usa-tag external-link__tag" title="Exit EPA Website">
-                      <span aria-hidden="true">Exit</span>
-                      <span class="u-visually-hidden"> Exit EPA Website</span>
-                    </span>
-                  </a>
-                </li>
-              </ul>
-              <p class="footer__last-updated">
-                Last updated on March 30, 2022
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
-      <a href="#" class="back-to-top" title="" aria-label="back-to-top">
-        <svg class="back-to-top__icon" aria-label="">
-        <svg class="back-to-top__icon" aria-label="" viewBox="0 0 19 12" id="arrow" xmlns="http://www.w3.org/2000/svg">
-          <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#arrow"></use -->
-          <path fill="currentColor" d="M2.3 12l7.5-7.5 7.5 7.5 2.3-2.3L9.9 0 .2 9.7 2.5 12z"></path>
-        </svg>
-      </a>'
-  )
+  
+  ### Contact Us - Footer ####
+  # 
+  # HTML(
+  #   '</article>
+  #     </div>
+  #     <div class="l-page__footer">
+  #       <div class="l-constrain">
+  #         <p><a href="#" style="text-decoration: underline;">Contact Us</a> to ask a question, provide feedback, or report a problem.</p>
+  #       </div>
+  #     </div>
+  #   </div>'
+  # ),
+  # 
+  # ### Site Footer ####
+  # HTML(
+  #   '</main>
+  #       <footer class="footer" role="contentinfo">
+  #       <div class="l-constrain">
+  #         <img class="footer__epa-seal" src="https://www.epa.gov/themes/epa_theme/images/epa-seal.svg" alt="United States Environmental Protection Agency" height="100" width="100">
+  #         <div class="footer__content contextual-region">
+  #           <div class="footer__column">
+  #             <h2>Discover.</h2>
+  #             <ul class="menu menu--footer">
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/accessibility" class="menu__link">Accessibility</a>
+  #               </li>
+  #               <!--li class="menu__item"><a href="#" class="menu__link">EPA Administrator</a></li-->
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/planandbudget" class="menu__link">Budget &amp; Performance</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/contracts" class="menu__link">Contracting</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/home/wwwepagov-snapshots" class="menu__link">EPA www Web Snapshot</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/grants" class="menu__link">Grants</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/ocr/whistleblower-protections-epa-and-how-they-relate-non-disclosure-agreements-signed-epa-employees" class="menu__link">No FEAR Act Data</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/web-policies-and-procedures/plain-writing" class="menu__link">Plain Writing</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/privacy" class="menu__link">Privacy</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/privacy/privacy-and-security-notice" class="menu__link">Privacy and Security Notice</a>
+  #               </li>
+  #             </ul>
+  #           </div>
+  #           <div class="footer__column">
+  #             <h2>Connect.</h2>
+  #             <ul class="menu menu--footer">
+  #               <li class="menu__item">
+  #                 <a href="https://www.data.gov/" class="menu__link">Data.gov</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/office-inspector-general/about-epas-office-inspector-general" class="menu__link">Inspector General</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/careers" class="menu__link">Jobs</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/newsroom" class="menu__link">Newsroom</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/data" class="menu__link">Open Government</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.regulations.gov/" class="menu__link">Regulations.gov</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/newsroom/email-subscriptions-epa-news-releases" class="menu__link">Subscribe</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.usa.gov/" class="menu__link">USA.gov</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.whitehouse.gov/" class="menu__link">White House</a>
+  #               </li>
+  #             </ul>
+  #           </div>
+  #           <div class="footer__column">
+  #             <h2>Ask.</h2>
+  #             <ul class="menu menu--footer">
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/home/forms/contact-epa" class="menu__link">Contact EPA</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/web-policies-and-procedures/epa-disclaimers" class="menu__link">EPA Disclaimers</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/aboutepa/epa-hotlines" class="menu__link">Hotlines</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/foia" class="menu__link">FOIA Requests</a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a href="https://www.epa.gov/home/frequent-questions-specific-epa-programstopics" class="menu__link">Frequent Questions</a>
+  #               </li>
+  #             </ul>
+  #             <h2>Follow.</h2>
+  #             <ul class="menu menu--social">
+  #               <li class="menu__item">
+  #                 <a class="menu__link" aria-label="EPA’s Facebook" href="https://www.facebook.com/EPA">
+  #                   <!-- svg class="icon icon--social" aria-hidden="true" -->
+  #                   <svg class="icon icon--social" aria-hidden="true" viewBox="0 0 448 512" id="facebook-square" xmlns="http://www.w3.org/2000/svg">
+  #                     <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#facebook-square"></use-->
+  #                     <path fill="currentcolor" d="M400 32H48A48 48 0 000 80v352a48 48 0 0048 48h137.25V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.27c-30.81 0-40.42 19.12-40.42 38.73V256h68.78l-11 71.69h-57.78V480H400a48 48 0 0048-48V80a48 48 0 00-48-48z"></path>
+  #                   </svg>
+  #                   <span class="usa-tag external-link__tag" title="Exit EPA Website">
+  #                     <span aria-hidden="true">Exit</span>
+  #                     <span class="u-visually-hidden"> Exit EPA Website</span>
+  #                   </span>
+  #                 </a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a class="menu__link" aria-label="EPA’s Twitter" href="https://twitter.com/epa">
+  #                   <!-- svg class="icon icon--social" aria-hidden="true" -->
+  #                   <svg class="icon icon--social" aria-hidden="true" viewBox="0 0 448 512" id="twitter-square" xmlns="http://www.w3.org/2000/svg">
+  #                     <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#twitter-square"></use -->
+  #                     <path fill="currentcolor" d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-48.9 158.8c.2 2.8.2 5.7.2 8.5 0 86.7-66 186.6-186.6 186.6-37.2 0-71.7-10.8-100.7-29.4 5.3.6 10.4.8 15.8.8 30.7 0 58.9-10.4 81.4-28-28.8-.6-53-19.5-61.3-45.5 10.1 1.5 19.2 1.5 29.6-1.2-30-6.1-52.5-32.5-52.5-64.4v-.8c8.7 4.9 18.9 7.9 29.6 8.3a65.447 65.447 0 01-29.2-54.6c0-12.2 3.2-23.4 8.9-33.1 32.3 39.8 80.8 65.8 135.2 68.6-9.3-44.5 24-80.6 64-80.6 18.9 0 35.9 7.9 47.9 20.7 14.8-2.8 29-8.3 41.6-15.8-4.9 15.2-15.2 28-28.8 36.1 13.2-1.4 26-5.1 37.8-10.2-8.9 13.1-20.1 24.7-32.9 34z"></path>
+  #                   </svg>
+  #                   <span class="usa-tag external-link__tag" title="Exit EPA Website">
+  #                     <span aria-hidden="true">Exit</span>
+  #                     <span class="u-visually-hidden"> Exit EPA Website</span>
+  #                   </span>
+  #                 </a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a class="menu__link" aria-label="EPA’s Youtube" href="https://www.youtube.com/user/USEPAgov">
+  #                   <!-- svg class="icon icon--social" aria-hidden="true" -->
+  #                   <svg class="icon icon--social" aria-hidden="true" viewBox="0 0 448 512" id="youtube-square" xmlns="http://www.w3.org/2000/svg">
+  #                     <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#youtube-square"></use -->
+  #                     <path fill="currentcolor" d="M186.8 202.1l95.2 54.1-95.2 54.1V202.1zM448 80v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h352c26.5 0 48 21.5 48 48zm-42 176.3s0-59.6-7.6-88.2c-4.2-15.8-16.5-28.2-32.2-32.4C337.9 128 224 128 224 128s-113.9 0-142.2 7.7c-15.7 4.2-28 16.6-32.2 32.4-7.6 28.5-7.6 88.2-7.6 88.2s0 59.6 7.6 88.2c4.2 15.8 16.5 27.7 32.2 31.9C110.1 384 224 384 224 384s113.9 0 142.2-7.7c15.7-4.2 28-16.1 32.2-31.9 7.6-28.5 7.6-88.1 7.6-88.1z"></path>
+  #                   </svg>
+  #                   <span class="usa-tag external-link__tag" title="Exit EPA Website">
+  #                     <span aria-hidden="true">Exit</span>
+  #                     <span class="u-visually-hidden"> Exit EPA Website</span>
+  #                   </span>
+  #                 </a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a class="menu__link" aria-label="EPA’s Flickr" href="https://www.flickr.com/photos/usepagov">
+  #                   <!-- svg class="icon icon--social" aria-hidden="true" -->
+  #                   <svg class="icon icon--social" aria-hidden="true" viewBox="0 0 448 512" id="flickr-square" xmlns="http://www.w3.org/2000/svg">
+  #                     <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#flickr-square"></use -->
+  #                     <path fill="currentcolor" d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM144.5 319c-35.1 0-63.5-28.4-63.5-63.5s28.4-63.5 63.5-63.5 63.5 28.4 63.5 63.5-28.4 63.5-63.5 63.5zm159 0c-35.1 0-63.5-28.4-63.5-63.5s28.4-63.5 63.5-63.5 63.5 28.4 63.5 63.5-28.4 63.5-63.5 63.5z"></path>
+  #                   </svg>
+  #                   <span class="usa-tag external-link__tag" title="Exit EPA Website">
+  #                     <span aria-hidden="true">Exit</span>
+  #                     <span class="u-visually-hidden"> Exit EPA Website</span>
+  #                   </span>
+  #                 </a>
+  #               </li>
+  #               <li class="menu__item">
+  #                 <a class="menu__link" aria-label="EPA’s Instagram" href="https://www.instagram.com/epagov">
+  #                   <!-- svg class="icon icon--social" aria-hidden="true" -->
+  #                   <svg class="icon icon--social" aria-hidden="true" viewBox="0 0 448 512" id="instagram-square" xmlns="http://www.w3.org/2000/svg">
+  #                     <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#instagram-square"></use -->
+  #                     <path fill="currentcolor" xmlns="http://www.w3.org/2000/svg" d="M224 202.66A53.34 53.34 0 10277.36 256 53.38 53.38 0 00224 202.66zm124.71-41a54 54 0 00-30.41-30.41c-21-8.29-71-6.43-94.3-6.43s-73.25-1.93-94.31 6.43a54 54 0 00-30.41 30.41c-8.28 21-6.43 71.05-6.43 94.33s-1.85 73.27 6.47 94.34a54 54 0 0030.41 30.41c21 8.29 71 6.43 94.31 6.43s73.24 1.93 94.3-6.43a54 54 0 0030.41-30.41c8.35-21 6.43-71.05 6.43-94.33s1.92-73.26-6.43-94.33zM224 338a82 82 0 1182-82 81.9 81.9 0 01-82 82zm85.38-148.3a19.14 19.14 0 1119.13-19.14 19.1 19.1 0 01-19.09 19.18zM400 32H48A48 48 0 000 80v352a48 48 0 0048 48h352a48 48 0 0048-48V80a48 48 0 00-48-48zm-17.12 290c-1.29 25.63-7.14 48.34-25.85 67s-41.4 24.63-67 25.85c-26.41 1.49-105.59 1.49-132 0-25.63-1.29-48.26-7.15-67-25.85s-24.63-41.42-25.85-67c-1.49-26.42-1.49-105.61 0-132 1.29-25.63 7.07-48.34 25.85-67s41.47-24.56 67-25.78c26.41-1.49 105.59-1.49 132 0 25.63 1.29 48.33 7.15 67 25.85s24.63 41.42 25.85 67.05c1.49 26.32 1.49 105.44 0 131.88z"></path>
+  #                   </svg>
+  #                   <span class="usa-tag external-link__tag" title="Exit EPA Website">
+  #                     <span aria-hidden="true">Exit</span>
+  #                     <span class="u-visually-hidden"> Exit EPA Website</span>
+  #                   </span>
+  #                 </a>
+  #               </li>
+  #             </ul>
+  #             <p class="footer__last-updated">
+  #               Last updated on March 30, 2022
+  #             </p>
+  #           </div>
+  #         </div>
+  #       </div>
+  #     </footer>
+  #     <a href="#" class="back-to-top" title="" aria-label="back-to-top">
+  #       <svg class="back-to-top__icon" aria-label="">
+  #       <svg class="back-to-top__icon" aria-label="" viewBox="0 0 19 12" id="arrow" xmlns="http://www.w3.org/2000/svg">
+  #         <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#arrow"></use -->
+  #         <path fill="currentColor" d="M2.3 12l7.5-7.5 7.5 7.5 2.3-2.3L9.9 0 .2 9.7 2.5 12z"></path>
+  #       </svg>
+  #     </a>'
+  # )
 )
 
 

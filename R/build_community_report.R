@@ -1,8 +1,10 @@
-#' Generate EJAM Summary Report in HTML within shiny app
+
+
+#' Generate EJScreen Multisite (EJAM) Summary Report in HTML within shiny app
 #' 
-#' Creates a 2 page report on overall results or for one site, with 
-#' demographic and environmental indicators, and EJ Indexes if needed.
-#' For the same function for use in RStudio, 
+#' Creates a 2 page report on overall results or for one site, with demographic and environmental indicators, and EJ Indexes if needed.
+#' 
+#' @details For the same function for use in RStudio, 
 #' see [ejam2report()] which relies on `build_community_report()`
 #' 
 #' @param output_df, single row of results table from doaggregate - either results_overall or one row of bysite
@@ -17,9 +19,9 @@
 #' @export
 #' 
 build_community_report <- function(output_df, analysis_title, totalpop, locationstr, 
-                                   include_ejindexes=FALSE, in_shiny = FALSE, filename = NULL){
-  
-  
+                                   include_ejindexes = FALSE, in_shiny = FALSE, filename = NULL
+                                   ) {
+    
   ## check that analysis was run with EJ columns; if not, don't add them
   if (include_ejindexes) {
     ejcols <- c(names_ej,names_ej_state, names_ej_supp,names_ej_supp_state)
@@ -37,8 +39,8 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
   ## iterate through variable lists in map_headernames to get column names
   expandedVarlist <- c()
 
-  for (var in varlist){
-    if (exists(var) & !(var %in% expandedVarlist)){
+  for (var in varlist) {
+    if (exists(var) & !(var %in% expandedVarlist)) {
       expandedVarlist <- c(expandedVarlist, get(var))
     }
   }
@@ -64,14 +66,14 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
                         #fill_tbl_full_ej_supp(output_df_rounded),
                         collapse = '') 
   }
-
   
   full_page <- paste0(
     full_page,
     fill_tbl_full_subgroups(output_df_rounded),
+    generate_report_footnotes(),
     collapse = ''
   )
-  
+    
   if (is.null(filename)) {
     return(HTML(full_page))
   } else {
@@ -80,4 +82,3 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
     })
   }
 }
-

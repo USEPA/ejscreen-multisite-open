@@ -41,7 +41,9 @@ app_ui  <- function(request) {
         refresh = "Click to Restart the App",
         background = "#FFFFFF", colour = "#444444", refreshColour = "darkgreen", overlayColour = "#000000", overlayOpacity = 0.5,
         width = 450, top = 50, size = 20, css = ""
-      ), actionButton("disconnect", "Disconnect the app"),
+      ), 
+      
+      # actionButton("disconnect", "Disconnect the app"),
       
       ### html header inserted from global.R ####
       html_header_fmt,
@@ -51,8 +53,8 @@ app_ui  <- function(request) {
       
       div(class = "title-panel",
           titlePanel(
-            title = paste("EJAM (Environmental Justice Analysis Multi-site) Tool v",ejam_app_version, sep =""),
-            windowTitle = paste("EJAM (Environmental Justice Analysis Multi-site) Tool v", ejam_app_version, sep ="")
+            title       = paste("EJScreen's Environmental Justice Analysis Multi-site Tool (EJAM) v", ejam_app_version, sep = ""),
+            windowTitle = paste("EJScreen's Environmental Justice Analysis Multi-site Tool (EJAM) v", ejam_app_version, sep = "")
           )
       ),
       
@@ -80,7 +82,7 @@ app_ui  <- function(request) {
         selected = 'Site Selection',  # tabs are  'About EJAM',   'Site Selection', 'EJScreen Batch Tool', 'EJScreen Batch Tool',
         # ______ About ______ tabPanel(title = 'About EJAM' ####
         
-        tabPanel(title = 'About EJAM',
+        tabPanel(title = 'About',
                  br(),
                  fluidRow(
                    column(8,
@@ -110,10 +112,10 @@ app_ui  <- function(request) {
         tabPanel(
           title = 'Site Selection',
           #h3('Welcome to EJAM'),
-          div(
-            p('EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site.'),
-            class = "about-EJAM-span"
-          ),
+          # div(
+          #   p("EJScreen's multisite tool (EJAM) lets you explore the demographics and environmental conditions in any list of places, such as for everyone who lives within 1 mile of a certain type of EPA-regulated site. EJAM stands for the Environmental Justice Analysis Multisite tool that is part of EJScreen."),
+          #   class = "about-EJAM-span"
+          # ),
           hr(), ## horizontal line
           
           ## fluidRow container for upload method (left column) and map (right column) ####
@@ -536,7 +538,7 @@ app_ui  <- function(request) {
                                       br(),
                                       div(class = 'navbar1',
                                           navbarPage(
-                                            id="details_subtabs",
+                                            id = "details_subtabs",
                                             title = NULL,
                                             #   navlistPanel(
                                             #   "Results Pages",
