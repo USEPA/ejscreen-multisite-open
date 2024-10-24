@@ -142,8 +142,8 @@ app_ui  <- function(request) {
                                             'by Industry (SIC) Code'   = 'SIC',
                                             'by EPA Program'           = 'EPA_PROGRAM',
                                             'by MACT subpart'          = 'MACT'))
-                    
                   ),
+                  
                   ### input: what LOCATIONS type to upload? (IDs, latlon, FIPS, Shapes) ####
                   # end conditional picking what type of IDs to upload
                   conditionalPanel(
@@ -159,18 +159,13 @@ app_ui  <- function(request) {
                                             'FIPS Codes'                                   = 'FIPS',
                                             'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
                     )
-                    
                   ),
               ),
               
-              
-              
-              
               br(),
-              
+              ################################################################# #
               
               ## *UPLOADING  SITES*  input: choose among facility dropdown options, conditional panel ####
-              
               
               # __wellPanel start ___----------------------------------------------------------------------
               
@@ -181,11 +176,7 @@ app_ui  <- function(request) {
                   column(
                     12,
                     #offset=3,
-                    
                     ################################################################# #
-                    
-                    ## *Latitude Longitude* LOCATIONS Uploads  (conditional panel)  ------------------------------------- - ####
-                    
                     br(),
                     
                     wellPanel(
@@ -194,7 +185,10 @@ app_ui  <- function(request) {
                       fluidRow(
                         column(
                           12,
-                          
+                          ################################################################# #
+   # uploads:                          
+                          ## *Latitude Longitude* LOCATIONS Uploads  (conditional panel)  ------------------------------------- - ####
+
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlon'",
                             
@@ -210,18 +204,16 @@ app_ui  <- function(request) {
                               tags$ul(
                                 tags$li('Required filetype: .csv, .xls, or .xlsx'),
                                 tags$li('Required Columns: lat, lon'),
-                                tags$li('Optional Columns: unique ID')
+                                tags$li(tags$a(href = 'https://github.com/ejanalysis/ejscreendata/blob/master/testdata/latlon/testpoints_10.xlsx?raw=true', target = '_blank', 
+                                               'Example of lat lon file')) #,
+                                # tags$li(tags$a(href = 'https://www.latlong.net/convert-address-to-lat-long.html', target = '_blank', 
+                                #                'Get lat/long from a street address'))
                               )
                             ),
-                            actionButton('latlon_help', label = 'More Info',
-                                         class = 'usa-button usa-button--outline'),
-                            #HTML(latlon_help_msg)
+                            actionButton('latlon_help', label = 'More Info', class = 'usa-button usa-button--outline'), # HTML(latlon_help_msg)
                             br()
-                            
                           ), # end latlong conditionalPanel
-                          
                           ################################################################# #
-                          
                           
                           ## *Shapefile* LOCATIONS Uploads (conditional panel)  ------------------------------------- - ####
                           
@@ -230,23 +222,106 @@ app_ui  <- function(request) {
                             ## input: Upload list of FRS identifiers
                             fileInput(inputId = 'ss_upload_shp',
                                       label = 'Upload a shapefile',
-                                      accept = c(".shp",".dbf",".sbn",".sbx",".shx",".prj",".zip"),
+                                      accept = c(".shp",".dbf",".sbn",".sbx",".shx",".prj",
+                                                 # ".json", ".geojson",  # ***  add json,kml etc when available
+                                                 # ".gdb",               # ***  add json,kml etc when available
+                                                 # ".kml",               # ***  add json,kml etc when available
+                                                 ".zip"
+                                      ),
                                       multiple = TRUE
                             ),
                             tags$ul(
-                              tags$li('Required files: .shp, .shx, .dbf, .prj, .zip'),
-                              tags$li('Required fields: geometry')
+                              #                                            ***  add json,kml etc when available
+                              tags$li('Required files: .zip OR .shp, .shx, .dbf, .prj'),
+                              tags$li('Required fields: geometry'),
+                              tags$li(tags$a(href = 'https://github.com/ejanalysis/ejscreendata/blob/master/testdata/shapes/portland.gdb.zip?raw=true', target = '_blank', 
+                                             'Example of Shapefile'))
                             ),
                             actionButton('shp_help', label = 'More Info', class = 'usa-button usa-button--outline')
-                            #, # xxx
                           ),  # end Shapefile conditionalPanel
                           ################################################################# #
                           
                           
                           ## *CATEGORIES OF SITES*  input: choose among facility dropdown options, conditional panel ####
+
+     # uploads:  
                           
+                          ## _FIPS - upload conditional panel ------------------------------------- - ####
                           
-                          ## _NAICS conditional panel -------------------------------------  -####
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'FIPS'",
+                            ## input: Upload list of facility lat/longs
+                            fileInput(inputId = 'ss_upload_fips',
+                                      label = 'Upload a list of FIPS codes',
+                                      multiple = FALSE,
+                                      accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
+                            ),
+                            tags$ul(
+                              tags$li('Required filetype: .csv, .xls, or .xlsx'),
+                              tags$li('Required columns: FIPS (or alias)'),
+                              tags$li(tags$a(href = 'https://github.com/ejanalysis/ejscreendata/blob/master/testdata/fips/counties_in_Delaware.xlsx?raw=true', target = '_blank', 
+                                             'Example of FIPS codes file'))
+                            ),
+                            actionButton('fips_help', label = 'More Info', class = 'usa-button usa-button--outline')
+                          ), # end FIPS conditionalPanel
+                          ################################################################# #
+
+                          ## _FRS regid - upload  conditional panel ------------------------------------- - ####
+                          
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'FRS'",
+                            ## input: Upload list of FRS identifiers
+                            fileInput(inputId = 'ss_upload_frs',
+                                      label = 'Upload a file with FRS identifiers',
+                                      accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
+                            ), # xxx
+                            tags$span(
+                              tags$ul(
+                                tags$li('Required filetype: .csv, .xls, or .xlsx'),
+                                tags$li('Required Columns: REGISTRY_ID'),
+                                tags$li(tags$a(href = 'https://github.com/ejanalysis/ejscreendata/blob/master/testdata/registryid/frs_test_regid_8.xlsx?raw=true', target = '_blank', 
+                                               'Example of Registry IDs file'))
+                              )
+                            ),
+                            actionButton('frs_help', label = 'More Info', class = 'usa-button usa-button--outline')
+                          ), # end FRS conditionalPanel
+                          ################################################################# #
+                          
+                          ## _EPA program ID - upload conditional panel ------------------------------------- - ####
+                          
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'EPA_PROGRAM'",
+                            ## input: upload an EPA program ID file
+                            fileInput(inputId = 'ss_upload_program',
+                                      label = 'Upload a file with program IDs'),
+                            tags$ul(
+                              tags$li('Required filetype: .csv, .xls, or .xlsx'),
+                              tags$li('Required columns: program, pgm_sys_id'),
+                              tags$li(tags$a(href = 'https://github.com/ejanalysis/ejscreendata/blob/master/testdata/programid/program_test_data_10.xlsx?raw=true', target = '_blank', 
+                                             'Example of EPA program ID file'))
+                            ),
+                            actionButton('epa_program_help', label = 'More Info', class = 'usa-button usa-button--outline')
+                          ), #end EPA program upload conditional panel
+                          ################################################################# #
+      # dropdowns:                    
+                          ## _EPA program - dropdown  conditional panel ------------------------------------- - ####
+                          
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'EPA_PROGRAM'",
+                            span('More info about these programs can be found here: ', a('https://www.epa.gov/frs/frs-data-sources', href = 'https://www.epa.gov/frs/frs-data-sources', target = '_blank', rel = 'noreferrer noopener')),
+                            br(),
+                            ## input: select an EPA program from list ------------------------------------- - ------------------------------------- -
+                            selectizeInput(inputId = 'ss_select_program', label = 'Pick an EPA program',
+                                           ## named vector in global.R - values are acronyms,
+                                           ## names include # of rows corresponding to that program
+                                           choices = epa_programs,
+                                           selected = default_epa_program_selected, # not sure this is a good idea but trying it out
+                                           ## add X to remove selected options from list
+                                           options = list('plugins' = list('remove_button'))),
+                          ), # end conditional panel EPA programs
+                          ################################################################# #
+                          
+                          ## _NAICS - dropdown conditional panel -------------------------------------  -####
                           
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'NAICS'",
@@ -277,58 +352,9 @@ app_ui  <- function(request) {
                             ),
                             br(),
                           ), # end conditional panel
+                          ################################################################# #
                           
-                          ## _FRS   conditional panel ------------------------------------- - ####
-                          
-                          conditionalPanel(
-                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'FRS'",
-                            ## input: Upload list of FRS identifiers
-                            fileInput(inputId = 'ss_upload_frs',
-                                      label = 'Upload a file with FRS identifiers',
-                                      accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
-                            ), # xxx
-                            tags$span(
-                              tags$ul(
-                                tags$li('Required filetype: .csv, .xls, or .xlsx'),
-                                tags$li('Required Columns: REGISTRY_ID'),
-                                tags$li('Optional Columns: id, lat, lon')
-                              )
-                            ),
-                            actionButton('frs_help', label = 'More Info', class = 'usa-button usa-button--outline')
-                          ), # end FRS conditionalPanel
-                          
-                          ## _EPA program dropdown  conditional panel ------------------------------------- - ####
-                          
-                          conditionalPanel(
-                            condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'EPA_PROGRAM'",
-                            span('More info about these programs can be found here: ', a('https://www.epa.gov/frs/frs-data-sources', href = 'https://www.epa.gov/frs/frs-data-sources', target = '_blank', rel = 'noreferrer noopener')),
-                            br(),
-                            ## input: select an EPA program from list ------------------------------------- - ------------------------------------- -
-                            selectizeInput(inputId = 'ss_select_program', label = 'Pick an EPA program',
-                                           ## named vector in global.R - values are acronyms,
-                                           ## names include # of rows corresponding to that program
-                                           choices = epa_programs,
-                                           selected = default_epa_program_selected, # not sure this is a good idea but trying it out
-                                           ## add X to remove selected options from list
-                                           options = list('plugins' = list('remove_button'))),
-                          ), # end conditional panel EPA programs
-                          
-                          ## _EPA program ID upload conditional panel ------------------------------------- - ####
-                          
-                          conditionalPanel(
-                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'EPA_PROGRAM'",
-                            ## input: upload an EPA program ID file
-                            fileInput(inputId = 'ss_upload_program',
-                                      label = 'Upload a file with program IDs'),
-                            tags$ul(
-                              tags$li('Required filetype: .csv, .xls, or .xlsx'),
-                              tags$li('Required columns: program, pgm_sys_id'),
-                              tags$li('Optional columns: id, REGISTRY_ID, lat, lon')
-                            ),
-                            actionButton('epa_program_help', label = 'More Info', class = 'usa-button usa-button--outline')
-                          ), #end EPA program upload conditional panel
-                          
-                          ## _SIC  conditional panel ------------------------------------- - ####
+                          ## _SIC - dropdown conditional panel ------------------------------------- - ####
                           
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'SIC'",
@@ -345,31 +371,12 @@ app_ui  <- function(request) {
                               multiple = TRUE,
                               ## add X to remove selected options from list
                               options = list('plugins' = list('remove_button'))
-                            ), #, # xxx
-                            #),  # end dropdown SIC sub- conditionalPanel
+                            ),
                             br(), ## vertical space
                           ), # end SIC conditionalPanel
+                          ################################################################# #
                           
-                          ## _FIPS conditional panel ------------------------------------- - ####
-                          
-                          conditionalPanel(
-                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'FIPS'",
-                            ## input: Upload list of facility lat/longs
-                            fileInput(inputId = 'ss_upload_fips',
-                                      label = 'Upload a list of FIPS codes',
-                                      multiple = FALSE,
-                                      accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
-                                      # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
-                            ),
-                            tags$ul(
-                              tags$li('Required filetype: .csv, .xls, or .xlsx'),
-                              tags$li('Required columns: FIPS or alias'),
-                              tags$li('Optional columns: id')
-                            ),
-                            actionButton('fips_help', label = 'More Info', class = 'usa-button usa-button--outline')
-                          ), # end FIPS conditionalPanel
-                          
-                          ## _MACT conditionalPanel ------------------------------------- - ####
+                          ## _MACT - dropdown conditionalPanel ------------------------------------- - ####
                           
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'MACT'",
@@ -382,6 +389,7 @@ app_ui  <- function(request) {
                             )
                           )  # end MACT conditionalPanel
                           ################################################################# #
+                          
                         ) # end column
                       ) # end fluidRow
                     ),
