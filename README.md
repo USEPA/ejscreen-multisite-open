@@ -22,10 +22,9 @@ thousands of places, all at the same time.
 
 ### EJAM as a Web App
 
-- [Using EJAM as a Web
-  App](https://usepa.github.io/EJAM/articles/0_webapp.html) <!-- 
-              -   EJAM beta test is accessible only if at EPA offices or on VPN
-          -->
+- EJAM is EJScreen’s tool for providing multisite reports. It can be
+  reached from the [EJScreen website](https://www.epa.gov/ejscreen) and
+  [EJScreen Mapping application](https://ejscreen.epa.gov/mapper/).
 
 ### EJAM as a Software Toolkit for Analysts and Developers
 
@@ -130,5 +129,6 @@ product or activity by EPA or the United States Government.
 
 ### Contact
 
-If you have questions or comments, please contact Mark Corrales
+If you have questions or comments, please contact the EJScreen team in
+EPA’s OEJECR, and for technical questions contact Mark Corrales
 (corrales.mark@epa.gov).

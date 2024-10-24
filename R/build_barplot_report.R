@@ -24,7 +24,7 @@ build_barplot_report <- function(analysis_title, totalpop, locationstr,
   
   full_page <- paste0(
     generate_html_header(analysis_title, totalpop, locationstr, in_shiny = in_shiny),
-    generate_demog_header(),
+    # generate_demog_header(),
     # generate_report_footnotes(),
     collapse = ''
   )

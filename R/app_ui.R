@@ -50,13 +50,14 @@ app_ui  <- function(request) {
       
       ### title (for app and browser tab) ####
       
-      
-      div(class = "title-panel",
-          titlePanel(
-            title       = paste("EJScreen's Environmental Justice Analysis Multi-site Tool (EJAM) v", ejam_app_version, sep = ""),
-            windowTitle = paste("EJScreen's Environmental Justice Analysis Multi-site Tool (EJAM) v", ejam_app_version, sep = "")
-          )
-      ),
+      #### this is now in html in global.R 
+      # h3(paste("EJScreen's Environmental Justice Analysis Multi-site Tool (EJAM) v", ejam_app_version, sep = "")),
+      # div( #class = "title-panel",
+      #     titlePanel(
+      #       title       = paste("EJScreen's Environmental Justice Analysis Multi-site Tool (EJAM) v", ejam_app_version, sep = ""),
+      #       windowTitle = paste("EJScreen's Environmental Justice Analysis Multi-site Tool (EJAM) v", ejam_app_version, sep = "")
+      #     )
+      # ),
       
       # ***outline of tabs*** ####
       # at one point was this:
@@ -116,7 +117,7 @@ app_ui  <- function(request) {
           #   p("EJScreen's multisite tool (EJAM) lets you explore the demographics and environmental conditions in any list of places, such as for everyone who lives within 1 mile of a certain type of EPA-regulated site. EJAM stands for the Environmental Justice Analysis Multisite tool that is part of EJScreen."),
           #   class = "about-EJAM-span"
           # ),
-          hr(), ## horizontal line
+          # hr(), ## horizontal line # removed to look a bit more like ejscreen mapper page and have more space
           
           ## fluidRow container for upload method (left column) and map (right column) ####
           fluidRow( # through about line 441

@@ -373,25 +373,33 @@ fill_tbl_full_subgroups <- function(output_df) {
 
 generate_report_footnotes <- function() {
   
-  dieselnote = paste0("<h5 tabindex=\'13\'>",
-  "Note: Diesel particulate matter index is from the EPA's Air Toxics Data Update, which is the Agency's ongoing, comprehensive evaluation of air toxics in the United States. This effort aims to prioritize air toxics, emission sources, and locations of interest for further study. It is important to remember that the air toxics data presented here provide broad estimates of health risks over geographic areas of the country, not definitive risks to specific individuals or locations. More information on the Air Toxics Data Update can be found at: ", 
-  "https://www.epa.gov/haps/air-toxics-data-update.", 
-  "</h5>"
+  # NEEDS TO USE SMALLER FONT -- NOT DONE YET... 
+  
+  dieselnote = paste0("
+  <span style= 'font-size: 9pt'>
+  <p tabindex=\'13\' style='font-size: 9pt'>",
+                      "Note: Diesel particulate matter index is from the EPA's Air Toxics Data Update, which is the Agency's ongoing, comprehensive evaluation of air toxics in the United States. This effort aims to prioritize air toxics, emission sources, and locations of interest for further study. It is important to remember that the air toxics data presented here provide broad estimates of health risks over geographic areas of the country, not definitive risks to specific individuals or locations. More information on the Air Toxics Data Update can be found at: ", 
+                      
+                      paste("<a href=\'https://www.epa.gov/haps/air-toxics-data-update\', target=\'_blank\' rel=\'noreferrer noopener\'>https://www.epa.gov/haps/air-toxics-data-update</a>"),
+                      # "https://www.epa.gov/haps/air-toxics-data-update.", 
+                      "</p>", "
+  </span>"
   )
-
-  ejamnote <- paste0("<h5 tabindex=\'14\'>", 
+  
+  ejamnote <- paste0("
+                     <span style= 'font-size: 9pt'>
+                     <p tabindex=\'14\' style='font-size: 9pt'>", 
                      "Note: Some numbers as shown on the EJScreen report for a single location will in some cases appear very slightly different than in EJScreen's multisite reports. All numbers shown in both types of reports are estimates, and any differences are well within the range of uncertainty inherent in the American Community Survey data as used in EJScreen. Slight differences are inherent in very quickly calculating results for multiple locations.",
-                     "</h5>")
-
+                     "</p>
+                     </span>")
+  
   footnotes <- paste(
     dieselnote, 
     ejamnote,
-    sep = "
-    <br>
-    "
-    )
-  return(footnotes)
-  }
+    sep = "   "
+  )
+  return(HTML(footnotes))
+}
   ################################################################### #
   
   
@@ -417,32 +425,47 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
     shift_hpb <- 40
     shift_hbd <- 0
   }
+    
+
+  # should add padding and adjust size so that the img_html object is a bit lower on the screen and does not get shrunk
   
   img_html <- paste0('<img src=\"', 'www/EPA_logo_white_2.png',
                      '\" alt=\"EPA logo\" width=\"110\" height=\"35\">')
   
-  paste0('
+  paste0(
+  '
   <link href=\"https://fonts.googleapis.com/css2?family=Heebo:wght@500;600\" rel=\"stylesheet\">
   <link href=\"https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&amp;display=swap\" rel=\"stylesheet\">
   <link href=\"https://fonts.googleapis.com/css2?family=Noto+Sans&amp;display=swap\" rel=\"stylesheet\">
+  <link rel=\"stylesheet\"  type=\"text/css\" media=\"all\" href=\"communityreport.css\" />',
 
- <link rel=\"stylesheet\"  type=\"text/css\" media=\"all\" href=\"communityreport.css\" />
-<div id=\"header-primary-background\">
-', img_html, '
-<div id=\"header-primary-background-inner\">
-         <h1 id="title" tabindex="0">', report_title, '</h1>
-<p>This report summarizes environmental and socioeconomic information for user-defined areas,<br> and combines that data into environmental justice and supplemental indexes.</p>
-</div>
-</div>
+  '<div id=\"header-primary-background\">',
+  img_html, 
 
-<div class="header">
+  '  <div id=\"header-primary-background-inner\">
+  
+       <h1 id="title" tabindex="0">', report_title, '</h1>',
+
+  '    <p>This report summarizes environmental and socioeconomic information for user-defined areas,<br> and combines that data into environmental justice and supplemental indexes.</p>',
+
+  '  </div>
+   </div>',
+  
+  
+  '<div class="header">
     <div>
         <h2 id="placename">', analysis_title , '</h2>
     </div>
-    <div>
-        <h5>', locationstr, '<br>Population: <span id="TOTALPOP">', totalpop, '</span><br></h5>
-    </div>
-</div>', sep = '', collapse = '')
+  <div>
+  
+  <h5>', locationstr, '<br>Population: <span id="TOTALPOP">', totalpop, '</span><br></h5>
+  
+  
+ </div>
+</div>', 
+  
+  sep = '', collapse = '')
+  
   # Population: <span id=\"TOTALPOP\">',totalpop,'</span><br>',
 }
 ################################################################### #

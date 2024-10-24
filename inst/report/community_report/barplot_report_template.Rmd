@@ -41,14 +41,25 @@ build_barplot_report(
 
 ```
 
+```{r space1}
+HTML('<br>')
+```
+
 ```{r summary_plot, out.width='90%', fig.align='center'}
 
 params$summary_plot
 
-params$summary_plot_state
 ```
 
+```{r space2}
+HTML('<br>')
+```
 
+```{r summary_plot_state, out.width='90%', fig.align='center'}
+
+params$summary_plot_state
+
+```
 
 ```{r footer_with_version_and_date}
 
