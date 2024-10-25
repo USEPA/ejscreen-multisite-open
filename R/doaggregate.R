@@ -1187,15 +1187,36 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ##################################################### #
   
   # the ejscreen community report shows percentiles only for E,D,EJ, plus health,climate,criticalservice tables:
-  namelists <- intersect(c('names_health', 'names_climate', 'names_criticalservice'), unique(map_headernames$varlist))
-  varsneedpctiles <- unique(c(names_e,  names_d, subs, 
-                              namesbyvarlist(namelists)$rname
-  ) )
-  varsneedpctiles <- intersect(varsneedpctiles, names(results_bysite))
+  #Changed varsneedpctiles to dynamically source from map_headernames
+  subs_drop = switch(subgroups_type,
+                     alone    = "names_d_subgroups_nh",
+                     nh       = "names_d_subgroups_alone",
+                     both     = NULL,
+                     original = "names_d_subgroups_alone")
   
+  varsneedpctiles <- map_headernames %>%
+    filter(pctile. == 1, 
+           !(topic_root_term %in% c("Demog.Index.State", "Demog.Index.Supp.State"))) %>%
+    select(topic_root_term) %>%
+    distinct()
+  
+  if(is.null(subs_drop)){
+    
+  }else{
+    subs_drop <- namesbyvarlist(subs_drop)$rname
+    subs_drop <- setdiff(subs_drop, 'pcthisp')
+  }
+  
+  
+  varsneedpctiles <- intersect(varsneedpctiles$topic_root_term, names(results_bysite)) 
+  varsneedpctiles <- setdiff(varsneedpctiles, subs_drop)
+
+
   varnames.us.pctile    <- paste0(      'pctile.', varsneedpctiles) # but EJ indexes do not follow that naming scheme and are handled with separate code
   varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles) # but EJ indexes do not follow that naming scheme and are handled with separate code
   
+
+
   # set up empty tables to store the percentiles we find
   us.pctile.cols_bysite     <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(us.pctile.cols_bysite)     <- varnames.us.pctile
   state.pctile.cols_bysite  <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(state.pctile.cols_bysite)  <- varnames.state.pctile
@@ -1314,7 +1335,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         
         us.pctile.cols_bysite[    , ejnames_pctile[i]]    <- pctile_from_raw_lookup(
           unlist( results_bysite[  , ..myvar]),
-          varname.in.lookup.table = myvar, lookup = usastats)
+          varname.in.lookup.table = myvar, lookup = usastats) 
         
         us.pctile.cols_overall[   , ejnames_pctile[i]]    <- pctile_from_raw_lookup(
           unlist(results_overall[  , ..myvar]),
