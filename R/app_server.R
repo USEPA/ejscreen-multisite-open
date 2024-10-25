@@ -2398,12 +2398,37 @@ app_server <- function(input, output, session) {
   
   v1_summary_plot_state <- reactive({
     req(data_processed())
-    
-    ejam2barplot(data_processed(), sitenumber =   as.numeric(gsub('button_', '', isolate(cur_button()))),
-                 varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
-                 main = "Demographics Compared to State Averages")
-    
+      if (!is.null(cur_button())) {
+        # Extract the selected row number from cur_button
+        selected_row <- as.numeric(gsub('button_', '', isolate(cur_button())))
+        
+        ejam2barplot(
+          data_processed(),
+          sitenumber = selected_row,
+          varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+          main = "Demographics at the Analyzed Location Compared to State Averages"
+        )
+      } else {
+        # No specific location selected, use a default plot setup
+        if (input$Custom_title_for_bar_plot_of_indicators == '') {
+          # Default plot title
+          ejam2barplot(
+            data_processed(),
+            varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+            main = "Demographics Compared to State Averages"
+          )
+        } else {
+          # Custom title provided by user
+          # Note: This piece may not be needed for state plot
+          ejam2barplot(
+            data_processed(),
+            varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+            main = input$Custom_title_for_bar_plot_of_indicators
+          )
+        }
+      }
   })
+  
   ###################  #
   
   v1_summary_plot <- reactive({
