@@ -437,7 +437,7 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
   # should add padding and adjust size so that the img_html object is a bit lower on the screen and does not get shrunk
   
   img_html <- paste0('<img src=\"', 'www/EPA_logo_white_2.png',
-                     '\" alt=\"EPA logo\" width=\"110\" height=\"35\">')
+                     '\" alt=\"EPA logo\" width=\"220\" height=\"70\">')
   
   paste0(
     '
@@ -446,17 +446,15 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
   <link href=\"https://fonts.googleapis.com/css2?family=Noto+Sans&amp;display=swap\" rel=\"stylesheet\">
   <link rel=\"stylesheet\"  type=\"text/css\" media=\"all\" href=\"communityreport.css\" />',
     
-    '<div id=\"header-primary-background\">',
-    img_html, 
-    
-    '  <div id=\"header-primary-background-inner\">
-  
-       <h1 id="title" tabindex="0">', report_title, '</h1>',
-    
-    '    <p>This report summarizes environmental and socioeconomic information for user-defined areas,<br> and combines that data into environmental justice and supplemental indexes.</p>',
-    
-    '  </div>
-   </div>',
+    '<div id="header-primary-background">',
+    '<div id="header-primary-background-inner">',
+    '<h1 id="title" tabindex="0">', report_title, '</h1>',
+    '<p>This report summarizes environmental and socioeconomic information for user-defined areas,<br> and combines that data into environmental justice and supplemental indexes.</p>',
+    '</div>',
+    '<div id="header-primary-background-img-container">',
+    img_html,
+    '</div>',
+    '</div>',
     
     
     '<div class="header">
