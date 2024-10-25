@@ -1,6 +1,6 @@
 
 ## reinstall package from deploy-posit branch (needed for manifest)
-devtools::install_github('USEPA/EJAM', ref='PUBLIC-EJSCREEN')
+devtools::install_github('USEPA/EJAM', ref = 'PUBLIC-EJSCREEN')
 
 ## list files in EJAM root directory
 all_files <- rsconnect::listDeploymentFiles(getwd())
@@ -23,8 +23,7 @@ deploy_files <- all_files[-c(grep('dev/', all_files),
 deploy_files 
 
 ## check dependency list
-x <- rsconnect::appDependencies(appFiles=deploy_files) #222 at last check
+x <- rsconnect::appDependencies(appFiles = deploy_files) #222 at last check
 
 ## update manifest.json file
-rsconnect::writeManifest(appFiles=deploy_files)
-
+rsconnect::writeManifest(appFiles = deploy_files)

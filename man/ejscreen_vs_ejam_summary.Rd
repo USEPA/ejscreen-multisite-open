@@ -69,11 +69,12 @@ It uses 100 * quantile(y, probs = prob, type = 1)
 EJAM/EJSCREEN comparisons - see summary stats after using ejscreen_vs_ejam()
 }
 \examples{
+  radius = 3
   dontrun{
   pts <- testpoints_n(100, weighting = 'frs')
   
   # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:
-  vs100 <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
+  vs100 <- ejscreen_vs_ejam(pts, radius = radius, include_ejindexes = TRUE)
   
   ejscreen_vs_ejam_see1(vs100, mysite = 1)
   
