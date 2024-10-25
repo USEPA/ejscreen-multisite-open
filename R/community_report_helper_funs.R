@@ -384,12 +384,10 @@ generate_report_footnotes <- function(
   #  ejam2report(), and
   #  community_report_template.Rmd 
 
-    
-  # NEEDS TO USE SMALLER FONT -- NOT DONE YET... 
   
   dieselnote = paste0("
   <span style= 'font-size: 9pt'>
-  <p tabindex=\'13\' style='font-size: 9pt'>", diesel_caveat, "</p>
+  <p tabindex=\'13\' style='font-size: 9pt'><small>", diesel_caveat, "</small></p>
   </span>"
   )
   
