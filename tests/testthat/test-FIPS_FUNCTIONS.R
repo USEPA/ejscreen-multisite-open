@@ -54,15 +54,18 @@
 test_that("fips_valid() works but is slow", {
   
   expect_no_error({
-    testfipsx <- c("10", "10001", "02170000300", 
-                   "021700003003", "721537506011", 
-                   "010010201001000")
+    testfipsx <- c(
+      "3651000", # cdp
+      "10", "10001", "02170000300", 
+      "021700003003", "721537506011", 
+      "010010201001000")
     x <- fips_valid(testfipsx)
   })
   expect_true(all(x))
   expect_identical(
     fipstype(testfipsx),
-    c("state", "county", "tract",
+    c('city',
+      "state", "county", "tract",
       "blockgroup", "blockgroup", 
       "block"
     )
@@ -119,19 +122,19 @@ test_that("fips_valid() works but is slow", {
 
 # fipstype()
 
-# testfips16 = c("1", "12", "123", "1234", "12345", "123456", "1234567", "12345678", "123456789",
-#                "1234567890", "12345678901", "123456789012", "1234567890123", "12345678901234",
-#                "123456789012345", "1234567890123456")
-# cbind(fipstype(testfips16), fips_lead_zero(testfips16), testfips16)
-# testfips16        
+testfips16 = c("1", "12", "123", "1234", "12345", "123456", "1234567", "12345678", "123456789",
+               "1234567890", "12345678901", "123456789012", "1234567890123", "12345678901234",
+               "123456789012345", "1234567890123456")
+cbind(fipstype(testfips16), fips_lead_zero(testfips16), testfips16)
+testfips16
 #
 # [1,] "state"      "01"              "1"
 # [2,] "state"      "12"              "12"
 # [3,] NA           NA                "123"
 # [4,] "county"     "01234"           "1234"
 # [5,] "county"     "12345"           "12345"
-# [6,] NA           NA                "123456"
-# [7,] NA           NA                "1234567"
+# [6,] "city"       "0123456"         "123456"          
+# [7,] "city"       "1234567"         "1234567"     
 # [8,] NA           NA                "12345678"
 # [9,] NA           NA                "123456789"
 # [10,] "tract"      "01234567890"     "1234567890"
@@ -144,14 +147,18 @@ test_that("fips_valid() works but is slow", {
 
 test_that("fipstype() works", {
   
-  testfips16 = c("1", "12", "123", "1234", "12345", "123456", "1234567", "12345678", "123456789",
+  testfips16 = c("1", "12", "123", "1234", "12345", 
+                 "123456", "1234567",  # CDP/CITY
+                 "12345678", "123456789",
                  "1234567890", "12345678901", "123456789012", "1234567890123", "12345678901234",
                  "123456789012345", "1234567890123456")
   
   suppressWarnings({
     
     expect_no_error({
-      testfips <- c("1", "12", "123", "1234", "12345", "", NA, "words")
+      testfips <- c("1", "12", "123", "1234", "12345", 
+                    "123456",  "1234567", # CDP/CITY
+                    "", NA, "words")
       fipstype(testfips)
     })
     expect_warning({
@@ -161,7 +168,9 @@ test_that("fipstype() works", {
       fipstype("WORD")
     })
     expect_identical(
-      c("state","state",NA,"county","county",NA,NA,NA),
+      c("state","state",NA,"county","county",
+        'city','city',
+        NA,NA,NA),
       fipstype(testfips)
     )
     test_types = fips_counties_from_statename(c("Connecticut", "Delaware") )
@@ -173,7 +182,9 @@ test_that("fipstype() works", {
     expect_identical(
       fipstype(testfips16),
       c("state", "state", NA, 
-        "county", "county", NA, NA, NA, NA, 
+        "county", "county", 
+        "city", "city", 
+        NA, NA, 
         "tract", "tract", 
         "blockgroup", NA, 
         "block", "block", NA)
@@ -591,11 +602,14 @@ test_that("fips_counties_from_countyname() works", {
         fips2countyname(fips_counties_from_countyname("Baltimore County, MD"))
       )
       expect_true(
-        all(fips_valid(fips_counties_from_countyname("Har", "TX")))
+        is.na((fips_counties_from_countyname("Har", "TX", exact = T)))
+      )
+      expect_true(
+        all('county' == fipstype(fips_counties_from_countyname("Har", "TX", exact = FALSE)))
       )
       expect_true({
         length(
-          fips2countyname(fips_counties_from_countyname("Har", "TX"))
+          fips2countyname(fips_counties_from_countyname("Har", "TX", exact = FALSE))
         ) == 5 
         # fips_counties_from_countyname("Har",               "TX")    # finds 5 matches
         # fips_counties_from_countyname("Harris",            "TX")    # finds 2 matches
@@ -672,6 +686,20 @@ test_that('by  block group', {
   y <- x[which(startsWith(x, "360710001001"))]
   expect_equal(y, val)
 })
+################## #
+
+# ACTUALLY     CANNOT use fips_bg_from_anyfips() with city fips SINCE CDP IS NOT BROKEN INTO BGS EXACTLY 
+
+test_that('by CITY', {
+  expect_warning({val <- fips_bg_from_anyfips(3651000)})
+  expect_warning({val <- fips_bg_from_anyfips("3651000")})
+  #expect_equal(length(val), 1)
+  # check it's the same as the subset of state codes
+  # x <- fips_bg_from_anyfips("36")
+  # y <- x[which(startsWith(x, "3651000"))]
+  # expect_equal(y, val)
+})
+
 ################## #
 # returns only UNIQUE bg fips once each, 
 # even if 2 inputs contain or are inside same bg (turn into same bgid)
@@ -980,7 +1008,8 @@ test_that("fips_lead_zero correct for 1 through 16 digits long", {
       c("01", "12",                       # state fips 2 digits
         NA, 
         "01234", "12345",                # county fips 5 digits
-        NA, NA, NA, NA, 
+        "0123456"  ,       "1234567",    # city/cdp fips  7 digits
+        NA, NA, 
         "01234567890", "12345678901",    # tract fips 11 digits
         "123456789012",             # blockgroup fips 12 digits
         NA, 
@@ -1109,7 +1138,7 @@ test_that('5 digit', {
 })
 #################### # #################### #
 # test with 6 digits
-#    6 digits is ALWAYS INVALID length - cannot be a county (that is 5) nor can it be a tract (that is 11 including any leading zero)
+#    6 digits is city or other cdp - 
 # 6 digit numeric has problems... unless change options scipen...
 #   100,000 gets converted to 1e+05 which is 5 digits and returned
 # raise threshold with options(scipen = 999) and the test passes
@@ -1118,37 +1147,37 @@ test_that('6 digit', {
   options(scipen = 999)
   on.exit({options(scipen = 0)})
   suppressWarnings({
-    expect_warning({val <- fips_lead_zero("000001")}) #  
-    expect_true(is.na(val))
+    testthat::expect_no_warning({val <- fips_lead_zero("000001")}) #  
+    expect_true(!is.na(val))
   })
   # 
-  expect_warning({val <- fips_lead_zero(100000)}) # numeric -------------------    1e+05  unless adjust options in which case it is NA and test passes
-  expect_true(is.na(val))
+  expect_no_warning({val <- fips_lead_zero(100000)}) # numeric -------------------    1e+05  unless adjust options in which case it is NA and test passes
+  expect_true(!is.na(val))
   suppressWarnings({
-    expect_warning({val <- fips_lead_zero(100001)}) # numeric  
-    expect_true(is.na(val))
+    expect_no_warning({val <- fips_lead_zero(100001)}) # numeric  
+    expect_true(!is.na(val))
   })
   suppressWarnings({
-    expect_warning({val <- fips_lead_zero("000000")}) # zero string
-    expect_true(is.na(val))
+    expect_no_warning({val <- fips_lead_zero("000000")}) # zero string
+    expect_true(!is.na(val))
   })
   options(scipen = 0)
 })
 #################### # #################### #
 # test with 7 digits
-# length is ALWAYS INVALID -- cannot be a county (that is 5) nor can it be a tract (that is 11 including any leading zero)
+# length is  city or other cdp
 test_that('7 digit', {  
   options(scipen = 999)
   on.exit({options(scipen = 0)})
   
-  expect_warning({val <- fips_lead_zero("0000001")}) # leading zero
-  expect_true(is.na(val))
-  expect_warning({val <- fips_lead_zero(1000000)}) # numeric
-  expect_true(is.na(val))
-  expect_warning({val <- fips_lead_zero(1000001)}) # numeric
-  expect_true(is.na(val))
-  expect_warning({val <- fips_lead_zero("0000000")}) # zero string
-  expect_true(is.na(val))
+  expect_no_warning({val <- fips_lead_zero("0000001")}) # leading zero
+  expect_true(!is.na(val))
+  expect_no_warning({val <- fips_lead_zero(3651000)}) # numeric
+  expect_true(!is.na(val))
+  expect_no_warning({val <- fips_lead_zero(1000001)}) # numeric
+  expect_true(!is.na(val))
+  expect_no_warning({val <- fips_lead_zero("0000000")}) # zero string
+  expect_true(!is.na(val))
   
   options(scipen = 0)
 })

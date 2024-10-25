@@ -251,6 +251,12 @@ ejamit <- function(sitepoints,
 
     # getblocksnearby_from_fips() should include doing something like fips_lead_zero() ?
     # but also want to know what type each fips is (probably all should be same like all are tracts or all are county fips)
+    
+    ftype = fipstype(fips)
+    if ('city' %in% ftype) {
+      if (!missing(radius) & radius > 0) {warning('radius ignored because we cannot add buffers around cities/CDPs currently')}
+    }
+    
     radius <- 999 # use this value when analyzing by fips not by circular buffers.
     if (!silentinteractive) {cat('Finding blocks in each FIPS Census unit.\n')}
     

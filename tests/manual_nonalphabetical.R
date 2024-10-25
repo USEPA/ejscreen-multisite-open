@@ -406,7 +406,7 @@ test_interactively = function(ask = TRUE,
       
     }
   }
-  if (missing(mydir) && !exists(mydir)) {
+  if (missing(mydir) && (!exists('mydir') || is.null(mydir))) {
     if (y_tempdir) {
       mydir <- tempdir()
     } else {

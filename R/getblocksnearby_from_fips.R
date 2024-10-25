@@ -26,6 +26,40 @@
 #'
 getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE) {
 
+  ######################################## #
+  # Handle special case where FIPS are for City/CDP ####
+  ftype = fipstype(fips)
+  if ('city' %in% ftype) {
+    if (!all(ftype[!is.na(ftype)] == 'city')) {
+      warning("Ignoring the City/CDP FIPS because getblocksnearby_from_fips cannot handle a combination of FIPS where some are city/Census Designated Places (6-7 digit FIPS) and others are not (e.g., Counties)")
+      fips[ftype == 'city'] <- NA
+    } else {
+      cat("note that fips for cities/cdps are handled as shapefiles for analysis\n")
+      # must use a separate function to handle City/CDP FIPS since they do not map onto block groups bounds or by FIPS digits
+      
+      # example:
+      # fips = fips_place_from_placename('chelsea city, MA', exact = T)
+      # 2513205
+      # mapview(  shapes_places_from_placefips(fips_place_from_placename('chelsea city, MA', exact = T) ))
+      # mapview(  shapes_places_from_placefips(fips_place_from_placename('chelsea,MA', exact = FALSE) ))
+      # mapview(shapes_places_from_placefips(  fips_place_from_placename('white plains, ny', exact = F)   ))
+      
+      polys = shapes_places_from_placefips(fips)
+      polys
+      s2b_pts_polys <- get_blockpoints_in_shape(
+        polys = polys
+      )  
+      
+      ## convert ejam_uniq_id 1:N to the fips here - to emulate what is done by getblocksnearby_from_fips()
+      ## *** try/ test this:  order of rows is not quite right yet
+      s2b_pts_polys$pts$ejam_uniq_id  <- as.character(fips[s2b_pts_polys$pts$ejam_uniq_id ])
+      
+      # drop the shapefile here - just return the blocks in each polygon
+      return(s2b_pts_polys$pts)
+    }
+  }
+  ######################################## #
+  
   if (!exists('blockid2fips')) {
     dataload_from_pins(varnames = 'blockid2fips')
   }

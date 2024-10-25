@@ -59,6 +59,9 @@ fips_valid <- function(fips) {
   kind[is.na(kind)] <- "fail"
   ok[kind == "state"]      <- fips[kind == "state"]  %in% stateinfo2$FIPS.ST[!is.na(stateinfo2$FIPS.ST)]
   ok[kind == "county"]     <- fips[kind == "county"] %in% substr(blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)], 1, 5)
+  
+  ok[kind == "city"]      <- fips[kind == "city"]  %in%  censusplaces$fips
+  
   ok[kind == "tract"]      <- fips[kind == "tract"]  %in%  substr(blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)], 1, 11)
   ok[kind == "blockgroup"] <- fips[kind == "blockgroup"] %in%  substr(blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)], 1, 12)
   # note not all bgfips were in bgpts table:  setdiff_yx(bgpts$bgfips, blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)])
@@ -496,14 +499,27 @@ shapes_places_from_placenames2 <- function(place_st) {
 # see https://www2.census.gov/geo/pdfs/reference/GARM/Ch9GARM.pdf
 
 
-shapes_places_from_placefips <- function(fips) {
+shapes_places_from_placefips_olderway <- function(fips) {
   
   if (!all(fips %in% censusplaces$fips)) {stop("check fips - some are not found in censusplaces$fips")}
   
   st <- fips2state_abbrev(fips)
   place_nost <- fips_place2placename(fips, append_st = FALSE)
   
-  shp <- tigris::places(st) %>% tigris::filter_place(place_nost) # gets shapefile of those places boundaries from census via download
+  shp <- tigris::places(st) %>% 
+    tigris::filter_place(place_nost) # gets shapefile of those places boundaries from census via download
+  return(shp)
+}
+####################################################### #
+
+shapes_places_from_placefips <- function(fips) {
+  
+  if (!all(fips %in% censusplaces$fips)) {stop("check fips - some are not found in censusplaces$fips")}
+  
+  ST <- unique(fips2state_abbrev(fips)) 
+  
+  shp <- tigris::places(ST)
+  shp <- shp[match(fips, shp$GEOID), ] # filter using FIPS is more robust than trying to get exact name right
   return(shp)
 }
 ####################################################### #
@@ -530,8 +546,13 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = TRUE) 
   
   #   exact = FALSE  option will use grep() instead of match()
   
-  ## examples
+  ## examples 
+  ## Search for place fips based on partial name of place
   # fips_place_from_placename(c('denver',  "new york" ), exact = F)
+  # fips_place_from_placename('chelsea,ma', exact = F)
+  # fips = fips_place_from_placename('chelsea city, MA', exact = T)
+  #  # 2513205
+  # mapview(  shapes_places_from_placefips(fips_place_from_placename('chelsea city, MA', exact = T) ))
   
    ## used by name2fips or fips_from_name 
   
@@ -557,7 +578,7 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = TRUE) 
   }
   
   all_place_st <- paste(censusplaces$placename, censusplaces$ST, sep = ", ")
-  all_place_st_dont_say_cdp <- gsub(" CDP, ", ",", all_place_st)
+  all_place_st_dont_say_cdp <- gsub(" CDP,", ",", all_place_st)
   place_st_dont_say_cdp <- gsub(" CDP,", ",", place_st) # in case not geocoding
   
   if (!exact) {
@@ -565,10 +586,15 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = TRUE) 
     ### for exact=F, should recode to query name using grep within given ST, separately
     ## so that it could accept "new york, ny" and be able to find "new york city, ny"
     ## and "denver, co" would find "denver city, co"
+    all_place_st_dont_say_cdp_or_city <- gsub(" city,", ",", all_place_st_dont_say_cdp, ignore.case = T)
+    place_st_dont_say_cdp_or_city <- gsub(" city,", ",", place_st_dont_say_cdp, ignore.case = T) # in case not geocoding
+    
+    all_place_st_dont_say_cdp_or_city = gsub(", ", ",", all_place_st_dont_say_cdp_or_city)
+    place_st_dont_say_cdp_or_city = gsub(", ", ",", place_st_dont_say_cdp_or_city)
     
     results = list()
-    for (i in 1:length(place_st_dont_say_cdp)) {
-      results[[i]]  <- censusplaces[grepl(place_st_dont_say_cdp[i], all_place_st_dont_say_cdp, ignore.case = TRUE), ]  
+    for (i in 1:length(place_st_dont_say_cdp_or_city)) {
+      results[[i]]  <- censusplaces[grepl(place_st_dont_say_cdp_or_city[i], all_place_st_dont_say_cdp_or_city, ignore.case = TRUE), ]  
       if (length(results[[i]]) == 0) {results[[i]] <- NA}
     }
     results <- data.frame(rbindlist(results))
@@ -1096,6 +1122,11 @@ fips_bg_from_anyfips <- function(fips) {
   len <- nchar(fips)
   bgfips <- fips[len == 12]
   nonbg <- fips[len !=  12]
+  
+  if (any(len %in% 6:7)) {
+    warning('city/cdp fips (6-7 digits) cannot be used to find blockgroups, so ignoring those')
+    nonbg = nonbg[!(nchar(nonbg) %in% 6:7)] 
+  }
   
   extrabgs <- sapply(nonbg, FUN = function(z) all_us_bgfips[startsWith(all_us_bgfips, z)])
   # extrabgs <- list(rep(NA, length(nonbg)))
