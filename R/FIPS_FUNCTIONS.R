@@ -539,6 +539,17 @@ fips_place2placename = function(fips, append_st = TRUE) {
 }
 ####################################################### #
 
+#' search using names of cities to try to find matches and get FIPS
+#'
+#' @param place_st vector of place names in format like "yonkers, ny" or "Chelsea city, MA"
+#' @param geocoding set to TRUE to use a geocoding service to try to find hits
+#' @param exact set to FALSE to allow partial matching but not necessarily 1-to-1 matches
+#'
+#' @return prints a table of possible hits but returns just the vector of fips
+#' 
+#' @export
+#' 
+#'
 fips_place_from_placename = function(place_st, geocoding = FALSE, exact = TRUE) {
   
   # CAUTION - currently assumes a placename,ST occurs only once per state,
@@ -598,11 +609,17 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = TRUE) 
       if (length(results[[i]]) == 0) {results[[i]] <- NA}
     }
     results <- data.frame(rbindlist(results))
-    
+    if (NROW(results) == 0) {
+      cat('\n\nyou can also try \ncensusplaces[grep("', place_st[1], '", censusplaces$placename, ignore.case = T), ]\n\n')
+    }
   } else {
     
     results <- censusplaces[match(tolower(place_st_dont_say_cdp), tolower(all_place_st_dont_say_cdp), nomatch = NA), ]
   }
+  
+  # DROP NA VALUES BUT THAT MEANS IT IS NOT 1-TO-1 IF ANY NA VALUES:
+  
+  results <- results[!is.na(results$fips), ]
   print(results)
   return(results$fips)
 }

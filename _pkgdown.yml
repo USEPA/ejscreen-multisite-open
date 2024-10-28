@@ -166,6 +166,7 @@ reference:
   - fips_counties_from_countyname
   - fips_bg_from_anyfips
   - fips_from_table
+  - fips_place_from_placename
   - censusplaces
 - subtitle: "Counties"
   contents:
