@@ -358,6 +358,26 @@ test_that("fips_from_table() works", {
 #     name2fips()  # inconsistent name but useful . inverse of  fips2name()  
 #          fips_from_name()  # same as name2fips()
 
+
+# testplaces = c("North Richmond, CA", "McFarland, CA", "Chelsea, MA", "Hamtramck, MI", 
+#                "St. John the Baptist Parish, LA", "Dallas, TX", "chicago", "chicago, IL", "chicago, Illinois", "East Chicago, IN", 
+#                "Salt Lake City, UT", "Commerce City, North Denver", "Yakima, WA", "Yakima", 
+#                "Atlanta, GA", "Westside, GA", "Queens Creek Watershed, GA", 
+#                "Grand Rapids, MI", "Jackson, MI", "Adrian, MI", "East St. Louis, IL", 
+#                "Cahokia Heights, IL", "Cahokia village, IL", "xyz facility, IL", "Rocky Mountain Interagency site, CO", 
+#                "New York CAFO", "mega-site adjacent to xyz, New York", 
+#                "Bad Name project", "Chicago Impact Project, IL", 
+#                "Cuyahoga County, OH", "Cuyahoga County, Ohio", "Cuyahoga, OH", "Cuyahoga County, OH project", 
+#                "California", "CA", 
+#                "New York", "new york, NY", "new york, new york")
+
+# names2fips( c(  "Torreon, New Mexico" , 'torreon,nm'))
+# "3579070" "3579070"  # reports twice because it cannot tell the two query terms are synonyms
+
+# names2fips( "Jackson, PA"  )
+# "4237344"  # just reports one of the many possible answers
+
+
 test_that("name2fips() works", {
   
   # THESE SEEM SLOW... ***
