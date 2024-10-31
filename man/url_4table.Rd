@@ -4,7 +4,16 @@
 \alias{url_4table}
 \title{URL functions - Create URLs in columns, for EJAM}
 \usage{
-url_4table(lat, lon, radius, regid = NULL, as_html = TRUE)
+url_4table(
+  lat,
+  lon,
+  radius,
+  regid = NULL,
+  as_html = TRUE,
+  wherestr = "",
+  namestr = "",
+  ...
+)
 }
 \arguments{
 \item{lat}{vector of latitudes}
@@ -17,7 +26,15 @@ url_4table(lat, lon, radius, regid = NULL, as_html = TRUE)
 to detailed ECHO facility reports}
 
 \item{as_html}{logical, optional.
-passed to url_ejscreen_report() and url_ejscreenmap()}
+passed to \code{\link[=url_ejscreen_report]{url_ejscreen_report()}} and \code{\link[=url_ejscreenmap]{url_ejscreenmap()}}}
+
+\item{wherestr}{passed to \code{\link[=url_ejscreenmap]{url_ejscreenmap()}} and can be name of city, county, state like
+from fips2name(201090), or "new rochelle, ny" or "AK"
+or even a zip code, but NOT a fips code!}
+
+\item{namestr}{passed to \code{\link[=url_ejscreen_report]{url_ejscreen_report()}}}
+
+\item{...}{passed to \code{\link[=url_ejscreen_report]{url_ejscreen_report()}} such as areaid="0201090" for a city fips}
 }
 \value{
 list of data.frames to append to the list of data.frames created by
@@ -30,7 +47,10 @@ list of data.frames to append to the list of data.frames created by
 \description{
 Could start to use this in server and ejamit(), and already used in table_xls_format()
 }
+\details{
+used in \code{\link[=table_xls_format]{table_xls_format()}}
+}
 \seealso{
-\code{\link[=url_ejscreen_report]{url_ejscreen_report()}} \code{\link[=url_ejscreenmap]{url_ejscreenmap()}} \code{\link[=url_echo_facility_webpage]{url_echo_facility_webpage()}}
+\code{\link[=url_ejscreen_report]{url_ejscreen_report()}} \code{\link[=url_ejscreenmap]{url_ejscreenmap()}} \code{\link[=url_echo_facility_webpage]{url_echo_facility_webpage()}} \code{\link[=urls_clusters_and_sort_cols]{urls_clusters_and_sort_cols()}}
 }
 \keyword{internal}

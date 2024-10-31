@@ -8,7 +8,8 @@ fips_state_from_statename(statename)
 }
 \arguments{
 \item{statename}{vector of state names like c("New York","Georgia"),
-ignoring case}
+ignoring case.
+Converts any ST to statename in case abbreviations were provided instead of name.}
 }
 \value{
 vector of 2-digit state FIPS codes like c("10", "44", "44"),
@@ -19,5 +20,5 @@ FIPS - Get state fips for each state name
 }
 \examples{
   fips_state_from_statename("Delaware")
-
+  fips_state_from_statename(c("dc", 'district of columbia', 'georgia'))
 }

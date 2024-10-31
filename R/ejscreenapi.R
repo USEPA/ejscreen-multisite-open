@@ -58,7 +58,7 @@
 #' @param fips if used instead of lon,lat it should be a character FIPS code vector
 #'   (counties, tracts, or blockgroups)
 #' @param shapefile not implemented
-#' 
+#' @param namestr optional text
 #' @param report_every_n Should it report ETA snd possibly save interim file after every n points
 #' @param save_when_report optional, write .rdata file to working directory 
 #'   with results so far, after ever n points, to have most results even if it crashes
@@ -96,6 +96,7 @@
 ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
                         fips = NULL,
                         shapefile = NULL,
+                        namestr = '',
                         report_every_n=1000, save_when_report=FALSE, 
                         format_report_or_json='pjson', on_server_so_dont_save_files=FALSE, 
                         ipurl='ejscreen.epa.gov', updateProgress=NULL, drop_redundant_indicators=TRUE, 
@@ -140,6 +141,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
           radius = radius, 
           unit = unit, wkid = wkid,
           fips = fips,
+          namestr = namestr,
           shapefile = shapefile, # something for shapefiles would require POST not GET
           format_report_or_json = "report")
       )
@@ -212,6 +214,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
         radius = radius, 
         unit = unit, wkid = wkid, 
         fips = fips[[i]],
+        namestr = namestr[[i]],
         ipurl = ipurl,
         format_report_or_json = 'report'
       ))

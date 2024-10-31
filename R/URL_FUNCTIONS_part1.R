@@ -2,16 +2,8 @@
 
 # LIST OF FUNCTIONS HERE ####
 # 
-# urls_clusters_and_sort_cols()
-# 
-# url_linkify
-# url_ejscreen_report
-# url_ejscreen_acs_report
-# url_ejscreenmap
-# url_echo_facility_webpage
-# url_frs_report
-# url_enviromapper
-# url_envirofacts_data
+#   see outline via ctrl-shift-O
+#   see also URL_FUNCTIONS_part2.R
 
 
 # ECHO reports on facilities:
@@ -48,20 +40,17 @@
 #' Add Links to ejscreenapi output, to launch EJScreen report for given point(s)
 #' 
 #' @description Add or update, and reorder, columns with results
-#' @details Creates weblinks to maps, as EJScreenMAP column, 
+#' @details Was used for [ejscreenapi_plus()] not for [ejamit()], to create weblinks to maps, for output table.
 #' 
-#'   Adds weblinks to pdf-like reports, as new column  
+#' 1. Adds weblinks in column.
+#' 2. Adds a column to flag sites that are close to other sites, and 
+#' 3. Puts certain columns first.
 #'   
-#'   Adds a column to flag sites that are close to other sites, and 
-#'   
-#'   Puts certain columns first.
-#'   
-#' @param results_table from ejscreenapi() function for example
-#' @seealso [url_ejscreenmap()] [distance_near_eachother()]
+#' @param results_table from [ejscreenapi()] function for example
+#' @seealso [url_4table()] for the EJAM version. [url_ejscreenmap()] [distance_near_eachother()]
 #' @return the input table but with extra columns
 #' 
 #' @keywords internal
-#' @export
 #'
 urls_clusters_and_sort_cols <- function(results_table) {
   
@@ -73,16 +62,20 @@ urls_clusters_and_sort_cols <- function(results_table) {
   ## Fix existing link to pdf-like report 
   # to make URL clickable in table, move to near 1st column, 
   # NOTE: browser can print that report to pdf with margins = c(0.3, 0.3, 0.3, 1.75) # Left Top Right Bottom
-  areaid <- if ("areaid" %in% names(results_table)) {
-    areaid   <- results_table$areaid
-    areatype <- results_table$areatype
-    namestr  <- results_table$namestr
+  areaid <- if ("fips" %in% names(results_table)) {
+    areaid   <- results_table$fips
+    areatype <- fipstype(results_table$fips)
+    namestr  <- '' # results_table$namestr  ##   ignore at least for now
+    lat = NULL
+    lon = NULL
   } else {
+    lon = results_table$lon
+    lat = results_table$lat
     areaid   <- ""
     areatype <- ""
     namestr  <- ""
   }
-  pdfurl <- url_ejscreen_report(lon = results_table$lon, lat = results_table$lat, radius = results_table$distance, 
+  pdfurl <- url_ejscreen_report(lon = lon, lat = lat, radius = results_table$distance, 
                                 areaid = areaid, areatype = areatype, namestr = namestr,
                                 as_html = FALSE, linktext = "EJScreen Report")
   encodedlink <- URLencode( pdfurl)
@@ -91,8 +84,12 @@ urls_clusters_and_sort_cols <- function(results_table) {
   if ("pdfurl" %in% names(results_table) ) results_table$pdfurl <- NULL # gets recreated later below
   
   ## 2. EJSCREEN MAP URL = mapurl ####
-  #
-  mapurl <- url_ejscreenmap(lat = results_table$lat, lon = results_table$lon)  # e.g.,  "https://ejscreen.epa.gov/mapper/index.html?wherestr=35.3827475,-86.2464592"
+  if (!all(areaid == '')) {
+     mapurl <- url_ejscreenmap(wherestr = fips2name(fips) )  # e.g.,  "https://ejscreen.epa.gov/mapper/index.html?wherestr=35.3827475,-86.2464592"
+  } else {
+    mapurl <- url_ejscreenmap(lat = lat, lon = lon  )  # e.g.,  "https://ejscreen.epa.gov/mapper/index.html?wherestr=35.3827475,-86.2464592"
+  }
+ 
   mapurl  <- paste0('<a href=\"', mapurl, '\", target=\"_blank\">EJScreen Map ', rownames(results_table), '</a>')
   # (but does not work like that for csv/excel download)
   
@@ -106,9 +103,12 @@ urls_clusters_and_sort_cols <- function(results_table) {
   # Add column to flag sites that are near each other ####
   #
   # want this to reflect radius in this data run, not whatever user may have just changed it to for the next run, so do not use is_clustered()
-  results_table$overlaps_another <- distance_near_eachother(lon = results_table$lon, lat = results_table$lat, 
+  if (!is.null(lat)) {
+  results_table$overlaps_another <- distance_near_eachother(lon = lon, lat = lat, 
                                                    distance = 2 * results_table$distance) # not radius_miles() !
-  
+  } else {
+    results_table$overlaps_another <- NA
+  }
   ########################################### #  
   # Re-order Columns ####  
   #
@@ -226,24 +226,14 @@ url_ejscreen_report <- function(lat='', lon='', radius='', as_html=FALSE, linkte
   if (!any(areaid == "") && !any(is.null(areaid))) {
     
     fips <- areaid
-    fipstype_copy <- function(fips) {
-      fips <- fips_lead_zero(fips = fips) # could use EJAM ::: fips_lead_zero
-      ftype <- rep(NA, length(fips))
-      ftype[nchar(fips) == 15] <- "block"
-      ftype[nchar(fips) == 12] <- "blockgroup"
-      ftype[nchar(fips) == 11] <- "tract"
-      ftype[nchar(fips) ==  7] <- "city"  # e.g, 5560500 is Oshkosh, WI
-      ftype[nchar(fips) ==  5] <- "county"
-      ftype[nchar(fips) ==  2] <- "state"
-      if (anyNA(ftype)) {
-        warning("some fips do not seem to be block, blockgroup, tract, county, or state FIPS (lengths with leading zeroes should be 15,12,11,5,2 respectively")
-      }
-      return(ftype)
+    if (missing(areatype)) {
+      areatype <- fipstype(fips)
     }
-    areatype <- fipstype_copy(fips)
-    if (!(all(areatype %in% c("blockgroup", "tract", "city", "county")))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' for the EJScreen API")}
+    if (!(all(areatype %in% c("blockgroup", "tract", "city", "county", 'state')))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county', 'state' for the EJScreen API")}
     if (!(length(areatype) %in% c(1, length(areaid)))) {warning("must provide either 1 areatype value for all or exactly one per areaid")}
-    namestr <- fips 
+    
+    # namestr <- fips   # user could specify something else here
+    if (is.null(namestr)) {namestr <- ''} 
     # The FIPS can be displayed as the name of the place on the EJScreen report since it already looks up and displays the actual name of a county or city
     # namestr <- rep("", length(areatype))
     # namestr[namestr == "county"] <- fips2countyname(fips[namestr == "county"])
@@ -352,8 +342,13 @@ url_ejscreen_acs_report <- function(lon, lat, radius, as_html=FALSE, linktext) {
 #' @param lat one or more latitudes
 #' @param as_html Whether to return as just the urls or as html hyperlinks to use in a DT::datatable() for example
 #' @param linktext used as text for hyperlinks, if supplied and as_html=TRUE
-#' @param wherestr passed to API in URL as wherestr= , if lat/lon not used. Can be State abbrev like "NY"
-#'   or can be some other options - not sure that part of the EJScreen URL-encoded map request is documented.
+#' @param wherestr Name of place to center on (not FIPS code!).
+#'   Passed to API in URL as wherestr= , if lat/lon not used.
+#'   Can be State abbrev like "NY" or full state name,
+#'   or city like "New Rochelle, NY" as from fips2name() -- using fips2name()
+#'   works for state, county, or city FIPS code converted to name.
+#'   Also wherestr can be street address or zipcode.
+#'   Not sure that part of the EJScreen URL-encoded map request is documented.
 #' @return URL(s)
 #' @seealso  [url_ejscreen_report()]  [url_ejscreen_acs_report()]   [url_ejscreenmap()]
 #'   [url_echo_facility_webpage()] [url_frs_report()]  [url_enviromapper()]  [url_envirofacts_data()]
@@ -364,7 +359,7 @@ url_ejscreenmap <- function(lon, lat, as_html=FALSE, linktext, wherestr = "") {
   
   # https://ejscreen.epa.gov/mapper/index.html?wherestr=30.450000,-91.090000
   baseurl <- 'https://ejscreen.epa.gov/mapper/index.html?wherestr='
-  if (missing(lat) & missing(lon) & !missing(wherestr)) {
+  if (((is.null(lat) & is.null(lon)) | (missing(lat) & missing(lon))) & !missing(wherestr)) {
     where <- wherestr
   }  else {
     where <- paste( lat,  lon, sep = ',')

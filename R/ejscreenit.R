@@ -114,6 +114,7 @@
 #'   e.g.,  "Particulate Matter (PM 2.5 in ug/m3)" not "pm"
 #' @param fips if used instead of x,y it can specify fips codes of counties, tracts, or blockgroups
 #' @param shapefile not implemented
+#' @param namestr optional text
 #' @param nosave   logical, if TRUE, sets as FALSE and overrides save_map, save_plot, save_table. Ignored if FALSE.
 #' @param nosee    logical, if TRUE, sets as FALSE and overrides see_map, see_plot, see_table. Ignored if FALSE.
 #' @param save_map   logical, whether to save png image file locally
@@ -212,6 +213,7 @@
 ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
                        fips = NULL,
                        shapefile = NULL,
+                       namestr = '',
                        nosave = TRUE, nosee = TRUE,
                        save_map    =TRUE, see_map  =TRUE,
                        save_plot   =TRUE, see_plot =TRUE,
@@ -265,6 +267,7 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
                           usewhichnames = usewhichnames,
                           fips = fips,
                           shapefile = shapefile,
+                          namestr = namestr,
                           # verbose = FALSE, # ALREADY THE DEFAULT IN ejscreenapi_plus() and putting it here causes problems if user tries to specify a value for it in ejscreenit()
                           calculate_ratios = calculate_ratios,
                           getstatefromplacename = TRUE,

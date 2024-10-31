@@ -2,7 +2,8 @@
 % Please edit documentation in R/FIPS_FUNCTIONS.R
 \name{fips_place_from_placename}
 \alias{fips_place_from_placename}
-\title{search using names of cities, towns, etc. to try to find matches and get FIPS}
+\title{search using names of cities, towns, etc. to try to find matches and get FIPS
+helper used by name2fips()}
 \usage{
 fips_place_from_placename(
   place_st,
@@ -25,8 +26,11 @@ prints a table of possible hits but returns just the vector of fips
 }
 \description{
 search using names of cities, towns, etc. to try to find matches and get FIPS
+helper used by name2fips()
 }
 \details{
+helper used by \code{\link[=name2fips]{name2fips()}}
+
 Finding places by name is tricky because the master list \link{censusplaces} names places
 using the words city, town, township, village, borrough, and CDP
 while most people will not think to include that qualifier as part of a query.
@@ -48,6 +52,4 @@ In that state, these place names occur more than 15 times each:
 Franklin township, Union township, Washington township, Jackson township.
 There are more than 500 unique name-state pairs that are reused within a state.
 }
-\seealso{
-\code{\link[=name2fips]{name2fips()}}
-}
+\keyword{internal}

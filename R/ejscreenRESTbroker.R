@@ -59,8 +59,11 @@
 #' @param ipurl fixed ip or domain/URL to try
 #' @param reportstyle EJscreen_SOE_report for the full community profile that was new as of 7/2023,
 #'   or EJSCREEN_report for the older style standard report (which has fewer indicators on it).
-#' @param fips If specified, lon and lat are ignored, and fips must be the 
-#'   FIPS code of a blockgroup or tract (or county).
+#' @param fips If specified, lon and lat are ignored, and the one fips code must be the 
+#'   FIPS code of a blockgroup or tract, or county (5 digits with leading zero)
+#'   or city/town/cdp/etc. (7 digits with leading zero).
+#'   A character string is best, with leading zero if relevant.
+#' @param namestr optional text
 #' @return Returns JSON by default. See source code of this function for notes on format. 
 #'   status_code
 #' @seealso [ejscreenit()]  or 
@@ -90,6 +93,7 @@
 #' 
 ejscreenRESTbroker <- function(lon=NULL, lat=NULL, radius = 3, 
                                fips=NULL,
+                               namestr='',
                                url=c('https://ejscreen.epa.gov/mapper/ejscreenRESTbroker1.aspx?namestr=', 'https://ejscreen.epa.gov/mapper/ejscreenRESTbroker.aspx?namestr=')[1],
                                wkid=4326, 
                                unit=9035, f='pjson', ipurl='ejscreen.epa.gov',
@@ -108,15 +112,14 @@ ejscreenRESTbroker <- function(lon=NULL, lat=NULL, radius = 3,
   
   if (!is.null(fips)) {
     if (length(fips) != 1) {stop('fips must be just one number, as numeric or character')}
-    if (!is.null(lat) | !is.null(lon)) {warning("ignoring lat and lon because fips was specified")}
     fips <- fips_lead_zero(fips)
-    if (nchar(fips) == 12) {areatype <- "blockgroup"} else {
-      if (nchar(fips) == 11) {areatype <- "tract"   } else {
-        if (nchar(fips) ==  5) {areatype <- "county"} else {
-          stop('fips must be 5, 11, or 12 digits, i.e., fips for county, tract, or blockgroup')
-        }
-      }
+    areatype <- fipstype(fips)
+    if (!(fips %in% c('blockgroup', 'tract', 'city', 'county', 'state'))) {
+      stop('fips must be 5, 11, or 12 digits, i.e., fips for state, county, city/cdp/town/etc., tract, or blockgroup')
     }
+    if (!is.null(lat) | !is.null(lon)) {warning("ignoring lat and lon because fips was specified")}
+    if (!missing(radius)) {warning("ignoring radius because fips was specified")}
+    
     # https://ejscreen.epa.gov/mapper/ejscreenRESTbroker1.aspx?namestr=400079517001&geometry=&distance=&unit=9035&areatype=blockgroup&areaid=400079517001&f=pjson
     this_request <-  paste0(url,
                             fips,
@@ -126,9 +129,13 @@ ejscreenRESTbroker <- function(lon=NULL, lat=NULL, radius = 3,
                             '&unit=', unit, 
                             '&areatype=', areatype,
                             '&areaid=', fips,
+                            '&namestr=', namestr,
                             '&f=', f
     )
+    # done with FIPS-based query
+    
   } else {
+    
     if (any(NROW(lon) > 1, NROW(lat) > 1, NROW(radius) > 1 )) {stop('input must be only one point with one distance, so lat, lon, and radius must each be a single number')}
     
     # MAY WANT TO SPLIT THIS OUT AS A FUNCTION, TO MAKE IT EASIER TO GET JSON AND ALSO APPEND THE PDF URL TO THAT
@@ -140,6 +147,7 @@ ejscreenRESTbroker <- function(lon=NULL, lat=NULL, radius = 3,
                             '&unit=', unit, 
                             '&areatype=',     # fails if report requested and omits these
                             '&areaid=',        # fails if report requested and omits these
+                            '&namestr=', namestr,
                             '&f=', f
     )   
   }

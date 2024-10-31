@@ -248,9 +248,16 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
                   pts_filecontents$lon <- as.numeric(x$Longitude83)
                   # SOME CODE ASSUMES INPUT POINTS MATCH 1 TO 1 OUTPUT POINTS- CREATES PROBLEM IF INPUT ROW COUNT DIFFERS FROM OUTPUT ROW COUNT, WHICH MAYBE COULD HAPPEN FOR QUERY ON ID, AND ESPECIALLY IF QUERY ON NAICS, FOR EXAMPLE.
                 } else {
-                  showModal(modalDialog(title = "Error", paste0("The file must have columns named lat and lon, or registry_id, or pgm_sys_id. Headers must be in row 1, data starting in row 2.", ''), easyClose = TRUE))
+                  
+                  ## could try to handle FIPS here, via  # ## #
+                  if ('fips' %in% names(pts_filecontents)) {
+                    pts_filecontents$lat = NA; pts_filecontents$lon = NA # just in case other code looks for them 
+                  } else {
+                   
+                  showModal(modalDialog(title = "Error", paste0("The file must have columns named lat and lon, or registry_id, or pgm_sys_id or fips. Headers must be in row 1, data starting in row 2.", ''), easyClose = TRUE))
                   cat(paste0("The file must have columns named lat and lon, or registry_id, or pgm_sys_id. Headers must be in row 1, data starting in row 2.", '\n'), file = stdout())
                   pts_filecontents <- default_points_shown_at_startup  # defined in global.R   This line is so default example is shown instead of uploaded file that does not have correct columns 
+                  }
                 }
               }
             }
@@ -288,7 +295,12 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
       }
     }
     
-    mapurl <- url_ejscreenmap(lat = pts_filecontents$lat, lon = pts_filecontents$lon)  # e.g.,  "https://ejscreen.epa.gov/mapper/index.html?wherestr=35.3827475,-86.2464592"
+    if ('fips' %in% names(pts_filecontents & all(is.na(pts_filecontents$lat))) ) {
+      mapurl <- url_ejscreenmap(wherestr = fips2name( pts_filecontents$fips)) # no  namestr = param
+    } else {
+      mapurl <- url_ejscreenmap(lat = pts_filecontents$lat, lon = pts_filecontents$lon)  # e.g.,  "https://ejscreen.epa.gov/mapper/index.html?wherestr=35.3827475,-86.2464592"
+    }
+
     pts_filecontents$mapurl  <- paste0('<a href=\"', mapurl, '\", target=\"_blank\">EJScreen Map ', rownames(pts_filecontents), '</a>')
     
     pts_filecontents
@@ -437,8 +449,9 @@ app_server_EJAMejscreenapi <- function(input, output, session) {
         
         # *_EJScreen API Get Results*  ####
         batchtableout <- ejscreenapi(
-          lon = pts()$lon, lat = pts()$lat, 
+          lon = pts()$lon, lat = pts()$lat,  # ignored if fips not NULL
           radius = radius_miles(), unit = 'miles', wkid = 4326 , 
+          fips = pts()$fips, # will be NULL if no such column
           format_report_or_json = 'pjson', ipurl = whichip,  # was  input$whichip
           report_every_n = report_every_n_default,
           save_when_report = FALSE, on_server_so_dont_save_files = TRUE,

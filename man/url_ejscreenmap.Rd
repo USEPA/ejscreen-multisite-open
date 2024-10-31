@@ -16,7 +16,10 @@ url_ejscreenmap(lon, lat, as_html = FALSE, linktext, wherestr = "")
 \item{linktext}{used as text for hyperlinks, if supplied and as_html=TRUE}
 
 \item{wherestr}{passed to API in URL as wherestr= , if lat/lon not used. Can be State abbrev like "NY"
-or can be some other options - not sure that part of the EJScreen URL-encoded map request is documented.}
+or can be some other options like "New Rochelle, NY" as from fips2name()
+\itemize{
+\item not sure that part of the EJScreen URL-encoded map request is documented.
+}}
 }
 \value{
 URL(s)

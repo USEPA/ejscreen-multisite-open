@@ -22,7 +22,4 @@ of each, or NA for non matches
 helper function - get county FIPS from exact countyname including, ST abbrev
 used by fips_counties_from_countyname()
 }
-\seealso{
-\code{\link[=fips_counties_from_countyname]{fips_counties_from_countyname()}}
-}
 \keyword{internal}

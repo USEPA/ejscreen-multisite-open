@@ -157,7 +157,7 @@ ejamit <- function(sitepoints,
                    maxradius = 31.07,
                    avoidorphans = FALSE,
                    quadtree = NULL,
-                   fips = NULL,
+                   fips = NULL,  # namestr = '', ?
                    shapefile = NULL,
                    countcols = NULL,
                    popmeancols = NULL,
@@ -457,10 +457,10 @@ ejamit <- function(sitepoints,
     
     # analyzing by FIPS not lat lon values
     areatype <- fipstype(fips)
-    if (!(all(areatype %in% c("blockgroup", "tract", "city", "county")))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' for the EJScreen API")}
+    if (!(all(areatype %in% c("blockgroup", "tract", "city", "county", 'state')))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' 'state' for the EJScreen API")}
     out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(   areaid   = fips, areatype = areatype, as_html = T),
-      `EJScreen Map`    = url_ejscreenmap(       wherestr = fips, as_html = T),
+      `EJScreen Report` = url_ejscreen_report(   areaid   = fips, areatype = areatype, as_html = T), #  namestr=my text not implemented here
+      `EJScreen Map`    = url_ejscreenmap(       wherestr = fips2name(fips), as_html = T),  # this needs a name not FIPS
       `ECHO report` = echolink
     )]
   } else {
