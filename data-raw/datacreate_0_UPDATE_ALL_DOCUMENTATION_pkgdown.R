@@ -11,8 +11,8 @@ if (!interactive()) {doask <- FALSE}
 
 # defaults
 dotests       = FALSE
-dodocument    = FALSE  # in case we just edited help or exports or func names !
-doinstall     = TRUE # but skips document and vignettes
+dodocument    = TRUE  # in case we just edited help or exports or func names !
+doinstall     = FALSE # but skips document and vignettes
 doloadall_not_library = TRUE  # (happens after install if that is being done here)
 dopreviewonly = TRUE  # always.  do  pkgdown::build_site()  not  pkgdown::build_site_github_pages
 
