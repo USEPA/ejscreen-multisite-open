@@ -277,7 +277,7 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
     poptext.d <- NULL
   } else {
     poptext.d <-  make.popup.d.api(
-      d = out[, names_d_pop], 
+      d = out[, names_d_pop] / 100, 
       pctile = out[, names_d_pctile_pop], 
       state.pctile = out[, names_d_state_pctile_pop], 
       prefix = '') # includes state pctiles too, now
