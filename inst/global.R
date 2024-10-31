@@ -219,7 +219,7 @@ default_plotkind_1pager <- "bar"  #    Bar = "bar", Box = "box", Ridgeline = "ri
 ######################################################## #
 ### Long report options  --------------------- #
 
-# relocate any here from the Full Report tab?? - defaults could be set here and made flexible elsewhere
+# relocate any here from the Full Report tab?? - defaults could be set here and made flexible elsewhere ***
 
 
 
@@ -269,16 +269,19 @@ probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', z
 
 
 
-
-
-
 ################################################################# #
 # END OF DEFAULTS / OPTIONS / SETUP
 ################################################################# #
 # ~ ####
+
+
+
 # ------------------------ ____ HELP TEXT ------------------------  ####
 
+
+
 ## info text for "About EJAM" tab ####
+
 intro_text <- tagList(
   # tags$p("For more information about EJAM:"),
   h2( a(href = "https://usepa.github.io/EJAM/articles/0_whatis.html", "What is EJAM?", target = '_blank', rel = 'noreferrer noopener') ),
@@ -287,19 +290,20 @@ intro_text <- tagList(
   br(),
   br()
 )
-# intro_text <- tagList(
-#   tags$p("EPA has developed a number of different tools for mapping and analysis of information related to environmental justice (EJ), including EJScreen and EJAM. "),
-#   tags$p("EJScreen provides a dataset with environmental, demographic, and EJ indicators for each Census block group in the US. \n"),
-#   tags$p("EJScreen can provide a report summarizing those values for the average resident within some distance (e.g., 1 mile) from a specified point."),
-#   tags$p("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. "),
-#   tags$p("EJAM allows users to select a set of areas (e.g., via shapefiles) or the areas near facilities defined by NAICs industrial category codes or by uploading a list of point locations."),
-#   tags$p("EJAM then provides a summary report for all residential locations near the selected facilities."),
-#   tags$p("See in-app info/tips, and the EJAM and EJScreen documentation for more about the tools and datasets (indicators)."),
-#   tags$p("Programmers can see the ", a(href = 'https://github.com/USEPA/EJAM?tab=readme-ov-file#readme', "Github repository and README"),
-#          " document, or the R package ", a(href = 'https://usepa.github.io/EJAM/index.html', "EJAM documentation"), " including walkthroughs and reference on functions and data.")
-# )
 
-## help text for latlon upload ####
+## help text for ECHO facility search: echo_message ####
+## used by inputId 'ss_search_echo'
+
+echo_url <-  'https://echo.epa.gov/facilities/facility-search' # used in server.R and in message below
+echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and specify a list of regulated facilities,
+                                    <br>1) Go to ', '<a href=\"', echo_url, '\", target=\"_blank\" rel=\"noreferrer noopener\">', echo_url,  '</a>', ' and <br>
+                                    2) Navigate website and select categories to include in data, then <br>
+                                    3) Under Search Criteria Selected-Facility Characteristics-Results View select <b>Data Table</b> and click <b>Search</b>, then <br>
+                                    3) click Customize Columns, use checkboxes to include Latitude and Longitude, then <br>
+                                    4) click Download Data, then <br>
+                                    5) Return to this app to upload that ECHO site list.<br>'))
+
+## help text for upload: latlon_help_msg ####
 
 latlon_help_msg <- '
 <div class="row">
@@ -333,38 +337,23 @@ latlon_help_msg <- '
   </div>
   </div>'
 
-## help text for all upload methods - not currently used
-# upload_help_msg <- ' <div class="row">
-#     <div class="col-sm-12">
-#         <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
-#           <label class="control-label" for="selectFrom1">
-#             <h5>Users may use only one of the four methods of defining the Universe of Interest:
-#             <ul>
-#               <li>Select by Industry (NAICS) Code</li>
-#               <li>Upload EPA Facility ID (FRS Identifers) file</li>
-#               <li>Upload Location (latitude/longitude) file</li>
-#               <li>Upload ECHO file</li>
-#             </ul>
-#             </h5>
-#           </label>
-#       </div>
-#     </div>
-#   </div>'
+## help text for upload: shp_help_msg ####
 
+shp_help_msg <- '
+<div class="row">
+  <div class="col-sm-12">
+  <div class="well">
+  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+  <label class="control-label" for="selectFrom1">
+  <p>You may upload a set of shapefiles with polgyons.</p>
+  <p>The upload should contain at least these four related file types: .shp, .shx, .dbf, .prj
+  or can be a .zip containing those, or a .gdb.zip file.</p>
+  </div>
+  </div>
+  </div>
+  </div>'
 
-## help text about ECHO facility search ####
-## used by inputId 'ss_search_echo'
-
-echo_url <-  'https://echo.epa.gov/facilities/facility-search' # used in server.R and in message below
-echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and specify a list of regulated facilities,
-                                    <br>1) Go to ', '<a href=\"', echo_url, '\", target=\"_blank\" rel=\"noreferrer noopener\">', echo_url,  '</a>', ' and <br>
-                                    2) Navigate website and select categories to include in data, then <br>
-                                    3) Under Search Criteria Selected-Facility Characteristics-Results View select <b>Data Table</b> and click <b>Search</b>, then <br>
-                                    3) click Customize Columns, use checkboxes to include Latitude and Longitude, then <br>
-                                    4) click Download Data, then <br>
-                                    5) Return to this app to upload that ECHO site list.<br>'))
-
-## help text for FRS ####
+## help text for upload: frs_help_msg ####
 
 frs_help_msg <- HTML('  <div class="row">
     <div class="col-sm-12">
@@ -390,6 +379,7 @@ frs_help_msg <- HTML('  <div class="row">
     </div>
   </div>')
 
+## help text for upload: epa_program_help_msg ####
 
 epa_program_help_msg <- '
 <div class="row">
@@ -421,15 +411,22 @@ AIR,	IL000031012ACJ<br>
   </div>
   </div>'
 
-fips_help_msg <- '
+## help text for upload: fips_help_msg ####
+
+fips_help_msg <- paste0('
 <div class="row">
   <div class="col-sm-12">
   <div class="well">
   <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
   <label class="control-label" for="selectFrom1">
-  <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit), Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips) .</p>
-  <p>The file should contain at least one column, FIPS, with the fips codes. It will also work with the following aliases: fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
-  There can be other columns like an ID column that should be unique (no duplicates),
+  <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit),',
+  # ' Census Designated Place (CDP) like city or township (6-digit or 7-digit),',   # uncomment this when ready ***
+  ' Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).</p>
+  <p>The file should contain at least one column, FIPS, with the fips codes. ',
+  'It will also work with the following aliases: ',
+  'fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
+  ',
+  'There can be other columns like an ID column that should be unique (no duplicates),
   and each record should be separated by a carriage return.</p>
   <p>The file could be formatted as follows, for example: </p>
   </label>
@@ -447,95 +444,7 @@ fips_help_msg <- '
   </div>
   </div>
   </div>
-  </div>'
-
-shp_help_msg <- '
-<div class="row">
-  <div class="col-sm-12">
-  <div class="well">
-  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
-  <label class="control-label" for="selectFrom1">
-  <p>You may upload a set of shapefiles with polgyons.</p>
-  <p>The upload should contain at least these four related file extensions: .shp, .shx, .dbf, .prj
-  There must be an ID column (OBJECTID_1) that should be unique (no duplicates),
-  and each record should be separated by a carriage return.</p>
-  </div>
-  </div>
-  </div>
-  </div>'
-
-epa_program_help_msg <- '
-<div class="row">
-  <div class="col-sm-12">
-  <div class="well">
-  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
-  <label class="control-label" for="selectFrom1">
-  <p>You may upload a list of EPA Programs and Program IDs.</p>
-  <p>The file should contain at least these two columns: program and pgm_sys_id.
-  There can be other columns like an ID column that should be unique (no duplicates),
-  and each record should be separated by a carriage return.</p>
-  <p>It also will work with additional optional columns such as Facility Registry ID (REGISTRY_ID), latitude (lat), and longitude (lon). </p>
-  <p>The file could be formatted as follows, for example: </p>
-  </label>
-  <br>
-  program,	pgm_sys_id<br>
-NC-FITS,	28122<br>
-AIR,	NY0000004432800019<br>
-NPDES,	GAR38F1E2<br>
-TRIS,	7495WCRHMR59SMC<br>
-MN-TEMPO,	17295<br>
-HWTS-DATAMART,	CAR000018374<br>
-IN-FRS,	330015781585<br>
-TX-TCEQ ACR,	RN104404751<br>
-NJ-NJEMS,	353065<br>
-AIR,	IL000031012ACJ<br>
-  </div>
-  </div>
-  </div>
-  </div>'
-
-fips_help_msg <- '
-<div class="row">
-  <div class="col-sm-12">
-  <div class="well">
-  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
-  <label class="control-label" for="selectFrom1">
-  <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit), Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips) .</p>
-  <p>The file should contain at least one column, FIPS, with the fips codes. It will also work with the following aliases: fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
-  There can be other columns like an ID column that should be unique (no duplicates),
-  and each record should be separated by a carriage return.</p>
-  <p>The file could be formatted as follows, for example: </p>
-  </label>
-  <br>
- FIPS<br>
-36001014002<br>
-26163594300<br>
-36029008600<br>
-36061006100<br>
-15003005300<br>
-17031081403<br>
-06037190303<br>
-29031881301<br>
-45091061205<br>
-  </div>
-  </div>
-  </div>
-  </div>'
-
-shp_help_msg <- '
-<div class="row">
-  <div class="col-sm-12">
-  <div class="well">
-  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
-  <label class="control-label" for="selectFrom1">
-  <p>You may upload a set of shapefiles with polgyons.</p>
-  <p>The upload should contain at least these four related file extensions: .shp, .shx, .dbf, .prj
-  There must be an ID column (OBJECTID_1) that should be unique (no duplicates),
-  and each record should be separated by a carriage return.</p>
-  </div>
-  </div>
-  </div>
-  </div>'
+  </div>')
 
 #################################################################################################################### #
 # ~ ####
