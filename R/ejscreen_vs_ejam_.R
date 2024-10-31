@@ -352,7 +352,7 @@ ejscreen_vs_ejam_1var_bysite <- function(vs, pts, varname = "blockcount_near_sit
 #'    
 #' @examples
 #'   radius = 3
-#'   dontrun{
+#'   \dontrun{
 #'   pts <- testpoints_n(100, weighting = 'frs')
 #'   
 #'   # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:
@@ -697,7 +697,7 @@ ejscreen_vs_ejam_1var_cdf = function(vs, varname = 'pop') {
 #'
 #' @examples 
 #'   mysite <- 9
-#'   dontrun{
+#'   \dontrun{
 #'   vs <- ejscreen_vs_ejam(testpoints_10, radius = 3)
 #'   ejscreen_vs_ejam_see1(vs, mysite = mysite, myvars = colnames(vs$EJAM))[!is.na(vs$EJSCREEN[mysite, ]) , 1:2]
 #'   }
@@ -744,7 +744,7 @@ ejscreen_vs_ejam_see1 <- function(vs, myvars = c("ejam_uniq_id", 'pop', names_d)
 #'   but you may also want the output of ejscreen_vs_ejam_see1()
 #' @examples 
 #'  radius = 3; n = 3
-#'  dontrun{
+#'  \dontrun{
 #'   vs <- ejscreen_vs_ejam(testpoints_10, radius = radius, include_ejindexes = TRUE)
 #'   ejscreen_vs_ejam_see1map(vs, n = n, overlay_blockgroups = TRUE)
 #'  }

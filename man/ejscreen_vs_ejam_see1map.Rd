@@ -48,7 +48,7 @@ EJAM/EJSCREEN comparisons - Try to explain discrepancy in pop and blocks via map
 }
 \examples{
  radius = 3; n = 3
- dontrun{
+ \dontrun{
   vs <- ejscreen_vs_ejam(testpoints_10, radius = radius, include_ejindexes = TRUE)
   ejscreen_vs_ejam_see1map(vs, n = n, overlay_blockgroups = TRUE)
  }

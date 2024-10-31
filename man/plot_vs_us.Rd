@@ -45,7 +45,7 @@ more generally like for ejamit_compare_types_of_places()
  # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctlingiso", type =  'ggplot')
  # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctnhaa", type =  'ggplot')
  # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctnhaa", type = 'box', ylim = c(0,20))
-dontrun{
+\dontrun{
   out <- testoutput_ejamit_1000pts_1miles
   plot_vs_us(out$results_bysite, type = 'box')
   plot_vs_us(out$results_bysite, varname = "pctlingiso", type =  'box', ylim=c(0, 20))
