@@ -50,8 +50,8 @@ test_interactively = function(ask = TRUE,
   
   if (missing(y_basic) & ask) {
     if (missing(y_basic)) {
-    y_basic = askYesNo("Do ONLY basic quick checks (no unit tests, then STOP) ?", default = FALSE)
-  }}
+      y_basic = askYesNo("Do ONLY basic quick checks (no unit tests, then STOP) ?", default = FALSE)
+    }}
   if (is.na(y_basic)) {stop("cancelled")}
   # just do basic quick checks? (not unit tests) ####
   # for easy/basic case, main functions, without actually running unit tests with testthat
@@ -366,7 +366,7 @@ test_interactively = function(ask = TRUE,
                       rather than testing the installed version)?", default = TRUE)
     }
     if (missing(y_runsome)) {
-      y_runsome = askYesNo("Run ONLY SOME OF THE tests ?")}
+      y_runsome = askYesNo("Run ONLY SOME OF THE tests ?", default = FALSE)}
     if (is.na(y_runsome))  {stop("cancelled")}
     if (y_runsome) {
       fnames = unlist(testlist)
@@ -397,7 +397,7 @@ test_interactively = function(ask = TRUE,
         y_tempdir = askYesNo("OK to save in a temporary folder you can see later? (say No if you want to specify a folder)")}
       if (is.na(y_tempdir)) {stop("cancelled")}
       if (y_tempdir) {
-        mydir <- tempdir
+        mydir <- tempdir()
       } else {
         if (missing(mydir)) {
           mydir <- rstudioapi::selectDirectory()}
@@ -406,88 +406,28 @@ test_interactively = function(ask = TRUE,
       
     }
   }
-  
+  if (missing(mydir) && !exists(mydir)) {
+    if (y_tempdir) {
+      mydir <- tempdir()
+    } else {
+      mydir = '.'
+    }
+  }
+  mydir <- normalizePath(mydir)
   if (y_runsome) {
-  tname <- unlist(strsplit(gsub(" ", "", tname), ","))
-  tname = paste0("test_", tname)
-  #    test_file("./tests/testthat/test-MAP_FUNCTIONS.R" )
-  partial_testlist <-  testlist[names(testlist) %in% tname] 
+    tname <- unlist(strsplit(gsub(" ", "", tname), ","))
+    tname = paste0("test_", tname)
+    #    test_file("./tests/testthat/test-MAP_FUNCTIONS.R" )
+    partial_testlist <-  testlist[names(testlist) %in% tname] 
   }
   
   logfilename_only = paste0("testresults-", 
                             gsub(" ", "_", gsub("\\.[0-9]{6}$", "", gsub(":", ".", as.character(Sys.time())))), 
                             ".txt")
-  logfilename = file.path(mydir, logfilename_only)
+  logfilename = (  file.path(mydir, logfilename_only) )
   cat("Saving in ", logfilename, ' etc. \n')
   
-  ################################### #  ################################### #  ################################### #
-  
-  loggable <- function(x, file = 'will be created using timestamp if not provided and !exists(logfilename)', 
-                       append = TRUE, split = TRUE, 
-                       y_save_param=NULL) {
-    
-    if (missing(y_save_param)) {
-      if (!exists('y_save')) {
-        if (is.null(file)) {
-          y_save <- FALSE
-        } else {
-          y_save <- TRUE
-        }
-      }
-    } else {
-      y_save <- y_save_param
-    }
-    
-    if (y_save) {
-      if (missing(file)) {
-        if (exists('logfilename')) {
-          file = logfilename
-        } else {
-          mydir = '.'
-          file = paste0("testresults-", 
-                        gsub(" ", "_", gsub("\\.[0-9]{6}$", "", gsub(":", ".", as.character(Sys.time())))), 
-                        ".txt")
-          file = file.path(mydir, file)
-        }
-      }
-      if (is.null(file)) {
-        warning("file got set to NULL so NOT saving even though y_save was TRUE.")
-      }
-    } else {
-      if (missing(file)) {
-        file = NULL
-      } else {
-        if (!is.null(file)) {
-          warning('file got specified so WILL save even though y_save was FALSE.')
-        }
-      }
-    }
-    
-    capture.output(x, file = file, append = append, split = split) 
-    
-    # use file = logfilename  or file = NULL  to override whatever the y_save value was when func was defined
-    # file = NULL  will show only in console and not log it
-    # split=T  will show output in console, and save to file simultaneously unless file=NULL
-    
-    ### how to use it    ## example 
-    # ## y_save = F will prevent logging unless you also specify a file
-    # junk = loggable({
-    #   })
-    
-    # junk = loggable({ 
-    #   # comments do not get logged
-    #   #  x  or  1 + 1  is not logged without print() or cat() ?
-    #   print(cbind(a=1:3,b=2:4))
-    #   cbind(c = 1:3, d = 2:4)
-    #   x = 56
-    #   print(x)
-    #   cat(1234,'\n\n')
-    #   
-    #   }) 
-    ## use file = logfilename  or file = NULL  to override whatever the y_save value is
-    
-  }
-  ################################### #  ################################### #  ################################### #
+  ################################### #  ################################### #
   if (y_runall == FALSE && y_runsome == FALSE) {
     stop('no tests run')
   } else {
@@ -566,13 +506,18 @@ test_interactively = function(ask = TRUE,
   # if (is.na(y_runsome))  {stop("cancelled")}
   if (y_runsome) {
     
-    consoleclear()
+    # consoleclear()
     
     x = testbygroup(testlist = partial_testlist)
     
     junk = loggable({
       cat("\n\n                                         RESULTS THAT FAILED/ WARNED/ CANT RUN     \n\n")
-      print(x[x$flag + x$error_cant_test > 0,])
+      if (any(x$flag + x$error_cant_test > 0)) {
+        print(x[x$flag + x$error_cant_test > 0,])
+      } else {
+        cat("All selected tests ran and passed.")
+      }
+      cat("\n\n")
     })
     
   }
@@ -602,12 +547,14 @@ test_interactively = function(ask = TRUE,
     # y_save = askYesNo("Save results of unit testing?") 
     if (is.na(y_save)) {stop("cancelled")}
     if (y_save) {
-      fname <- paste0("./tests/results_of_unit_testing_", as.character(Sys.Date()), ".rda")
+      fname <- paste0("results_of_unit_testing_", as.character(Sys.Date()), ".rda")
+      fname = (  file.path(mydir, fname) )
       save(testall, file = fname)
       junk = loggable({
-        cat("\n\n")
-        print(cbind(`PERCENT OF ALL TESTS` = round(100 * colSums(testall[,4:11]) / 1125, 1)))
-        cat("\n\n")
+        # cat("TEST RESULTS AS OF "); cat(as.character(Sys.Date()))
+        # cat("\n\n")
+        # print(cbind(`PERCENT OF ALL TESTS` = round(100 * colSums(testall[,4:11]) / 1125, 1)))
+        # cat("\n\n")
         cat('\n  See', fname, ' for full results of unit testing.\n\n') 
       })
     } # end if - save
@@ -683,10 +630,14 @@ test_interactively = function(ask = TRUE,
       cat("\n\n\n")
       
       prioritize = x[order(-x$flag, -x$failed), 1:11]
-      prioritize <- prioritize[prioritize$tests != prioritize$passed | prioritize$error_cant_test > 0, ]
-      print(prioritize)
-      
-      cat("\n\n")
+      these = prioritize$tests != prioritize$passed | prioritize$error_cant_test > 0
+      if (any(these)) {
+        prioritize <- prioritize[these, ]
+        print(prioritize)
+        cat("\n\n")  
+      } else {
+        prioritize = NA
+      }
       # cat("MORE KEY TESTS DETAILS")
       # cat("\n\n")
       # xx = x[x$error_cant_test > 0 | x$test != x$passed, ]
@@ -694,7 +645,7 @@ test_interactively = function(ask = TRUE,
     }) # end loggable
   } # end of big if - viewing results
   ########################### #  ########################################## #
-  
+  if (!exists("testall")) {testall <- NA}
   biglist =     list(
     passcount = passcount,
     passpercent = passpercent,
@@ -702,17 +653,92 @@ test_interactively = function(ask = TRUE,
     bygroup = bygroup, 
     byfile = byfile,
     testall = testall, 
+    mydir = mydir,
     params = NA  
   )
   ## save Summaries of results of testing ####
   if (y_save) {
-    fname <- paste0("./tests/results_SUMMARY_of_unit_testing_", as.character(Sys.Date()), ".rda")
+    fname <- paste0("results_SUMMARY_of_unit_testing_", as.character(Sys.Date()), ".rda")
+    fname = (file.path(mydir, fname))
     save(biglist, file = fname)
+    cat(
+      '\n saved ', fname, ' \n\n'
+    )
   }
-  
+  if (interactive()) {
+    browseURL(x$mydir)
+  }
   invisible(
     biglist
   )
 } # end of function
+################################### #  ################################### #  ################################### #
 
-# test_interactively()
+loggable <- function(x, file = 'will be created using timestamp if not provided and !exists(logfilename)', 
+                     append = TRUE, split = TRUE, 
+                     y_save_param=NULL) {
+  
+  if (missing(y_save_param)) {
+    if (!exists('y_save')) {
+      if (is.null(file)) {
+        y_save <- FALSE
+      } else {
+        y_save <- TRUE
+      }
+    }
+  } else {
+    y_save <- y_save_param
+  }
+  
+  if (y_save) {
+    if (missing(file)) {
+      if (exists('logfilename')) {
+        file = logfilename
+      } else {
+        mydir = tempdir()
+        file = paste0("testresults-", 
+                      gsub(" ", "_", gsub("\\.[0-9]{6}$", "", gsub(":", ".", as.character(Sys.time())))), 
+                      ".txt")
+        file = (  file.path(mydir, file) )
+      }
+    }
+    if (is.null(file)) {
+      warning("file got set to NULL so NOT saving even though y_save was TRUE.")
+    }
+  } else {
+    if (missing(file)) {
+      file = NULL
+    } else {
+      if (!is.null(file)) {
+        warning('file got specified so WILL save even though y_save was FALSE.')
+      }
+    }
+  }
+  
+  capture.output(x, file = file, append = append, split = split) 
+  cat('\n  Adding to ', file, ' log of results of unit testing.\n\n')
+  # use file = logfilename  or file = NULL  to override whatever the y_save value was when func was defined
+  # file = NULL  will show only in console and not log it
+  # split=T  will show output in console, and save to file simultaneously unless file=NULL
+  
+  ### how to use it    ## example 
+  # ## y_save = F will prevent logging unless you also specify a file
+  # junk = loggable({
+  #   })
+  
+  # junk = loggable({ 
+  #   # comments do not get logged
+  #   #  x  or  1 + 1  is not logged without print() or cat() ?
+  #   print(cbind(a=1:3,b=2:4))
+  #   cbind(c = 1:3, d = 2:4)
+  #   x = 56
+  #   print(x)
+  #   cat(1234,'\n\n')
+  #   
+  #   }) 
+  ## use file = logfilename  or file = NULL  to override whatever the y_save value is
+  
+}
+################################### # 
+
+# x = test_interactively()
