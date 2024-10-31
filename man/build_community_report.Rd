@@ -30,9 +30,15 @@ build_community_report(
 \item{filename, }{path to file to save HTML content to; if null, returns as string (used in Shiny app)}
 }
 \description{
-Creates a 2 page report on overall results or for one site, with
-demographic and environmental indicators, and EJ Indexes if needed.
+Creates a 2 page report on overall results or for one site, with demographic and environmental indicators, and EJ Indexes if needed.
+}
+\details{
 For the same function for use in RStudio,
 see \code{\link[=ejam2report]{ejam2report()}} which relies on \code{build_community_report()}
+
+This function gets called by
+app_server,
+ejam2report(), and
+community_report_template.Rmd
 }
 \keyword{internal}

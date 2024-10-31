@@ -19,7 +19,7 @@ fill_tbl_row <- function(output_df, Rname, longname) {
                  'percentile-in-state','usa average','percentile-in-usa')
   
   Rnames <- paste0(c('', 'state.avg.', 'state.pctile.', 'avg.', 'pctile.'),
-                       Rname)
+                   Rname)
   
   cur_vals <- if ('data.table' %in% class(output_df)) {
     sapply(Rnames, function(v) output_df[, ..v])
@@ -115,7 +115,7 @@ fill_tbl_full <- function(output_df) {
   
   
   Rnames_e <- namesbyvarlist(varlist = 'names_e')$rname
-
+  
   longnames_e <- fixcolnames(Rnames_e, oldtype = 'r', newtype = 'long')
   
   tbl_rows_e <- sapply(seq_along(Rnames_e), function(x) {
@@ -196,8 +196,8 @@ fill_tbl_full_ej <- function(output_df) {
                         })
   
   full_html <- paste(full_html,
-                      paste(tbl_rows_ej, collapse = '\n'),
-                      sep = '', collapse = '\n')
+                     paste(tbl_rows_ej, collapse = '\n'),
+                     sep = '', collapse = '\n')
   full_html <- paste(full_html, tbl_head2, collapse = '\n')
   
   ## reorder indicators to match report order
@@ -210,15 +210,15 @@ fill_tbl_full_ej <- function(output_df) {
   # remove mention of raw score from longname so it applies to the whole row
   
   tbl_rows_ej_supp <- sapply(seq_along(Rnames_ej_supp),
-                        function(x) {
-                          fill_tbl_row_ej(output_df, 
-                                          Rname = Rnames_ej_supp[x],
-                                          longname = longnames_ej_supp[x])
-                        })
+                             function(x) {
+                               fill_tbl_row_ej(output_df, 
+                                               Rname = Rnames_ej_supp[x],
+                                               longname = longnames_ej_supp[x])
+                             })
   
   full_html <- paste(full_html,
-                      paste(tbl_rows_ej_supp, collapse = '\n'),
-                      sep = '', collapse = '\n')
+                     paste(tbl_rows_ej_supp, collapse = '\n'),
+                     sep = '', collapse = '\n')
   
   full_html <- paste(full_html, '</tbody>
 </table>', collapse = '\n')
@@ -313,7 +313,7 @@ fill_tbl_full_subgroups <- function(output_df) {
   full_html <- paste(full_html, tbl_head, sep = '\n')
   
   ## reorder indicators to match report order
-
+  
   
   Rnames_d_race <- namesbyvarlist(varlist = 'names_d_subgroups')$rname
   
@@ -324,7 +324,7 @@ fill_tbl_full_subgroups <- function(output_df) {
                            Rname = Rnames_d_race[x],
                            longname = longnames_d_race[x])
   })
- 
+  
   full_html <- paste(full_html,
                      paste(tbl_rows_d_race , collapse = '\n'),
                      
@@ -349,7 +349,7 @@ fill_tbl_full_subgroups <- function(output_df) {
   full_html <- paste(full_html, tbl_head3, collapse = '\n')
   
   Rnames_d_lim <- namesbyvarlist('names_d_languageli')$rname#intersect(names_d_language, names(blockgroupstats))  
- # names_d_language_li
+  # names_d_language_li
   longnames_d_lim <- fixcolnames(Rnames_d_lim, 'r', 'short')
   
   tbl_rows_d_lim <- sapply(seq_along(Rnames_d_lim), function(x) {
@@ -371,16 +371,55 @@ fill_tbl_full_subgroups <- function(output_df) {
 ################################################################### #
 
 
+generate_report_footnotes <- function(
+    # ejscreen_vs_ejam_caveat = "Note: Some numbers as shown on the EJScreen report for a single location will in some cases appear very slightly different than in EJScreen's multisite reports. All numbers shown in both types of reports are estimates, and any differences are well within the range of uncertainty inherent in the American Community Survey data as used in EJScreen. Slight differences are inherent in very quickly calculating results for multiple locations.",
+  diesel_caveat = paste0("Note: Diesel particulate matter index is from the EPA's Air Toxics Data Update, which is the Agency's ongoing, comprehensive evaluation of air toxics in the United States. This effort aims to prioritize air toxics, emission sources, and locations of interest for further study. It is important to remember that the air toxics data presented here provide broad estimates of health risks over geographic areas of the country, not definitive risks to specific individuals or locations. More information on the Air Toxics Data Update can be found at: ",
+                         url_linkify("https://www.epa.gov/haps/air-toxics-data-update", "https://www.epa.gov/haps/air-toxics-data-update"))
+) {
+  
+  
+  # This function gets called by 
+  # build_community_report() in 
+  #  app_server, 
+  #  ejam2report(), and
+  #  community_report_template.Rmd 
+  
+  
+  dieselnote = paste0("
+  <span style= 'font-size: 9pt'>
+  <p tabindex=\'13\' style='font-size: 9pt'><small>", diesel_caveat, "</small></p>
+  </span>"
+  )
+  
+  ejamnote = ""
+  # ejamnote <- paste0("
+  # <span style= 'font-size: 9pt'>
+  # <p tabindex=\'14\' style='font-size: 9pt'>", ejscreen_vs_ejam_caveat, "</p>
+  # </span>"
+  # )
+  
+  footnotes <- paste(
+    dieselnote, 
+    ejamnote,
+    sep = "   "
+  )
+  return(HTML(footnotes))
+}
+################################################################### #
+
+
 #' Build HTML header for community report
 #'
 #' @param analysis_title, title to use in header of report
 #' @param totalpop, total population included in location(s) analyzed
 #' @param locationstr, description of the location(s) analyzed
 #' @param in_shiny, whether the function is being called in or outside of shiny - affects location of header
+#' @param report_title generic name of this type of report, to be shown at top, like "EJScreen-EJAM Multisite Report" or "EJAM Multisite Report"
 #'
 #' @keywords internal
 #'
-generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny = FALSE) {
+generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny = FALSE, 
+                                 report_title = "EJAM Multisite Report") {
   
   if (in_shiny) {
     shift_hsb <- 630
@@ -393,31 +432,43 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
   }
   
   
-  img_html <- paste0('<img src=\"', 'www/EPA_logo_white_2.png',
-                     '\" alt=\"EPA logo\" width=\"110\" height=\"35\">')
+  # should add padding and adjust size so that the img_html object is a bit lower on the screen and does not get shrunk
   
-  paste0('
+  img_html <- paste0('<img src=\"', 'www/EPA_logo_white_2.png',
+                     '\" alt=\"EPA logo\" width=\"220\" height=\"70\">')
+  
+  paste0(
+    '
   <link href=\"https://fonts.googleapis.com/css2?family=Heebo:wght@500;600\" rel=\"stylesheet\">
   <link href=\"https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&amp;display=swap\" rel=\"stylesheet\">
   <link href=\"https://fonts.googleapis.com/css2?family=Noto+Sans&amp;display=swap\" rel=\"stylesheet\">
-
- <link rel=\"stylesheet\"  type=\"text/css\" media=\"all\" href=\"communityreport.css\" />
-<div id=\"header-primary-background\">
-', img_html, '
-<div id=\"header-primary-background-inner\">
-         <h1 id="title" tabindex="0">EJAM Community Report</h1>
-<p>This report provides environmental and socioeconomic information for user-defined areas,<br> and combines that data into environmental justice and supplemental indexes.</p>
-</div>
-</div>
-
-<div class="header">
+  <link rel=\"stylesheet\"  type=\"text/css\" media=\"all\" href=\"communityreport.css\" />',
+    
+    '<div id="header-primary-background">',
+    '<div id="header-primary-background-inner">',
+    '<h1 id="title" tabindex="0">', report_title, '</h1>',
+    '<p>This report summarizes environmental and socioeconomic information for user-defined areas,<br> and combines that data into environmental justice and supplemental indexes.</p>',
+    '</div>',
+    '<div id="header-primary-background-img-container">',
+    img_html,
+    '</div>',
+    '</div>',
+    
+    
+    '<div class="header">
     <div>
         <h2 id="placename">', analysis_title , '</h2>
     </div>
-    <div>
-        <h5>', locationstr, '<br>Population: <span id="TOTALPOP">', totalpop, '</span><br></h5>
-    </div>
-</div>', sep = '', collapse = '')
+  <div>
+  
+  <h5>', locationstr, '<br>Population: <span id="TOTALPOP">', totalpop, '</span><br></h5>
+  
+  
+ </div>
+</div>', 
+    
+    sep = '', collapse = '')
+  
   # Population: <span id=\"TOTALPOP\">',totalpop,'</span><br>',
 }
 ################################################################### #
@@ -428,7 +479,7 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
 #' @keywords internal
 #'
 generate_demog_header <- function() {
-  '<h3 tabindex=\"12\">Environmental and Socioeconomic Indicators Data</h3>'
+  '<h3 tabindex=\"12\" style=\"font-size: 8px\">Environmental and Socioeconomic Indicators Data</h3>'
 }
 ################################################################### #
 

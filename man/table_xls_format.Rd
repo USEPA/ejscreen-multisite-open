@@ -40,6 +40,7 @@ table_xls_format(
   updateProgress = NULL,
   launchexcel = FALSE,
   saveas = NULL,
+  ejscreen_ejam_caveat = NULL,
   ...
 )
 }
@@ -108,6 +109,8 @@ second color is for those >=2d cutpoint but <3d, etc.}
 
 \item{saveas}{If not NULL, and a valid path with filename.xlsx is provided,
 the workbook will be saved locally at that path and name. Warning: it will overwrite an existing file.}
+
+\item{ejscreen_ejam_caveat}{optional text if you want to change this in the notes tab}
 
 \item{...}{other params passed along to \code{\link[openxlsx:writeData]{openxlsx::writeData()}}}
 

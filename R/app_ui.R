@@ -41,26 +41,29 @@ app_ui  <- function(request) {
         refresh = "Click to Restart the App",
         background = "#FFFFFF", colour = "#444444", refreshColour = "darkgreen", overlayColour = "#000000", overlayOpacity = 0.5,
         width = 450, top = 50, size = 20, css = ""
-      ), actionButton("disconnect", "Disconnect the app"),
+      ), 
+      
+      # actionButton("disconnect", "Disconnect the app"),
       
       ### html header inserted from global.R ####
       html_header_fmt,
       
       ### title (for app and browser tab) ####
       
+      #### this is now in html in global.R 
       
-      div(class = "title-panel",
-          titlePanel(
-            title = paste("EJAM (Environmental Justice Analysis Multi-site) Tool v",ejam_app_version, sep =""),
-            windowTitle = paste("EJAM (Environmental Justice Analysis Multi-site) Tool v", ejam_app_version, sep ="")
-          )
-      ),
+      # div(class = "title-panel",
+      #     titlePanel(
+      #       title = paste("EJAM (Environmental Justice Analysis Multi-site) Tool v",ejam_app_version, sep =""),
+      #       windowTitle = paste("EJAM (Environmental Justice Analysis Multi-site) Tool v", ejam_app_version, sep ="")
+      #     )
+      # ),
       
       # ***outline of tabs*** ####
       # at one point was this:
       #
       # tabsetPanel(                         id = 'all_tabs',     ##
-      #   tabPanel(title = 'About EJAM',
+      #   tabPanel(title = 'About',
       #   tabPanel(title = 'Site Selection',
       #   tabPanel(title =   , # ??
       #   tabsetPanel(                       id = 'results_tabs', ##
@@ -76,11 +79,11 @@ app_ui  <- function(request) {
       # TABSETPANEL ALL -  tabsetPanel(id = 'all_tabs',  ####
       tabsetPanel( # up to line 1101 or so
         id = 'all_tabs',
-        # type = 'hidden', # xxxx ***
-        selected = 'Site Selection',  # tabs are  'About EJAM',   'Site Selection', 'EJScreen Batch Tool', 'EJScreen Batch Tool',
-        # ______ About ______ tabPanel(title = 'About EJAM' ####
         
-        tabPanel(title = 'About EJAM',
+        selected = 'Site Selection',
+        # ______ About ______ tabPanel(title = 'About' ####
+        
+        tabPanel(title = 'About',
                  br(),
                  fluidRow(
                    column(8,
@@ -110,11 +113,11 @@ app_ui  <- function(request) {
         tabPanel(
           title = 'Site Selection',
           #h3('Welcome to EJAM'),
-          div(
-            p('EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site.'),
-            class = "about-EJAM-span"
-          ),
-          hr(), ## horizontal line
+          # div(
+          #   p('EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site.'),
+          #   class = "about-EJAM-span"
+          # ),
+          # hr(), ## horizontal line
           
           ## fluidRow container for upload method (left column) and map (right column) ####
           fluidRow( # through about line 441
@@ -1022,7 +1025,7 @@ app_ui  <- function(request) {
         # . --------------------------------------------------------------- ####
         ## . ####
         # EJSCREEN API MODULE -  tabPanel(title = 'EJScreen Batch Tool'   ####
-        # may move to another tab. or in a conditional UI panel.
+        # may just link to separate app. or may put in a conditional UI panel.
         # tabPanel(title = 'EJScreen Batch Tool',
         #
         #          h3("Access to EJScreen results via the API"),
