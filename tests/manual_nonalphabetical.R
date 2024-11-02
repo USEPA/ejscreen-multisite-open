@@ -240,9 +240,11 @@ test_interactively = function(ask = TRUE,
         "test-FIPS-shiny-functionality.R", "test-latlon-shiny-functionality.R", "test-NAICS-shiny-functionality.R", "test-shapefile-shiny-functionality.R"
       ),
       test_test = c(
-        "test-test.R" #,  #   fast way to check this script via  biglist <- test_interactively(ask = FALSE, y_runsome = T, tname = 'test')
-        # "test-golem_utils_server.R", # not really used 
-        # "test-golem_utils_ui.R"      # not really used        
+        "test-test.R"   #   fast way to check this script via  biglist <- test_interactively(ask = FALSE, y_runsome = T, tname = 'test')
+      ),
+      test_golem = c(
+        "test-golem_utils_server.R", # not really used
+        "test-golem_utils_ui.R"      # not really used
       )
     )
     ########################################## # 
@@ -292,6 +294,7 @@ test_interactively = function(ask = TRUE,
     ) {
       xtable <- list()
       # tfile <- tempfile("junk", fileext = "txt")
+      timing = system.time({
       for (i in 1:length(fnames)) {
         cat(".")
         suppressWarnings(suppressMessages({
@@ -317,6 +320,8 @@ test_interactively = function(ask = TRUE,
         x$test <- substr(x$test, 1, 50) # some are long
         xtable[[i]] <- data.table::data.table(x)
       }
+      })
+      print(timing)
       cat("\n")
       xtable <- data.table::rbindlist(xtable)
       print(colSums(xtable[, .(tests, passed, failed, err,
@@ -337,9 +342,8 @@ test_interactively = function(ask = TRUE,
         i <- i + 1
         fnames = unlist(testlist[[tgroupname]])
         cat("", tgroupname, "group has", length(fnames), "test files ")
-        # print(data.frame(files = testlist[[tgroupname]]))
-        xtable[[i]] <- data.table::data.table(testgroup = tgroupname, 
-                                              test1group(testlist[[tgroupname]], ...) )
+          xtable[[i]] <- data.table::data.table(testgroup = tgroupname, 
+                                                test1group(testlist[[tgroupname]], ...) )
       }
       xtable <- data.table::rbindlist(xtable)
       return(xtable)
@@ -449,21 +453,12 @@ test_interactively = function(ask = TRUE,
   ############ # 
   
   cat("Started at", as.character(Sys.time()), '\n')
-  cat("Running all tests may take >20 minutes\n\n")
+  cat("Running all tests may take >40 minutes\n\n")
   # start log file ####
   
   junk = loggable(file = logfilename, x = {
     cat(logfilename_only, '\n ---------------------------------------------------------------- \n\n')
     cat("Started at", as.character(Sys.time()), '\n')
-    # useloadall = TRUE,
-    # 
-    # y_basic = FALSE, y_latlon=TRUE, y_shp=TRUE, y_fips = TRUE,
-    # y_runsome = FALSE, # if T, need to also create partial_testlist
-    # y_runall = TRUE,
-    # 
-    # y_seeresults = TRUE,
-    # y_save = TRUE,
-    # mydir = NULL
     
     if (is.null(tname)) {tnameprint = NA} else {
       tnameprint = paste0(tname, collapse = ',')
