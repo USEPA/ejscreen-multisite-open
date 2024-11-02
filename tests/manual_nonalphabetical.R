@@ -38,7 +38,7 @@ test_interactively = function(ask = TRUE,
                               tname = NULL, 
                               # c("test_fips", "test_naics", "test_frs", "test_latlon", "test_maps", 
                               # "test_shape", "test_getblocks", "test_fixcolnames", "test_doag", 
-                              # "test_ejamit", "test_ejscreenapi", "test_mod", "test_app")
+                              # "test_ejamit", "test_ejscreenapi", "test_mod", "test_app", "test_test")
                               
                               y_runall = TRUE,
                               
@@ -240,9 +240,9 @@ test_interactively = function(ask = TRUE,
         "test-FIPS-shiny-functionality.R", "test-latlon-shiny-functionality.R", "test-NAICS-shiny-functionality.R", "test-shapefile-shiny-functionality.R"
       ),
       test_test = c(
-        "test-test.R",  #   fast way to check this script via  biglist <- test_interactively(ask = FALSE, y_runsome = T, tname = 'test')
-        "test-golem_utils_server.R", # not really used 
-        "test-golem_utils_ui.R"      # not really used        
+        "test-test.R" #,  #   fast way to check this script via  biglist <- test_interactively(ask = FALSE, y_runsome = T, tname = 'test')
+        # "test-golem_utils_server.R", # not really used 
+        # "test-golem_utils_ui.R"      # not really used        
       )
     )
     ########################################## # 
