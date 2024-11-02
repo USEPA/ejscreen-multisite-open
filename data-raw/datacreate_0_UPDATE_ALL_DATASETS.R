@@ -598,9 +598,10 @@ system.time({
 
 # rstudioapi::navigateToFile("./tests/manual_nonalphabetical.R")
 # system.time({
-#   #    ABOUT 7 MINUTES TO RUN all TESTS (if large datasets had not yet been loaded)
+#   #    ABOUT 10-20 MINUTES TO RUN all TESTS (if large datasets had not yet been loaded)
    source("./tests/manual_nonalphabetical.R") # answering Yes to running ALL tests
-# test_interactively()  # but should do AFTER updating test data 
+ biglist <- test_interactively(ask = askquestions)
+## but should do AFTER updating test data 
 
 # })
 
