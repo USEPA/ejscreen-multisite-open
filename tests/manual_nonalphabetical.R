@@ -236,10 +236,13 @@ test_interactively = function(ask = TRUE,
         "test-mod_view_results.R"    
       ),
       test_app = c(
-        "test-golem_utils_server.R", # not really used  
-        "test-golem_utils_ui.R",     # not really used
         "test-ui_and_server.R",
         "test-FIPS-shiny-functionality.R", "test-latlon-shiny-functionality.R", "test-NAICS-shiny-functionality.R", "test-shapefile-shiny-functionality.R"
+      ),
+      test_test = c(
+        "test-test.R",  #   fast way to check this script via  biglist <- test_interactively(ask = FALSE, y_runsome = T, tname = 'test')
+        "test-golem_utils_server.R", # not really used 
+        "test-golem_utils_ui.R"      # not really used        
       )
     )
     ########################################## # 
@@ -347,17 +350,17 @@ test_interactively = function(ask = TRUE,
   
   # >>Ask what to do<< ####
   
-  # useloadall = TRUE,
   # 
-  # y_basic = FALSE, y_latlon=TRUE, y_shp=TRUE, y_fips = TRUE,
-  # y_runsome = FALSE, # if T, need to also create partial_testlist
-  # y_runall = TRUE,
   # 
-  # y_seeresults = TRUE,
-  # y_save = TRUE,
-  # mydir = NULL
+  #  
+  #  
+  # 
+  # 
+  #  
   
   # if (missing('tname')) {tname <- NULL} # for log file to show
+  
+  if (y_runsome) {y_runall =  FALSE} # in case you want to set y_runsome = T and not have to also specify y_runall = F
   
   if (interactive() & ask) {
     
@@ -393,10 +396,10 @@ test_interactively = function(ask = TRUE,
       y_save = askYesNo("Save results of unit testing (and log file of printed summaries)?")}
     if (is.na(y_save)) {stop("cancelled")}
     if (y_save) {
-      if (missing(y_tempdir)) {
+      if (missing(y_tempdir) & missing(mydir)) {
         y_tempdir = askYesNo("OK to save in a temporary folder you can see later? (say No if you want to specify a folder)")}
       if (is.na(y_tempdir)) {stop("cancelled")}
-      if (y_tempdir) {
+      if (y_tempdir & missing(mydir)) {
         mydir <- tempdir()
       } else {
         if (missing(mydir)) {
@@ -431,7 +434,7 @@ test_interactively = function(ask = TRUE,
   if (y_runall == FALSE && y_runsome == FALSE) {
     stop('no tests run')
   } else {
-    if (interactive() & (y_runall | ("test_shape" %in% names(testlist)))) {
+    if (interactive() & ask & (y_runall | ("test_shape" %in% names(testlist)))) {
       # ***  note if interactive it normally tries to prompt for shapefile folder in some cases  
       if (missing(noquestions)) {
         if (askYesNo("run tests where you have to interactively specify folders for shapefiles?")) {
@@ -444,10 +447,14 @@ test_interactively = function(ask = TRUE,
       }}
   }
   ############ # 
+  
+  cat("Started at", as.character(Sys.time()), '\n')
+  cat("Running all tests may take >20 minutes\n\n")
   # start log file ####
-  junk = loggable({
+  
+  junk = loggable(file = logfilename, x = {
     cat(logfilename_only, '\n ---------------------------------------------------------------- \n\n')
-    print(Sys.time())
+    cat("Started at", as.character(Sys.time()), '\n')
     # useloadall = TRUE,
     # 
     # y_basic = FALSE, y_latlon=TRUE, y_shp=TRUE, y_fips = TRUE,
@@ -510,7 +517,7 @@ test_interactively = function(ask = TRUE,
     
     x = testbygroup(testlist = partial_testlist)
     
-    junk = loggable({
+    junk = loggable(file = logfilename, x = {
       cat("\n\n                                         RESULTS THAT FAILED/ WARNED/ CANT RUN     \n\n")
       if (any(x$flag + x$error_cant_test > 0)) {
         print(x[x$flag + x$error_cant_test > 0,])
@@ -528,18 +535,18 @@ test_interactively = function(ask = TRUE,
   # y_runall = askYesNo("RUN ALL TESTS NOW?")
   if (is.na(y_runall)) {stop("cancelled")}
   if (y_runall) {
-    ## takes almost 5 minutes 
-    consoleclear()
+    
+    # consoleclear()
     
     z <- system.time({
       testall <- testbygroup(testlist = testlist)
     })
-    junk = loggable({
+    junk = loggable(file = logfilename, x = {
       print(z)
     })
     
-    #   user  system elapsed    5 minutes
-    # 217.80   18.68  395.68 
+    #
+    # 
     ########################### #  ########################################## #
     x <- testall
     ## save results of testing ####
@@ -550,7 +557,7 @@ test_interactively = function(ask = TRUE,
       fname <- paste0("results_of_unit_testing_", as.character(Sys.Date()), ".rda")
       fname = (  file.path(mydir, fname) )
       save(testall, file = fname)
-      junk = loggable({
+      junk = loggable(file = logfilename, x = {
         # cat("TEST RESULTS AS OF "); cat(as.character(Sys.Date()))
         # cat("\n\n")
         # print(cbind(`PERCENT OF ALL TESTS` = round(100 * colSums(testall[,4:11]) / 1125, 1)))
@@ -569,7 +576,7 @@ test_interactively = function(ask = TRUE,
   if (y_seeresults) {
     consoleclear()
     ########################### #  ########################### #
-    junk <- loggable({
+    junk <- loggable(file = logfilename, x = {
       cat("TEST RESULTS AS OF "); cat(as.character(Sys.Date()))
       
       # HOW MANY TOTAL PASS/FAIL?
@@ -620,7 +627,7 @@ test_interactively = function(ask = TRUE,
       cat("KEY FILES")
       cat("\n\n")
       print(byfile)
-      cat("TEST RESULTS AS OF "); cat(as.character(Sys.Date()))  
+      # cat("\nTEST RESULTS AS OF "); cat(as.character(Sys.Date()))  
       ########################### #
       
       # WHICH TESTS? 
@@ -646,6 +653,22 @@ test_interactively = function(ask = TRUE,
   } # end of big if - viewing results
   ########################### #  ########################################## #
   if (!exists("testall")) {testall <- NA}
+  
+  params = list(ask =  ask,
+                noquestions  =  noquestions,
+                useloadall   =  useloadall,
+                y_basic      =  y_basic,
+                y_latlon     =  y_latlon,
+                y_shp        =  y_shp,
+                y_fips       =  y_fips,
+                y_runsome    =  y_runsome,  
+                tname        =  paste0(tname, collapse = ","),
+                y_runall     =  y_runall,
+                y_seeresults =  y_seeresults,  
+                y_save       =  y_save,  
+                mydir        =  mydir 
+  )
+  
   biglist =     list(
     passcount = passcount,
     passpercent = passpercent,
@@ -654,7 +677,7 @@ test_interactively = function(ask = TRUE,
     byfile = byfile,
     testall = testall, 
     mydir = mydir,
-    params = NA  
+    params = params  
   )
   ## save Summaries of results of testing ####
   if (y_save) {
@@ -665,9 +688,18 @@ test_interactively = function(ask = TRUE,
       '\n saved ', fname, ' \n\n'
     )
   }
+  loggable(file = logfilename, x = {cat("Finished at", as.character(Sys.time()), '\n')})
+  
   if (interactive()) {
-    browseURL(x$mydir)
+    browseURL(mydir) # open folder in file explorer / finder
+    if (rstudioapi::isAvailable()) {
+      # view the file
+      rstudioapi::navigateToFile(logfilename) 
+    }
   }
+  
+  cat("Finished at", as.character(Sys.time()), '\n')
+  if (interactive()) {beepr::beep(10)} # utils::alarm() may not work 
   invisible(
     biglist
   )
@@ -715,18 +747,20 @@ loggable <- function(x, file = 'will be created using timestamp if not provided 
     }
   }
   
-  capture.output(x, file = file, append = append, split = split) 
+  capture.output(x, file = file, append = append, split = split) # this is supposed to print to console and to log file, but...
+  
   cat('\n  Adding to ', file, ' log of results of unit testing.\n\n')
+  
   # use file = logfilename  or file = NULL  to override whatever the y_save value was when func was defined
   # file = NULL  will show only in console and not log it
   # split=T  will show output in console, and save to file simultaneously unless file=NULL
   
   ### how to use it    ## example 
   # ## y_save = F will prevent logging unless you also specify a file
-  # junk = loggable({
+  # junk = loggable(file = logfilename, x = {
   #   })
   
-  # junk = loggable({ 
+  # junk = loggable(file = logfilename, x = { 
   #   # comments do not get logged
   #   #  x  or  1 + 1  is not logged without print() or cat() ?
   #   print(cbind(a=1:3,b=2:4))
@@ -741,4 +775,4 @@ loggable <- function(x, file = 'will be created using timestamp if not provided 
 }
 ################################### # 
 
-# x = test_interactively()
+# biglist <- test_interactively(ask = FALSE, mydir = "~/../Downloads/unit testing")
