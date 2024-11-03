@@ -248,9 +248,13 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
   ################################################### #
   # MAP INPUT POINTS BEFORE BUFFERING ####
   if (see_map) {
+    if (!missing(shapefile)) {
+      print(mapfast(shapefile, column_names = 'all'))
+    } else {
     print(mapfast(pts, column_names = 'all'))
+    }
     if (interactiveprompt) {
-      junk <- readline('Press any key to go on after viewing this map of input points')
+      junk <- readline('Press any key to go on after viewing this map of input places')
     }
     # mapfast(testoutput_ejscreenapi_plus_5) is ok, but ejscreenit(pts) fails here ***
   }
@@ -283,7 +287,9 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
   if (0 == 1) {
     ## ejscreenapi_plus() combines these steps: ####
     ## use API to get results for each site ####
-    out2 <- ejscreenapi(lon = pts$lon, lat = pts$lat, radius = radius, drop_redundant_indicators = TRUE,
+    out2 <- ejscreenapi(lon = pts$lon, lat = pts$lat, radius = radius, 
+                        shapefile = shapefile, 
+                        drop_redundant_indicators = TRUE,
                         getstatefromplacename = TRUE)    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  
     ## add weblinks #### 
     out2 <- urls_clusters_and_sort_cols(out2)

@@ -209,6 +209,7 @@ unlinkify = function(x) {
 #' @param areatype passed as areatype= in API, inferred if not provided but areaid is provided
 #' @param areaid fips codes if used,  passed as areaid=  in API, can be FIPS for blockgroups, tracts, counties.
 #' @param namestr The character string text to show on the report as the name of the place
+#' @param shapefile not implemented
 #' @param wkid default is 4326 -WGS84 - World Geodetic System 1984, used in GPS - see (https://epsg.io/4326)
 #' @param unit default is 9035 which means miles; for kilometers use 9036
 #' @param f can be "report" or "pjson" or "json"
@@ -220,7 +221,9 @@ unlinkify = function(x) {
 #' @export
 #'
 url_ejscreen_report <- function(lat='', lon='', radius='', as_html=FALSE, linktext, mobile=FALSE,
-                                areatype="", areaid = "", namestr = "", wkid = 4326, unit = 9035, f = "report",
+                                areatype="", areaid = "", namestr = "", 
+                                shapefile = NULL,  # would require POST not just a simple url-encoded GET API call?
+                                wkid = 4326, unit = 9035, f = "report",
                                 interactiveprompt = FALSE) {
   
   if (!any(areaid == "") && !any(is.null(areaid))) {
@@ -349,17 +352,20 @@ url_ejscreen_acs_report <- function(lon, lat, radius, as_html=FALSE, linktext) {
 #'   works for state, county, or city FIPS code converted to name.
 #'   Also wherestr can be street address or zipcode.
 #'   Not sure that part of the EJScreen URL-encoded map request is documented.
+#' @param shapefile not implemented
 #' @return URL(s)
 #' @seealso  [url_ejscreen_report()]  [url_ejscreen_acs_report()]   [url_ejscreenmap()]
 #'   [url_echo_facility_webpage()] [url_frs_report()]  [url_enviromapper()]  [url_envirofacts_data()]
 #'   
 #' @export
 #'
-url_ejscreenmap <- function(lon, lat, as_html=FALSE, linktext, wherestr = "") {
+url_ejscreenmap <- function(lon, lat, as_html=FALSE, linktext, 
+                            wherestr = "", 
+                            shapefile = NULL) {
   
   # https://ejscreen.epa.gov/mapper/index.html?wherestr=30.450000,-91.090000
   baseurl <- 'https://ejscreen.epa.gov/mapper/index.html?wherestr='
-  if (((is.null(lat) & is.null(lon)) | (missing(lat) & missing(lon))) & !missing(wherestr)) {
+  if (!missing(wherestr) && any(missing(lat) & missing(lon)) || ((is.null(lat) & is.null(lon)) ) ) {
     where <- wherestr
   }  else {
     where <- paste( lat,  lon, sep = ',')

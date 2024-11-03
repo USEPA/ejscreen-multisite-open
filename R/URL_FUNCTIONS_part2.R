@@ -16,18 +16,21 @@
 #' 
 #' @param lat vector of latitudes
 #' @param lon vector of longitudes
+#' 
 #' @param radius vector of values for radius in miles
-#' @param fips vector of FIPS codes if relevant, to use instead of lat lon,
-#'   Passed to [url_ejscreen_report()] as areaid
+#' 
 #' @param regid optional vector of FRS registry IDs if available to use to create links
 #'   to detailed ECHO facility reports
 #'   
+#' @param fips vector of FIPS codes if relevant, to use instead of lat lon,
+#'   Passed to [url_ejscreen_report()] as areaid
 #' @param wherestr optional because inferred from fips if provided.
 #'   Passed to [url_ejscreenmap()] and can be name of city, county, state like
 #'   from fips2name(201090), or "new rochelle, ny" or "AK"
 #'   or even a zip code, but NOT a fips code!
-#'   
 #' @param namestr passed to [url_ejscreen_report()]
+#' 
+#' @param shapefile not implemented
 #' 
 #' @param as_html logical, optional.
 #'   passed to [url_ejscreen_report()] and [url_ejscreenmap()]
@@ -44,7 +47,10 @@
 #' @export
 #' @keywords internal
 #'
-url_4table <- function(lat, lon, radius=NULL, fips, regid = NULL, as_html = TRUE, wherestr = "", namestr = NULL, ...) {
+url_4table <- function(lat, lon, radius=NULL, regid = NULL, 
+                       fips, wherestr = "", namestr = NULL, 
+                       shapefile = NULL,
+                       as_html = TRUE, ...) {
   
   # add error checking***
   
@@ -76,8 +82,13 @@ url_4table <- function(lat, lon, radius=NULL, fips, regid = NULL, as_html = TRUE
   )
   
   results_bysite <- data.table(
-    `EJScreen Report` = url_ejscreen_report(lat = lat, lon = lon, radius = radius, as_html = as_html, areaid = fips, namestr = namestr, interactiveprompt = FALSE, ...), # linktext = 
-    `EJScreen Map`    = url_ejscreenmap(    lat = lat, lon = lon,                  as_html = as_html, wherestr = wherestr),  # linktext =   would need to be different than for report
+    `EJScreen Report` = url_ejscreen_report(lat = lat, lon = lon, radius = radius, as_html = as_html, 
+                                            areaid = fips, namestr = namestr, 
+                                            shapefile = shapefile, interactiveprompt = FALSE, ...), # linktext = 
+    
+    `EJScreen Map`    = url_ejscreenmap(    lat = lat, lon = lon,                  as_html = as_html, 
+                                            wherestr = wherestr,              
+                                            shapefile = shapefile),  # linktext =   would need to be different than for report
     `ECHO report` = echolink
   )
   

@@ -94,6 +94,7 @@
 ejscreenRESTbroker <- function(lon=NULL, lat=NULL, radius = 3, 
                                fips=NULL,
                                namestr='',
+                               # shapefile = shapefile, # would need POST not GET
                                url=c('https://ejscreen.epa.gov/mapper/ejscreenRESTbroker1.aspx?namestr=', 'https://ejscreen.epa.gov/mapper/ejscreenRESTbroker.aspx?namestr=')[1],
                                wkid=4326, 
                                unit=9035, f='pjson', ipurl='ejscreen.epa.gov',
@@ -114,8 +115,8 @@ ejscreenRESTbroker <- function(lon=NULL, lat=NULL, radius = 3,
     if (length(fips) != 1) {stop('fips must be just one number, as numeric or character')}
     fips <- fips_lead_zero(fips)
     areatype <- fipstype(fips)
-    if (!(fips %in% c('blockgroup', 'tract', 'city', 'county', 'state'))) {
-      stop('fips must be 5, 11, or 12 digits, i.e., fips for state, county, city/cdp/town/etc., tract, or blockgroup')
+    if (!(areatype %in% c('blockgroup', 'tract', 'city', 'county'))) {
+      stop('fips must be   5, 7, 11, or 12 digits, i.e., fips for county, city/cdp/town/etc., tract, or blockgroup')
     }
     if (!is.null(lat) | !is.null(lon)) {warning("ignoring lat and lon because fips was specified")}
     if (!missing(radius)) {warning("ignoring radius because fips was specified")}
