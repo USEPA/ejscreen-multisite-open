@@ -58,8 +58,16 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-programid">programid<a class="anchor" aria-label="anchor" href="#arg-programid"></a></dt>
-<dd><p>like "XJW000012435"</p></dd>
+<dl><dt id="arg-programname">programname<a class="anchor" aria-label="anchor" href="#arg-programname"></a></dt>
+<dd><p>name of EPA program that the programid is from:
+"RCRAINFO" is the programname and "XJW000000174" is the programid
+if the full record was  RCRAINFO:XJW000000174</p></dd>
+
+
+<dt id="arg-programid">programid<a class="anchor" aria-label="anchor" href="#arg-programid"></a></dt>
+<dd><p>like "XJW000000174"
+"RCRAINFO" is the programname and "XJW000000174" is the programid
+if the full record was  RCRAINFO:XJW000000174</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -72,6 +80,18 @@
 assigned by an information management system that represents a
 facility site, waste site, operable unit, or other feature tracked by that
 Environmental Information System.</p>
+<p>see <a href="epa_programs.html">epa_programs</a> for a list of programs and their acronyms and a count
+of FRS facilities under each.
+Also see a simple lilst of names like this:
+as.vector(epa_programs)
+or
+sort(unique(frs_by_programid$program))</p>
+<p>There are roughly 3.5 million records in <a href="frs_by_programid.html">frs_by_programid</a> but only
+about 2.7 million unique pgm_sys_id values because the same number
+may be used under different program types, like RCRAINFO AND EGRID.</p>
+<p>These are two distinct facilities both using the number 1:</p>
+<p>latlon_from_programid('EGRID', 1)
+latlon_from_programid('ICIS', 1)</p>
 <p>Also note the FRS API:
 <a href="https://www.epa.gov/frs/facility-registry-service-frs-api" class="external-link">https://www.epa.gov/frs/facility-registry-service-frs-api</a>
 <a href="https://www.epa.gov/frs/frs-rest-services" class="external-link">https://www.epa.gov/frs/frs-rest-services</a></p>
@@ -79,13 +99,16 @@ Environmental Information System.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span> <span class="fu">latlon_from_programid</span><span class="op">(</span><span class="va">testids_program_sys_id</span><span class="op">)</span></span>
-<span> <span class="fu">latlon_from_programid</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"XJW000012435"</span>, <span class="st">"00768SRTRSROAD1"</span><span class="op">)</span><span class="op">)</span></span>
-<span> <span class="va">pids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"7-0540-00003"</span>, <span class="st">"354362"</span>, <span class="st">"1513529"</span>, <span class="st">"485659"</span>, <span class="st">"LAG750956"</span>, </span>
-<span>   <span class="st">"CAC002995519"</span>, <span class="st">"3601252181"</span>, <span class="st">"3601439158"</span><span class="op">)</span></span>
-<span> <span class="fu"><a href="latlon_from_regid.html">latlon_from_regid</a></span><span class="op">(</span><span class="fu">latlon_from_programid</span><span class="op">(</span><span class="va">pids</span><span class="op">)</span><span class="op">[</span>,<span class="va">REGISTRY_ID</span><span class="op">]</span><span class="op">)</span></span>
-<span> <span class="fu">latlon_from_programid</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"XJW000012435"</span>, <span class="st">"00768SRTRSROAD1"</span>, <span class="st">"asdfsdf"</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>,<span class="fu">.</span><span class="op">(</span><span class="va">lat</span>,<span class="va">lon</span><span class="op">)</span><span class="op">]</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span> <span class="va">ids</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"00603DSCFPRD459"</span>, <span class="st">"00603MCRNTRD11K"</span>, <span class="st">"00605VNMRBMONTA"</span> <span class="op">)</span></span>
+<span> <span class="fu">latlon_from_programid</span><span class="op">(</span><span class="st">"TRIS"</span>, <span class="va">ids</span><span class="op">)</span> </span>
+<span> </span>
+<span> <span class="fu">latlon_from_programid</span><span class="op">(</span><span class="st">'EGRID'</span>, <span class="fl">1</span><span class="op">)</span> </span>
+<span> <span class="fu">latlon_from_programid</span><span class="op">(</span><span class="st">'ICIS'</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span> </span>
+<span> <span class="co"># ambiguous to only use the number! 354362 is used by two programs here:</span></span>
+<span> <span class="va">frs_by_programid</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">testids_program_sys_id</span>, <span class="va">frs_by_programid</span><span class="op">$</span><span class="va">pgm_sys_id</span><span class="op">)</span>, <span class="op">]</span></span>
+<span> <span class="va">frs_by_programid</span><span class="op">[</span><span class="va">frs_by_programid</span><span class="op">$</span><span class="va">pgm_sys_id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">testids_program_sys_id</span>, <span class="op">]</span></span>
+<span> </span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

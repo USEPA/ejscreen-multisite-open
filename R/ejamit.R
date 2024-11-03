@@ -82,6 +82,8 @@
 #'
 #'   * **count_of_blocks_near_multiple_sites**  additional detail
 #'
+#'   * **sitetype** indicates if analysis used latlon, fips, or shp
+#'   
 #' @examples
 #' 
 #' # See examples in vignettes/ articles at https://usepa.github.io/EJAM/index.html
@@ -532,6 +534,11 @@ ejamit <- function(sitepoints,
   # * table_tall_from_overall() ####
   
   out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
+  
+  ###################################### #
+  ## report the sitetype ####
+  
+  out$sitetype <- sitetype
   
   ###################################### #
   if (interactive() & !silentinteractive & !in_shiny) {

@@ -25,18 +25,18 @@ resaving_testpoints_overlap3 <- FALSE # DONE
 creatingnew_testpoints_data   <- FALSE  #done. TO REPLACE THE ACTUAL TEST POINTS (can be false and still do other steps below)
 resaving_testpoints_rda       <- FALSE
 resaving_testpoints_excel     <- FALSE
-resaving_testpoints_helpdocs  <- TRUE
+resaving_testpoints_helpdocs  <-   FALSE
 resaving_testpoints_bad       <- FALSE
 
-recreating_getblocksnearby    <- TRUE  # eg if block data changed, or if recreating_doaggregate_output = TRUE below
-resaving_getblocksnearby_rda  <- F
-resaving_getblocksnearby_helpdocs <- F
+recreating_getblocksnearby    <- FALSE  # eg if block data changed, or if recreating_doaggregate_output = TRUE below
+resaving_getblocksnearby_rda  <- FALSE
+resaving_getblocksnearby_helpdocs <- FALSE
 
-recreating_doaggregate_output <- TRUE # eg if other indicators added to outputs
+recreating_doaggregate_output <- FALSE # eg if other indicators added to outputs
 if (recreating_doaggregate_output) {recreating_getblocksnearby <- TRUE} # needed
-resaving_doaggregate_rda      <- TRUE
-resaving_doaggregate_helpdocs <- TRUE # just in case
-resaving_doaggregate_excel    <- TRUE # 
+resaving_doaggregate_rda      <- FALSE
+resaving_doaggregate_helpdocs <- FALSE # just in case
+resaving_doaggregate_excel    <- FALSE # 
 
 recreating_ejamit_output      <- TRUE # eg if format or list of indicators changes
 resaving_ejamit_rda           <- TRUE
