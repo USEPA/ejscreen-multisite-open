@@ -10,7 +10,7 @@
 #' @export
 #'
 mapfastej <- function(mydf, radius = 3, column_names = 'ej', labels = column_names, browse = FALSE, color = "#03F") {
-
+  
   mapfast(mydf = mydf, radius = radius, column_names = column_names, labels = labels, browse = browse, color = color)
 }
 ############################################################################ #
@@ -88,15 +88,42 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
   }
   ######################################################### #
   
-  xok = FALSE
+  # sitetype ####
+  ##             could also get from ejamit()$sitetype if that were passed here
   
+  if ("sf" %in% class(mydf)) {
+    sitetype <- 'shp'
+  } else {
+    if (("lat" %in% names(mydf) &&  'lon' %in% names(mydf)) &&
+        (!all(is.na(renamed$lat)) && !all(is.na(renamed$lon)))) {
+      sitetype <- 'latlon'
+    } else {
+      ## for now, fips is assumed to be stored as mydf$ejam_uniq_id and cannot be provided here as a separate column or parameter
+      # if ('fips' %in% names(mydf)) {
+      #   # mydf$fips <- mydf$fips
+      # } else {
+      #  mydf$fips <- mydf$ejam_uniq_id 
+      # }
+      if ('ejam_uniq_id' %in% names(mydf) && 
+          all(fipstype(mydf$ejam_uniq_id)) %in% c('state', 'county', 'city', 'tract', 'blockgroup')) {
+        sitetype <- 'fips'
+      } else {
+        # FAILED TO IDENTIFY A VALID TYPE
+        xok <- FALSE
+        sitetype <- 'none'
+      }
+    }
+  }
   ######################################################### #
   
   # *SHP ####
   ## map polygons 
   # ignore latlon and FIPS if shapefile was provided
   
-  if ("sf" %in% class(mydf)) {
+  if (sitetype == 'shp') {
+    
+    x <- map_shapes_leaflet(mydf, popup = mypop)
+    xok = TRUE
     
     # cat('For analysis and map of shapefile data, you can try something like this:
     #   
@@ -119,17 +146,13 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     # } else {
     #   pop <- popup_from_any(sf::st_drop_geometry(mydf))
     # }
-    
-    x <- map_shapes_leaflet(mydf, popup = mypop)
-    xok = TRUE
   }
   
   ######################################################### #
   
   # *LATLON not shp (ignore FIPS) ####
   
-  if (!("sf" %in% class(mydf)) &
-      !all(is.na(renamed$lat)) && !all(is.na(renamed$lon))) {
+  if (sitetype == 'latlon') {
     
     radius.meters <- radius * meters_per_mile # data loaded by pkg
     # units are meters for addCircles, and pixels for addCircleMarkers
@@ -146,54 +169,96 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
   
   # *FIPS not shp not latlon ####
   
-  if (!("sf" %in% class(mydf)) &
-      all(is.na(renamed$lat)) || all(is.na(renamed$lon))) {
+  if (sitetype == 'fips') {
     
-    # _County  ####
+    ftype <- fipstype(mydf$ejam_uniq_id)
+    
+    ######################### #
+    # _States  ####
     # get boundaries  
     
-    if ("ejam_uniq_id" %in% names(mydf) &&
-        all(fipstype(mydf$ejam_uniq_id) %in% 'county')) {
-      x <- mapfastej_counties(mydf) # handles the popups itself, ignores params above
+    if (all(ftype %in% 'state')) {
+      fips <- mydf$ejam_uniq_id
+      shp <- shapes_from_fips(fips)
+      x <- map_shapes_leaflet(shp, popup = mypop)
       xok = TRUE
-      # now x is a map
     }
+    ######################### #
+    # _Counties  ####
+    # get boundaries  
     
-    # _City/CDP  #### 
+    # also see  shapes_counties_from_countyfips()
+    
+    if (all(ftype %in% 'county')) {
+      ## maybe could use:
+      # fips <- mydf$ejam_uniq_id
+      # shp <- shapes_from_fips(fips)
+      # x <- map_shapes_leaflet(shp, popup = mypop)
+      # xok = TRUE
+      
+      x <- mapfastej_counties(mydf) # handles the popups itself, ignores params above, assumes mydf$ejam_uniq_id is fips
+      xok <- TRUE
+    }
+    ######################### #
+    # _City/CDPs  #### 
     # get boundaries 
     
-    if ("ejam_uniq_id" %in% names(mydf) &&
-        all(fipstype(mydf$ejam_uniq_id) %in% 'place')) {
-      mydf <- shapes_places_from_placefips(mydf$ejam_uniq_id)
-      # now mydf is a shapefile
-      x <- map_shapes_leaflet(mydf, popup = mypop)
+    if (all(ftype %in% 'city')) {
+      fips <- mydf$ejam_uniq_id
+      # shp <- shapes_places_from_placefips(fips)
+      shp <- shapes_from_fips(fips)
+      x <- map_shapes_leaflet(shp, popup = mypop)
       xok = TRUE
-      # now x is a map
     }
+    ######################### #
+    # _Tracts ####
+    if (all(ftype %in% 'blockgroup')) {
+      fips <- mydf$ejam_uniq_id
+      shp <- shapes_from_fips(fips) #    SLOW if many, like > 20 
+      x <- map_shapes_leaflet(shp, popup = mypop)
+      xok <- TRUE
+    }
+    ######################### #
+    # _Blockgroups ####
     
-    # blockgroup FIPS?? 
-    if ("ejam_uniq_id" %in% names(mydf) &&
-        all(fipstype(mydf$ejam_uniq_id) %in% 'blockgroup')) {
-      # could map if 1st get bounds as in map_blockgroups_over_blocks()
-      warning('mapping blockgroup boundaries here is not implemented\n')
+    if (all(ftype %in% 'blockgroup')) {
+      fips <- mydf$ejam_uniq_id
+      # shp <- shapes_blockgroups_from_bgfips(fips) #    SLOW if many, like > 20 
+      shp <- shapes_from_fips(fips)
+      x <- map_shapes_leaflet(shp, popup = mypop)
+      xok <- TRUE
+
+      ######################### #
+      ## for adding to an existing map, was using something like this addGeoJSON() approach...
+      # 
+      # map_blockgroups = function(fips, mypop = NULL) {
+      #   #example# fips <- blockgroupstats[ST %in% 'DE', bgfips][1:3] 
+      #   shp <- shapes_blockgroups_from_bgfips(fips) #    SLOW if many, like > 20 
+      #   # mapview::mapview(shp) # easiest way, but requires mapview attached
+      #   bb <- as.vector(sf::st_bbox(shp))
+      #   mymap <- leaflet::leaflet() %>% 
+      #     leaflet::addGeoJSON(geojsonio::geojson_json(shp), color = "blue", group = "Blockgroups", data = shp) %>%
+      #     addTiles() %>% fitBounds(bb[1], bb[2], bb[3], bb[4])   %>% 
+      #      addPopups(popup = mypop) # %>%
+      #   # leaflet::addLayersControl(overlayGroups = "Blockgroups")
+      #   return(mymap)
+      # }
+      ######################### #
+      # x <- map_blockgroups(fips) %>% addPopups(popup = mypop)
+      # xok <- TRUE
     }
-    
-    # tract FIPS??
-    if ("ejam_uniq_id" %in% names(mydf) &&
-        all(fipstype(mydf$ejam_uniq_id) %in% 'tract')) {
-      # could map if 1st get bounds 
-      warning('mapping tract boundaries here is not implemented\n')
-    }
+    ######################### #
     
   }
   ######################################################## #
   
-  # ?CANT MAP?  ####
-  # if not SHP and no latlon and no usable FIPS, 
-  # geocode street addresses?  handle that outside this function.
+  # CANT MAP ####
+  #  because not SHP, no latlon, and no usable FIPS.
+  # 
+  # And for other kinds of places that are based on points like via naics,sic,mact,regid, or even street addresses,
+  #  those would already have been converted to latlon, handled outside this function.
   
   if (!xok) {
-    
     warning('no valid lat lon values to map')
     return(NA)
   }

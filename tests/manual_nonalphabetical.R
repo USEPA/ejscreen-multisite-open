@@ -194,7 +194,8 @@ test_interactively = function(ask = TRUE,
       ),
       test_shape = c(
         "test-shapefile_xyz.R",
-        "test-ejam2shapefile.R"
+        "test-ejam2shapefile.R",
+        "test-shapes_from_fips.R"
       ),
       test_getblocks = c(
         "test-radius_inferred.R",              # this is SLOW THOUGH
