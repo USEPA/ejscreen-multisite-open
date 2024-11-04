@@ -1,11 +1,12 @@
-#' quick boxplots of demographics across sites as ratios to US means
-#'
+#' boxplots of demographics across sites as ratios to US means
+#' 
 #' @description boxplots show range of scores here vs range in US overall
 #' @md
-#' @details  This graphic is just a quick interim solution that could be replaced.
-#'
-#'  May want to compare to boxplots of nationwide range of indicator values.
-#'
+#' @details  See [plot_boxplot_pctiles()] now espec. for percentiles.
+#' 
+#' This function originally was used for ejscreenit() output, and 
+#' was just a quick interim solution that could be replaced.
+#' 
 #'  To communicate whether this is skewed to the right
 #'  (more high scores than might expect) also could say that
 #'  X% OF SITES OR PEOPLE have scores in top Y% of US range, >= 100-Y percentile.
@@ -18,7 +19,7 @@
 #' @param x data.frame that is the output of ejscreen analysis, for example:
 #'   ```
 #'   x <- ejscreenit(testpoints_5)$table
-#'   x <- testoutput_ejscreenapi_plus_50
+#'   x <- testoutput_ejscreenapi_plus_5
 #'   ```
 #' @param selected_dvar_colname  default is "Demog.Index"
 #' @param selected_dvar_nicename default is "Demog.Index"
@@ -41,7 +42,10 @@
 #'
 boxplots_ratios <- function(x, selected_dvar_colname=varlist2names('names_d')[1], selected_dvar_nicename=selected_dvar_colname, towhat_nicename='US average',
                             wheretext="Near") {
-  if (is.list(x) & is.data.frame(x[[1]]) ) {x <- x$ratios_d } # for convenience, in case you said  boxplots_ratios(calc_ratios_to_avg(out))
+  
+  if (is.list(x) & "results_bysite" %in% names(x)) {x <- x$results_bysite} # for convenience, in case x was output of ejamit()
+  if (is.data.table(x)) {x <- as.data.frame(x)}
+  if (is.list(x) & is.data.frame(x[[1]]) & "ratios_d" %in% names(x)) {x <- x$ratios_d } # for convenience, in case you said  boxplots_ratios(calc_ratios_to_avg(out))
   if (!(selected_dvar_colname %in% names(x))) {
     message(paste0(selected_dvar_colname, ' not found in x - using the one with max ratio'))
 

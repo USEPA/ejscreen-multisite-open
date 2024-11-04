@@ -38,6 +38,8 @@
 #'   - bgid2fips    ( 18 MB RAM)
 #'   
 #' @param varnames character vector of the quoted names of the data objects like blockwts or quaddata
+#' @param ext like ".arrow" file extension
+#' @param fun like "arrow::read_ipc_file" or "load" to use when reading
 #' @param envir e.g., globalenv() or parent.frame()
 #' @param mybucket where in AWS, like 
 #' @param mybucketfolder where in AWS, like EJAM

@@ -4,14 +4,14 @@
 \alias{bgej}
 \title{bgej (DATA) EJScreen EJ Indexes for Census block groups}
 \description{
-bgej (DATA) EJScreen EJ Indexes for Census block groups
-}
-\details{
-For documentation on the demographic and environmental data and indicators used by
-EJScreen and EJAM, see \url{https://www.epa.gov/ejscreen/understanding-ejscreen-results}.
-
 bgej is a table of all blockgroups, with the raw scores of the EJ Indexes
 and supplemental EJ Indexes for all the environmental indicators.
+}
+\details{
+This file is not stored in the package, but is obtained via \code{\link[=dataload_from_pins]{dataload_from_pins()}}.
+
+For documentation on the demographic and environmental data and indicators used by
+EJScreen and EJAM, see \url{https://www.epa.gov/ejscreen/understanding-ejscreen-results}.
 
 See
 

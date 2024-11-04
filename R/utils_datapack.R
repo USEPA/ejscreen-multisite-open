@@ -1,5 +1,5 @@
 
-#' UTILITY - See names and size of data sets in package(s) - internal utility function
+#' UTILITY - DRAFT - See names and size of data sets in installed package(s) - internal utility function
 #' 
 #' Wrapper for data() and can get memory size of objects
 #' @details do not rely on this much - it was a quick utility. 
@@ -13,7 +13,7 @@
 #'    TRUE to just get names in each package, like 
 #'    `data(package = "EJAM")$results[, c("Package", 'Item')]`
 #' @return If simple = TRUE, data.frame with colnames Package and Item. 
-#' 
+#' @seealso [dataset_pkgdown_yaml_check()] 
 #'   If simple = FALSE, data.frame with colnames Package, Item, size, Title.Short
 #' @examples 
 #'  # see just a vector of the data object names

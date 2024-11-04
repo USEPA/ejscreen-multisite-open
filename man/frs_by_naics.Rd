@@ -7,6 +7,8 @@
 This is the format with one row per site-NAICS pair,
 so multiple rows for one site if it is in multiple NAICS.
 @details
+This file is not stored in the package, but is obtained via \code{\link[=dataload_from_pins]{dataload_from_pins()}}.
+
 The EPA also provides a \href{https://www.epa.gov/frs/frs-query#industrial}{FRS Facility Industrial Classification Search tool}
 where you can find facilities based on NAICS or SIC.
 
@@ -29,7 +31,6 @@ length(unique(frs_by_naics$REGISTRY_ID))
 \code{frs_by_naics[,uniqueN(REGISTRY_ID)]}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{   e.g., 573,411 in mid 2024
-
 
     lat       lon  REGISTRY_ID  NAICS
 }\if{html}{\out{</div>}}

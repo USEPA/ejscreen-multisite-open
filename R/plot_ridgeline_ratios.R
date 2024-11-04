@@ -34,7 +34,7 @@ plot_ridgeline_ratios_ez <- function(out, varnames = c(names_d_ratio_to_avg, nam
 #' Make ridgeline plot of ratios of demographic score to its average
 #'
 #' @param ratio.to.us.d.overall named list of a few ratios to plot (data.frame)
-#' @param names2plot_friendly names to use for plot - should be same length as named list ratio.to.us.d.overall
+#' @param shortlabels names to use for plot - should be same length as named list ratio.to.us.d.overall
 #' @examples
 #'  out <- testoutput_ejamit_1000pts_1miles
 #'  ratio.to.us.d.bysite <- out$results_bysite[ ,  c(
@@ -48,14 +48,14 @@ plot_ridgeline_ratios_ez <- function(out, varnames = c(names_d_ratio_to_avg, nam
 #'
 #' @export
 #'
-plot_ridgeline_ratios <- function(ratio.to.us.d.bysite, names2plot_friendly = NULL) {
+plot_ridgeline_ratios <- function(ratio.to.us.d.bysite, shortlabels = NULL) {
   # if (is.null(dim(ratio.to.us.d.bysite))) {
   #   # seems like only 1 variable as vector ?
   #   ratio.to.us.d.bysite <- data.frame(Indicator = ratio.to.us.d.bysite)
   # }
-  if (is.null(names2plot_friendly)) {
-    names2plot_friendly <- fixcolnames(names(ratio.to.us.d.bysite), oldtype = "r", newtype = "shortlabel")
-    supershortnames <- gsub(' \\(.*', '', gsub("People of Color","POC", names2plot_friendly))
+  if (is.null(shortlabels)) {
+    shortlabels <- fixcolnames(names(ratio.to.us.d.bysite), oldtype = "r", newtype = "shortlabel")
+    supershortnames <- gsub(' \\(.*', '', gsub("People of Color","POC", shortlabels))
     names(ratio.to.us.d.bysite) <- supershortnames
   }
 

@@ -4,6 +4,12 @@
 \name{testoutput_ejamit_1000pts_1miles}
 \alias{testoutput_ejamit_1000pts_1miles}
 \title{test output of ejamit()}
+\format{
+An object of class \code{list} of length 8.
+}
+\usage{
+testoutput_ejamit_1000pts_1miles
+}
 \description{
 test output of ejamit()
 }
@@ -13,3 +19,4 @@ This is the output of ejamit(testpoints_1000, radius = 1, include_ejindexes = TR
 \seealso{
 \code{\link[=doaggregate]{doaggregate()}} \code{\link[=ejamit]{ejamit()}} \link{testoutput_doaggregate_1000pts_1miles} and \link{testpoints_1000}
 }
+\keyword{datasets}

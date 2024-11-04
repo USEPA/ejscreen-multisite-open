@@ -16,10 +16,17 @@ test_that('lookup works correctly',{
 # add warning that lat long are not in the states (empty dataframe)
 # could turn into an error
 test_that('warns for invalid latlon',{
-  expect_warning({val <- state_from_latlon("45", "-7")})
+  expect_warning(
+    expect_warning(
+      expect_warning({val <- state_from_latlon("45", "-7")})
+    )
+  )
   expect_true(is.na(val$statename))
-
-  expect_warning({val <- state_from_latlon(45, -7)})
+  expect_warning(
+    expect_warning(
+      expect_warning({val <- state_from_latlon(45, -7)})
+    )
+  )
   expect_true(is.na(val$statename))
 
 })

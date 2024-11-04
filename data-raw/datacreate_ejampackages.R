@@ -17,3 +17,5 @@ cat('\n')
 ejampackages <- metadata_add(ejampackages)
 usethis::use_data(ejampackages, overwrite = TRUE)
 
+dataset_documenter("ejampackages", 
+                   "ejampackages (DATA) list of names of key EJAM-related R packages")

@@ -4,7 +4,34 @@
 \alias{mapfastej}
 \title{Map - points - Create leaflet html widget map of points using EJAM results with EJ stats}
 \usage{
-mapfastej(...)
+mapfastej(
+  mydf,
+  radius = 3,
+  column_names = "ej",
+  labels = column_names,
+  browse = FALSE,
+  color = "#03F"
+)
+}
+\arguments{
+\item{mydf}{data.frame or data.table with lat and lon columns or
+columns that \code{\link[=latlon_infer]{latlon_infer()}} can infer to be that}
+
+\item{radius}{in miles, converted to meters and passed to leaflet::addCircles()}
+
+\item{column_names}{If "ej" then nice popup made based on just key EJScreen
+indicators. If "all" then every column in the entire mydf table is shown
+in the popup. If a vector of colnames, only those are shown in popups.}
+
+\item{labels}{The labels used before the column_names, for map popups,
+like  label: column_name  (ignored if column_names is ej or all)}
+
+\item{browse}{optional logical, set to TRUE if you want the function to
+launch a default browser window to show the map
+and print the temp filepath and filename in the console.
+Normally the map would be shown in the default RStudio viewer pane.}
+
+\item{color}{color of circles, default is "#03F"}
 }
 \value{
 like what \code{\link[=mapfast]{mapfast()}} returns
@@ -34,7 +61,7 @@ fname = map2browser(x)
 # browseURL(dirname(fname)) # to open the temp folder
 # file.copy(fname, "./map.html") # to copy map file to working directory
 
-out <- testoutput_ejscreenapi_plus_50
+out <- testoutput_ejscreenapi_plus_5
 mapfastej(out)
 }
 }

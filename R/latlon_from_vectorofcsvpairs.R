@@ -28,39 +28,43 @@ latlon_from_vectorofcsvpairs <- function(x) {
   stopifnot(!is.null(x) && is.atomic(x) && is.vector(x) && (is.character(x) || all(is.na(x))))
   if (all(is.na(x))) {
     # if only n provided and all are NA, then return a n-row data.frame with NA values for lat and lon, just like the row returned for each NA if multiple inputs where some are ok and some are NA
-      return(
-        structure(list(lat = rep(NA_real_, length(x)), lon = rep(NA_real_, length(x))), row.names = 1:length(x), class = "data.frame")
-      )
-    }
-    if (!all(grepl(",", na.omit(x)))) {
-      stop('commas missing -- x must be a character vector where each non-NA element has a comma, separating two numbers that are lat and lon, e.g., c("30,-83","32.5,-86.377325")')}
-    if (!all(var_is_numeric_ish( unlist(strsplit(x,",")) ))) {
-      stop('non-numeric values found -- x must be a character vector where each non-NA element has a comma, separating two numbers that are lat and lon, e.g., c("30,-83","32.5,-86.377325")')}
-    
-    x <- gsub(pattern = " ", "", x)
-    x <- as.data.frame(do.call(rbind, strsplit(x, ",")))
-    if (NCOL(x) != 2) {stop("problem trying to parse lat,lon pairs - maybe more than one comma used in what should be a lat,lon pair")}
-    colnames(x) <- c("lat", "lon")
-    x <- as.data.frame(lapply(x, as.numeric))
-    
-    return(x)
-    
-    # latlon_pairs
-    ## [1] "30.977402,-83.368997"  "32.515813,-86.377325"  "42.23498,-88.30541"    "33.870013,-118.377777"
-    ## [5] "34.014929,-118.205387" "40.731099,-74.173067"  "37.81144,-121.29348"   "44.85387,-93.04713"   
-    ## [9] "41.18661,-111.94904"   "40.71239,-74.5847"    
-    # 
-    # #> latlon_from_vectorofcsvpairs(latlon_pairs) # not rounded
-    ##          lat         lon
-    ## 1  30.977402  -83.368997
-    ## 2  32.515813  -86.377325
-    # etc.
-    # #> testpoints_10[, c("lat", "lon")] # prints it rounded to 5 decimals
-    ##         lat        lon
-    ## 1  30.97740  -83.36900
-    ## 2  32.51581  -86.37732
-    # etc.
-    }
+    return(
+      structure(list(lat = rep(NA_real_, length(x)), lon = rep(NA_real_, length(x))), row.names = 1:length(x), class = "data.frame")
+    )
+  }
+  
+  # remove all spaces
+  x = gsub(" ", "", x)
+  
+  if (!all(grepl(",", na.omit(x)))) {
+    stop('commas missing -- x must be a character vector where each non-NA element has a comma, separating two numbers that are lat and lon, e.g., c("30,-83","32.5,-86.377325")')}
+  if (!all(var_is_numeric_ish( unlist(strsplit(x,",")) ))) {
+    stop('non-numeric values found -- x must be a character vector where each non-NA element has a comma, separating two numbers that are lat and lon, e.g., c("30,-83","32.5,-86.377325")')}
+  
+  x <- gsub(pattern = " ", "", x)
+  x <- as.data.frame(do.call(rbind, strsplit(x, ",")))
+  if (NCOL(x) != 2) {stop("problem trying to parse lat,lon pairs - maybe more than one comma used in what should be a lat,lon pair")}
+  colnames(x) <- c("lat", "lon")
+  x <- as.data.frame(lapply(x, as.numeric))
+  
+  return(x)
+  
+  # latlon_pairs
+  ## [1] "30.977402,-83.368997"  "32.515813,-86.377325"  "42.23498,-88.30541"    "33.870013,-118.377777"
+  ## [5] "34.014929,-118.205387" "40.731099,-74.173067"  "37.81144,-121.29348"   "44.85387,-93.04713"   
+  ## [9] "41.18661,-111.94904"   "40.71239,-74.5847"    
+  # 
+  # #> latlon_from_vectorofcsvpairs(latlon_pairs) # not rounded
+  ##          lat         lon
+  ## 1  30.977402  -83.368997
+  ## 2  32.515813  -86.377325
+  # etc.
+  # #> testpoints_10[, c("lat", "lon")] # prints it rounded to 5 decimals
+  ##         lat        lon
+  ## 1  30.97740  -83.36900
+  ## 2  32.51581  -86.37732
+  # etc.
+}
 ##################################################### #
 
 

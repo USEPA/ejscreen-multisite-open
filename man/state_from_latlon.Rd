@@ -4,14 +4,12 @@
 \alias{state_from_latlon}
 \title{Find what state is where each point is located}
 \usage{
-state_from_latlon(lat, lon, states_shapefile = EJAM::states_shapefile)
+state_from_latlon(lat, lon)
 }
 \arguments{
 \item{lat}{latitudes vector}
 
 \item{lon}{longitudes vector}
-
-\item{shapefile}{shapefile of US States, in package already}
 }
 \value{
 Returns data.frame: ST, statename, FIPS.ST, REGION, n

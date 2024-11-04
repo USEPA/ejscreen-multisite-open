@@ -20,7 +20,7 @@
 #'   
 #'   RCRAINFO (over 500k sites), NPDES, ICIS, AIR, FIS, EIS, and AIRS/AFS.
 #'   
-#' @param program like "RMP", "RCRAINFO", "TRIS", "RMP", or others.
+#' @param query like "RMP", "RCRAINFO", "TRIS", "RMP", or others.
 #' 
 #' @return data.table with lat  lon  REGISTRY_ID  program -- but not pgm_sys_id 
 #'   since there could be duplicates where same REGISTRY_ID has 2 different pgm_sys_id values 
@@ -40,7 +40,7 @@
 #'
 latlon_from_program <- function(query) {
   
-  if (missing(query)) {return(NULL)} else if (all(is.na(query)) | is.null(query)){return(NULL)}
+  if (missing(query)) {return(NULL)} else if (all(is.na(query)) | is.null(query)) {return(NULL)}
   
   if (!exists("frs_by_programid")) dataload_from_pins("frs_by_programid")
   if (!exists("frs")) dataload_from_pins("frs")

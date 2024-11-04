@@ -228,12 +228,13 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
           # print(step3)
         }
       } else {
-        # doing ejamit()
+        # doing ejamit() because test_ejamit == TRUE
         cat('\nStarted ejamit() to calculate each indicator for each site, and overall.\n')
         out <- ejamit(
           sitepoints = sitepoints[[i]],
-          radius = radius, maxradius = 31.07,
-          avoidorphans = avoidorphans, silentinteractive = TRUE 
+          radius = radius, # maxradius = 31.07,
+          avoidorphans = avoidorphans, 
+          silentinteractive = TRUE 
         )
         
         

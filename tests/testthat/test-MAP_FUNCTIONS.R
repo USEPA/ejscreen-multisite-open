@@ -23,8 +23,8 @@
 
 test_that("popup_from_ejscreen() works even if 1 row or 1 indicator", {
   expect_no_error({
-    suppressMessages({
-      x = popup_from_ejscreen(testoutput_ejscreenapi_plus_50)
+    suppressWarnings({
+      x = popup_from_ejscreen(testoutput_ejscreenapi_plus_5)
       
       x = popup_from_ejscreen(testoutput_ejamit_10pts_1miles$results_bysite[1:2,])
       
@@ -32,7 +32,7 @@ test_that("popup_from_ejscreen() works even if 1 row or 1 indicator", {
       x = popup_from_ejscreen(testoutput_ejamit_10pts_1miles$results_bysite[1,])
     })
   })
-  expect_error({
+  expect_no_error({
     suppressWarnings({
       # what if only some indicators available??
       x = popup_from_ejscreen(testoutput_ejamit_10pts_1miles$results_bysite[,  1:20])
@@ -135,7 +135,7 @@ test_that("mapfast should handle just 1 indicator!", {
 
 test_that("mapfastej() works", {
   expect_no_error({
-    suppressMessages({
+    suppressWarnings({
       mapfastej(testoutput_ejamit_10pts_1miles$results_bysite)
       mapfastej(testoutput_ejamit_10pts_1miles$results_bysite, radius = 3)
     })
@@ -146,7 +146,7 @@ test_that("mapfastej() works", {
 
 test_that("ejam2map() works", {
   expect_no_error({
-    suppressMessages({
+    suppressWarnings({
       x = ejam2map(testoutput_ejamit_10pts_1miles)
     })
   })
@@ -157,8 +157,10 @@ test_that("ejam2map() works", {
 test_that("map2browser() works", {
   testthat::skip_if_not(interactive())
   expect_no_error({
+    suppressWarnings(
     capture.output(
       x = map2browser(ejam2map(testoutput_ejamit_10pts_1miles))
+    )
     )
     # file.exists(x) # tricky to test for that
   })

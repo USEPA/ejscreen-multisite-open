@@ -4,9 +4,17 @@
 \alias{ejam2tableviewer}
 \title{See ejamit()$results_bysite in interactive table in RStudio viewer pane}
 \usage{
-ejam2tableviewer(out, fname, maxrows = 1000, launch_browser = TRUE)
+ejam2tableviewer(
+  out,
+  fname = "automatic",
+  maxrows = 1000,
+  launch_browser = TRUE
+)
 }
 \arguments{
+\item{out}{output of ejamit(), or one table like ejamit()$results_overall,
+or subset like ejamit()$results_bysite\link{7,}}
+
 \item{fname}{optional. path and filename of the html file to save the table to,
 or it uses tempdir() if not specified. Set it to NULL to prevent saving a file.}
 
@@ -14,9 +22,6 @@ or it uses tempdir() if not specified. Set it to NULL to prevent saving a file.}
 
 \item{launch_browser}{set TRUE to have it launch browser and show report.
 Ignored if not interactive() or if fname is set to NULL.}
-
-\item{x}{output of ejamit(), or one table like ejamit()$results_overall,
-or subset like ejamit()$results_bysite\link{7,}}
 }
 \value{
 a datatable object using \code{\link[DT:datatable]{DT::datatable()}}

@@ -35,4 +35,4 @@ run_app( )  # if EJAM is not installed and loaded and attached, how would a serv
 # add parameters here (if any)?
 
 # maybe it should just say run_app() so it runs whatever version was loaded here by load_all() 
-# and not rely partly on the package being an installed package. There could be a conflict with EJAMejscreenapi :: run_app() if that pkg is loaded.
+# and not rely partly on the package being an installed package.

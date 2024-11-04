@@ -6,15 +6,33 @@
 #' 
 #' @param sitepoints table with lat and lon columns
 #' @param radius in miles
-#' @param ... passed to ejscreenit() 
+#' @param fips fips code (or possibly a vector of fips codes)
+#' @param shapefile not implemented
+#' @param fillmissingcolumns optional. set to TRUE if you want the output
+#'   to have exactly all the same columns as the EJAM table would, and
+#'   fill in with NA values all the columns not provided by EJScreen API.
+#' @param nosave passed to [ejscreenit()]
+#' @param nosee passed to [ejscreenit()]
+#' @param ... other parameters passed to [ejscreenit()] 
 #' @seealso [ejscreen_vs_ejam()] [ejscreenapi2ejam_format()] which it uses.
 #' @return a data.table that looks like output of ejamit()$results_bysite
 #' 
 #' @export
 #'
-ejscreenit_for_ejam <- function(sitepoints, radius=3, fillmissingcolumns = TRUE, ...) {
+ejscreenit_for_ejam <- function(sitepoints, radius=3, 
+                                fips = NULL, shapefile = NULL,
+                                fillmissingcolumns = TRUE, 
+                                nosave = TRUE,
+                                nosee = TRUE,
+                                ...) {
 
-  out <- ejscreenit(sitepoints, radius = radius, ...) # could say nicenames=F, but even without that it gets renamed in the next step
+  if (!is.null(shapefile)) {warning('shapefile not implemented yet')}
+  
+  out <- ejscreenit(sitepoints, radius = radius, 
+                    fips = fips, shapefile = shapefile,
+                    nosave = nosave,
+                    nosee = nosee,
+                    ...) # could say nicenames=F, but even without that it gets renamed in the next step
   out <- ejscreenapi2ejam_format(out, fillmissingcolumns = fillmissingcolumns)  # , ejamcolnames = ejamcolnames
   
   return(out)

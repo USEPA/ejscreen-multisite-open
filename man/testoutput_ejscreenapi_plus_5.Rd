@@ -3,18 +3,23 @@
 \docType{data}
 \name{testoutput_ejscreenapi_plus_5}
 \alias{testoutput_ejscreenapi_plus_5}
-\title{test data examples of output from \code{\link[=ejscreenapi_plus]{ejscreenapi_plus()}} using \link{testpoints_5}, radius = 1}
+\title{test data examples of output from \code{\link[=ejscreenapi_plus]{ejscreenapi_plus()}} using testpoints_5, radius = 1}
+\format{
+An object of class \code{data.frame} with 5 rows and 355 columns.
+}
+\usage{
+testoutput_ejscreenapi_plus_5
+}
 \description{
-test data examples of output from \code{\link[=ejscreenapi_plus]{ejscreenapi_plus()}} using \link{testpoints_5}, radius = 1
+test data examples of output from \code{\link[=ejscreenapi_plus]{ejscreenapi_plus()}} using testpoints_5, radius = 1
 }
 \details{
 Just for convenience, installed with the package.
-Has header row plus 5 rows, and about 200+ columns of buffer summary results.
+Has header row, plus a row for each point, and about 300+ columns of buffer summary results.
 }
 \seealso{
 \link{testpoints_5} \link{testpoints_50} \link{testpoints_500}
 
 \link{testoutput_ejscreenit_5} \link{testoutput_ejscreenit_50} \link{testoutput_ejscreenit_500}
-
-\link{testoutput_ejscreenapi_plus_5} \link{testoutput_ejscreenapi_plus_50} \link{testoutput_ejscreenapi_plus_500}
 }
+\keyword{datasets}

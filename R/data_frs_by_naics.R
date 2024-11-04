@@ -5,6 +5,8 @@
 #'    This is the format with one row per site-NAICS pair, 
 #'    so multiple rows for one site if it is in multiple NAICS.
 #'  @details  
+#'   This file is not stored in the package, but is obtained via [dataload_from_pins()].
+#'   
 #'  The EPA also provides a [FRS Facility Industrial Classification Search tool](https://www.epa.gov/frs/frs-query#industrial)
 #'  where you can find facilities based on NAICS or SIC.
 #'  
@@ -28,7 +30,6 @@
 #'   `frs_by_naics[,uniqueN(REGISTRY_ID)]`
 #'   
 #'        e.g., 573,411 in mid 2024
-#' 
 #' 
 #'         lat       lon  REGISTRY_ID  NAICS
 #'         

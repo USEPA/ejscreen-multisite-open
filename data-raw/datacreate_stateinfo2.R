@@ -240,8 +240,63 @@ stateinfo2 <- structure(
 
 
 ###################################################################################### # 
-
+# metadata_add ####
 stateinfo2 <-  metadata_add(stateinfo2)
+# use_data ####
 usethis::use_data(stateinfo2, overwrite = TRUE)
+
+
+# documentation ####
+
+dataset_documenter("stateinfo2",
+                   
+                   title = "stateinfo2 (DATA) data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)",
+                   description = "52 rows and several variables: ST is the 2-letter abbreviation, 
+#'   statename is the State name, etc.",
+                   seealso = "[stateinfo]  for fewer columns",
+                   details = "Created for EJAM by datacreate_stateinfo2.R script
+#' 
+#' Also see [Census info](https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/release/2020-island-areas-data-products.html)
+#' 
+#'  column names:  
+#'   
+#'  c('statename', 'FIPS.ST', 'ST', 'ftpname', 'REGION', 
+#'  
+#'  'is.usa.plus.pr', 'is.usa', 'is.state', 'is.contiguous.us', 'is.island.areas', 
+#'  
+#'  'area.sqmi', 'area.sqkm', 
+#'  
+#'  'landarea.sqmi', 'landarea.sqkm', 
+#'  
+#'  'waterarea.sqmi', 'waterarea.sqkm', 
+#'  
+#'  'inland.sqmi', 'inland.sqkm', 
+#'  
+#'  'coastal.sqmi', coastal.sqkm', 
+#'  
+#'  'greatlakes.sqmi', 'greatlakes.sqkm', 
+#'  
+#'  'territorial.sqmi', 'territorial.sqkm', 
+#'  
+#'  'lat', 'lon')
+#'   
+#'   
+#'   Some datasets lack PR. (72)
+#'   
+#'   Many datasets lack these:  AS, GU, MP, VI (codes '60' '66' '69' '78') 
+#'   
+#'   Almost all datasets lack UM. (74)
+#'   
+#'         72 PR                 Puerto Rico
+#'         
+#'         66 GU                        Guam 
+#'         
+#'         69 MP    Northern Mariana Islands  
+#'         
+#'         78 VI         U.S. Virgin Islands 
+#'         
+#'         74 UM U.S. Minor Outlying Islands  
+#'     "
+)
 
 ###################################################################################### # 

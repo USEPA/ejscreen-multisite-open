@@ -26,7 +26,7 @@ datacreate_SIC <- function(
   #
   # and was last used by the Census Bureau for the 1992 Economic Census, 
   # and has been replaced by the North American Industry Classification System (NAICS code), 
-  # which was released in 1997. 
+  # which was first released in 1997. 
   # Some U.S. government departments and agencies, such as the [SEC]...
   # continued to use SIC codes through at least 2019.
   # - wikipedia.
@@ -81,6 +81,12 @@ datacreate_SIC <- function(
   attr(SIC, "date_saved_in_package") <- as.character(Sys.Date())
   usethis::use_data(SIC)
   cat("saved SIC \n")
+  
+  # Document it ####
+  dataset_documenter("SIC",
+                     "SIC (DATA) named list of all SIC code numbers and category name for each",
+                     details = "Also see [SIC info](https://siccode.com)",
+                     seealso = "[SIC] [sictable] [sic_categories()]")
   
   invisible(SIC)
 }

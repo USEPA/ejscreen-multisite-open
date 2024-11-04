@@ -2,8 +2,8 @@
 #' See which of the lists of names a single term appears in
 #' 
 #' @details EJAM::namez has a list of lists of names used for indicators or variables, such as
-#'   namez$d_friendly which is a vector of terms like
-#'     "Demog.Ind.", "Suppl Demog Index",  "% Low-inc.", etc.
+#'   namez$d_subgroups_state_pctile which is a vector of terms like
+#'     "state.pctile.pcthisp", "state.pctile.pctnhba", etc.
 #' @param x term, like part or all of a variable name, such as state.avg
 #' @param exact whether to look for exact matches
 #' @param grepmatching whether to look for matches via grep (partial match)

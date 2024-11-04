@@ -106,7 +106,7 @@ state_per_site_for_doaggregate <- function(s2b, s2st) {
   
   ################################## #
   #
-  # browser()   # still not debugged:
+  # still not debugged?
   #
   #    RARE EDGE CASE #### 
   ###      Handle any remaining sites, e.g., we did NOT even have latlon of site, so must estimate it via blockpoints

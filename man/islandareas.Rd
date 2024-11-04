@@ -18,9 +18,9 @@ and the United States Virgin Islands.
 
 See also \link{stateinfo} and \link{stateinfo2}
 
-See \url{http://www.census.gov/geo/reference/gtc/gtc_island.html}
+See \href{http://www.census.gov/geo/reference/gtc/gtc_island.html}{Census documentation}
 
-See datacreate_islandareas.R or data-raw/islandareas.xlsx
+See source package files datacreate_islandareas.R or EJAM/data-raw/islandareas.xlsx
 
 Note the US minor outlying islands are not in that list and are widely dispersed.
 They include Midway Islands, etc.

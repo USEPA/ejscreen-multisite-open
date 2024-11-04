@@ -128,7 +128,17 @@ passed to \code{\link[=doaggregate]{doaggregate()}} also. app server sets this t
 \item{...}{passed to \code{\link[=getblocksnearby]{getblocksnearby()}} etc. such as  report_progress_every_n = 0}
 }
 \value{
-A list of tables of results
+A list of tables of results:
+\itemize{
+\item \strong{results_overall}  a data.table with one row that provides the summary across all sites, the aggregated results for all unique residents.
+\item \strong{results_bysite}   results for individual sites (buffers) - a data.table of results,
+one row per ejam_uniq_id (i.e., each site analyzed), one column per indicator
+\item \strong{results_bybg_people}  results for each block group, to allow for showing the distribution of each
+indicator across everyone within each demographic group.
+\item \strong{longnames}  descriptive long names for the indicators in the above outputs
+\item \strong{count_of_blocks_near_multiple_sites}  additional detail
+\item \strong{sitetype} indicates if analysis used latlon, fips, or shp
+}
 }
 \description{
 This is the main function in EJAM that runs the analysis.

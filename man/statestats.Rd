@@ -4,14 +4,21 @@
 \name{statestats}
 \alias{statestats}
 \title{statestats (DATA) data.frame of 100 percentiles and means for each US State and PR and DC.}
+\format{
+An object of class \code{data.frame} with 5304 rows and 67 columns.
+}
+\usage{
+statestats
+}
 \description{
 data.frame of 100 percentiles and means
-for each US State and PR and DC (approx 5,300 rows)
+for each US State and PR and DC
 for all the block groups in that zone (e.g., block groups in \link{blockgroupstats})
 for a set of indicators such as percent low income.
 Each column is one indicator (or specifies the percentile).
 
 This should be similar to the lookup tables in the gdb on the FTP site of EJScreen,
 except it also has data for the demographic race/ethnicity subgroups.
-See also \link{usastats}
+See also \link{usastats} for more details.
 }
+\keyword{datasets}

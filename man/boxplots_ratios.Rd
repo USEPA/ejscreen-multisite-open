@@ -2,7 +2,7 @@
 % Please edit documentation in R/boxplots_ratios.R
 \name{boxplots_ratios}
 \alias{boxplots_ratios}
-\title{quick boxplots of demographics across sites as ratios to US means}
+\title{boxplots of demographics across sites as ratios to US means}
 \usage{
 boxplots_ratios(
   x,
@@ -16,7 +16,7 @@ boxplots_ratios(
 \item{x}{data.frame that is the output of ejscreen analysis, for example:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{x <- ejscreenit(testpoints_5)$table
-x <- testoutput_ejscreenapi_plus_50
+x <- testoutput_ejscreenapi_plus_5
 }\if{html}{\out{</div>}}}
 
 \item{selected_dvar_colname}{default is "Demog.Index"}
@@ -35,9 +35,10 @@ same format as output of \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}}
 boxplots show range of scores here vs range in US overall
 }
 \details{
-This graphic is just a quick interim solution that could be replaced.
+See \code{\link[=plot_boxplot_pctiles]{plot_boxplot_pctiles()}} now espec. for percentiles.
 
-May want to compare to boxplots of nationwide range of indicator values.
+This function originally was used for ejscreenit() output, and
+was just a quick interim solution that could be replaced.
 
 To communicate whether this is skewed to the right
 (more high scores than might expect) also could say that

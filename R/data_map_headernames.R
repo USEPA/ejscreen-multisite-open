@@ -1,34 +1,26 @@
 #' @name map_headernames
 #' @docType data
-#' @title map_headernames is an essential dataset providing a table of metadata
-#' about all the indicators and variables of interest used in EJAM and the ejscreen-related functions.
+#' @title map_headernames provides metadata about all indicators in EJAM/EJScreen
 #' 
 #' @details
-#' 
-#'   map_headernames is a n IMPORTANT TABLE THAT STORES INFORMATION ABOUT THE NAMES OF VARIABLES, 
+#'   This is an IMPORTANT TABLE that provides information about each variable (indicator), such as the following:
+#'   - names as used in geodatabase files (original data source)
+#'   - names as used in the outputs of the EJScreen API
+#'   - names as used in the R code
+#'   - names as used in short labels of graphics 
+#'   - names as used in table headers (long versions to provide full descriptions of the variables) 
+#'   - category of variable, for purposes of grouping similar ones like those in names_d or names_d_pctile
+#'   - info about rounding decimal places, significant digits, percentage format, etc.
+#'   - method for aggregating the value across blockgroups (sum, weighted mean, what is the weight, etc.)
+#'   - etc.
 #'   
-#'   INCLUDING ALTERNATIVE VERSIONS OF THE NAMES AS USED IN GEODATABASE FILES,
-#'   
-#'   IN THE CODE, SHORT VERSIONS FOR LABELS OF GRAPHICS, 
-#'   
-#'   LONG VERSIONS TO PROVIDE FULL DESCRIPTIONS OF THE VARIABLES, 
-#'   
-#'   TYPE OF VARIABLE FOR PURPOSES OF GROUPING SIMILAR ONES, ETC. ETC.
-#'   
-#'   It was created from a spreadsheet of the same name, that is in a data-raw folder.
-#'   
-#'   Several helper functions are used to query it such as [fixcolnames()] and many functions rely on it.
-#'  
-#'   You can see examples of what it contains like this, for example: 
-#'   
+#'   It was created from a spreadsheet of the same name, that is in a data-raw folder. Several helper functions are used to query it such as [fixcolnames()] and many functions rely on it. You can see examples of what it contains like this, for example: 
 #'   
 #'   `data.frame(t(map_headernames[1:2, ]))`
-#'   
+#' @seealso [varinfo()] [fixcolnames()] [varin_map_headernames()] [varlist2names()]
 #' @examples
 #'   #   See how many variables are on each list, for example: 
 #'   \dontrun{
-#'   
-#'   
 #'   data.table::setDT(copy(map_headernames))[, .(
 #'     variables = .N, 
 #'     has_apiname = sum(apiname != ""), 
@@ -36,7 +28,6 @@
 #'     has_acsname = sum(acsname != "")
 #'     ), 
 #'  keyby = c("raw_pctile_avg", "DEJ", "ratio.to", "pctile.", "avg.",  "varlist" )]
-#'   
 #'   
 #'  # Which sources provide which key variables or indicators? 
 #'  
@@ -63,4 +54,4 @@
 #'  info
 #'   }
 #'  
-NULL
+'map_headernames'

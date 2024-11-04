@@ -1,4 +1,4 @@
-
+stop("NEED TO CONFIRM WHETHER THIS SCRIPT IS STILL NEEDED AT ALL")
 library(magrittr)
 
 sic_counts_nosub <- frs_by_sic[, .N, by = 'SIC']

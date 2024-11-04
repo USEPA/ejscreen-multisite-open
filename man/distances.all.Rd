@@ -11,8 +11,7 @@ distances.all(
   return.crosstab = FALSE,
   return.rownums = TRUE,
   return.latlons = TRUE,
-  as.df = TRUE,
-  use_sf = TRUE
+  as.df = TRUE
 )
 }
 \arguments{
@@ -58,15 +57,15 @@ the \pkg{sf} package for the \link[sf:geos_measures]{sf::st_distance} and \link[
   When it was still using sp and not sf package, it was 
     (30-40 seconds for 
     100 million distances, but slow working with results so large),
- Sys.time(); x=distances.all(testpoints(1e5), testpoints(1000), 
+ Sys.time(); x=distances.all(testpoints_n(1e5), testpoints_n(1000), 
    return.crosstab=TRUE); Sys.time()  
  
        IF NO PROCESSING OTHER THAN CROSSTAB 
- Sys.time(); x=distances.all(testpoints(1e6), testpoints(100),
+ Sys.time(); x=distances.all(testpoints_n(1e6), testpoints_n(100),
     return.crosstab=TRUE); Sys.time() 
  
        (1m x 100, or 100k x 1000) 
- Sys.time(); x=distances.all(testpoints(1e6), testpoints(300), 
+ Sys.time(); x=distances.all(testpoints_n(1e6), testpoints_n(300), 
    return.crosstab=TRUE); Sys.time() 
     seconds for 300 million pairs.  
   plus_____ seconds or so for x[x>100] <- Inf  
@@ -75,11 +74,11 @@ the \pkg{sf} package for the \link[sf:geos_measures]{sf::st_distance} and \link[
         
            About xxx seconds per site for 11m blocks?  
            
-    Sys.time(); x=distances.all(testpoints(1e5), testpoints(1000), 
+    Sys.time(); x=distances.all(testpoints_n(1e5), testpoints_n(1000), 
       units='miles',return.rownums=TRUE); Sys.time() 
   xxx SECONDS IF DATA.FRAME ETC. DONE 
       TO FORMAT RESULTS AND GET ROWNUMS
-   Sys.time(); x=distances.all(testpoints(1e5), testpoints(1000), 
+   Sys.time(); x=distances.all(testpoints_n(1e5), testpoints_n(1000), 
      units='miles',return.rownums=TRUE)$d; Sys.time()
    xxx SECONDS IF DATA.FRAME ETC. DONE 
       TO FORMAT RESULTS AND GET ROWNUMS IN distances.all 

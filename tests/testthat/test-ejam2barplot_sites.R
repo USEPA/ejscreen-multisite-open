@@ -57,7 +57,7 @@ test_that("plot_barplot_sitegroups works", {
 
 ########################################################### #
 
-test_that("ejam2barplot_sites works", {
+test_that("ejam2barplot_sitegroups works", {
   
   expect_no_error( {
     ejam2barplot_sitegroups(out, names_these_ratio_to_avg[1], topn = 3)

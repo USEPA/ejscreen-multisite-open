@@ -66,17 +66,11 @@ calc_ratios_to_avg <- function(out,
   
   ## API did not provide averages for demog subgroups, so try to get from usastats, statestats, if missing from API output 
   
-  
-  # could do the same for names_health[1:2] i.e., "pctdisability"    "lowlifex"  but not "rateheartdisease" "rateasthma"       "ratecancer" 
-  warning("averages and ratios are not provided for pctdisability and lowlifex indicators")
-  
-  
   if (all(names_d_subgroups %in% dvarnames)) {
     if (zone.prefix == "") {
       if (!(all(names_d_subgroups_avg %in%  names(out)) & all(names_d_subgroups %in%  names(usastats)))) {
-        warning("Not found in out (e.g., API outputs), so looking up and adding US averages for demog subgroups, 
-                and rescaling as 0-100, which is how ejscreen tables store percentages but not how ejamit does")
-        
+        message("US averages for demog subgroups like pcthisp not found (note they are not provided by the EJScreen API)
+        so looking up and adding those, and rescaling as 0-100, which is how ejscreen tables store percentages though not how ejamit() does")
         out[, names_d_subgroups_avg] <-  100 * usastats[usastats$PCTILE == "mean", names_d_subgroups]
       }
     }
@@ -85,8 +79,8 @@ calc_ratios_to_avg <- function(out,
         # check if ST is in colnames of out
         if ("ST" %in% names(out)) {
         # if it is, use it to look up mean by ST for each of names_d_subgroups and put into out[, names_d_subgroups_state_avg]
-          warning("Not found in out (e.g., API outputs), so looking up and adding State averages for demog subgroups, 
-                  and rescaling as 0-100, which is how ejscreen tables store percentages but not how ejamit does")
+          message("State averages for demog subgroups like pcthisp not found (note they are not provided by the EJScreen API)
+        so looking up and adding those, and rescaling as 0-100, which is how ejscreen tables store percentages though not how ejamit() does")
           
           out[, names_d_subgroups_state_avg] <- 100 * statestats_means_bystates(out$ST, names_d_subgroups)
         } else {
