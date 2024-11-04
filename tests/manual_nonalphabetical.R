@@ -5,9 +5,7 @@
 # })
 ######################################################## #
 
-
 #    test_interactively()
-
 
 test_interactively = function(ask = TRUE, 
                               noquestions = TRUE, # just for shapefile folder selections
@@ -45,7 +43,7 @@ test_interactively = function(ask = TRUE,
   }
   # if only doing basic non-unit-testing then do not ask about other details and do not find groups of test files, etc. - 
   #  just skip way ahead to load/library and do those quick checks
-  
+
   ########################################## # ########################################## # 
   # Setup ####
   
@@ -213,7 +211,7 @@ test_interactively = function(ask = TRUE,
     
     ## define Functions that run tests ####
     ########################### #
-    {
+{ 
       ##     TO TEST 1 GROUP  (WITH SUCCINCT SUMMARY)
       
       test1group <- function(fnames = test_all, 
@@ -244,7 +242,7 @@ test_interactively = function(ask = TRUE,
             x$nb <- NULL
             x$flag <- x$tests - x$passed
             x$err  <- x$tests - x$passed - x$warning
-            x$error_cant_test <- ifelse(x$error, 1, 0)
+            x$error_cant_test <- ifelse(x$error, 1, 0)  ## a problem with counting this?
             x$error <- NULL
             x$skipped <- ifelse(x$skipped, 1, 0)
             x <- x[, c('file',  'test', 
@@ -367,6 +365,7 @@ test_interactively = function(ask = TRUE,
         }
       }
     }
+    
     if (missing(mydir) && (!exists('mydir') || is.null(mydir))) {
       if (y_tempdir) {
         mydir <- tempdir()
@@ -403,7 +402,8 @@ test_interactively = function(ask = TRUE,
           # noquestions  was given as a parameter
         }}
     }
-  } # finished asking what to do
+  } # end if not just basic
+    # finished asking what to do and setting up
   
   ########################### #  ########################################## #  
   # load_all() or library(EJAM) ####
@@ -483,8 +483,9 @@ test_interactively = function(ask = TRUE,
       cat("\n\n DONE WITH fips CHECKS \n\n")
     }
     
-    stop("Done with basic checks. halting.")
-  } # halts if this gets done
+    cat("Done with basic checks. Not doing any other testing. \n\n")
+    invisible(x)
+  } # halts if this gets done - just y_basic done.
   ######################################################## #
   
   
@@ -495,7 +496,7 @@ test_interactively = function(ask = TRUE,
   
   cat("Started at", as.character(Sys.time()), '\n')
   cat("Running all tests may take >40 minutes\n\n")
-  
+    
   junk = loggable(file = logfilename, x = {
     cat(logfilename_only, '\n ---------------------------------------------------------------- \n\n')
     cat("Started at", as.character(Sys.time()), '\n')
@@ -535,7 +536,7 @@ test_interactively = function(ask = TRUE,
     # consoleclear()
     
     x <- testbygroup(testlist = partial_testlist)
-    
+    testsome <- x
     junk = loggable(file = logfilename, x = {
       cat("\n\n                                         RESULTS THAT FAILED/ WARNED/ CANT RUN     \n\n")
       if (any(x$flag + x$error_cant_test > 0)) {
@@ -545,6 +546,17 @@ test_interactively = function(ask = TRUE,
       }
       cat("\n\n")
     })
+    
+    if (y_save) {
+      fname <- paste0("results_of_some_unit_testing_", as.character(Sys.Date()), ".rda")
+      fname = (  file.path(mydir, fname) )
+      save(testsome, file = fname)
+      junk = loggable(file = logfilename, x = {
+         
+        cat('\n  See', fname, ' for results of some unit testing.\n\n') 
+      })
+    } # end if - save
+    
   }
   ########################### #  ########################################## #
   
@@ -679,6 +691,7 @@ TO OPEN SOME KEY TEST FILES FOR EDITING, FOR EXAMPLE:
   } # end of big if - viewing results
   ########################### #  ########################################## #
   if (!exists("testall")) {testall <- NA}
+  if (!exists("testsome")) {testsome <- NA}
   
   params = list(ask =  ask,
                 noquestions  =  noquestions,
@@ -702,6 +715,7 @@ TO OPEN SOME KEY TEST FILES FOR EDITING, FOR EXAMPLE:
     bygroup = bygroup, 
     byfile = byfile,
     testall = testall, 
+    testsome = testsome,
     mydir = mydir,
     params = params  
   )
