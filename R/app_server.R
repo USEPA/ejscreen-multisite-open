@@ -1476,15 +1476,34 @@ app_server <- function(input, output, session) {
   # RADIUS SLIDER updates/rules ####
   
   output$radius_slider_ui <- renderUI({
-    shiny::sliderInput(inputId = 'bt_rad_buff',
-                       label = "",  ## label is updated in server  # htmltools::h5('Within what distance of a site?'),
-                       min = current_slider_min[[current_upload_method()]] , # minradius, # from global.R, is min user can pick but also is min the default can be. also see minradius_shapefile
-                       max = input$max_miles,  ## default_max_miles from global.R, or else a cap user sets in advanced tab. cannot use input$ in ui, only server
-                       value = input$default_miles, ## from advanced tab that uses global.R default_default_miles unless changed in adv tab. have to do in server-- cannot use input$ in ui, only in server
-                       step = stepradius, # from global.R
-                       post = ' miles'
-    )
+    valid_default_miles <- is.numeric(input$default_miles) && input$default_miles >= 0.5
+    valid_max_miles <- is.numeric(input$max_miles) && input$max_miles > 0
+    
+    if (valid_default_miles && valid_max_miles) {
+      shiny::sliderInput(
+        inputId = 'bt_rad_buff',
+        label = "",
+        min = current_slider_min[[current_upload_method()]],
+        max = input$max_miles,
+        value = input$default_miles,
+        step = stepradius,
+        post = ' miles'
+      )
+    } else {
+      error_message <- if (!valid_default_miles && !valid_max_miles) {
+        "The radius input is disabled because both the default and max miles values are invalid. Please set valid distances in the Advanced Settings tab."
+      } else if (!valid_default_miles) {
+        "The radius input is disabled because the default miles value is invalid. Please set a valid distance in the Advanced Settings tab."
+      } else {
+        "The radius input is disabled because the max miles value is invalid. Please set a valid maximum distance in the Advanced Settings tab."
+      }
+      
+      tags$p(error_message, style = "color: red; font-weight: bold;")
+    }
   })
+  
+
+  
   ## disable radius slider when FIPS is selected
   observe({
     if (current_upload_method() == 'FIPS') {
