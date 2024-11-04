@@ -50,6 +50,8 @@ ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ej
 acs_version_global = desc$get("ACSVersion")#as.vector(metadata_mapping$blockgroupstats[['acs_version']]) # "2017-2021"
 ejscreen_version_global = desc$get("EJScreenVersion")#as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']])
 
+is_site_public <- FALSE
+
 ## (IP address  for ejscreenapi module) ###########################################
 # ips <- c('10.147.194.116', 'awsgeopub.epa.gov', '204.47.252.51', 'ejscreen.epa.gov')
 # whichip <- ips[4]
