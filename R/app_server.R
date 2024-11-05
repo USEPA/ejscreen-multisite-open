@@ -3752,33 +3752,54 @@ app_server <- function(input, output, session) {
   output$comm_report_html <- renderUI({
     req(data_processed())
     
+    sitetype <- tolower(submitted_upload_method())
     rad <- data_processed()$results_overall$radius.miles # input radius can be changed by user and would alter the report text but should just show what was run not what slider currently says
-    popstr <- prettyNum(total_pop(), big.mark = ',')
+    nsites <- NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T, ])
+    popstr <- prettyNum(total_pop(), big.mark = ',') # rounded already?
+     
+    # report_residents_within_xyz <- function(sitetype = c('latlon', 'fips', 'shp')[1], radius = NULL, nsites = 1) {
+    #   
+    #   report_xmilesof <- function(radius) {
+    #     xmilesof <- ifelse(
+    #       (is.null(radius) || radius == 0), "",
+    #       paste0(radius, " mile", ifelse(radius > 1, "s", ""), " of ")
+    #     )
+    #     return(xmilesof)
+    #   }
+    #   xmilesof <- report_radiusstr(radius)
+    #   
+    #   if (sitetype == 'shp') {
+    #     location_type <- " selected polygon"
+    #   } else if (sitetype == 'fips') {
+    #     location_type <- " selected Census unit"
+    #   } else if (sitetype == 'latlon') {
+    #     location_type <- " selected point"
+    #   } else {
+    #     # unknown sitetype?
+    #     location_type <- " place"
+    #   }
+    #   anyoftheplaces <- ifelse(nsites == 1, 
+    #                            paste0('this', location_type),
+    #                            paste0("any of the ", nsites, location_type, "s")
+    #   )
+    #   residents_within_xyz <- paste0("Residents within ",
+    #                                  xmilesof,
+    #                                  anyoftheplaces)
+    #   return(residents_within_xyz)
+    # }
     
-    if (submitted_upload_method() == 'SHP') {
-      location_type <- " selected polygons"
-      radiusstr <- paste0(rad, " mile",
-                          ifelse(rad > 1, "s", ""), " of ")
-      
-    } else if (submitted_upload_method() == 'FIPS') {
-      location_type <- " selected shapes"
-      radiusstr <- ""
-    } else {
-      location_type <- " selected points"
-      radiusstr <- paste0(rad, " mile", ifelse(rad > 1, "s", ""), " of ")
-    }
-    
-    locationstr <- paste0("Residents within ",
-                          radiusstr,
-                          "any of the ", 
-                          NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T, ]), location_type)
+    residents_within_xyz <- report_residents_within_xyz(
+      sitetype = sitetype,
+      radius = rad,
+      nsites = nsites
+    )
     
     ## generate full HTML using external functions
     full_page <- build_community_report(
       output_df = data_processed()$results_overall,
       analysis_title = input$analysis_title,
       totalpop = popstr,
-      locationstr = locationstr,
+      locationstr = residents_within_xyz,
       include_ejindexes = (input$include_ejindexes == 'TRUE'),
       in_shiny = TRUE
     )

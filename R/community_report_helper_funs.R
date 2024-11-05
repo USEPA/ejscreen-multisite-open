@@ -461,3 +461,80 @@ generate_ej_supp_header <- function() {
       <p style=\"font-family: Oswald, Arial, sans-serif; font-weight: 300; font-size: 16px; margin-bottom: -2px; padding-left: 20px;\">The supplemental indexes offer a different perspective on community-level vulnerability. Each one combines the Demographic Indicator with a single environmental indicator.  </p>
   </div>'
 }
+################################################################### #
+
+# helper for report_residents_within_xyz()
+
+report_xmilesof <- function(radius, unitsingular = 'mile') {
+  
+  if (all(is.character(radius))) {
+    # make sure it/each has a trailing space
+    radius[substr(radius, nchar(radius) - 1, nchar(radius)) != " "] <- paste0(radius[substr(radius, nchar(radius) - 1, nchar(radius)) != " "], ' ')
+    return(radius) # e.g., "1.3 km from "
+    #  but if you provide custom text without ending with "of " then it will look odd
+  }
+  xmilesof <- ifelse(
+    (is.null(radius) || radius == 0 || is.na(radius)), "",
+    paste0(radius, " ", unitsingular, ifelse(radius > 1, "s", ""), " of ")
+  )
+  return(xmilesof)
+}
+################################################################### #
+
+#' Build text for report: Residents within( X miles of)( any of) the (N) point(s)/polygon(s)/Census unit(s)
+#' 
+#' @param text1 text to start the phrase, like "Residents within "
+#' @param radius The distance from each place, normally in miles (which can be 0), 
+#'   or custom text like "seven kilometers from" in which case 
+#'   it should end with words like "a safe distance from" or 
+#'   "the vicinity of" or "proximity to" or "near" 
+#'   -- but may need to specify custom text1 also.
+#' @param unitsingular 'mile' by default, but can use 'kilometer' etc. 
+#'   Ignored if radius is not a number.
+#' @param nsites number of places or text in lieu of number
+#' @param sitetype can be 'latlon', 'fips', 'shp', or 
+#'   some singular custom text like "Georgia location"
+#'   but should be something that can be made plural by just adding "s" so ending with "site" 
+#'   works better than ending with "... facility" since that would print as "facilitys" here.
+#' 
+#' @keywords internal
+#'
+report_residents_within_xyz <- function(text1 = 'Residents within ', 
+                                        radius = NULL, unitsingular = 'mile', 
+                                        nsites = 1, sitetype = c('latlon', 'fips', 'shp')[1]) {
+  
+  xmilesof <- report_xmilesof(radius, unitsingular = unitsingular)
+  
+  sitetype_nullna <- " place"
+  if (is.null(sitetype)) {sitetype <- sitetype_nullna}
+  sitetype[is.na(sitetype)] <- sitetype_nullna
+  if (sitetype == 'shp') {
+    location_type <- " selected polygon"
+  } else if (sitetype == 'fips') {
+    location_type <- " selected Census unit"
+  } else if (sitetype == 'latlon') {
+    location_type <- " selected point"
+  } else if (sitetype == sitetype_nullna) {
+    # ok, use default filler
+    location_type <- sitetype
+  } else { 
+    # an unknown sitetype was provided
+    location_type <- sitetype
+    # make sure it/each has a leading space
+    if (substr(location_type,1,1) != " ") {location_type <- paste0(" ", location_type)}
+  }
+  
+  if (is.null(nsites)) {nsites <- ''}
+  nsites[is.na(nsites)] <- ""
+  anyoftheplaces <- ifelse(nsites == 1, 
+                           paste0('this', location_type),
+                           paste0("any of the ", nsites, location_type, "s")
+  )
+  
+  residents_within_xyz <- paste0(text1,
+                                 xmilesof,
+                                 anyoftheplaces)
+  return(residents_within_xyz)
+}
+############################################################################ # 
+############################################################################ # 

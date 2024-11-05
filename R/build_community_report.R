@@ -37,8 +37,8 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
   ## iterate through variable lists in map_headernames to get column names
   expandedVarlist <- c()
 
-  for (var in varlist){
-    if (exists(var) & !(var %in% expandedVarlist)){
+  for (var in varlist) {
+    if (exists(var) & !(var %in% expandedVarlist)) {
       expandedVarlist <- c(expandedVarlist, get(var))
     }
   }
