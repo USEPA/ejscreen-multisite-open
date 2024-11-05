@@ -4,7 +4,14 @@
 \alias{url_ejscreenmap}
 \title{Get URL(s) for EJScreen map centered at given point(s)}
 \usage{
-url_ejscreenmap(lon, lat, as_html = FALSE, linktext, wherestr = "")
+url_ejscreenmap(
+  lon,
+  lat,
+  as_html = FALSE,
+  linktext,
+  wherestr = "",
+  shapefile = NULL
+)
 }
 \arguments{
 \item{lon}{one or more longitudes}
@@ -15,11 +22,15 @@ url_ejscreenmap(lon, lat, as_html = FALSE, linktext, wherestr = "")
 
 \item{linktext}{used as text for hyperlinks, if supplied and as_html=TRUE}
 
-\item{wherestr}{passed to API in URL as wherestr= , if lat/lon not used. Can be State abbrev like "NY"
-or can be some other options like "New Rochelle, NY" as from fips2name()
-\itemize{
-\item not sure that part of the EJScreen URL-encoded map request is documented.
-}}
+\item{wherestr}{Name of place to center on (not FIPS code!).
+Passed to API in URL as wherestr= , if lat/lon not used.
+Can be State abbrev like "NY" or full state name,
+or city like "New Rochelle, NY" as from fips2name() -- using fips2name()
+works for state, county, or city FIPS code converted to name.
+Also wherestr can be street address or zipcode.
+Not sure that part of the EJScreen URL-encoded map request is documented.}
+
+\item{shapefile}{not implemented}
 }
 \value{
 URL(s)

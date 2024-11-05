@@ -64,7 +64,7 @@
 ejscreenapi1 <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326, 
                          fips = NULL, 
                          shapefile = NULL,
-                         namestr='',
+                         namestr = '',
                          format_report_or_json = 'pjson', ipurl = 'ejscreen.epa.gov',
                          getstatefromplacename = TRUE) {
   

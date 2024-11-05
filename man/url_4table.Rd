@@ -7,11 +7,13 @@
 url_4table(
   lat,
   lon,
-  radius,
+  radius = NULL,
   regid = NULL,
-  as_html = TRUE,
+  fips,
   wherestr = "",
-  namestr = "",
+  namestr = NULL,
+  shapefile = NULL,
+  as_html = TRUE,
   ...
 )
 }
@@ -25,14 +27,20 @@ url_4table(
 \item{regid}{optional vector of FRS registry IDs if available to use to create links
 to detailed ECHO facility reports}
 
-\item{as_html}{logical, optional.
-passed to \code{\link[=url_ejscreen_report]{url_ejscreen_report()}} and \code{\link[=url_ejscreenmap]{url_ejscreenmap()}}}
+\item{fips}{vector of FIPS codes if relevant, to use instead of lat lon,
+Passed to \code{\link[=url_ejscreen_report]{url_ejscreen_report()}} as areaid}
 
-\item{wherestr}{passed to \code{\link[=url_ejscreenmap]{url_ejscreenmap()}} and can be name of city, county, state like
+\item{wherestr}{optional because inferred from fips if provided.
+Passed to \code{\link[=url_ejscreenmap]{url_ejscreenmap()}} and can be name of city, county, state like
 from fips2name(201090), or "new rochelle, ny" or "AK"
 or even a zip code, but NOT a fips code!}
 
 \item{namestr}{passed to \code{\link[=url_ejscreen_report]{url_ejscreen_report()}}}
+
+\item{shapefile}{not implemented}
+
+\item{as_html}{logical, optional.
+passed to \code{\link[=url_ejscreen_report]{url_ejscreen_report()}} and \code{\link[=url_ejscreenmap]{url_ejscreenmap()}}}
 
 \item{...}{passed to \code{\link[=url_ejscreen_report]{url_ejscreen_report()}} such as areaid="0201090" for a city fips}
 }

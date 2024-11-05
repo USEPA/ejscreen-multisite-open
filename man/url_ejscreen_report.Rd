@@ -14,6 +14,7 @@ url_ejscreen_report(
   areatype = "",
   areaid = "",
   namestr = "",
+  shapefile = NULL,
   wkid = 4326,
   unit = 9035,
   f = "report",
@@ -38,6 +39,8 @@ url_ejscreen_report(
 \item{areaid}{fips codes if used,  passed as areaid=  in API, can be FIPS for blockgroups, tracts, counties.}
 
 \item{namestr}{The character string text to show on the report as the name of the place}
+
+\item{shapefile}{not implemented}
 
 \item{wkid}{default is 4326 -WGS84 - World Geodetic System 1984, used in GPS - see (https://epsg.io/4326)}
 

@@ -12,6 +12,7 @@ ejscreenapi_plus(
   wkid = 4326,
   fips = NULL,
   shapefile = NULL,
+  namestr = "",
   report_every_n = 100,
   save_when_report = FALSE,
   format_report_or_json = "pjson",
@@ -40,6 +41,8 @@ or data.frame or data.table with lat,lon}
 (counties, tracts, or blockgroups)}
 
 \item{shapefile}{not implemented}
+
+\item{namestr}{optional text}
 
 \item{report_every_n}{default is to provide an update every so often}
 

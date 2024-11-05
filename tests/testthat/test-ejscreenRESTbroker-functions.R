@@ -10,9 +10,12 @@ test2lat <- c(33.943883,    39.297209)
 test2lon <- c(-118.241073, -76.641674)
 pts <- data.frame(lat = test2lat, lon = test2lon)
 
-outrest       <- ejscreenRESTbroker(lon = testlon, lat = testlat, radius = testradius)
-outrest2table <- ejscreenRESTbroker2table(outrest, getstatefromplacename = TRUE)
-out1          <- ejscreenapi1(lon = testlon,  lat = testlat, radius = testradius) # CAN SOMETIMES TAKE 30 SECONDS, SOMETIMES 5 SECONDS
+suppressWarnings({
+  outrest       <- ejscreenRESTbroker(lon = testlon, lat = testlat, radius = testradius)
+  outrest2table <- ejscreenRESTbroker2table(outrest, getstatefromplacename = TRUE)
+  out1          <- ejscreenapi1(lon = testlon,  lat = testlat, radius = testradius) # CAN SOMETIMES TAKE 30 SECONDS, SOMETIMES 5 SECONDS
+  
+})
 # out_api       <- ejscreenapi(lon = test2lon, lat = test2lat, radius = testradius, on_server_so_dont_save_files = TRUE, save_when_report = FALSE)
 brokerout <- try(ejscreenRESTbroker(lon = testpoints_5$lon[1], lat = testpoints_5$lat[1], radius = testradius))
 missing_api_results <- inherits(brokerout, "try-error")
@@ -64,9 +67,14 @@ cat('\ntesting ejscreenRESTbroker2table\n')
 test_that("ejscreenRESTbroker2table() does not crash on 1 point", {
   # NOTE IT IS NOT MEANT TO HANDLE 2+ POINTS AT A TIME
   cat('  testing 1 point in slow functions ejscreenRESTbroker2table(ejscreenRESTbroker( \n')
-  expect_no_error( ejscreenRESTbroker2table(ejscreenRESTbroker(lat = testpoints_5$lat[1], lon = testpoints_5$lon[1], radius = testradius)) )
+  expect_no_error( 
+    ejscreenRESTbroker2table(
+      ejscreenRESTbroker(lat = testpoints_5$lat[1], lon = testpoints_5$lon[1], radius = testradius)
+      ) 
+    )
   # CAN SOMETIMES TAKE 30 SECONDS, SOMETIMES 5 SECONDS
 })
+
 test_that('ejscreenRESTbroker2table() does not crash on 1 INVALID point', {
   cat('  testing 1 invalidpoint in slow functions ejscreenRESTbroker2table(ejscreenRESTbroker( \n')
   expect_no_error( ejscreenRESTbroker2table(ejscreenRESTbroker(lat = testpoints_5$lat[1], lon = testpoints_5$lon[1], radius = testradius)) )
@@ -97,10 +105,10 @@ test_that('ejscreenRESTbroker2table(ejscreenRESTbroker()) results are same as ej
 
 ##   ........ (more testdata) ####
 
-   xneg <- (ejscreenRESTbroker(lon = testpoints_500[108, 'lon'], lat = testpoints_500[108, 'lat'], radius = -1))
-   x0 <-   (ejscreenRESTbroker(lon = testpoints_500[108, 'lon'], lat = testpoints_500[108, 'lat'], radius = 0))
-   x1 <-   (ejscreenRESTbroker(lon = testpoints_500[108, 'lon'], lat = testpoints_500[108, 'lat'], radius = 1))
-   x3 <-   (ejscreenRESTbroker(lon = testpoints_500[108, 'lon'], lat = testpoints_500[108, 'lat'], radius = 3))
+xneg <- (ejscreenRESTbroker(lon = testpoints_500[108, 'lon'], lat = testpoints_500[108, 'lat'], radius = -1))
+x0 <-   (ejscreenRESTbroker(lon = testpoints_500[108, 'lon'], lat = testpoints_500[108, 'lat'], radius = 0))
+x1 <-   (ejscreenRESTbroker(lon = testpoints_500[108, 'lon'], lat = testpoints_500[108, 'lat'], radius = 1))
+x3 <-   (ejscreenRESTbroker(lon = testpoints_500[108, 'lon'], lat = testpoints_500[108, 'lat'], radius = 3))
 
 test_that("warned if radius small so no block point inside" , {
   expect_warning({

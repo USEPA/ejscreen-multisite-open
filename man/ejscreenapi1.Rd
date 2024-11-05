@@ -12,6 +12,7 @@ ejscreenapi1(
   wkid = 4326,
   fips = NULL,
   shapefile = NULL,
+  namestr = "",
   format_report_or_json = "pjson",
   ipurl = "ejscreen.epa.gov",
   getstatefromplacename = TRUE
@@ -32,6 +33,8 @@ ejscreenapi1(
 (counties, tracts, or blockgroups)}
 
 \item{shapefile}{not implemented}
+
+\item{namestr}{optional text used on report if fips provided and you want to show this text instead of the FIPS code on the report}
 
 \item{format_report_or_json}{default is "pjson" but could "report" to get URL for a pdf report}
 

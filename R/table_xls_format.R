@@ -440,18 +440,21 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     # seeing if ids can be interpreted as FIPS since ids like 1:10 are all state fips 
     # so e.g., if 3 sites run and all 3 had invalid lat lon then it assumes 1:3 are FIPS.
     fips = eachsite$ejam_uniq_id
-    # placenames = fips2name(fips) # not needed here
     lat = NULL # rep('', NROW(eachsite))
     lon = NULL # rep('', NROW(eachsite))
   } else {
-    placenames <- NULL # rep('', NROW(eachsite))
     fips <- NULL
     lat = eachsite$lat
     lon = eachsite$lon
   }
-  if (radius_or_buffer_in_miles == 0 | is.na(radius_or_buffer_in_miles) | !is.numeric(radius_or_buffer_in_miles)) {radlink <- ''} 
-  eachsite[ok , hyperlink_colnames] <-  (url_4table(fips = fips[ok], lat =  lat[ok], lon =  lon[ok], radius = radlink, as_html = FALSE))$results_bysite
-  eachsite[!ok , hyperlink_colnames] <-  NA # 
+  if (radius_or_buffer_in_miles == 0 | is.na(radius_or_buffer_in_miles) | !is.numeric(radius_or_buffer_in_miles)) {
+    radlink <- ''
+  } else {
+    radlink <- radius_or_buffer_in_miles
+  }
+  eachsite[ok , hyperlink_colnames] <-  (url_4table(fips = fips[ok], lat =  lat[ok], lon =  lon[ok], 
+                                                    radius = radlink, as_html = FALSE))$results_bysite
+  eachsite[!ok , hyperlink_colnames] <-  NA 
   
   openxlsx::writeData(wb, 
                       sheet = 'Each Site', x = eachsite, 
