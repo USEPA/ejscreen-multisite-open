@@ -43,6 +43,10 @@ mapfastej <- function(mydf, radius = 3, column_names = 'ej', labels = column_nam
 #'
 mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names, browse = FALSE, color = "#03F") {
   
+  if (is.list(mydf) && 'results_bysite' %in% names(mydf)) {
+    warning("mydf seems to be a lislt of tables such as output from ejamit() so using just the results_bysite table here")
+    mydf <- mydf$results_bysite
+  }
   if (data.table::is.data.table(mydf)) {mydf <- as.data.frame(mydf)} # in case it was a data.table
   
   # colnames ####
