@@ -125,8 +125,8 @@ test_that("fips_valid() works but is slow", {
 testfips16 = c("1", "12", "123", "1234", "12345", "123456", "1234567", "12345678", "123456789",
                "1234567890", "12345678901", "123456789012", "1234567890123", "12345678901234",
                "123456789012345", "1234567890123456")
-cbind(fipstype(testfips16), fips_lead_zero(testfips16), testfips16)
-testfips16
+# cbind(fipstype(testfips16), fips_lead_zero(testfips16), testfips16)
+# testfips16
 #
 # [1,] "state"      "01"              "1"
 # [2,] "state"      "12"              "12"
@@ -358,27 +358,107 @@ test_that("fips_from_table() works", {
 #     name2fips()  # inconsistent name but useful . inverse of  fips2name()  
 #          fips_from_name()  # same as name2fips()
 
-
-# testplaces = c("North Richmond, CA", "McFarland, CA", "Chelsea, MA", "Hamtramck, MI", 
-#                "St. John the Baptist Parish, LA", "Dallas, TX", "chicago", "chicago, IL", "chicago, Illinois", "East Chicago, IN", 
-#                "Salt Lake City, UT", "Commerce City, North Denver", "Yakima, WA", "Yakima", 
-#                "Atlanta, GA", "Westside, GA", "Queens Creek Watershed, GA", 
-#                "Grand Rapids, MI", "Jackson, MI", "Adrian, MI", "East St. Louis, IL", 
-#                "Cahokia Heights, IL", "Cahokia village, IL", "xyz facility, IL", "Rocky Mountain Interagency site, CO", 
-#                "New York CAFO", "mega-site adjacent to xyz, New York", 
-#                "Bad Name project", "Chicago Impact Project, IL", 
-#                "Cuyahoga County, OH", "Cuyahoga County, Ohio", "Cuyahoga, OH", "Cuyahoga County, OH project", 
-#                "California", "CA", 
-#                "New York", "new york, NY", "new york, new york")
-
-# names2fips( c(  "Torreon, New Mexico" , 'torreon,nm'))
-# "3579070" "3579070"  # reports twice because it cannot tell the two query terms are synonyms
+# 
+#  # reports twice because it cannot tell the two query terms are synonyms
 
 # names2fips( "Jackson, PA"  )
 # "4237344"  # just reports one of the many possible answers
 
+test_that("name2fips() works on city/town/cdp", {
+  
+  testplaces = c("North Richmond, CA", "McFarland, CA", "Chelsea, MA", "Hamtramck, MI",
+                 "St. John the Baptist Parish, LA", "Dallas, TX", 
+                 "chicago, IL", "chicago, Illinois", "East Chicago, IN",
+                 "Salt Lake City, UT", "Commerce City, North Denver",
+                 "Atlanta, GA", "Westside, GA", "Queens Creek Watershed, GA",
+                 "Grand Rapids, MI", "Jackson, MI", "Adrian, MI", "East St. Louis, IL",
+                 "Cahokia Heights, IL", "Cahokia village, IL", "xyz facility, IL", "Rocky Mountain Interagency site, CO",
+                 "New York CAFO", "mega-site adjacent to xyz, New York",
+                 "Bad Name project", "Chicago large Project, IL",
+                 "Cuyahoga County, OH", "Cuyahoga County, Ohio", "Cuyahoga, OH", "Cuyahoga County, OH project",
+                 
+                 "New York", "new york, NY", "new york, new york"
+  )
+  
+  testnostate = c(
+    # "California", "CA",
+    "chicago", # "chicago, IL", "chicago, Illinois", "East Chicago, IN",
+    "Yakima"
+    # , "Yakima, WA"
+  )
+  
+  junk = capture_output({
+    
+    suppressWarnings({
+      expect_no_error({
+        x = name2fips(testplaces)
+      })
+    })
+    
+    expect_identical(
+      name2fips("Atlanta, GA"), "1304000"
+    )
+    expect_identical(
+      name2fips("Atlanta, GA"), "1304000"
+    )
+    expect_identical(
+      name2fips( "Salt Lake City, UT"), "4967000"
+    )
+    
+    # >   cbind(testplaces, x)
+    # testplaces                            x        
+    # [1,] "North Richmond, CA"                  "0652162"
+    # [2,] "McFarland, CA"                       "0644826"
+    # [3,] "Chelsea, MA"                         "2513205"
+    # [4,] "Hamtramck, MI"                       "2636280"
+    # [5,] "St. John the Baptist Parish, LA"     "22095"  
+    # [6,] "Dallas, TX"                          "4819000"
+    # [7,] "chicago, IL"                         "1714000"
+    # [8,] "chicago, Illinois"                   "1714000"
+    # [9,] "East Chicago, IN"                    "1819486"
+    # [10,] "Salt Lake City, UT"                  "4967000"
+    # [11,] "Commerce City, North Denver"         NA       
+    # [12,] "Atlanta, GA"                         "1304000"
+    # [13,] "Westside, GA"                        NA       
+    # [14,] "Queens Creek Watershed, GA"          NA       
+    # [15,] "Grand Rapids, MI"                    "2634000"
+    # [16,] "Jackson, MI"                         "2641420"
+    # [17,] "Adrian, MI"                          "2600440"
+    # [18,] "East St. Louis, IL"                  "1722255"
+    # [19,] "Cahokia Heights, IL"                 NA       
+    # [20,] "Cahokia village, IL"                 "1710370"
+    # [21,] "xyz facility, IL"                    NA       
+    # [22,] "Rocky Mountain Interagency site, CO" NA       
+    # [23,] "New York CAFO"                       NA       
+    # [24,] "mega-site adjacent to xyz, New York" NA       
+    # [25,] "Bad Name project"                    NA       
+    # [26,] "Chicago large Project, IL"           NA       
+    # [27,] "Cuyahoga County, OH"                 "39035"  
+    # [28,] "Cuyahoga County, Ohio"               "39035"  
+    # [29,] "Cuyahoga, OH"                        NA       
+    # [30,] "Cuyahoga County, OH project"         NA       
+    # [31,] "New York"                            "36"     
+    # [32,] "new york, NY"                        "3651000"
+    # [33,] "new york, new york"                  "3651000"
+    # 
+    
+    expect_warning({
+      x = name2fips(testnostate)
+    })
+    
+    expect_identical(
+      c( "3579070","3579070"),
+      names2fips( c(  "Torreon, New Mexico" , 'torreon,nm'))
+    )
+    
+  })
+  
+})
+#################################################################### #
 
-test_that("name2fips() works", {
+
+
+test_that("name2fips() works on state or county", {
   
   # THESE SEEM SLOW... ***
   
@@ -546,8 +626,8 @@ test_that("fips_counties_from_state_abbrev() works", {
       
       expect_warning(expect_warning(
         expect_warning(
-        fips_counties_from_state_abbrev("text")
-      )))
+          fips_counties_from_state_abbrev("text")
+        )))
       expect_warning(expect_warning(
         expect_warning(fips_counties_from_state_abbrev(13))
       ))
@@ -558,7 +638,7 @@ test_that("fips_counties_from_state_abbrev() works", {
       expect_true(
         is.na(
           suppressWarnings(
-          fips_counties_from_state_abbrev("text")
+            fips_counties_from_state_abbrev("text")
           )
         ) # PROBABLY SHOULD BUT DOES NOT RETURN NA, just empty
       )
@@ -598,7 +678,7 @@ test_that("fips_counties_from_statename() works", {
         expect_warning(expect_warning(expect_warning(fips_counties_from_statename("text"))))
         expect_true(
           suppressWarnings(
-           is.na(fips_counties_from_statename("text"))   # DOES NOT RETURN NA, just empty
+            is.na(fips_counties_from_statename("text"))   # DOES NOT RETURN NA, just empty
           )
         )
         expect_warning(expect_warning(expect_warning(fips_counties_from_statename(13))))

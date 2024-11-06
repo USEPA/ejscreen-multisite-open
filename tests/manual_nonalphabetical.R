@@ -1,12 +1,37 @@
-# system.time({
-#   ##    ABOUT 25 MINUTES TO RUN TESTS (if large datasets had not yet been loaded)
-#   source("./tests/manual_nonalphabetical.R") #####
-#     ## answering Yes to running ALL tests
-# })
-######################################################## #
 
-#    test_interactively()
+#  test_interactively()
 
+#' run group(s) of unit tests, interactively or not, get compact summary
+#' asks user in RStudio what tests to run and how
+#' @param ask logical, whether it should ask in RStudio what parameter values to use
+#' @param noquestions logical, whether to avoid questions later on about where to save shapefiles
+#' @param useloadall logical, TRUE means use load_all(), FALSE means use library()
+#' @param y_basic logical, whether to only run some basic ejamit() functions, not do unit tests
+#' @param y_latlon logical, if y_basic=T, whether to run the basic ejamit() using points
+#' @param y_shp logical, if y_basic=T, whether to run the basic ejamit() using shapefile
+#' @param y_fips logical, if y_basic=T, whether to run the basic ejamit() using FIPS
+#' @param y_runsome logical, whether to run only some groups of tests (so y_runall is FALSE)
+#' @param tname if y_runsome = T, a vector of group names like 'fips', 'naics', etc.
+#'   see source code for list 
+#' @param y_runall logical, whether to run all tests instead of only some groups
+#'   (so y_runsome is FALSE)
+#' @param y_seeresults logical, whether to show results in console
+#' @param y_save logical, whether to save files of results
+#' @param y_tempdir logical, whether to save in tempdir
+#' @param mydir optional folder
+#' @examples
+#' \dontrun{
+#' biglist1 <- test_interactively()
+#' biglist2 <- test_interactively(ask = F, 
+#'       y_runsome = T, tname = c('test', 'maps'),  
+#'       mydir = "~/../Downloads/unit testing")
+#'       }
+#' 
+#' @return a named list of objects like data.tables, e.g., named 
+#'   'bytest', 'byfile', 'bygroup', 'params', 'passcount' and other summary stats, etc.
+#'
+#' @keywords internal
+#'
 test_interactively = function(ask = TRUE, 
                               noquestions = TRUE, # just for shapefile folder selections
                               useloadall = TRUE,
@@ -43,7 +68,7 @@ test_interactively = function(ask = TRUE,
   }
   # if only doing basic non-unit-testing then do not ask about other details and do not find groups of test files, etc. - 
   #  just skip way ahead to load/library and do those quick checks
-
+  
   ########################################## # ########################################## # 
   # Setup ####
   
@@ -60,7 +85,7 @@ test_interactively = function(ask = TRUE,
     library(magrittr)
     library(dplyr)
     consoleclear <- function() {if (interactive() & rstudioapi::isAvailable()) {rstudioapi::executeCommand("consoleClear")}}
-    consoleclear()
+    # consoleclear()
     
     ########################################## #
     
@@ -165,11 +190,12 @@ test_interactively = function(ask = TRUE,
           "test-FIPS-shiny-functionality.R", "test-latlon-shiny-functionality.R", "test-NAICS-shiny-functionality.R", "test-shapefile-shiny-functionality.R"
         ),
         test_test = c(
-          "test-test.R"   #   fast way to check this script via  biglist <- test_interactively(ask = FALSE, y_runsome = T, tname = 'test')
+          "test-test1.R", #   fast way to check this script via  biglist <- test_interactively(ask = FALSE, y_runsome = T, tname = 'test')
+          "test-test2.R"  #   fast way to check this script
         ),
         test_golem = c(
-          "test-golem_utils_server.R", # not really used
-          "test-golem_utils_ui.R"      # not really used
+          "test-golem_utils_server.R", # not used
+          "test-golem_utils_ui.R"      # not used
         )
       )
       ########################################## # 
@@ -209,40 +235,91 @@ test_interactively = function(ask = TRUE,
       }
     } # end if, update_list_of_tests
     
+    
+    cat("\n\nAVAILABLE UNIT TEST FILES, IN GROUPS:\n\n")
+    
+    
+    ## count of test per group ####
+    count_available_files_bygroup = data.frame(groupnames = names(testlist),
+                                               shortgroupnames = gsub("^test_(.*)","\\1", names((testlist))), 
+                                               filecount = sapply(testlist, length)
+                                               #, `filenames as test-___.R` = as.vector(unlist(lapply(testlist, function(z) paste0(gsub("^test-|.R$", "", unlist(z)), collapse = ", "))))
+    )
+    rownames(count_available_files_bygroup) = NULL
+    print(testlist) # long list of vectors
+    
+    cat("\n   COUNTS OF AVAILABLE FILES IN EACH GROUP OF TESTS\n\n")
+    print(count_available_files_bygroup)
+    cat("\n")
+    { #          groupnames shortgroupnames filecount
+      # 1         test_fips            fips         3
+      # 2        test_naics           naics         8
+      # 3          test_frs             frs         6
+      # 4       test_latlon          latlon        10
+      # 5         test_maps            maps         1
+      # 6        test_shape           shape         3
+      # 7    test_getblocks       getblocks         5
+      # 8  test_fixcolnames     fixcolnames         6
+      # 9         test_doag            doag         2
+      # 10      test_ejamit          ejamit         6
+      # 11 test_ejscreenapi     ejscreenapi         5
+      # 12         test_mod             mod         3
+      # 13         test_app             app         5
+      # 14        test_test            test         1
+      # 15       test_golem           golem         2
+      # fnames = unlist(testlist)
+    }        
+    shortgroupnames = gsub("^test_(.*)","\\1", names((testlist)))
+    
     ## define Functions that run tests ####
-    ########################### #
-{ 
+    ########################### #      ########################### #
+    { 
       ##     TO TEST 1 GROUP  (WITH SUCCINCT SUMMARY)
       
-      test1group <- function(fnames = test_all, 
+      ## examples
+      # x1 = test1group(c("test-test1.R", "test-test2.R"), groupname = 'test', print4group = F   )
+      # x2 = test1group(c("test-test1.R", "test-test2.R"), groupname = 'test', print4group = TRUE)
+      # print(x1)
+      # print(x2)
+
+      
+      test1group <- function(fnames = test_all, groupname = "",
                              reporter = "minimal", # some of the code below now only works if using this setting
-                             # reporter = default_compact_reporter(), # 
                              load_helpers = TRUE,
-                             print = FALSE
+                             print4eachfile = FALSE, # useless - keep it FALSE
+                             print4group = TRUE,
+                             add_seconds_bygroup = TRUE,
+                             stop_on_failure = FALSE
       ) {
         
         xtable <- list()
         # tfile <- tempfile("junk", fileext = "txt")
-        timing = system.time({
-          for (i in 1:length(fnames)) {
-            cat(".")
+        # timing = system.time({
+        for (i in 1:length(fnames)) {
+          seconds_byfile = system.time({
+            cat(paste0("#", i, ' '))
+            # cat(".") ## like a counter, one dot per file
+            
             suppressWarnings(suppressMessages({
               junk <- testthat::capture_output_lines({
-                x <- testthat::test_file(  
+                x <- testthat::test_file(
                   file.path("./tests/testthat/", fnames[i]), 
                   load_helpers = load_helpers,
                   load_package = 'none',
                   # or else  Helper, setup, and teardown files located in the same directory as the test will also be run. See vignette("special-files") for details.
-                  reporter = reporter)
-              }, print = print)
+                  reporter = reporter,
+                  stop_on_failure = stop_on_failure
+                )
+              }
+              , print = print4eachfile) # here it is a useless param of capture_output_lines()
             }))
-            # testthat_print(junk)
+            
             x <- as.data.frame(x)
             x$tests <- x$nb
             x$nb <- NULL
             x$flag <- x$tests - x$passed
             x$err  <- x$tests - x$passed - x$warning
-            x$error_cant_test <- ifelse(x$error, 1, 0)  ## a problem with counting this?
+            x$error_cant_test <- ifelse(x$error > 0, 1, 0)  ## a problem with counting this?
             x$error <- NULL
             x$skipped <- ifelse(x$skipped, 1, 0)
             x <- x[, c('file',  'test', 
@@ -251,35 +328,134 @@ test_interactively = function(ask = TRUE,
             )]
             x$test <- substr(x$test, 1, 50) # some are long
             xtable[[i]] <- data.table::data.table(x)
-          }
-        })
-        print(timing); cat("\n")
+          })
+          xtable[[i]]$seconds_byfile <- seconds_byfile['elapsed']
+        }
+        # })
         xtable <- data.table::rbindlist(xtable)
-        print(colSums(xtable[, .(tests, passed, failed, err,
-                                 warning, flag, 
-                                 skipped, error_cant_test)]))
+        
+        seconds_bygroup <- round(sum(xtable[ , seconds_byfile[1], by = 'file'][,V1]), 0)
+        ## can add this shorter time estimate to the results instead of relying on 
+        ## the slightly longer time estimate that can be done in testbygroup() 
+        if (add_seconds_bygroup) {
+          xtable[ , seconds_bygroup := seconds_bygroup]
+        }
+        cat('done. ')
+        cat(' Finished test group', groupname, 'in', seconds_bygroup, 'seconds.\n')
+        if (print4group) {
+          # print a table of counts
+          print(c(
+            colSums(xtable[, .(tests, passed, failed, err,
+                               warning, flag, 
+                               skipped, error_cant_test)]),
+            seconds_bygroup = seconds_bygroup
+          ))
+        }
+        
         return(xtable)
       }
-      ########################### #
+      ########################### #      ########################### #
       
       ##     TO LOOP THROUGH GROUPS of tests
       
-      testbygroup <- function(testlist, ...) {
-        # the ... can be print=TRUE, and possibly reporter=default_compact_reporter()
-        # testlist[[(names(testlist)[[1]])]] is the same as get(names(testlist)[[1]]), vector of filenames
+      ## examples
+      #
+      # y1 <- testbygroup( list(
+      # test_test  = c("test-test1.R", "test-test2.R"),
+      # test_golem = c("test-golem_utils_server.R", "test-golem_utils_ui.R")),
+      # testing = TRUE
+      # )
+      # y2 <- testbygroup( list(
+      #   test_test  = c("test-test1.R", "test-test2.R"),
+      #   test_golem = c("test-golem_utils_server.R", "test-golem_utils_ui.R")),
+      #   testing = FALSE,
+      #   print4group = FALSE
+      # )
+      # y3 <- testbygroup( list(
+      #   test_test  = c("test-test1.R", "test-test2.R"),
+      #   test_golem = c("test-golem_utils_server.R", "test-golem_utils_ui.R")),
+      #   testing = FALSE,
+      #   print4group = TRUE # probably repeating printouts if  do this
+      # )
+      # print(y1)
+      # print(y2)
+      # print(y3)
+      
+      
+      testbygroup <- function(testlist, 
+                              print4group = FALSE,
+                              testing = FALSE,
+                              stop_on_failure = FALSE,
+                              reporter = "minimal" # this may be the only option that works now
+      ) {
+        # probably cannot now, but used to be able to use  reporter=default_compact_reporter()
+        
         xtable <- list()
+        
         i <- 0
         for (tgroupname in names(testlist)) {
-          i <- i + 1
-          if (i == 1) {load_helpers <- TRUE} else {load_helpers <- FALSE}
-          fnames = unlist(testlist[[tgroupname]])
-          cat("", tgroupname, "group has", length(fnames), "test files ")
-          xtable[[i]] <- data.table::data.table(testgroup = tgroupname, 
-                                                test1group(testlist[[tgroupname]], 
-                                                           load_helpers = load_helpers,
-                                                           ...) )
-        }
+          seconds_bygroup_viasystemtime = system.time({
+            i <- i + 1
+            if (i == 1) {load_helpers <- TRUE} else {load_helpers <- FALSE}
+            fnames = unlist(testlist[[tgroupname]])
+            cat("", tgroupname, "group has", length(fnames), "test files. Starting ")
+            
+            xtable[[i]] <- data.table::data.table(
+              
+              testgroup = tgroupname,
+              
+              test1group(testlist[[tgroupname]], 
+                         groupname = tgroupname,
+                         load_helpers = load_helpers,
+                         print4group = print4group,
+                         stop_on_failure = stop_on_failure,
+                         add_seconds_bygroup = TRUE, #   can be done here by testbygroup() not by test1group()
+                         reporter = reporter)
+            )
+          })
+          
+          ## time elapsed
+          ##
+          ## This is the total time including overhead of looping, using test1group() for each group, and compiling.
+          secs1 <- round(seconds_bygroup_viasystemtime['elapsed'], 0)
+          if (testing) {
+            cat('Seconds elapsed based on testbygroup() using system.time() is', secs1, '\n')
+            # other ways fail if no test happened in a file like for group golem:
+            ## This is a slightly shorter timing estimate could be done in test1group() by using add_seconds_bygroup=T 
+            secs2 <- round(xtable[[i]]$seconds_bygroup[1], 0)
+            cat('Seconds elapsed based on testbygroup() reporting total reported by test1group() is', secs2, '\n')
+            ## or, a similar estimate could be done here, but just like it would be in test1group() :
+            secs3 <- round(sum(xtable[[i]][ , seconds_byfile[1], by = 'file'][,V1]), 0)
+            cat('Seconds elapsed based on testbygroup() summing seconds_byfile once per file is', secs3, '\n')
+          }
+          secs <- secs1
+          xtable[[i]]$seconds_bygroup <- secs # replaces any estimate done by test1group()
+          
+          # cat(paste0( '', round(secs, 0), ' seconds elapsed.\n'))
+          ## That appears on same line where test1group() had already said "Finished test group xyz"
+          ## or, previously, complete phrase here: # cat(paste0(' ', tgroupname, ' group finished, in ', round(secs, 0), ' seconds.\n\n'))
+          
+          ## Show table of counts for this group of files of tests:
+          print(c(
+            colSums(xtable[[i]][, .(tests, passed, failed, err,
+                                    warning, flag,
+                                    skipped, error_cant_test)]),
+            seconds = secs
+          ))
+          
+        } # finished this one group of test files
+        
         xtable <- data.table::rbindlist(xtable)
+        time_minutes <-   round(sum(xtable[ , (seconds_bygroup[1]) / 60, by = testgroup][, V1]) , 1)
+        cat(paste0('\n', time_minutes[1], ' minutes total for all groups\n\n'))
+        
+        xtable[ , flag_byfile := sum(flag), by = "file"]
+        xtable[ , err_byfile  := sum(err),  by = "file"]
+        xtable[ , flag_bygroup := sum(flag), by = "testgroup"]
+        xtable[ , err_bygroup  := sum(err),  by = "testgroup"]
+        setorder(xtable, -err_bygroup, testgroup, -flag, -failed, file)
+        setcolorder(xtable, neworder = c('seconds_bygroup', 'seconds_byfile'), after = NCOL(xtable))
+        
         return(xtable)
       }
     }   #   done defining functions
@@ -303,36 +479,6 @@ test_interactively = function(ask = TRUE,
         y_runsome = askYesNo("Run ONLY SOME OF THE tests ?", default = FALSE)}
       if (is.na(y_runsome))  {stop("cancelled")}
       if (y_runsome) {
-        
-        tlistinfo = data.frame(groupnames = names(testlist),
-                               shortgroupnames = gsub("^test_(.*)","\\1", names((testlist))), 
-                               filecount = sapply(testlist, length)
-                               #, `filenames as test-___.R` = as.vector(unlist(lapply(testlist, function(z) paste0(gsub("^test-|.R$", "", unlist(z)), collapse = ", "))))
-        )
-        rownames(tlistinfo) = NULL
-        print(testlist) # long list of vectors
-        cat("\n\n")
-        print(tlistinfo)
-        {        #          groupnames shortgroupnames filecount
-          # 1         test_fips            fips         3
-          # 2        test_naics           naics         8
-          # 3          test_frs             frs         6
-          # 4       test_latlon          latlon        10
-          # 5         test_maps            maps         1
-          # 6        test_shape           shape         3
-          # 7    test_getblocks       getblocks         5
-          # 8  test_fixcolnames     fixcolnames         6
-          # 9         test_doag            doag         2
-          # 10      test_ejamit          ejamit         6
-          # 11 test_ejscreenapi     ejscreenapi         5
-          # 12         test_mod             mod         3
-          # 13         test_app             app         5
-          # 14        test_test            test         1
-          # 15       test_golem           golem         2
-          # fnames = unlist(testlist)
-        }        
-        shortgroupnames = gsub("^test_(.*)","\\1", names((testlist)))
-        
         if (missing(tname)) { 
           tname = rstudioapi::showPrompt(
             "WHICH TEST OR GROUPS COMMA-SEP LIST",
@@ -403,16 +549,17 @@ test_interactively = function(ask = TRUE,
         }}
     }
   } # end if not just basic
-    # finished asking what to do and setting up
+  # finished asking what to do and setting up
   
   ########################### #  ########################################## #  
   # load_all() or library(EJAM) ####
-  
+  cat('\n')
   if (useloadall) {
     devtools::load_all()
   } else {
     suppressPackageStartupMessages({   library(EJAM)   }) 
   }
+  cat("Downloading all large datasets that might be needed...\n")
   dataload_from_pins("all")
   ## should happen later in the function test1group() via testbygrou
   # if (file.exists("./tests/testthat/setup.R")) {
@@ -486,17 +633,31 @@ test_interactively = function(ask = TRUE,
     cat("Done with basic checks. Not doing any other testing. \n\n")
     invisible(x)
   } # halts if this gets done - just y_basic done.
-  ######################################################## #
-  
+  ########################### #  ########################################## #
+  ########################### #  ########################################## #
   
   
   ########################### #  ########################################## #
   
+  # try to do this once here and not in setup.R 
+  # out_api ####
+  if (exists("out_api" , envir = globalenv() )) {
+    cat("Using the copy of out_api that already is in globalenv() so if that is outdated you should halt and do rm(out_api) now\n")
+  } else {
+    cat("Creating out_api in the globalenv(), using ejscreenapi()\n\n")
+    test2lat <- c(33.943883,    39.297209)
+    test2lon <- c(-118.241073, -76.641674)
+    pts <- data.frame(lat = test2lat, lon = test2lon)
+    testradius = 1
+    out_api       <- ejscreenapi(lon = test2lon, lat = test2lat, radius = testradius, on_server_so_dont_save_files = TRUE, save_when_report = FALSE)
+    assign(x = "out_api", out_api, envir = globalenv())
+  }  
+  ########################### #  ########################################## #
+  
   # log file started ####
   
-  cat("Started at", as.character(Sys.time()), '\n')
-  cat("Running all tests may take >40 minutes\n\n")
-    
+  # cat("\n\nStarted testing at", as.character(Sys.time()), '\n')
+  
   junk = loggable(file = logfilename, x = {
     cat(logfilename_only, '\n ---------------------------------------------------------------- \n\n')
     cat("Started at", as.character(Sys.time()), '\n')
@@ -505,40 +666,79 @@ test_interactively = function(ask = TRUE,
       tnameprint = paste0(tname, collapse = ',')
     }
     
-    cat(" 
-        ask          = ", ask, " 
-        noquestions  = ", noquestions, " 
-        useloadall   = ", useloadall, "  
-        
-        y_basic      = ", y_basic, "
-          y_latlon     = ", y_latlon, "
-          y_shp        = ", y_shp, "
-          y_fips       = ", y_fips, "
-        
-        y_runsome    = ", y_runsome, "  
-          tname        = ", tnameprint, " 
-        
-        y_runall     = ", y_runall, "  
-        
-        y_seeresults = ", y_seeresults, "  
-        y_save       = ", y_save, "  
-        mydir        = ", "[not shown here]" , "
-        "
+    ## summary of input parameters ####
+    # get current values
+    paramslist <- list()
+    for (i in 1:length(formalArgs(test_interactively))) {
+      paramslist[[i]] <- get(formalArgs(test_interactively)[i])
+    }
+    names(paramslist) <- formalArgs(test_interactively)
+    paramslist$tname <- paste0(paramslist$tname, collapse = ",") # easier to view
+    params <- paramslist
+    ## same as spelling them out:
+    # params = list(ask =  ask,
+    #               noquestions  =  noquestions,
+    #               useloadall   =  useloadall,
+    #               y_basic      =  y_basic,
+    #               y_latlon     =  y_latlon,
+    #               y_shp        =  y_shp,
+    #               y_fips       =  y_fips,
+    #               y_runsome    =  y_runsome,  
+    #               tname        =  paste0(tname, collapse = ","),
+    #               y_runall     =  y_runall,
+    #               y_seeresults =  y_seeresults,  
+    #               y_save       =  y_save,  
+    #               y_tempdir    =  y_tempdir,
+    #               mydir        =  mydir 
+    # )
+    paramsdefaults <- formals(test_interactively)
+    params_summary = data.frame(
+      default = cbind(paramsdefaults),
+      current = cbind(params)
     )
+    colnames(params_summary) <- c('default', 'current')
+    cat("\nParameters (options) being used: \n")
+    print(params_summary)
+    cat("\n")
+    
+    # cat("\nParameters (options) being used:
+    # 
+    #     ask          = ", ask, " 
+    #     noquestions  = ", noquestions, " 
+    #     useloadall   = ", useloadall, "  
+    #     
+    #     y_basic      = ", y_basic, "
+    #       y_latlon     = ", y_latlon, "
+    #       y_shp        = ", y_shp, "
+    #       y_fips       = ", y_fips, "
+    #     
+    #     y_runsome    = ", y_runsome, "  
+    #       tname        = ", tnameprint, "
+    #     
+    #     y_runall     = ", y_runall, "  
+    #     
+    #     y_seeresults = ", y_seeresults, "  
+    #     y_save       = ", y_save, "  
+    #     mydir        = ", "[not shown here]" , "
+    #     "
+    # )
   })
-  
+  ########################### #  ########################################## #
   ########################### #  ########################################## #
   
   # RUN JUST 1 FILE OR GROUP ####
   
   if (y_runsome) {
     
-    # consoleclear()
-    
     x <- testbygroup(testlist = partial_testlist)
-    testsome <- x
+    bytest <- x
+    
     junk = loggable(file = logfilename, x = {
-      cat("\n\n                                         RESULTS THAT FAILED/ WARNED/ CANT RUN     \n\n")
+      
+      cat("TEST RESULTS AS OF "); cat(as.character(Sys.Date()))
+      
+      cat("\n\n                            RESULTS THAT FAILED/ WARNED/ CANT RUN     \n\n")
+      
       if (any(x$flag + x$error_cant_test > 0)) {
         print(x[x$flag + x$error_cant_test > 0,])
       } else {
@@ -546,47 +746,59 @@ test_interactively = function(ask = TRUE,
       }
       cat("\n\n")
     })
+    ########################### # 
+    ## save results of some testing ####
     
     if (y_save) {
       fname <- paste0("results_of_some_unit_testing_", as.character(Sys.Date()), ".rda")
       fname = (  file.path(mydir, fname) )
-      save(testsome, file = fname)
+      save(bytest, file = fname)
       junk = loggable(file = logfilename, x = {
-         
+        
         cat('\n  See', fname, ' for results of some unit testing.\n\n') 
       })
     } # end if - save
     
   }
   ########################### #  ########################################## #
+  ########################### #  ########################################## #
   
   # RUN ALL TESTS (slow)  ####
   
   if (y_runall) {
     
-    # consoleclear()
-    print(tlistinfo)
-    
     z <- system.time({
-      testall <- testbygroup(testlist = testlist)
+      
+      x <- testbygroup(testlist = testlist)
+      bytest <- x
+      
     })
     junk = loggable(file = logfilename, x = {
-      print(z)
+      
+      cat("TEST RESULTS AS OF "); cat(as.character(Sys.Date()))
+      
+      cat("\n\n                            RESULTS THAT FAILED/ WARNED/ CANT RUN     \n\n")
+      
+      if (any(x$flag + x$error_cant_test > 0)) {
+        print(x[x$flag + x$error_cant_test > 0,])
+      } else {
+        cat("All selected tests ran and passed.")
+      }
+      cat("\n\n")
     })
-    ########################### #  ########################################## #
-    x <- testall
-    ## save results of testing ####
+    ########################### # 
+    ## save results of all testing ####
     
     # y_save = askYesNo("Save results of unit testing?") 
     if (is.na(y_save)) {stop("cancelled")}
     if (y_save) {
       fname <- paste0("results_of_unit_testing_", as.character(Sys.Date()), ".rda")
       fname = (  file.path(mydir, fname) )
-      save(testall, file = fname)
+      save(bytest, file = fname)
       junk = loggable(file = logfilename, x = {
         # cat("TEST RESULTS AS OF "); cat(as.character(Sys.Date()))
         # cat("\n\n")
-        # print(cbind(`PERCENT OF ALL TESTS` = round(100 * colSums(testall[,4:11]) / 1125, 1)))
+        # print(cbind(`PERCENT OF ALL TESTS` = round(100 * colSums(bytest[,4:11]) / 1125, 1)))
         # cat("\n\n")
         cat('\n  See', fname, ' for full results of unit testing.\n\n') 
       })
@@ -600,10 +812,9 @@ test_interactively = function(ask = TRUE,
   # y_seeresults = askYesNo("View results of unit testing?") 
   if (is.na(y_seeresults))  {stop("cancelled")}
   if (y_seeresults) {
-    consoleclear()
+    # consoleclear()
     ########################### #  ########################### #
     junk <- loggable(file = logfilename, x = {
-      cat("TEST RESULTS AS OF "); cat(as.character(Sys.Date()))
       
       # HOW MANY TOTAL PASS/FAIL?
       
@@ -624,16 +835,11 @@ test_interactively = function(ask = TRUE,
       
       ## KEY GROUPS - WHICH TEST GROUPS or FILES HAVE THE MOST FAILING TESTS?
       
-      x[ , flag_byfile := sum(flag), by = "file"]
-      x[ , err_byfile  := sum(err),  by = "file"]
-      x[ , flag_bygroup := sum(flag), by = "testgroup"]
-      x[ , err_bygroup  := sum(err),  by = "testgroup"]
-      setorder(x, -err_bygroup, testgroup, -flag, -failed, file)
-      
       bygroup <- x[ , .(err = sum(err), warning = sum(warning), flag = sum(flag), 
-                        passed = sum(passed), tests = sum(tests)), by = "testgroup"]
-      cat("\n\n\n")
-      cat("KEY GROUPS OF FILES")
+                        passed = sum(passed), tests = sum(tests), 
+                        seconds_bygroup = seconds_bygroup[1]), by = "testgroup"]
+      cat("\n\n")
+      cat("GROUPS OF FILES")
       cat("\n\n\n")
       print(bygroup)
       ########################### #  ########################### #
@@ -648,76 +854,70 @@ test_interactively = function(ask = TRUE,
       by = "file"]
       setorder(byfile, -err_bygroup, testgroup, -err_byfile, file)
       setcolorder(byfile, neworder = c("testgroup", "err_bygroup", "file", "err_byfile"))
-      
+      byfile_key <- byfile[err_byfile > 0, ]
       cat("\n\n")
-      cat("KEY FILES")
-      cat("\n\n")
-      print(byfile)
-      # cat("\nTEST RESULTS AS OF "); cat(as.character(Sys.Date()))  
+      if (NROW(byfile_key) == 0) {
+        cat("No test files had errors.\n\n")
+      } else { 
+        cat("KEY FILES")
+        cat("\n\n")
+        print(byfile_key)
+        
+        topfilenames <- as.data.frame(byfile_key)
+        topfilenames = topfilenames[order(topfilenames$err_byfile, decreasing = TRUE), ]
+        topfilenames = topfilenames$file[topfilenames$err_byfile > 0]
+        if (length(topfilenames) > 0) {
+          topfilenames <- topfilenames[1:min(5, length(topfilenames))]
+          cat("
+TO OPEN SOME KEY TEST FILES FOR EDITING, FOR EXAMPLE:
+  
+" ,
+              paste0("rstudioapi::navigateToFile('./tests/testthat/", topfilenames, "')", collapse = "\n "),
+              "
+
+")
+          # rstudioapi::navigateToFile("./tests/testthat/test-doaggregate.R")
+          # rstudioapi::navigateToFile("./tests/testthat/test-ejamit.R")
+          # rstudioapi::navigateToFile("./tests/testthat/test-latlon_df_clean.R")
+        }
+      }
       ########################### #
       
       # WHICH TESTS? 
       
       cat("\n\n\n")
-      cat("PRIORITIZED TESTS")
-      cat("\n\n\n")
+      cat("KEY TESTS")
+      cat("\n\n")
       
-      prioritize = x[order(-x$flag, -x$failed), 1:11]
-      these = prioritize$tests != prioritize$passed | prioritize$error_cant_test > 0
+      bytest_key = x[order(-x$flag, -x$failed), 1:11]
+      these = bytest_key$tests != bytest_key$passed | bytest_key$error_cant_test > 0
       if (any(these)) {
-        prioritize <- prioritize[these, ]
-        print(prioritize)
+        bytest_key <- bytest_key[these, ]
+        print(bytest_key)
         cat("\n\n")  
       } else {
-        prioritize = NA
+        bytest_key = NA
       }
       
-      cat('
-TO OPEN SOME KEY TEST FILES FOR EDITING, FOR EXAMPLE:
-  
-  rstudioapi::navigateToFile("./tests/testthat/test-FIPS_FUNCTIONS.R")
-  rstudioapi::navigateToFile("./tests/testthat/test-state_from_fips_bybg.R")
-  rstudioapi::navigateToFile("./tests/testthat/test-doaggregate.R")
-  rstudioapi::navigateToFile("./tests/testthat/test-ejamit.R")
-  rstudioapi::navigateToFile("./tests/testthat/test-latlon_df_clean.R")
-  
-      ')
-      
-      # cat("MORE KEY TESTS DETAILS")
-      # cat("\n\n")
-      # xx = x[x$error_cant_test > 0 | x$test != x$passed, ]
-      # print(xx)
     }) # end loggable
   } # end of big if - viewing results
   ########################### #  ########################################## #
-  if (!exists("testall")) {testall <- NA}
-  if (!exists("testsome")) {testsome <- NA}
+  if (!exists("bytest")) {bytest <- NA}
   
-  params = list(ask =  ask,
-                noquestions  =  noquestions,
-                useloadall   =  useloadall,
-                y_basic      =  y_basic,
-                y_latlon     =  y_latlon,
-                y_shp        =  y_shp,
-                y_fips       =  y_fips,
-                y_runsome    =  y_runsome,  
-                tname        =  paste0(tname, collapse = ","),
-                y_runall     =  y_runall,
-                y_seeresults =  y_seeresults,  
-                y_save       =  y_save,  
-                mydir        =  mydir 
-  )
+  totalseconds = sum(x[ , seconds_bygroup[1], by = "testgroup"][,V1])
+  totalminutes = round(totalseconds / 60, 1)  
   
-  biglist =     list(
+  biglist <- list(
+    minutes = totalminutes,
     passcount = passcount,
     passpercent = passpercent,
-    prioritize = prioritize,
     bygroup = bygroup, 
     byfile = byfile,
-    testall = testall, 
-    testsome = testsome,
-    mydir = mydir,
-    params = params  
+    bytest_key = bytest_key,
+    bytest_all = bytest, 
+    folder = mydir,
+    count_available_files_bygroup = count_available_files_bygroup,
+    params = params
   )
   # SAVE results ####
   if (y_save) {
@@ -728,7 +928,10 @@ TO OPEN SOME KEY TEST FILES FOR EDITING, FOR EXAMPLE:
       '\n saved ', fname, ' \n\n'
     )
   }
-  loggable(file = logfilename, x = {cat("Finished at", as.character(Sys.time()), '\n')})
+  loggable(file = logfilename, x = {
+    cat("Finished at", as.character(Sys.time()), '\n')
+    cat(paste0(totalminutes, ' minutes total time for tests\n'))
+  })
   
   if (interactive()) {
     browseURL(mydir) # open folder in file explorer / finder
@@ -739,6 +942,7 @@ TO OPEN SOME KEY TEST FILES FOR EDITING, FOR EXAMPLE:
   }
   
   cat("Finished at", as.character(Sys.time()), '\n')
+  
   if (interactive()) {beepr::beep(10)} # utils::alarm() may not work 
   invisible(
     biglist
@@ -789,7 +993,7 @@ loggable <- function(x, file = 'will be created using timestamp if not provided 
   
   capture.output(x, file = file, append = append, split = split) # this is supposed to print to console and to log file, but...
   
-  cat('\n  Adding to ', file, ' log of results of unit testing.\n\n')
+  # cat('\n  Adding to ', file, ' log of results of unit testing.\n\n')
   
   # use file = logfilename  or file = NULL  to override whatever the y_save value was when func was defined
   # file = NULL  will show only in console and not log it
@@ -811,8 +1015,14 @@ loggable <- function(x, file = 'will be created using timestamp if not provided 
   #   
   #   }) 
   ## use file = logfilename  or file = NULL  to override whatever the y_save value is
-  
+
 }
 ################################### # 
 
-# biglist <- test_interactively(ask = FALSE, mydir = "~/../Downloads/unit testing")
+#  biglist <- test_interactively()
+## or
+# mydir = "~/../Downloads/unit testing"
+# biglist <- test_interactively(ask = F, mydir=mydir)
+
+
+################################### #  ################################### #  ################################### #

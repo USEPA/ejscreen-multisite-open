@@ -1,8 +1,26 @@
 
-test_that("report_residents_within_xyz ok", {
+checkit <- function(mytest) {
+  params <- rbindlist(mytest)
+  names(params) <- c('sitetype', 'radius', 'nsites')
+  data.frame(params,
+             text = sapply(mytest, function(z) {
+               
+               report_residents_within_xyz(
+                 
+                 sitetype = z[[1]], 
+                 radius = z[[2]], 
+                 nsites = z[[3]]
+               )
+             })
+  )
+}
+############################## #   ############################## # 
+
+test_that("report_residents_within_xyz test123", {
   
-  ############################## # 
+  
   test1 <- list(
+    
     # list('latlon', 0, 1), # cannot occur - zero radius with latlon type
     # list('latlon', 0, 100), # cannot occur - zero radius with latlon type
     list('latlon', 3, 1),
@@ -25,7 +43,14 @@ test_that("report_residents_within_xyz ok", {
     
     list('Type X site', 3, 100)   # ok singular / plural 
   )
-  ############################## # 
+  ############################## #   
+  expect_no_error({
+    x = checkit(test1)
+  }
+  # , label = "test1" 
+  )
+  ############################## #   ############################## # 
+  
   test2 <- list(
     
     # fix/note singular/plural
@@ -44,56 +69,59 @@ test_that("report_residents_within_xyz ok", {
     list( "", '9.9 kilometers', "several"),
     list( "Georgia location", '', "several"),
     list('', '', '')
-  )
-  ############################## # 
+  ) 
+  ############################## #   
+  expect_no_error({
+    
+    x = checkit(test2)
+  })
+  ############################## #   ############################## # 
+  
   test3 <- list(
+    
     #   na values 
     list(NA, 3, 100),
     list('latlon', NA, 100),
     list('latlon', 3, NA)
   )
-  ############################## # 
+  ############################## #   
+  
+  expect_no_error({
+    
+    x = checkit(test3)
+    
+    # ## but not useful results if NA 
+    # sitetype radius nsites                                                    text
+    # 1     <NA>      3    100       Residents within 3 miles of any of the 100 places
+    # 2   latlon     NA    100         Residents within any of the 100 selected points
+    # 3   latlon      3     NA Residents within 3 miles of any of the  selected points
+  })
+  
+})
+########################################################################### #
+
+test_that("report_residents_within_xyz test4 warns if NULL params", {
+  
   test4 <- list( 
+    
     # NULL values 
     list(NULL, 3, 100),
     list('latlon', NULL, 100),
     list('latlon', 3, NULL)
   )
-  ############################## #   ############################## # 
-  
-  checkit <- function(mytest) {
-    params <- rbindlist(mytest)
-    names(params) <- c('sitetype', 'radius', 'nsites')
-    data.frame(params,
-               text = sapply(mytest, function(z) {
-                 report_residents_within_xyz(
-                   sitetype = z[[1]], 
-                   radius = z[[2]], 
-                   nsites = z[[3]]
-                 )
-               })
-    )
-  }
-  ############################## #   ############################## # 
-  
+  ############################## # 
   expect_no_error({
-    x = checkit(test1)
-  }
-  # , label = "test1" 
-  )
-  
-  
-  expect_no_error({
-    x = checkit(test2)
+    suppressWarnings({
+      x = checkit(test4)
+    })
   })
   
-  expect_no_error({
-    x = checkit(test3)
-  })
-  
-  expect_no_error({
+  expect_warning({
     x = checkit(test4)
-  })
-  
+  } )
   
 })
+########################################################################### #
+
+rm(checkit)
+
