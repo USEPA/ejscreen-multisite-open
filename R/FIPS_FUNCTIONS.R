@@ -685,8 +685,55 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = FALSE,
   if (!exact) {
     
     ### for exact=F, could recode to query name using grep within given ST, separately?
-    # pname = pre_comma(place_st)
-    # st = EJAM:::fips2state_abbrev(fips_state_from_statename( post_comma(place_st)))
+      
+    ########################### # ########################### # ########################### # ########################### # 
+    ########################### # ########################### # ########################### # ########################### # 
+    
+    ## DRAFT FUNCTION TO INCORPORATE HERE *** ####
+    
+    # -- USES grep TO SPLIT QUERY TERM INTO place,ST 
+    # and search each of those parts in censusplaces$placename and $ST
+    # so it searches for and finds only places not counties or states
+    
+    fips_place_from_placename_grep <- function(tx) {
+    
+      ## name2fips_grep_censusplaces 
+      # cat("Just using grep looking in censusplaces$placename, for the full placename including state, wont work since placename field is without the state part\n")
+      # pname = pre_comma(place_st)
+      # st = EJAM:::fips2state_abbrev(fips_state_from_statename( post_comma(place_st)))
+      hits = list()
+      for (i in seq_along(tx)) {  ###################### # 
+        queryfull = tx[i]
+        if (!grepl(',', queryfull) ) {
+          queryfull <- pre_comma(queryfull) # assume if no comma they meant ST not specified
+        }  
+        # found = censusplaces[grepl(queryfull, censusplaces$placename, ignore.case = T), ]
+        prestmatch = grepl( pre_comma(queryfull), censusplaces$placename, ignore.case = T)
+        stmatch    = grepl(post_comma(queryfull), censusplaces$ST, ignore.case = T)
+        found_careful = censusplaces[prestmatch & stmatch, ]
+        
+        if (NROW(found_careful) == 0) {
+          # cat(' 0 fips were found via grep in censusplaces placename & ST for query =', paste0('"',tx[i],'"'), '\n')
+          empty = censusplaces[0,]
+          empty = empty[1,]
+          hits[[i]] <- data.frame(query = tx[i], empty)
+        } else {
+          
+          hits[[i]] = data.frame(query = tx[i], found_careful)
+          rownames(hits[[i]]) <- NULL
+          # cat(NROW(found_careful), 'fips candidates for query =', paste0('"',tx[i],'"'), '\n'); cat('\n'); print(hits[[i]]); cat('\n')
+        }
+      } ###################### #  ###################### #  
+      hits = data.table::rbindlist(hits)
+      hits[,candidates := .N, by = query]
+      hits[is.na(fips), candidates := 0]
+      # # how many hits for each query?
+      cat("\nSummary of hits per query term\n\n")
+      print(x[ , .(candidates = candidates[1]), by = 'query'])
+      return(hits)
+    }
+    ########################### # ########################### # ########################### # ########################### # 
+    ########################### # ########################### # ########################### # ########################### # 
     
     # remove/ignore a space after comma
     all_place_st_dont_say_cdp = gsub(", ", ",", all_place_st_dont_say_cdp)
@@ -1607,7 +1654,6 @@ st2statename = function(ST) {
   return(out)
 }
 ######################################## #
-############################# # 
 
 #' utility - keep text before last or 1st comma (get "Waco" from "Waco, TX")
 #' not used
@@ -1651,6 +1697,8 @@ pre_comma = function(x, lastcomma = TRUE, if_no_comma_do_nothing = TRUE, trim = 
       ## eg. see results for case 14,  x = "before1st of many,after1st of many,beforelast of many,afterlast of many"
       # based on gsub from post_comma(x, lastcomma = TRUE, if_no_comma_do_nothing = TRUE, trim = FALSE)
       gsub("(.*),([^,]*)", '\\1', x),  # <<<<<<<<<<<<<<<<<<<<<
+# precomma  = function(x) {trimws(
+#     gsub("(.*),(.*)", "\\1", x, ignore.case = T))} # simplistic version
       
       no_comma_output  
       # if no comma at all, no text BEFORE a comma, so return empty string when if_no_comma_do_nothing = F
@@ -1704,6 +1752,8 @@ post_comma = function(x, lastcomma = TRUE, if_no_comma_do_nothing = TRUE, trim =
       grepl(",", x),  # if there is any comma at all, return noncomma text after last one
       
       gsub(".*,([^,]*)", '\\1', x),  # <<<<<<<<<<<<<<<<<<<<<
+      # postcomma = function(x) {trimws(
+      #     gsub("(.*),(.*)", "\\2", x, ignore.case = T))} # simplistic version
       
       no_comma_output
       # if no comma at all, no text after a comma, so return empty string when if_no_comma_do_nothing = F
