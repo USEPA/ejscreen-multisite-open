@@ -44,9 +44,7 @@ app_ui  <- function(request) {
       ), actionButton("disconnect", "Disconnect the app"),
       
       ### html header inserted from global.R ####
-      if (!is_site_public) {
-      html_header_fmt
-      },
+      html_header_fmt,
       
       ### title (for app and browser tab) ####
       
@@ -1350,9 +1348,8 @@ app_ui  <- function(request) {
         ## . ####
         
       ), # end tabset panel from line 37 or so ^^^^^^^^^  ## ##
-   if (!is_site_public) {
       html_footer_fmt  ## adds HTML footer - defined in global.R
-   }
+
     ) ## end fluidPage
   ) # end tag list
   
