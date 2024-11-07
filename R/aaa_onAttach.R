@@ -78,9 +78,9 @@
   # download BLOCK (not blockgroup) data, etc, from EPA AWS Data Commons ####
   
   if (asap_aws) {
+    EJAM::download_latest_arrow_data()
     
     # Note this duplicates code in global.R too
-    
     if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
       
       dataload_from_pins(varnames = c("blockpoints", "blockwts", "quaddata"), 
