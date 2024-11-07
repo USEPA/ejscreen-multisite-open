@@ -22,14 +22,15 @@ download_latest_arrow_data <- function(
     "frs_by_sic"
   )) {
   
-  # get latest release and user's release
-  latestRelease <- piggyback::pb_releases(repo = "USEPA/ejamdata")
+  # get latest Arrow version (from EJAMData repo's latest release tag) 
+  # and user's Arrow version (from DESCRIPTION's ArrowVersion attribute)
+  latestArrowVersion <- piggyback::pb_get_releases(repo = "USEPA/ejamdata")[[1]]$tag_name
   usersDesc <- desc::desc(file = "DESCRIPTION")
-  usersRelease <- paste0('v', usersDesc$get("ArrowVersion"))
+  usersArrowVersions <- usersDesc$get("ArrowVersion"))
 
   # if user has latest release, check if any requested files are missing
   # if so, need to re-download. Otherwise, all set
-  if(usersRelease == latestRelease) {
+  if(usersArrowVersions == latestArrowVersion) {
     filenames <- paste0(varnames, ".arrow")
     full_paths <- file.path(app.sys('data'), filenames)
     missing_files <- filenames[!file.exists(full_paths)]
@@ -50,5 +51,5 @@ download_latest_arrow_data <- function(
   )
 
   # update DESCRIPTION file
-  usersDesc$set("ArrowVersion", latestVersion)
+  usersDesc$set("ArrowVersion", latestArrowVersion)
 }
