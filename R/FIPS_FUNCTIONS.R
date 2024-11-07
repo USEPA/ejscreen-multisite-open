@@ -75,6 +75,58 @@ fips_valid <- function(fips) {
 }
 ############################################################################# #
 
+fipstype_from_nchar <- function(n) {
+  
+  # utility to get fips type of each FIPS code, based on number of digits (characters)
+  # 
+  # examples
+  # fipstype_from_nchar(c(0:16, NA, 16))
+  # see  [fips_lead_zero()]  and  [fipstype()]   for details
+  
+  n2f <- data.frame(
+    n = 1:15,
+    ftype = c(
+      'state',
+      'state',
+      NA,
+      'county',
+      'county',
+      'city',
+      'city',
+      NA,
+      NA,
+      'tract',
+      'tract',
+      'blockgroup',
+      NA,
+      'block',
+      'block'
+    )
+  )
+  
+  #     n      ftype
+  # 1   1      state
+  # 2   2      state
+  # 3   3       <NA>
+  # 4   4     county
+  # 5   5     county
+  # 6   6       city
+  # 7   7       city
+  # 8   8       <NA>
+  # 9   9       <NA>
+  # 10 10      tract
+  # 11 11      tract
+  # 12 12 blockgroup
+  # 13 13       <NA>
+  # 14 14      block
+  # 15 15      block
+  
+  return(
+    n2f$ftype[match(n, n2f$n)]
+  )
+}
+############################################################################# #
+
 
 #' FIPS - Identify what type of Census geography is each FIPS code (block, county, etc.)
 #' @details Note a number of length 11 is an ambiguous case - might be a tract fips
@@ -112,15 +164,16 @@ fips_valid <- function(fips) {
 #'
 fipstype <- function(fips) {
   
-  fips <- fips_lead_zero(fips = fips) # cleans them so each is NA or a valid nchar() string
-  ftype <- rep(NA, length(fips))
-  
-  ftype[nchar(fips, keepNA = FALSE) == 15] <- "block"
-  ftype[nchar(fips, keepNA = FALSE) == 12] <- "blockgroup"
-  ftype[nchar(fips, keepNA = FALSE) == 11] <- "tract"
-  ftype[nchar(fips, keepNA = FALSE) ==  7] <- "city" # ACTUALLY IT IS "place" as in censusplaces$placename or $fips  # e.g, 5560500 is Oshkosh, WI
-  ftype[nchar(fips, keepNA = FALSE) ==  5] <- "county"
-  ftype[!is.na(fips) & nchar(fips) ==  2] <- "state"
+  ftype <- fipstype_from_nchar(nchar(suppressWarnings(as.numeric(fips))))
+   
+  # fips <- fips_lead_zero(fips = fips) # cleans them so each is NA or a valid nchar() string
+  # ftype <- rep(NA, length(fips))
+  # ftype[nchar(fips, keepNA = FALSE) == 15] <- "block"
+  # ftype[nchar(fips, keepNA = FALSE) == 12] <- "blockgroup"
+  # ftype[nchar(fips, keepNA = FALSE) == 11] <- "tract"
+  # ftype[nchar(fips, keepNA = FALSE) ==  7] <- "city" # a place/city/town/CDP/etc. as in censusplaces$placename or $fips  # e.g, 5560500 is Oshkosh, WI
+  # ftype[nchar(fips, keepNA = FALSE) ==  5] <- "county"
+  # ftype[!is.na(fips) & nchar(fips) ==  2] <- "state"
   
   if (anyNA(ftype)) {
     
