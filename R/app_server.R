@@ -52,6 +52,29 @@ app_server <- function(input, output, session) {
   ##  Note that  ejamit(points)  would do all of those steps in one function, essentially.
   data_processed <-  reactiveVal(NULL) # initialized so it can be set later in reaction to an event, using data_processed(newvalue)
   data_summarized <- reactiveVal(NULL) # initialized so it can be set later in reaction to an event, using
+  
+  sanitized_standard_analysis_title <- reactive({
+    sanitize_text(input$standard_analysis_title)
+  })
+  
+  sanitized_analysis_title <- reactive({
+    sanitize_text(input$analysis_title)
+  })
+  
+  sanitized_an_threshgroup1 <- reactive({
+    sanitize_text(input$an_threshgroup1)
+  })
+  
+  sanitized_an_threshgroup2 <- reactive({
+    sanitize_text(input$an_threshgroup2)
+  })
+  
+  sanitized_bt_rad_buff <- reactive({
+    req(input$bt_rad_buff)
+    sanitize_numeric(input$bt_rad_buff)
+  })
+
+  
   #
   # provide nice message if disconnected, via shinydisconnect package
   observeEvent(input$disconnect, {session$close()})
@@ -265,6 +288,9 @@ app_server <- function(input, output, session) {
   # observeEvent(input$bt_get_results, {
   #   submitted_upload_method(current_upload_method())
   # })
+  
+
+  
   
   observeEvent(input$show_data_preview,
                {
@@ -1164,8 +1190,8 @@ app_server <- function(input, output, session) {
       if (current_slider_val[[current_upload_method()]] == 0) {
         shinyjs::disable(id = 'bt_get_results')
         showNotification(id = 'radius_warning', session = session,
-                         duration = NULL, type = 'warning', closeButton = F,
-                         'Please use a radius greater than 0 for analyzing points.')
+                         duration = NULL, type = 'error', closeButton = F,
+                         'Please use a numeric radius greater than 0 for analyzing points.')
         
       } else if (current_slider_val[[current_upload_method()]] > 0 &
                  disable_buttons[[current_upload_method()]] == FALSE) {
@@ -1347,11 +1373,11 @@ app_server <- function(input, output, session) {
   #       distance_near_eachother(
   #     lon = data_uploaded()$lon,
   #     lat = data_uploaded()$lat,
-  #     distance = 2 * input$bt_rad_buff
+  #     distance = 2 * sanitized_bt_rad_buff()
   #     ## if switching units between miles and km - not currently used
   #     # distance = ifelse(input$radius_units == 'miles',
-  #     #                   2 * input$bt_rad_buff,
-  #     #                   2 * input$bt_rad_buff * 0.62137119
+  #     #                   2 * sanitized_bt_rad_buff(),
+  #     #                   2 * sanitized_bt_rad_buff() * 0.62137119
   #     #)
   #   )
   # })
@@ -1450,15 +1476,34 @@ app_server <- function(input, output, session) {
   # RADIUS SLIDER updates/rules ####
   
   output$radius_slider_ui <- renderUI({
-    shiny::sliderInput(inputId = 'bt_rad_buff',
-                       label = "",  ## label is updated in server  # htmltools::h5('Within what distance of a site?'),
-                       min = current_slider_min[[current_upload_method()]] , # minradius, # from global.R, is min user can pick but also is min the default can be. also see minradius_shapefile
-                       max = input$max_miles,  ## default_max_miles from global.R, or else a cap user sets in advanced tab. cannot use input$ in ui, only server
-                       value = input$default_miles, ## from advanced tab that uses global.R default_default_miles unless changed in adv tab. have to do in server-- cannot use input$ in ui, only in server
-                       step = stepradius, # from global.R
-                       post = ' miles'
-    )
+    valid_default_miles <- is.numeric(input$default_miles) && input$default_miles >= 0.5
+    valid_max_miles <- is.numeric(input$max_miles) && input$max_miles > 0
+    
+    if (valid_default_miles && valid_max_miles) {
+      shiny::sliderInput(
+        inputId = 'bt_rad_buff',
+        label = "",
+        min = current_slider_min[[current_upload_method()]],
+        max = input$max_miles,
+        value = input$default_miles,
+        step = stepradius,
+        post = ' miles'
+      )
+    } else {
+      error_message <- if (!valid_default_miles && !valid_max_miles) {
+        "The radius input is disabled because both the default and max miles values are invalid. Please set valid distances in the Advanced Settings tab."
+      } else if (!valid_default_miles) {
+        "The radius input is disabled because the default miles value is invalid. Please set a valid distance in the Advanced Settings tab."
+      } else {
+        "The radius input is disabled because the max miles value is invalid. Please set a valid maximum distance in the Advanced Settings tab."
+      }
+      
+      tags$p(error_message, style = "color: red; font-weight: bold;")
+    }
   })
+  
+
+  
   ## disable radius slider when FIPS is selected
   observe({
     if (current_upload_method() == 'FIPS') {
@@ -1496,13 +1541,23 @@ app_server <- function(input, output, session) {
   observeEvent(
     input$default_miles,
     {
+      # Sanitize the input: Convert to numeric or set a default value
+      sanitized_miles <- as.numeric(input$default_miles)
+      
+      # Handle cases where the input cannot be converted to a numeric value
+      if (is.na(sanitized_miles)) {
+        sanitized_miles <- 0
+      }
+      
       these <- c(
         'latlon', 'NAICS', 'SIC', 
         'FRS', 'MACT',
         'EPA_PROGRAM_up', 'EPA_PROGRAM_sel'
         # note   FIPS and SHP types handled separately
       )
-      for (this in  these) {current_slider_val[[this]] <- input$default_miles}  
+      for (this in these) {
+        current_slider_val[[this]] <- sanitized_miles
+      }   
     }
   )
   # set/update based on advanced tab set by global.R and then might be changed by a user
@@ -1527,15 +1582,15 @@ app_server <- function(input, output, session) {
   ## update stored radius when slider changes
   # except this would initially save the one current radius (default) as the current value for all methods including shapefiles which we dont want to do
   observeEvent(
-    input$bt_rad_buff,
+    sanitized_bt_rad_buff(),
     {
-      current_slider_val[[current_upload_method()]] <- input$bt_rad_buff
+      current_slider_val[[current_upload_method()]] <- sanitized_bt_rad_buff()
     }
   )
   
   ## Create separate radius label to allow line break
   output$radius_label <- renderUI({
-    val <- input$bt_rad_buff
+    val <- sanitized_bt_rad_buff()
     lab <- paste0('<b>Distance from Site: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
     HTML(lab)
   })
@@ -1547,10 +1602,10 @@ app_server <- function(input, output, session) {
     
     # ***
     ## or...
-    # mapfast(data_uploaded(), radius = input$bt_rad_buff, column_names = "ej")
+    # mapfast(data_uploaded(), radius = sanitized_bt_rad_buff(), column_names = "ej")
     ## or...
     # map_facilities(mypoints = data_uploaded(), #as.data.frame(data_uploaded()),
-    #                rad = input$bt_rad_buff,
+    #                rad = sanitized_bt_rad_buff(),
     #                highlight = input$an_map_clusters,
     #                clustered = is_clustered())
     
@@ -1745,7 +1800,7 @@ app_server <- function(input, output, session) {
                     
                     thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
                     threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
-                    threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
+                    threshgroups = list(sanitized_an_threshgroup1(), sanitized_an_threshgroup2()) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
       
       ## note which FIPS dropped by ejamit() (i.e., in getting step or doagg step) as invalid,
@@ -1778,14 +1833,15 @@ app_server <- function(input, output, session) {
       if (submitted_upload_method() == "SHP") {
         
         shp_valid <- data_uploaded()[data_uploaded()$valid == T, ] # *** remove this if shapefile_clean() will do it?
+        rad_buff <- sanitized_bt_rad_buff()
         
-        if (input$bt_rad_buff > 0) {
+        if (!is.na(rad_buff) && rad_buff > 0) {
           #if (!silentinteractive) {
           cat('Adding buffer around each polygon.\n')
           #}
           shp <- shape_buffered_from_shapefile(
             shapefile = shp_valid,
-            radius.miles =  input$bt_rad_buff
+            radius.miles =  rad_buff
           ) # default crs
         } else {
           shp <- shp_valid
@@ -1836,7 +1892,7 @@ app_server <- function(input, output, session) {
         
         sites2blocks <- getblocksnearby(
           sitepoints = d_upload,                         ## already removed invalid latlons from d_upload
-          radius = input$bt_rad_buff,
+          radius = sanitized_bt_rad_buff(),
           quadtree = localtree,
           avoidorphans = input$avoidorphans,
           maxradius = input$maxradius,
@@ -1881,7 +1937,7 @@ app_server <- function(input, output, session) {
           doaggregate(
             sites2blocks = sites2blocks,
             sites2states_or_latlon = d_upload,                        # already removed invalids
-            radius = input$bt_rad_buff,
+            radius = sanitized_bt_rad_buff(),
             #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
             subgroups_type = input$subgroups_type, # nh, alone, or both # or use default of doaggregate() based on whatever subgroups_d etc are now ***
             include_ejindexes = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done
@@ -1962,18 +2018,20 @@ app_server <- function(input, output, session) {
         ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
         
         if ("REGISTRY_ID" %in% names(data_uploaded())) {
-          echolink = url_echo_facility_webpage( data_uploaded()$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
+          escaped_registry_id = escape_html(data_uploaded()$REGISTRY_ID)
+          echolink = url_echo_facility_webpage(escaped_registry_id, as_html = TRUE, linktext = 'ECHO Report')
         } else if ("RegistryID" %in% names(data_uploaded())) {
-          echolink = url_echo_facility_webpage( data_uploaded()$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
+          escaped_registry_id = escape_html(data_uploaded()$RegistryID)
+          echolink = url_echo_facility_webpage(escaped_registry_id, as_html = TRUE, linktext = 'ECHO Report')
         } else {
-          echolink = rep('N/A',nrow(out$results_bysite))
+          echolink = rep('N/A', nrow(out$results_bysite))
         }
         
         if (submitted_upload_method() != 'SHP') {
           out$results_bysite[ , `:=`(
-            `EJScreen Report` = ifelse(valid == T, url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 'N/A'),
+            `EJScreen Report` = ifelse(valid == T, url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = sanitized_bt_rad_buff(), as_html = TRUE), 'N/A'),
             `EJScreen Map`    = ifelse(valid == T, url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE),  'N/A'),
-            # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
+            # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = sanitized_bt_rad_buff(), as_html = TRUE),
             `ECHO report` = ifelse(valid == T, echolink, 'N/A')
           )]
           out$results_overall[, `:=`(
@@ -1985,9 +2043,9 @@ app_server <- function(input, output, session) {
           ## setting shapefile URLs to NA for now
           out$results_bysite <- out$results_bysite %>%
             dplyr::mutate(
-              `EJScreen Report` = 'N/A',#ifelse(valid == T, url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 'N/A'),
+              `EJScreen Report` = 'N/A',#ifelse(valid == T, url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = sanitized_bt_rad_buff(), as_html = TRUE), 'N/A'),
               `EJScreen Map`    = 'N/A',#ifelse(valid == T, url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE),  'N/A'),
-              # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
+              # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = sanitized_bt_rad_buff(), as_html = TRUE),
               `ECHO report` = 'N/A'#ifelse(valid == T, echolink, 'N/A')
             )
           out$results_overall <- out$results_overall %>%
@@ -2017,13 +2075,13 @@ app_server <- function(input, output, session) {
         #############################################################################  #
         
         # add radius to results tables (in server and in ejamit() ####
-        # out$results_bysite[      , radius.miles := input$bt_rad_buff]   # *** why not use data.table modify by reference, like this?
-        # out$results_overall[     , radius.miles := input$bt_rad_buff]
-        # out$results_bybg_people[ , radius.miles := input$bt_rad_buff]
+        # out$results_bysite[      , radius.miles := sanitized_bt_rad_buff()]   # *** why not use data.table modify by reference, like this?
+        # out$results_overall[     , radius.miles := sanitized_bt_rad_buff()]
+        # out$results_bybg_people[ , radius.miles := sanitized_bt_rad_buff()]
         #
-        out$results_bysite$radius.miles <- input$bt_rad_buff
-        out$results_overall$radius.miles <- input$bt_rad_buff
-        out$results_bybg_people$radius.miles <- input$bt_rad_buff
+        out$results_bysite$radius.miles <- sanitized_bt_rad_buff()
+        out$results_overall$radius.miles <- sanitized_bt_rad_buff()
+        out$results_bybg_people$radius.miles <- sanitized_bt_rad_buff()
         
         # out$longnames <- NA # see ejamit()
         # out$formatted <- table_tall_from_overall(out$results_overall, out$longnames) # see ejamit()
@@ -2054,7 +2112,7 @@ app_server <- function(input, output, session) {
         quiet = TRUE,
         thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
         threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
-        threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
+        threshgroups = list(sanitized_an_threshgroup1(), sanitized_an_threshgroup2()) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
     } else {
       outsum <- batch.summarize(
@@ -2066,7 +2124,7 @@ app_server <- function(input, output, session) {
         quiet = TRUE,
         thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
         threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
-        threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
+        threshgroups = list(sanitized_an_threshgroup1(), sanitized_an_threshgroup2()) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
     }
     ## update overall progress bar
@@ -2136,11 +2194,11 @@ app_server <- function(input, output, session) {
   
   ### ( Title of analysis ) ####
   # Unless user changes it here, use a standard title that has been determined by global.R but then optionally modified by advanced settings tab
+  
   output$analysis_title_ui <- renderUI({
     shiny::textInput('analysis_title',
                      label = 'Name of Your Analysis',
-                     #placeholder = 'EJ Analysis of My List of Places',
-                     value = input$standard_analysis_title)
+                     value = sanitized_standard_analysis_title())
   })
   
   ### summary header is stored in a reactive
@@ -2152,19 +2210,19 @@ app_server <- function(input, output, session) {
     ## allow title to update when either of these inputs change
     eventExpr = {
       input$bt_get_results
-      input$analysis_title
+      sanitized_analysis_title()
     }, handlerExpr = {
       req(data_processed())
       ## paste header information together
       title_text <- paste0('<div style="font-weight: bold; font-size: 11pt; text-align: center;">',
-                           input$analysis_title, '<br>')
+                           sanitized_analysis_title(), '<br>')
       
       ## exclude radius info from header text when using FIPS
       if (current_upload_method() != 'FIPS') {
         title_text <- paste0(title_text,
                              'Residents within ',
-                             #input$bt_rad_buff, ' ', input$radius_units, ' of any of the ',
-                             input$bt_rad_buff, ' miles of any of the '
+                             #sanitized_bt_rad_buff(), ' ', input$radius_units, ' of any of the ',
+                             sanitized_bt_rad_buff(), ' miles of any of the '
         )
       }
       title_text <- paste0(title_text,
@@ -2238,10 +2296,12 @@ app_server <- function(input, output, session) {
       
       popup_labels <- fixcolnames(namesnow = setdiff(names(d_merge),c('geometry', 'valid', 'invalid_msg')), oldtype = 'r', newtype = 'shortlabel')
       
-      if (input$bt_rad_buff > 0) {
+      rad_buff <- sanitized_bt_rad_buff()
+      
+      if (!is.na(rad_buff) && rad_buff > 0) {
         d_uploads <- sf::st_buffer(d_merge[d_merge$valid == T, ] , # was "ESRI:102005" but want 4269
                                    
-                                   dist = units::set_units(input$bt_rad_buff, "mi"))
+                                   dist = units::set_units(rad_buff, "mi"))
         leaflet(d_uploads) %>%  addTiles()  %>%
           addPolygons(data = d_uploads, color = circle_color,
                       popup = popup_from_df(d_uploads %>% sf::st_drop_geometry() %>% dplyr::select(-valid, -invalid_msg), labels = popup_labels),
@@ -2303,7 +2363,7 @@ app_server <- function(input, output, session) {
   ## update leaflet map when inputs change
   ##   this is currently resetting map too often in response to checkbox  ***
   # observeEvent(eventExpr = {
-  #   input$bt_rad_buff
+  #   sanitized_bt_rad_buff()
   #   input$an_map_clusters
   #   is_clustered()
   #   #input$radius_units
@@ -2316,13 +2376,13 @@ app_server <- function(input, output, session) {
     
     #clear shapes from map so buffers don't show twice
     leafletProxy(mapId = 'an_leaf_map', session) %>% clearShapes()
-    
+    rad_buff <- sanitized_bt_rad_buff()
     if (current_upload_method() == "SHP") {
-      if (input$bt_rad_buff > 0) {
+      if (!is.na(rad_buff) && rad_buff > 0) {
         shp_valid <- data_uploaded()[data_uploaded()$valid == T, ] # *** remove this if shapefile_clean() will do it
         
         d_uploads <- sf::st_buffer(shp_valid, # was "ESRI:102005" but want 4269
-                                   dist = units::set_units(input$bt_rad_buff, "mi"))
+                                   dist = units::set_units(rad_buff, "mi"))
         leafletProxy(mapId = 'an_leaf_map', session) %>%
           addPolygons(data = d_uploads, color = "red")
       }
@@ -2359,13 +2419,13 @@ app_server <- function(input, output, session) {
         d_upload <- data_uploaded()
         base_color      <- '#000080'
         # cluster_color   <- 'red'
-        #req(input$bt_rad_buff)
+        #req(sanitized_bt_rad_buff())
         
         ## convert units to miles for circle size
         # if (input$radius_units == 'kilometers') {
-        #   rad <- input$bt_rad_buff * meters_per_mile * 0.62137119
+        #   rad <- sanitized_bt_rad_buff() * meters_per_mile * 0.62137119
         # } else {
-        # rad <- input$bt_rad_buff * meters_per_mile
+        # rad <- sanitized_bt_rad_buff() * meters_per_mile
         #}
         
         #if (input$an_map_clusters == TRUE) {
@@ -2381,7 +2441,7 @@ app_server <- function(input, output, session) {
         
         suppressMessages(
           leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
-            map_facilities_proxy(rad = input$bt_rad_buff,
+            map_facilities_proxy(rad = sanitized_bt_rad_buff(),
                                  highlight = TRUE, #input$an_map_clusters,
                                  popup_vec = popup_vec,
                                  use_marker_clusters = nrow(d_upload) > marker_cluster_cutoff,
@@ -2485,7 +2545,7 @@ app_server <- function(input, output, session) {
         value = unlist(ratio.to.us.d()[c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg)])
       )
       ## paste subtitle for boxplot
-      subtitle <- paste0('Within ', input$bt_rad_buff,' miles of one site, ',
+      subtitle <- paste0('Within ', sanitized_bt_rad_buff(),' miles of one site, ',
                          max.name.d.bysite, ' is ', round(max.ratio.d.bysite,1), 'x the US average\n' #,
                          # 'and 1 in 4 sites is at least ',round(q75.ratio.d.bysite,2), 'x the US average'
       )
@@ -2626,9 +2686,10 @@ app_server <- function(input, output, session) {
           d_merge = merge(d_up_geo, filtered_data, by = "ejam_uniq_id", all.x = FALSE, all.y = TRUE)
           
           popup_labels <- fixcolnames(namesnow = setdiff(names(d_merge),c('geometry', 'valid', 'invalid_msg')), oldtype = 'r', newtype = 'shortlabel')
+          rad_buff <- sanitized_bt_rad_buff()
           
-          if (input$bt_rad_buff > 0) {
-            d_uploads <- sf::st_buffer(d_merge[d_merge$valid == T, ], dist = units::set_units(input$bt_rad_buff, "mi"))
+          if (!is.na(rad_buff) && rad_buff > 0) {
+            d_uploads <- sf::st_buffer(d_merge[d_merge$valid == T, ], dist = units::set_units(rad_buff, "mi"))
             map <- leaflet(d_uploads) %>% addTiles() %>%
               addPolygons(data = d_uploads, color = '#000080',
                           popup = popup_from_df(d_uploads %>% sf::st_drop_geometry() %>% dplyr::select(-valid, -invalid_msg), labels = popup_labels),
@@ -2695,7 +2756,7 @@ app_server <- function(input, output, session) {
     
     params <- list(
       output_df = output_df,
-      analysis_title = input$analysis_title,
+      analysis_title =  sanitized_analysis_title(),
       totalpop = popstr,
       locationstr = locationstr,
       include_ejindexes = (input$include_ejindexes == 'TRUE'),
@@ -2721,7 +2782,7 @@ app_server <- function(input, output, session) {
     filename = function() {
       create_filename(
         file_desc = 'community report',
-        title = input$analysis_title,
+        title =  sanitized_analysis_title(),
         buffer_dist = submitted_radius_val(),
         site_method = submitted_upload_method(),
         with_datetime = TRUE,
@@ -2743,7 +2804,7 @@ app_server <- function(input, output, session) {
       }
       create_filename(
         file_desc = paste0('community report', location_suffix),
-        title = input$analysis_title,
+        title =  sanitized_analysis_title(),
         buffer_dist = submitted_radius_val(),
         site_method = submitted_upload_method(),
         with_datetime = TRUE,
@@ -3018,7 +3079,7 @@ app_server <- function(input, output, session) {
     filename = function() {
       
       create_filename(file_desc = 'results table',
-                      title = input$analysis_title,
+                      title =  sanitized_analysis_title(),
                       buffer_dist = submitted_radius_val(),
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
@@ -3113,9 +3174,9 @@ app_server <- function(input, output, session) {
           ok2plot = input$ok2plot,
           plot_distance_by_group = TRUE,
           bybg = data_processed()$results_bybg_people,
-          analysis_title = input$analysis_title,
+          analysis_title =  sanitized_analysis_title(),
           buffer_desc    = "Selected Locations",
-          radius_or_buffer_in_miles = input$bt_rad_buff,
+          radius_or_buffer_in_miles = sanitized_bt_rad_buff(),
           radius_or_buffer_description = radius_or_buffer_description,
           # saveas = fname,
           testing = input$testing,
@@ -3612,7 +3673,7 @@ app_server <- function(input, output, session) {
     
     shiny::textInput(inputId = "rg_enter_miles",
                      label = "Analysis Location:",
-                     value = paste0("within ", input$bt_rad_buff,
+                     value = paste0("within ", sanitized_bt_rad_buff(),
                                     ' miles of')#,
                      #input$radius_units, " of")
     )
@@ -3634,7 +3695,7 @@ app_server <- function(input, output, session) {
   output$rg_download <- downloadHandler(
     filename = function(){
       create_filename(file_desc = 'full report',
-                      title = input$analysis_title,
+                      title = sanitized_analysis_title(),
                       buffer_dist = submitted_radius_val(),
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
@@ -3671,10 +3732,10 @@ app_server <- function(input, output, session) {
           
           #------- WHERE was analyzed? (where/ what sector/zones/types of places)
           
-          analysis_title =  input$analysis_title,
+          analysis_title =   sanitized_analysis_title(),
           zonetype =  input$rg_zonetype,
           where = input$rg_enter_miles,
-          distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
+          distance = paste0(sanitized_bt_rad_buff(),' miles'), #input$radius_units),
           sectorname_short = input$rg_enter_sites,
           ## allow for either or
           in_the_x_zone = ifelse(nchar(input$in_the_x_zone_enter) > 0,
@@ -3683,7 +3744,7 @@ app_server <- function(input, output, session) {
           facilities_studied = ifelse(nchar(input$facilities_studied_enter) > 0,
                                       input$facilities_studied_enter,
                                       input$facilities_studied),
-          within_x_miles_of = paste0("within ", paste0(input$bt_rad_buff,' miles'), " of"),
+          within_x_miles_of = paste0("within ", paste0(sanitized_bt_rad_buff(),' miles'), " of"),
           
           in_areas_where = paste0(input$in_areas_where, ' ', input$in_areas_where_enter),
           risks_are_x = input$risks_are_x,
@@ -3776,7 +3837,7 @@ app_server <- function(input, output, session) {
     ## generate full HTML using external functions
     full_page <- build_community_report(
       output_df = data_processed()$results_overall,
-      analysis_title = input$analysis_title,
+      analysis_title =  sanitized_analysis_title(),
       totalpop = popstr,
       locationstr = locationstr,
       include_ejindexes = (input$include_ejindexes == 'TRUE'),
@@ -3798,7 +3859,7 @@ app_server <- function(input, output, session) {
   # Not sure if I can pass a reactive or need to pass reactive value so it can get updated by the module without needing to return a list of values from the module?
   # default_radius_react_passed <- reactiveVal() # initialize/create the variable that will store the latest radius set by outer app
   # observe(
-  #   default_radius_react_passed(input$bt_rad_buff) # update the value of this reactiveVal anytime outer app slider is adjusted
+  #   default_radius_react_passed(sanitized_bt_rad_buff()) # update the value of this reactiveVal anytime outer app slider is adjusted
   # )
   
   # output$mod_ejscreenapi_ui_TO_SHOW_IN_APP_UI <- renderUI({
@@ -3808,7 +3869,7 @@ app_server <- function(input, output, session) {
   #                      ) # reactive object gets passed without parentheses. pass a reactive radius HERE to server not ui.
   # })
   
-  # default_radius_react_passed <- reactiveVal(input$bt_rad_buff) # pass to UI of module not server code of module
+  # default_radius_react_passed <- reactiveVal(sanitized_bt_rad_buff()) # pass to UI of module not server code of module
   # default_points_react_passed <- reactiveVal() # initialize it empty
   # observe(
   #   default_points_react_passed(  data_uploaded()  ) # update default_points_react_passed when data_uploaded() changes

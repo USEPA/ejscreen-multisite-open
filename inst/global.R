@@ -35,6 +35,8 @@ default_print_uploaded_points_to_log <- TRUE
 
 ## disable autoloading of .R files
 options(shiny.autoload.r = FALSE)
+# show generalized errors in the UI
+options(shiny.sanitize.errors = TRUE)
 
 ## Loading/wait spinners (color, type) ####
 ## note: was set at type = 1, but this caused screen to "bounce"
@@ -276,6 +278,41 @@ probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', z
 ################################################################# #
 # END OF DEFAULTS / OPTIONS / SETUP
 ################################################################# #
+
+## Sanitize functions
+sanitize_text = function(text) {
+  gsub("[^a-zA-Z0-9 -]", "", text)
+}
+
+sanitize_numeric <- function(text) {
+  cleaned_text <- gsub("[^0-9.-]", "", as.character(text))
+  
+  # Ensure only one decimal point
+  cleaned_text <- sub("([0-9]*[.][0-9]*).*", "\\1", cleaned_text)
+  
+  cleaned_text <- sub("(.)-(.)", "\\1\\2", cleaned_text)
+  cleaned_text <- sub("^(-?).*?(-?.*)$", "\\1\\2", cleaned_text)
+  
+  numeric_value <- as.numeric(cleaned_text)
+  
+  if (is.na(numeric_value)) {
+    return(NA)
+  } else {
+    return(numeric_value)
+  }
+}
+
+escape_html <- function(text) {
+  text <- gsub("&", "&amp;", text)
+  text <- gsub("<", "&lt;", text)
+  text <- gsub(">", "&gt;", text)
+  text <- gsub("\"", "&quot;", text)
+  text <- gsub("'", "&#39;", text)
+  return(text)
+}
+
+
+
 # ~ ####
 
 
