@@ -50,7 +50,9 @@ ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ej
 acs_version_global = desc$get("ACSVersion")#as.vector(metadata_mapping$blockgroupstats[['acs_version']]) # "2017-2021"
 ejscreen_version_global = desc$get("EJScreenVersion")#as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']])
 
-is_site_public <- TRUE
+## constant to show/hide EPA HTML header and footer in app UI
+## for public branch, want to hide so it can be legible when embedded as an iframe
+is_site_public <- FALSE
 
 ## (IP address  for ejscreenapi module) ###########################################
 # ips <- c('10.147.194.116', 'awsgeopub.epa.gov', '204.47.252.51', 'ejscreen.epa.gov')
@@ -452,7 +454,7 @@ fips_help_msg <- paste0('
 # ~ ####
 # ------------------------ ____ TEMPLATE ONE EPA SHINY APP WEBPAGE _______ ####
 
-if (is_site_public) {
+if (!is_site_public) {
 html_header_fmt <- tagList(
   #################################################################################################################### #
 
@@ -709,7 +711,7 @@ html_header_fmt <- tagList(
   html_header_fmt <- NULL
 }
 
-if (is_site_public) {
+if (!is_site_public) {
 html_footer_fmt <- tagList(
   ### Individual Page Footer ####
 
