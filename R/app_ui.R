@@ -1348,9 +1348,8 @@ app_ui  <- function(request) {
         ## . ####
         
       ), # end tabset panel from line 37 or so ^^^^^^^^^  ## ##
-      
       html_footer_fmt  ## adds HTML footer - defined in global.R
-      
+
     ) ## end fluidPage
   ) # end tag list
   
