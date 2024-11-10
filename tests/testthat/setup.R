@@ -126,7 +126,7 @@ apinow$`Seconds elapsed obtaining data` <- NULL
 # outrest2table <- ejscreenRESTbroker2table(outrest, getstatefromplacename = TRUE)
 # out1          <- ejscreenapi1(lon = testlon,  lat = testlat, radius = testradius) # CAN SOMETIMES TAKE 30 SECONDS, SOMETIMES 5 SECONDS
 
-if (!exists("out_api")) { 
+if (!exists("out_api", envir = globalenv())) { # should be there if test_interactively() was used 
   cat("creating out_api in setup.R\n")
   # this might speed up testing & make console output less verbose
   # where setup was being sourced over and over again by manual_nonalphabetical.R

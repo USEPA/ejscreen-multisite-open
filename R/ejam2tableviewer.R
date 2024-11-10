@@ -27,8 +27,10 @@ ejam2tableviewer = function(out, fname = 'automatic', maxrows = 1000, launch_bro
   }
   
   x <- x[1:min(nrow(x), maxrows), ]
-  x <- fix_pctcols_x100(x, cnames = names_pct_as_fraction_ejamit)
-  x <- table_round(x)
+  
+  x <- table_signif_round_x100(x)
+  # x <- table_x100(x, cnames = names_pct_as_fraction_ejamit)
+  # x <- table_round(x)
   
   dt <-    DT::datatable(x,
                          # colnames = out$longnames, 

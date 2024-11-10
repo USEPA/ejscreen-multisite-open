@@ -35,6 +35,8 @@ default_print_uploaded_points_to_log <- TRUE
 
 ## disable autoloading of .R files
 options(shiny.autoload.r = FALSE)
+# show generalized errors in the UI
+options(shiny.sanitize.errors = TRUE)
 
 ## Loading/wait spinners (color, type) ####
 ## note: was set at type = 1, but this caused screen to "bounce"
@@ -49,6 +51,10 @@ ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ej
 
 acs_version_global = desc$get("ACSVersion")#as.vector(metadata_mapping$blockgroupstats[['acs_version']]) # "2017-2021"
 ejscreen_version_global = desc$get("EJScreenVersion")#as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']])
+
+## constant to show/hide EPA HTML header and footer in app UI
+## for public branch, want to hide so it can be legible when embedded as an iframe
+is_site_public <- FALSE
 
 ## (IP address  for ejscreenapi module) ###########################################
 # ips <- c('10.147.194.116', 'awsgeopub.epa.gov', '204.47.252.51', 'ejscreen.epa.gov')
@@ -272,6 +278,41 @@ probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', z
 ################################################################# #
 # END OF DEFAULTS / OPTIONS / SETUP
 ################################################################# #
+
+## Sanitize functions
+sanitize_text = function(text) {
+  gsub("[^a-zA-Z0-9 -]", "", text)
+}
+
+sanitize_numeric <- function(text) {
+  cleaned_text <- gsub("[^0-9.-]", "", as.character(text))
+  
+  # Ensure only one decimal point
+  cleaned_text <- sub("([0-9]*[.][0-9]*).*", "\\1", cleaned_text)
+  
+  cleaned_text <- sub("(.)-(.)", "\\1\\2", cleaned_text)
+  cleaned_text <- sub("^(-?).*?(-?.*)$", "\\1\\2", cleaned_text)
+  
+  numeric_value <- as.numeric(cleaned_text)
+  
+  if (is.na(numeric_value)) {
+    return(NA)
+  } else {
+    return(numeric_value)
+  }
+}
+
+escape_html <- function(text) {
+  text <- gsub("&", "&amp;", text)
+  text <- gsub("<", "&lt;", text)
+  text <- gsub(">", "&gt;", text)
+  text <- gsub("\"", "&quot;", text)
+  text <- gsub("'", "&#39;", text)
+  return(text)
+}
+
+
+
 # ~ ####
 
 
@@ -450,6 +491,7 @@ fips_help_msg <- paste0('
 # ~ ####
 # ------------------------ ____ TEMPLATE ONE EPA SHINY APP WEBPAGE _______ ####
 
+if (!is_site_public) {
 html_header_fmt <- tagList(
   #################################################################################################################### #
 
@@ -700,6 +742,13 @@ html_header_fmt <- tagList(
   )
 )
 
+
+} else {
+  # If the site is not public, html_header_fmt can be set to NULL or an empty tagList
+  html_header_fmt <- NULL
+}
+
+if (!is_site_public) {
 html_footer_fmt <- tagList(
   ### Individual Page Footer ####
 
@@ -891,3 +940,7 @@ html_footer_fmt <- tagList(
 )
 
 
+
+} else{
+  html_footer_fmt <- NULL
+}
