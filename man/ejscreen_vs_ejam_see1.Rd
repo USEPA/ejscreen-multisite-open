@@ -35,7 +35,7 @@ EJAM/EJSCREEN comparisons - see results for 1 site after using ejscreen_vs_ejam(
 see also ejscreen_vs_ejam_1var_bysite() and ejscreen_vs_explain()
 }
 \examples{
-  dontrun{
+  \dontrun{
   vs <- ejscreen_vs_ejam(testpoints_10, radius = 3)
   mysite <- 9
   ejscreen_vs_ejam_see1(vs, mysite = mysite, myvars = colnames(vs$EJAM))[!is.na(vs$EJSCREEN[mysite, ]) , 1:2]

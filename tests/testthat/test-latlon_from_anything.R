@@ -135,7 +135,7 @@ testthat::test_that("latlon_from_anything works with xlsx", {
   skip_if(!file.exists(fname))
   
   expect_no_error(
-    x <- latlon_from_anything(fname)
+    {x <- latlon_from_anything(fname)}
   )  
   
 })

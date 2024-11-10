@@ -51,9 +51,51 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mapfastej</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mapfastej</span><span class="op">(</span></span>
+<span>  <span class="va">mydf</span>,</span>
+<span>  radius <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  column_names <span class="op">=</span> <span class="st">"ej"</span>,</span>
+<span>  labels <span class="op">=</span> <span class="va">column_names</span>,</span>
+<span>  browse <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  color <span class="op">=</span> <span class="st">"#03F"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+
+
+<dl><dt id="arg-mydf">mydf<a class="anchor" aria-label="anchor" href="#arg-mydf"></a></dt>
+<dd><p>data.frame or data.table with lat and lon columns or
+columns that <code><a href="latlon_infer.html">latlon_infer()</a></code> can infer to be that</p></dd>
+
+
+<dt id="arg-radius">radius<a class="anchor" aria-label="anchor" href="#arg-radius"></a></dt>
+<dd><p>in miles, converted to meters and passed to leaflet::addCircles()</p></dd>
+
+
+<dt id="arg-column-names">column_names<a class="anchor" aria-label="anchor" href="#arg-column-names"></a></dt>
+<dd><p>If "ej" then nice popup made based on just key EJScreen
+indicators. If "all" then every column in the entire mydf table is shown
+in the popup. If a vector of colnames, only those are shown in popups.</p></dd>
+
+
+<dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
+<dd><p>The labels used before the column_names, for map popups,
+like  label: column_name  (ignored if column_names is ej or all)</p></dd>
+
+
+<dt id="arg-browse">browse<a class="anchor" aria-label="anchor" href="#arg-browse"></a></dt>
+<dd><p>optional logical, set to TRUE if you want the function to
+launch a default browser window to show the map
+and print the temp filepath and filename in the console.
+Normally the map would be shown in the default RStudio viewer pane.</p></dd>
+
+
+<dt id="arg-color">color<a class="anchor" aria-label="anchor" href="#arg-color"></a></dt>
+<dd><p>color of circles, default is "#03F"</p></dd>
+
+</dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>like what <code><a href="mapfast.html">mapfast()</a></code> returns</p>
