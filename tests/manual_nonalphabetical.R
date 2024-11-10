@@ -614,7 +614,7 @@ test_interactively = function(ask = TRUE,
     
     if (y_fips) {
       # fips
-      x <- ejamit(fips = fips_bg_from_anyfips(fips_counties_from_state_abbrev("DE")[1])[1:2]) # just 2 blockgroups
+      x <- ejamit(fips = fips_bgs_in_fips(fips_counties_from_state_abbrev("DE")[1])[1:2]) # just 2 blockgroups
       names(x)
       ejam2table_tall(x)
       ejam2barplot(x)
