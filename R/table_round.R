@@ -9,7 +9,7 @@
 #'   or names of vector elements, within x
 #' @param varnametype optional, name of column in map_headernames that is looked in for var
 #' @param ... passed to [var_is_numeric_ish()] 
-#' @seealso [var_is_numeric_ish()] [table_rounding_info()]
+#' @seealso [table_signif_round_x100()] [table_signif()] [table_round()] [table_x100()] [var_is_numeric_ish()] [table_rounding_info()]
 #' @return Returns the original x but with appropriate cells rounded off.
 #' @examples  
 #'   table_round(c(12.123456, 9, NA ), 'pm')
@@ -23,7 +23,6 @@
 #' 
 #'  table_round(x)
 #' 
-#' @export
 #' @keywords internal
 #'
 table_round <- function(x, var = names(x), varnametype="rname", ...) {
