@@ -206,15 +206,14 @@ ejamit <- function(sitepoints,
     if (is.null(shp)) {stop('No valid shapes found in shapefile')}
     class(shp) <- c(class(shp), 'data.table')
     
-    shp <- shapefile_from_any(shapefile, cleanit = FALSE) # if user entered ejamit(shapefile=1), e.g., it will prompt for an actual file.
     # now it does shapefix()
     
     # Here we retain all rows, columns include ejam_uniq_id, valid, invalid_msg
-    data_uploaded <- sf::st_drop_geometry(shp)[, unique(c(1:2, which(names(shp) == "ejam_uniq_id")))] # any 1 or 2 plus id to make sure it isn't just 1 col and drop=T happens
+    data_uploaded <- sf::st_drop_geometry(shp)#[, unique(c(1:2, which(names(shp) == "ejam_uniq_id")))] # any 1 or 2 plus id to make sure it isn't just 1 col and drop=T happens
     
     # Here are just valid ones
     shp_valid <- shp[shp$valid, ] # valid ones only
-    rm(shp)
+    #rm(shp)
     ##################################### #
     
     # . radius (buffer) for polygons ####
@@ -283,7 +282,7 @@ ejamit <- function(sitepoints,
     data_uploaded$ejam_uniq_id = as.character(data_uploaded$ejam_uniq_id) # for merge or join below to work, must match class (integer vs character) of output of doaggregate() and before that output of getblocksnearby_from_fips(fips_counties_from_state_abbrev('DE'))  #  1:length(fips)) 
     
     # Here we only keep valid ones (vector not data.frame)
-    fips <- fips[data_uploaded$valid]
+    fips <- fips#[data_uploaded$valid]
     
     ## . radius is ignored for fips ####
     radius <- 999 # use this value when analyzing by fips not by circular buffers, as input to doaggregate(),
@@ -359,6 +358,7 @@ ejamit <- function(sitepoints,
     stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
     
     # Here are preserved ALL rows (pts) including invalid ones
+    print(sitepoints)
     data_uploaded <- sitepoints[, c("ejam_uniq_id", "lat", "lon", "valid", "invalid_msg" )] # invalids here were not passed to getblock... but some valids here might not return from getblock.. so this distinguishes where it was dropped 
     data_uploaded <- data.frame(data_uploaded) # not data.table
     
@@ -466,7 +466,7 @@ ejamit <- function(sitepoints,
     dup <- data.frame(fips = fips, ejam_uniq_id = as.character(fips)) # for merge or join below to work, must match class (integer vs character) of output of doaggregate() and before that output of getblocksnearby_from_fips(fips_counties_from_state_abbrev('DE'))  #  1:length(fips)) 
   }
   if (sitetype == "shp") {
-    dup <- sf::st_drop_geometry(shp)[, intersect(names(shp), c('ejam_uniq_id', 'valid', colnames(shp)[1:2], 'NAME'))] 
+    dup <- sf::st_drop_geometry(shp)#[, intersect(names(shp), c('ejam_uniq_id', 'valid', colnames(shp)[1:2], 'NAME'))] 
     # dup <- data.frame(dup, ejam_uniq_id = 1:NROW(dup)) # shp already had ejam_uniq_id
   }
 
@@ -479,7 +479,7 @@ ejamit <- function(sitepoints,
   
   # Merge invalid and valid sites and msg, so results_bysite has ALL sites originally provided for analysis.
   setDT(data_uploaded)
-  out$results_bysite <- merge(data_uploaded[, .(ejam_uniq_id, valid, invalid_msg, lat, lon)],
+  out$results_bysite <- merge(data_uploaded[, .(ejam_uniq_id, valid, invalid_msg)],
                               out$results_bysite,
                               by = 'ejam_uniq_id', all = T)
   setorder(out$results_bysite, ejam_uniq_id)

@@ -54,11 +54,10 @@ shapefix = function(shp,
     disable_buttons_SHP <- TRUE
     shiny::validate("Uploaded file should have valid file extension(s) - shp, shx, dbf, prj, etc.") # which does stop() if not in shiny
   }
-  
-  if (any(sf::st_geometry_type(shp) == "POINT")) {
-    disable_buttons_SHP <- TRUE
-    shiny::validate("Shape file must be of polygon geometry.") # which does stop() if not in shiny
-  }
+  # if (any(sf::st_geometry_type(shp) == "POINT") & !interactive() & shiny::isRunning()) {
+  #   disable_buttons_SHP <- TRUE
+  #   shiny::validate("Shape file must be of polygon geometry.") # which does stop() if not in shiny
+  # }
   # Drop Z and/or M dimensions from feature geometries, resetting classes appropriately
   shp <- sf::st_zm(shp)
   # Use standard column name, "geometry", for the spatial info # fixed, e.g., shp = shapefile_from_any(system.file("testdata/shapes/portland.gdb.zip", package="EJAM"))
@@ -106,7 +105,6 @@ shapefix = function(shp,
   shp$invalid_msg <- NA
   shp$invalid_msg[shp$valid == F] <- shp_valid_check$reason[shp$valid == F]
   shp$invalid_msg[is.na(shp$geometry)] <- 'bad geometry'
-  data.table::setDT(shp)
   
   # pass info back to shiny for reactives, but if NULL, an attribute gets removed here
   attr(shp, "disable_buttons_SHP") <- disable_buttons_SHP

@@ -36,15 +36,14 @@ latlon_df_clean <- function(df, invalid_msg_table = FALSE, set_invalid_to_na = T
     # removed since latlon_infer already creates warning
     #warning('lat or lon column cannot be inferred from colnames of df')
   }
-  
   # validate to some extent (are the lat lon plausible values)
   validinfo <- latlon_is.valid(lat = df$lat, lon = df$lon, invalid_msg_table = invalid_msg_table)
   if (!invalid_msg_table) {
     ok = validinfo
-    #  validinfo <- data.frame(valid = validinfo, invalid_msg = ifelse(validinfo, "", "latlon invalid"))
+    df <- data.table(df,valid = validinfo, invalid_msg = ifelse(validinfo, "", "latlon invalid"))
   } else {
     ok <- validinfo$valid
-    df <- data.frame(df, validinfo)
+    df <- data.table(df, valid = validinfo,invalid_msg = invalid_msg_table)
   }
   if (any(!ok) & set_invalid_to_na) {
     # warning and console msg are done in latlon_is.valid()

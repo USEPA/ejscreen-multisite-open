@@ -230,9 +230,9 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE, invalid_msg_table = FALSE , 
     return(data.frame(valid = rep(FALSE, NROW(lat)), invalid_msg = "lat or lon not numeric"))
     } else {
     return(FALSE)
-
-
   }
+
+}
   
   
   # assume none bad until proven otherwise
@@ -279,6 +279,7 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE, invalid_msg_table = FALSE , 
   } else {
     return(!bad)
   }
+  }
   # sort(unique(substr(bgpts$bgfips,1,2)))     # bgpts has PR not island areas
   # sort(unique(substr(blockid2fips$blockfips,1,2))) #  has PR not island areas
   ## same for bgid2fips
@@ -309,4 +310,4 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE, invalid_msg_table = FALSE , 
   # FALSE    TRUE
   # 1384 3454658
   #
-}
+
