@@ -1193,12 +1193,22 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
                      nh       = "names_d_subgroups_alone",
                      both     = NULL,
                      original = "names_d_subgroups_alone")
+
+  subs_list <- switch(subgroups_type,
+                      nh = "names_d_subgroups_nh",
+                      alone = "names_d_subgroups_alone",
+                      both = c("names_d_subgroups_alone", "names_d_subgroups_nh"),
+                      original = "names_d_subgroups")
   
+  namelists <- c('names_e','names_d',subs_list, 'names_health','names_climate')
   varsneedpctiles <- map_headernames %>%
-    filter(pctile. == 1, 
-           !(topic_root_term %in% c("Demog.Index.State", "Demog.Index.Supp.State"))) %>%
-    select(topic_root_term) %>%
-    distinct()
+    ## need to pull rows in same order of name lists
+    slice(unlist(sapply(namelists, function(a) which(map_headernames$varlist %in% a)))) %>% 
+    #filter(pctile. == 1,
+    filter( 
+          !(rname %in% c("Demog.Index.State", "Demog.Index.Supp.State"))) %>%
+    #select(topic_root_term) %>% 
+    distinct(rname) %>% pull(rname)
   
   if(is.null(subs_drop)){
     
@@ -1206,9 +1216,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     subs_drop <- namesbyvarlist(subs_drop)$rname
     subs_drop <- setdiff(subs_drop, 'pcthisp')
   }
-  
-  
-  varsneedpctiles <- intersect(varsneedpctiles$topic_root_term, names(results_bysite)) 
+
+
+  varsneedpctiles <- intersect(varsneedpctiles, names(x$results_bysite))
   varsneedpctiles <- setdiff(varsneedpctiles, subs_drop)
 
 
