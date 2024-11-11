@@ -1,5 +1,5 @@
 
-#   This is a helper func to similate ejamit() relying on ejamit_sitetype_from_input()
+#   This is a helper func to simulate ejamit() relying on ejamit_sitetype_from_input()
 #   where inputs to ejamit() get checked by ejamit_sitetype_from_input() 
 # 
 ## This confirmed  ejamit() could successfully use the function ejamit_sitetype_from_input() 
@@ -21,10 +21,11 @@ ejamit_test = function(sitepoints, fips=NULL, shapefile=NULL) {
 }
 ################################################ #
 
-test_that(" if 0 of 3 is provided - try to interactively select file of latlon", {
+test_that(" if 0 of 3 is provided - assume latlon", {
+  # it would normally try to interactively select file of latlon but this ejamit_test() avoids that
   testthat::skip_if_not(interactive())
   expect_no_error({
-    sitetype <- ejamit_test( ) 
+    sitetype <- ejamit_test( )
   })
   expect_equal(sitetype, "latlon")
 })

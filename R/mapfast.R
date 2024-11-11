@@ -18,9 +18,19 @@ mapfastej <- function(mydf, radius = 3, column_names = 'ej', labels = column_nam
 
 #' Map - points - Create leaflet html widget map of points using table with lat lon
 #'
-#' @param mydf data.frame or data.table with lat and lon columns or
-#'   columns that [latlon_infer()] can infer to be that,
-#'   or where ejam_uniq_id values are US County FIPS codes
+#' @param mydf Typically something like the output of ejamit()$results_bysite, but
+#'   can also be the full output of [ejamit()] in which case this uses just the $results_bysite table,
+#'   and in general mydf can be a data.frame or data.table that has a set of 
+#'   points or polygons or Census FIPS codes.
+#'   
+#'   1) point data defined by columns named lat and lon, or columns that [latlon_infer()] can infer to be that,
+#'   as from [sitepoints_from_any()] or [ejamit()]$results_bysite
+#'   2) polygon data in a spatial data.frame that has a geometry column of polygons, as from [shapefile_from_any()], or
+#'   3) Census units defined by FIPS codes in a column called "ejam_uniq_id"
+#'   (not fips), where those fips are for States, Counties, Tracts, Blockgroups, 
+#'   or cities/towns/Census Designated Places (7 digits including any leading zeroes),
+#'   e.g., as from [names2fips('DE')] or ejamit(fips='01')$results_bysite.
+#'
 #' @param radius in miles, converted to meters and passed to leaflet::addCircles()
 #' @param column_names If "ej" then nice popup made based on just key EJScreen
 #'   indicators. If "all" then every column in the entire mydf table is shown
@@ -43,11 +53,16 @@ mapfastej <- function(mydf, radius = 3, column_names = 'ej', labels = column_nam
 #'
 mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names, browse = FALSE, color = "#03F") {
   
+  # if the whole list from ejamit(), not a data.frame, was provided
   if (is.list(mydf) && 'results_bysite' %in% names(mydf)) {
     warning("mydf seems to be a lislt of tables such as output from ejamit() so using just the results_bysite table here")
+    if ("sitetype" %in% names(mydf)) {
+      sitetype <- mydf$sitetype
+    } else {sitetype <- NULL}
     mydf <- mydf$results_bysite
-  }
-  if (data.table::is.data.table(mydf)) {mydf <- as.data.frame(mydf)} # in case it was a data.table
+  } else {sitetype <- NULL}
+  # if data.table was provided
+  if (data.table::is.data.table(mydf)) {mydf <- as.data.frame(mydf)} # in case it was a data.table. note this could be slow as it makes a copy, but setDF(mydf) would alter mydf by reference in the calling envt.
   
   # colnames ####
   ## infer lat lon cols (if they exist) ####
@@ -93,29 +108,21 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
   ######################################################### #
   
   # sitetype ####
-  ##             could also get from ejamit()$sitetype if that were passed here
   
-  if ("sf" %in% class(mydf)) {
-    sitetype <- 'shp'
-  } else {
-    if (("lat" %in% names(mydf) &&  'lon' %in% names(mydf)) &&
-        (!all(is.na(renamed$lat)) && !all(is.na(renamed$lon)))) {
-      sitetype <- 'latlon'
+  if (!is.null(sitetype)) {
+    if (!siteype %in% c('shp', 'latlon', 'fips')) {
+      warning('sitetype cannot be interpreted as shp, latlon, or fips')
+      sitetype <- 'none'
+      xok <- FALSE
     } else {
-      ## for now, fips is assumed to be stored as mydf$ejam_uniq_id and cannot be provided here as a separate column or parameter
-      # if ('fips' %in% names(mydf)) {
-      #   # mydf$fips <- mydf$fips
-      # } else {
-      #  mydf$fips <- mydf$ejam_uniq_id 
-      # }
-      if ('ejam_uniq_id' %in% names(mydf) && 
-          all(fipstype(mydf$ejam_uniq_id)) %in% c('state', 'county', 'city', 'tract', 'blockgroup')) {
-        sitetype <- 'fips'
-      } else {
-        # FAILED TO IDENTIFY A VALID TYPE
-        xok <- FALSE
-        sitetype <- 'none'
-      }
+      xok <- TRUE
+    }
+  } else {
+    # keep figuring out the type
+    sitetype <- sitetype_from_dt(mydf)
+    if (is.na(sitetype)) {
+      sitetype <- 'none'
+      xok <- FALSE
     }
   }
   ######################################################### #
@@ -183,7 +190,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     
     if (all(ftype %in% 'state')) {
       fips <- mydf$ejam_uniq_id
-      shp <- shapes_from_fips(fips)
+      shp <- shapes_from_fips(fips) #  # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       x <- map_shapes_leaflet(shp, popup = mypop)
       xok = TRUE
     }
@@ -191,16 +198,15 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     # _Counties  ####
     # get boundaries  
     
-    # also see  shapes_counties_from_countyfips()
-    
     if (all(ftype %in% 'county')) {
       ## maybe could use:
       # fips <- mydf$ejam_uniq_id
-      # shp <- shapes_from_fips(fips)
+      ### also see  shapes_counties_from_countyfips()
+      # shp <- shapes_from_fips(fips) #  # <<<<<<<<<<<< 
       # x <- map_shapes_leaflet(shp, popup = mypop)
       # xok = TRUE
       
-      x <- mapfastej_counties(mydf) # handles the popups itself, ignores params above, assumes mydf$ejam_uniq_id is fips
+      x <- mapfastej_counties(mydf) # handles popups, ignores params above, assumes mydf$ejam_uniq_id is fips
       xok <- TRUE
     }
     ######################### #
@@ -210,7 +216,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     if (all(ftype %in% 'city')) {
       fips <- mydf$ejam_uniq_id
       # shp <- shapes_places_from_placefips(fips)
-      shp <- shapes_from_fips(fips)
+      shp <- shapes_from_fips(fips) #  # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       x <- map_shapes_leaflet(shp, popup = mypop)
       xok = TRUE
     }
@@ -218,7 +224,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     # _Tracts ####
     if (all(ftype %in% 'blockgroup')) {
       fips <- mydf$ejam_uniq_id
-      shp <- shapes_from_fips(fips) #    SLOW if many, like > 20 
+      shp <- shapes_from_fips(fips) #  SLOW if many, like > 20  #  # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       x <- map_shapes_leaflet(shp, popup = mypop)
       xok <- TRUE
     }
@@ -227,8 +233,8 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     
     if (all(ftype %in% 'blockgroup')) {
       fips <- mydf$ejam_uniq_id
-      # shp <- shapes_blockgroups_from_bgfips(fips) #    SLOW if many, like > 20 
-      shp <- shapes_from_fips(fips)
+      # shp <- shapes_blockgroups_from_bgfips(fips)
+      shp <- shapes_from_fips(fips) #  SLOW if many, like > 20  #  # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       x <- map_shapes_leaflet(shp, popup = mypop)
       xok <- TRUE
 
@@ -256,7 +262,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
   }
   ######################################################## #
   
-  # CANT MAP ####
+  # *CANT MAP ####
   #  because not SHP, no latlon, and no usable FIPS.
   # 
   # And for other kinds of places that are based on points like via naics,sic,mact,regid, or even street addresses,
