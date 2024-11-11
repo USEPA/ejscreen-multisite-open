@@ -10,7 +10,7 @@ fipstype(fips)
 \item{fips}{vector of one or more Census FIPS with or without leading zeroes, as strings or numeric}
 }
 \value{
-vector of types: "block", "blockgroup", "tract", "county", or "state"
+vector of types: "block", "blockgroup", "tract", "city", "county", or "state"
 }
 \description{
 FIPS - Identify what type of Census geography is each FIPS code (block, county, etc.)
