@@ -56,8 +56,9 @@ table_tall_from_overall <- function(results_overall, longnames = NULL) {
   }
   
   x <- copy(results_overall)
-  x <- fix_pctcols_x100(x, cnames = names_pct_as_fraction_ejamit)
-  x <- table_round(x)
+  x <- table_signif_round_x100(x) 
+  # x <- table_x100(x, cnames = names_pct_as_fraction_ejamit)
+  # x <- table_round(x)
   
   x <- as.vector(unlist(x))
   x[!var_is_numeric_ish(x)] <- NA # easier to just drop the info like state name/abbrev.

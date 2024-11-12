@@ -65,11 +65,16 @@ Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not
 <dd><p>a vector of SIC codes, or
 a data.table with column named code, as with output of <code><a href="sic_from_any.html">sic_from_any()</a></code></p></dd>
 
+
+<dt id="arg-d-only">d_only<a class="anchor" aria-label="anchor" href="#arg-d-only"></a></dt>
+<dd><p>logical optional, set TRUE to get only the vector of REGISTRY_ID
+values back instead of a data.frame with lat,lon,SIC columns too.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data.table (not just data.frame) with columns called
-lat, lon, REGISTRY_ID, SIC (but see the id_only parameter)</p>
+lat, lon, REGISTRY_ID, SIC (unless the id_only parameter is set to TRUE)</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

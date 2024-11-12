@@ -27,7 +27,7 @@ require(mapview)
 ## so those tests fail unless you use load_all() or if test were changed to say EJAM:::latlon_infer() but that would ONLY test installed version, never the source version if it differs
 
 suppressMessages({suppressWarnings({
-  dataload_from_pins("all", silent = TRUE, folder_local_source=file.path(.libPaths()[1],'EJAM','data')) # needs frs, etc.
+  dataload_from_pins("all", silent = TRUE, folder_local_source = file.path(.libPaths()[1],'EJAM','data')) # needs frs, etc.
 })})
 if (!exists("frs")) {stop('needs frs etc.')}
 suppressMessages({suppressWarnings({
@@ -43,8 +43,8 @@ suppressMessages({suppressWarnings({
 # Create ejamoutnow here in setup.R, since some tests are using it.
 
 if (exists("ejamit") & exists("blockgroupstats") & exists("testpoints_10")) {
-  cat("creating ejamoutnow in setup.R\n")
   if (!exists("ejamoutnow")) {
+  cat("creating ejamoutnow in setup.R\n")
     suppressMessages(  suppressWarnings({  ejamoutnow <- try(
       ejamit(testpoints_10, radius = 1,
              quiet = TRUE, silentinteractive = TRUE,
@@ -126,7 +126,7 @@ apinow$`Seconds elapsed obtaining data` <- NULL
 # outrest2table <- ejscreenRESTbroker2table(outrest, getstatefromplacename = TRUE)
 # out1          <- ejscreenapi1(lon = testlon,  lat = testlat, radius = testradius) # CAN SOMETIMES TAKE 30 SECONDS, SOMETIMES 5 SECONDS
 
-if (!exists("out_api")) { 
+if (!exists("out_api", envir = globalenv())) { # should be there if test_interactively() was used 
   cat("creating out_api in setup.R\n")
   # this might speed up testing & make console output less verbose
   # where setup was being sourced over and over again by manual_nonalphabetical.R
