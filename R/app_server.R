@@ -2408,6 +2408,41 @@ app_server <- function(input, output, session) {
   # compare / merge with  EJAM/R/plot_barplot_ratios.R ***
   # https://exts.ggplot2.tidyverse.org/gallery/
   
+  v1_summary_plot_state <- reactive({
+    req(data_processed())
+      if (!is.null(cur_button())) {
+        # Extract the selected row number from cur_button
+        selected_row <- as.numeric(gsub('button_', '', isolate(cur_button())))
+        
+        ejam2barplot(
+          data_processed(),
+          sitenumber = selected_row,
+          varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+          main = "Demographics at the Analyzed Location Compared to State Averages"
+        )
+      } else {
+        # No specific location selected, use a default plot setup
+        if (input$Custom_title_for_bar_plot_of_indicators == '') {
+          # Default plot title
+          ejam2barplot(
+            data_processed(),
+            varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+            main = "Demographics Compared to State Averages"
+          )
+        } else {
+          # Custom title provided by user
+          # Note: This piece may not be needed for state plot
+          ejam2barplot(
+            data_processed(),
+            varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+            main = input$Custom_title_for_bar_plot_of_indicators
+          )
+        }
+      }
+  })
+  
+  ###################  #
+  
   v1_summary_plot <- reactive({
     # req(data_summarized()) # it used to say this is required here but I dont think it actually is used
     req(data_processed())
@@ -2425,18 +2460,18 @@ app_server <- function(input, output, session) {
         )
       } else {
 
-        if (input$Custom_title_for_bar_plot_of_indicators == ''){
+        if (input$Custom_title_for_bar_plot_of_indicators == '') {
           
           #Default way
           plot_barplot_ratios_ez(
-            out= data_processed(),
+            out = data_processed(),
             varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), 
           )
           
-        }else{
+        } else {
           #If there is a new title in advanced settings
           plot_barplot_ratios_ez(
-            out= data_processed(),
+            out = data_processed(),
             varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), 
             main = input$Custom_title_for_bar_plot_of_indicators
           )
@@ -2593,6 +2628,7 @@ app_server <- function(input, output, session) {
   # Function to generate HTML content ***
   # Modified community_download function to accept a row_index parameter
   # FUNCTION TO RENDER HTML REPORT ####
+  
   community_download <- function(file, row_index = NULL) {
     
     # Create a progress object
@@ -2603,35 +2639,52 @@ app_server <- function(input, output, session) {
     on.exit(progress$close())
     
     progress$set(value = 0.1, detail = "Setting up temporary files...")
-    tempReport <- setup_temp_files()
+    if (!is.null(row_index)) {
+      # single-site report
+      tempReport <- setup_temp_files(Rmd_name = 'barplot_report_template.Rmd')
+    } else {
+      # overall summary multisite report
+      tempReport <- setup_temp_files(Rmd_name = 'community_report_template.Rmd')
+    }
     
     progress$set(value = 0.2, detail = "Defining parameters...")
     # Define parameters for Rmd rendering
     rad <- data_processed()$results_overall$radius.miles
-    ## > report on just 1 site ####
+    
     progress$set(value = 0.3, detail = "Adjusting data...")
+    ################################################################### #
+    
     # Adjust the data based on whether a specific row is selected
+    
     if (!is.null(row_index)) {
+      
+      ## > report on just 1 site ####
+      
       output_df <- data_processed()$results_bysite[row_index, ]
-      popstr <- prettyNum(output_df$pop, big.mark = ',')
+      popstr <- prettyNum(round(output_df$pop, 0), big.mark = ',')
       
       # Get the name of the selected location
       location_name <- output_df$statename
+  
+      locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""), 
+                            " of this ", ifelse(submitted_upload_method() == 'SHP', "polygon", 
+                                                 ifelse(submitted_upload_method() == 'FIPS', "Census unit", "point")))
       
-      locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""),
-                            " of the selected location")
+      # Create a filtered version of report_map for single location #####################  #
       
       progress$set(value = 0.4, detail = "Creating map...")
-      # Create a filtered version of report_map for single location
 
       single_location_map <- reactive({
+        
         req(data_processed())
         validate(need(data_processed(), 'Please run an analysis to see results.'))
         
         filtered_data <- data_processed()$results_bysite[row_index, ]
         
+        ####################### #        ####################### #
         if (submitted_upload_method() == "SHP") {
           # Handle shapefile case
+          
           shp_valid <- data_uploaded()[data_uploaded()$ejam_uniq_id == filtered_data$ejam_uniq_id, ]
           d_up <- shp_valid
           d_up_geo <- d_up[,c("ejam_uniq_id","geometry")]
@@ -2664,8 +2717,10 @@ app_server <- function(input, output, session) {
                     lat = mean(c(bbox[2], bbox[4])), 
                     zoom = 14)  
           
+          ####################### #        ####################### #
         } else if (submitted_upload_method() != "FIPS") {
           # Handle non-FIPS case
+          
           popup_labels <- fixcolnames(namesnow = names(filtered_data), oldtype = 'r', newtype = 'shortlabel')
           popup_labels[is.na(popup_labels)] <- names(filtered_data)[is.na(popup_labels)]
           
@@ -2689,16 +2744,43 @@ app_server <- function(input, output, session) {
                           zoom = 14) 
           
         } else {
+          ####################### #        ####################### #
           # FIPS case
+          
           leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
         }
-      })
-      
+      }) # end of map code  #####################  #
       map_to_use <- single_location_map()
+      # end of map code  #####################  #
+      
+      ## make sure the barplots are for the 1 selected site
+      
+      # v1_summary_plot()
+      
+      # v1_summary_plot_state()
+      
+      
+      params <- list(
+        # output_df = output_df,
+        analysis_title = input$analysis_title,
+        totalpop = popstr,
+        locationstr = locationstr,
+        # include_ejindexes = (input$include_ejindexes == 'TRUE'),
+        in_shiny = FALSE,
+        filename = NULL,
+        map = map_to_use,
+        summary_plot = v1_summary_plot(),
+        summary_plot_state = v1_summary_plot_state()
+      )
+      # end of report on 1 site 
+      
     } else {
+      ################################################################### #
+      
       ## > report on just all sites overall ####
+      
       output_df <- data_processed()$results_overall
-      popstr <- prettyNum(total_pop(), big.mark = ',')
+      popstr <- prettyNum(round(total_pop(), 0), big.mark = ',')
       locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""), 
                             " of any of the ", NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T,]), 
                             " selected ", ifelse(submitted_upload_method() == 'SHP', "polygons", 
@@ -2715,7 +2797,8 @@ app_server <- function(input, output, session) {
       in_shiny = FALSE,
       filename = NULL,
       map = map_to_use,
-      summary_plot = v1_summary_plot()
+      summary_plot = v1_summary_plot(),
+      summary_plot_state = v1_summary_plot_state()
     )
     
     # Render Rmd to HTML
@@ -2728,7 +2811,9 @@ app_server <- function(input, output, session) {
     )
   }
   #############################################################################  #
+  
   # DOWNLOAD HTML REPORT Overall ####
+  
   # downloadHandler for community_download - ALMOST THE SAME AS output$download_report 
   output$community_download_all <- downloadHandler(
     filename = function() {
@@ -2745,6 +2830,8 @@ app_server <- function(input, output, session) {
       community_download(file)
     }
   )
+  
+  # DOWNLOAD HTML REPORT on 1 site ####
   
   # downloadHandler for the modal download button - Almost identical to code above. But content uses temp_file_path
   output$community_download_individual <- downloadHandler(
@@ -2801,14 +2888,14 @@ app_server <- function(input, output, session) {
     # --------------------------------------------------- #
     
     cols_to_select <- c('ejam_uniq_id', 'invalid_msg',
-                        'pop', 'Community Report',
+                        'pop', 'Barplot Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report',
                         names_d, names_d_subgroups,
                         names_e #,
                         # no names here corresponding to number above x threshold, state, region ??
     )
 
-    tableheadnames <- c('Site ID', 'Invalid Reason','Est. Population', 'Community Report',  # should confirm that Community Report belongs here
+    tableheadnames <- c('Site ID', 'Invalid Reason','Est. Population', 'Barplot Report',  # should confirm that Barplot/Community Report belongs here
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report',
                         fixcolnames(c(names_d, names_d_subgroups, names_e), 'r', 'shortlabel')) # is this right?
     ejcols          <- c(names_ej,          names_ej_state,          names_ej_supp,          names_ej_supp_state)
@@ -2837,9 +2924,13 @@ app_server <- function(input, output, session) {
         # `EJScreen Report` = ifelse(valid == T, `EJScreen Report`, NA),
         # `ECHO Report` = ifelse(valid == T, `ECHO Report`, NA),
         # `EJScreen Map` = ifelse(valid == T, `EJScreen Map`, NA),
-        `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id = paste0('button_', index), label = "Generate",
-                                                           onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
-        ), '')
+        `Barplot Report` = ifelse(valid == T, 
+                                  shinyInput(FUN = actionButton, len = 1, 
+                                             id = paste0('button_', index), 
+                                             label = "Generate",
+                                             onclick = paste0('Shiny.onInputChange(\"select_button', index,'\", this.id)' )
+                                             ),
+                                  '')
       ) %>%
       
       dplyr::ungroup() %>%
@@ -2947,28 +3038,30 @@ app_server <- function(input, output, session) {
   
   ##############################################  #
   # Function to copy necessary files to temp directory
-  setup_temp_files <- function() {
-    tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
+  setup_temp_files <- function(Rmd_name = 'community_report_template.Rmd', Rmd_folder = 'report/community_report/') {
+    # or Rmd_name = 'barplot_report_template.Rmd' for single site barplot report
+    tempReport <- file.path(tempdir(), Rmd_name)
     # Copy Rmd file to temp directory
-    file.copy(from = EJAM:::app_sys('report/community_report/community_report_template.Rmd'),
+    file.copy(from = EJAM:::app_sys(paste0(Rmd_folder, Rmd_name)),
               to = tempReport, overwrite = TRUE)
     # Copy CSS file
     if (!file.exists(file.path(tempdir(), 'communityreport.css'))) {
-      file.copy(from = EJAM:::app_sys('report/community_report/communityreport.css'),
+      file.copy(from = EJAM:::app_sys(paste0(Rmd_folder, 'communityreport.css')),
                 to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
     }
 
     # Copy logo file
     if (!file.exists(file.path(tempdir(), 'www', 'EPA_logo_white_2.png'))) {
       dir.create(file.path(tempdir(), 'www'), showWarnings = FALSE, recursive = TRUE)
-      file.copy(from = EJAM:::app_sys('report/community_report/EPA_logo_white_2.png'),
+      file.copy(from = EJAM:::app_sys(paste0(Rmd_folder, 'EPA_logo_white_2.png')),
                 to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
     }
     return(tempReport)
   }
   ##############################################  #
 
-  # Observer for the submit buttons
+  ## Observe 1-site-report buttons ####
+  # (1 button per site in the table of sites, to see barplot for that site)
   observeEvent(
     lapply(
       names(input)[grep("select_button[0-9]+", names(input))],
@@ -2979,19 +3072,16 @@ app_server <- function(input, output, session) {
         req(data_processed())
         req(cur_button())
         x <- as.numeric(gsub('button_','', cur_button()))
-
+        
         # Get the name of the selected location
         location_name <- data_processed()$results_bysite[x, "statename"]
-
         selected_location_name(location_name)
         
         # Create a temporary file name
         temp_file <- tempfile(fileext = ifelse(input$format1pager == 'pdf', '.pdf', '.html'))
-        
         # Store the temporary file path in the reactive value
         temp_file_path(temp_file)
         
-
         # Call the community_download() function with the current row index
         community_download(file = temp_file, row_index = x)
         
@@ -3716,7 +3806,8 @@ app_server <- function(input, output, session) {
           demog_table = v1_demog_table(),
           # demog_table_placeholder_png = "demog_table_placeholder.png",
           # demog_table_placeholder_rda = "demog_table_placeholder.rda",
-          boxplot =     v1_summary_plot(),
+          boxplot =     v1_summary_plot(), # actually a barplot
+          ## also note  v1_summary_plot_state()
           # boxplot_placeholder_png =         "boxplot_placeholder.png",
           # barplot= NA
           # barplot_placeholder_png =         "barplot_placeholder.png",
@@ -3761,7 +3852,8 @@ app_server <- function(input, output, session) {
   
   ##
   
-  ## build community report page with HTML
+  # ______ Community Report page output as HTML ______ ####
+  
   output$comm_report_html <- renderUI({
     req(data_processed())
     
@@ -3793,6 +3885,7 @@ app_server <- function(input, output, session) {
       totalpop = popstr,
       locationstr = locationstr,
       include_ejindexes = (input$include_ejindexes == 'TRUE'),
+      # plotonly = ,
       in_shiny = TRUE
     )
     ## return generated HTML

@@ -24,7 +24,7 @@
 #' 
 #' @export
 #'
-#' @examples dontrun{
+#' @examples \dontrun{
 #'   out <- testoutput_ejamit_1000pts_1miles
 #'   plot_vs_us(out$results_bysite, type = 'box')
 #'   plot_vs_us(out$results_bysite, varname = "pctlingiso", type =  'box', ylim=c(0, 20))

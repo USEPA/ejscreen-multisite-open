@@ -22,9 +22,7 @@ and across hundreds or thousands of places, all at the same time.
 ### EJAM as a Web App
 
 - [Using EJAM as a Web
-  App](https://usepa.github.io/EJAM/articles/0_webapp.html) <!-- 
-              -   EJAM beta test is accessible only if at EPA offices or on VPN
-          -->
+  App](https://usepa.github.io/EJAM/articles/0_webapp.html)
 
 ### EJAM as a Software Toolkit for Analysts and Developers
 

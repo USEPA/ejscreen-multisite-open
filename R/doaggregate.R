@@ -1218,7 +1218,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   }
 
 
-  varsneedpctiles <- intersect(varsneedpctiles, names(x$results_bysite))
+  varsneedpctiles <- intersect(varsneedpctiles, names(results_bysite))
   varsneedpctiles <- setdiff(varsneedpctiles, subs_drop)
 
 

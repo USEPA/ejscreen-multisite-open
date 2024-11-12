@@ -33,5 +33,5 @@ Allows EJAM to analyze and compare Counties, for example
   # y=doaggregate(x)
 }
 \seealso{
-\code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=fips_bg_from_anyfips]{fips_bg_from_anyfips()}} \code{\link[=fips_lead_zero]{fips_lead_zero()}} \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} \code{\link[=fips_from_table]{fips_from_table()}}
+\code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=fips_bgs_in_fips]{fips_bgs_in_fips()}} \code{\link[=fips_lead_zero]{fips_lead_zero()}} \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} \code{\link[=fips_from_table]{fips_from_table()}}
 }
