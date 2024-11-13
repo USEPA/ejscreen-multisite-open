@@ -2786,20 +2786,19 @@ app_server <- function(input, output, session) {
                             " selected ", ifelse(submitted_upload_method() == 'SHP', "polygons", 
                                                  ifelse(submitted_upload_method() == 'FIPS', "shapes", "points")))
       map_to_use <- report_map()
+      
+      params <- list(
+        output_df = output_df,
+        analysis_title =  sanitized_analysis_title(),
+        totalpop = popstr,
+        locationstr = locationstr,
+        include_ejindexes = (input$include_ejindexes == 'TRUE'),
+        in_shiny = FALSE,
+        filename = NULL,
+        map = map_to_use,
+        summary_plot = v1_summary_plot()
+      )
     }
-    
-    params <- list(
-      output_df = output_df,
-      analysis_title =  sanitized_analysis_title(),
-      totalpop = popstr,
-      locationstr = locationstr,
-      include_ejindexes = (input$include_ejindexes == 'TRUE'),
-      in_shiny = FALSE,
-      filename = NULL,
-      map = map_to_use,
-      summary_plot = v1_summary_plot(),
-      summary_plot_state = v1_summary_plot_state()
-    )
     
     # Render Rmd to HTML
     rmarkdown::render(tempReport,
