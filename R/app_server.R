@@ -2294,8 +2294,31 @@ app_server <- function(input, output, session) {
               labels = popup_labels),
             popupOptions = popupOptions(maxHeight = 200)
           )} else {
-            # FIPS    *** placeholder blank US map until have time to create FIPS-based map
-            leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+            # FIPS   
+            popup_labels <- fixcolnames(namesnow = names(data_processed()$results_bysite), oldtype = 'r', newtype = 'shortlabel')
+            popup_labels[is.na(popup_labels)] <- names(data_processed()$results_bysite)[is.na(popup_labels)]
+            
+            fips_shapes <- shapes_counties_from_countyfips(countyfips = data_processed()$results_bysite$ejam_uniq_id)
+            
+            if (!is.null(fips_shapes) && nrow(fips_shapes) > 0) {
+
+              leaflet(fips_shapes) %>%
+                addTiles() %>%
+                addPolygons(
+                  data = fips_shapes,
+                  color = "green",
+                  popup = popup_from_df(
+                    data_processed()$results_bysite %>%
+                      dplyr::mutate(dplyr::across(
+                        dplyr::where(is.numeric), \(x) round(x, digits = 3))),
+                    labels = popup_labels
+                  ),
+                  popupOptions = popupOptions(maxHeight = 200)
+                )
+            } else {
+              #Possible failsafe needed if fips is invalid? Will it get to this stage? Blank map returned
+              leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+            }
           }
     }
     
@@ -2786,20 +2809,19 @@ app_server <- function(input, output, session) {
                             " selected ", ifelse(submitted_upload_method() == 'SHP', "polygons", 
                                                  ifelse(submitted_upload_method() == 'FIPS', "shapes", "points")))
       map_to_use <- report_map()
+      
+      params <- list(
+        output_df = output_df,
+        analysis_title =  sanitized_analysis_title(),
+        totalpop = popstr,
+        locationstr = locationstr,
+        include_ejindexes = (input$include_ejindexes == 'TRUE'),
+        in_shiny = FALSE,
+        filename = NULL,
+        map = map_to_use,
+        summary_plot = v1_summary_plot()
+      )
     }
-    
-    params <- list(
-      output_df = output_df,
-      analysis_title =  sanitized_analysis_title(),
-      totalpop = popstr,
-      locationstr = locationstr,
-      include_ejindexes = (input$include_ejindexes == 'TRUE'),
-      in_shiny = FALSE,
-      filename = NULL,
-      map = map_to_use,
-      summary_plot = v1_summary_plot(),
-      summary_plot_state = v1_summary_plot_state()
-    )
     
     # Render Rmd to HTML
     rmarkdown::render(tempReport,
