@@ -2295,17 +2295,24 @@ app_server <- function(input, output, session) {
             popupOptions = popupOptions(maxHeight = 200)
           )} else {
             # FIPS   
-            fips_shapes <- shapes_counties_from_countyfips(countyfips = data_uploaded())
+            popup_labels <- fixcolnames(namesnow = names(data_processed()$results_bysite), oldtype = 'r', newtype = 'shortlabel')
+            popup_labels[is.na(popup_labels)] <- names(data_processed()$results_bysite)[is.na(popup_labels)]
+            
+            fips_shapes <- shapes_counties_from_countyfips(countyfips = data_processed()$results_bysite$ejam_uniq_id)
             
             if (!is.null(fips_shapes) && nrow(fips_shapes) > 0) {
-              popup_labels <- fixcolnames(namesnow = setdiff(names(fips_shapes), c('geometry')), oldtype = 'r', newtype = 'shortlabel')
-              
+
               leaflet(fips_shapes) %>%
                 addTiles() %>%
                 addPolygons(
                   data = fips_shapes,
                   color = "green",
-                  popup = popup_from_df(fips_shapes %>% sf::st_drop_geometry(), labels = popup_labels),
+                  popup = popup_from_df(
+                    data_processed()$results_bysite %>%
+                      dplyr::mutate(dplyr::across(
+                        dplyr::where(is.numeric), \(x) round(x, digits = 3))),
+                    labels = popup_labels
+                  ),
                   popupOptions = popupOptions(maxHeight = 200)
                 )
             } else {
