@@ -918,7 +918,7 @@ app_server <- function(input, output, session) {
         # now let ejamit() do the rest for the FIPS case (and ejamit relies on getblocksnearby_from_fips etc.)
         fips_vec
       }
-      
+      fips_vec <- fips_lead_zero(fips_vec)
       fips_is_valid <- fips_valid(fips_vec)
       
       if (sum(fips_is_valid) > 0) {
