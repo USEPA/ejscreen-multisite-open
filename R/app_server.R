@@ -2294,8 +2294,24 @@ app_server <- function(input, output, session) {
               labels = popup_labels),
             popupOptions = popupOptions(maxHeight = 200)
           )} else {
-            # FIPS    *** placeholder blank US map until have time to create FIPS-based map
-            leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+            # FIPS   
+            fips_shapes <- shapes_counties_from_countyfips(countyfips = data_uploaded())
+            
+            if (!is.null(fips_shapes) && nrow(fips_shapes) > 0) {
+              popup_labels <- fixcolnames(namesnow = setdiff(names(fips_shapes), c('geometry')), oldtype = 'r', newtype = 'shortlabel')
+              
+              leaflet(fips_shapes) %>%
+                addTiles() %>%
+                addPolygons(
+                  data = fips_shapes,
+                  color = "green",
+                  popup = popup_from_df(fips_shapes %>% sf::st_drop_geometry(), labels = popup_labels),
+                  popupOptions = popupOptions(maxHeight = 200)
+                )
+            } else {
+              #Possible failsafe needed if fips is invalid? Will it get to this stage? Blank map returned
+              leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+            }
           }
     }
     
