@@ -171,9 +171,9 @@ app_server <- function(input, output, session) {
       hideTab(inputId = 'results_tabs', target = 'Written Report') 
   }
   ## hide vs show HISTOGRAMS tab  ---------------------- #   ***
-  if (default_hide_plot_range_tab) {
-    hideTab(inputId = 'results_tabs', target = 'plot_range') 
-  }
+  # if (default_hide_plot_range_tab) {
+  #   hideTab(inputId = 'details_subtabs', target = 'plot_range')  # will be fixed
+  # }
   
   ## advanced tab provides size cap on file uploads  ---------------------- #
   
