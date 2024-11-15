@@ -21,7 +21,7 @@ generate_html_header(
 
 \item{in_shiny, }{whether the function is being called in or outside of shiny - affects location of header}
 
-\item{report_title}{generic name of this type of report, to be shown at top, like "EJScreen-EJAM Multisite Report"}
+\item{report_title}{generic name of this type of report, to be shown at top, like "EJScreen-EJAM Multisite Report" or "EJAM Multisite Report"}
 }
 \description{
 Build HTML header for community report

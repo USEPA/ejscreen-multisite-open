@@ -425,7 +425,7 @@ url_echo_facility_webpage <- function(regid, as_html=FALSE, linktext) {
 #'   [url_echo_facility_webpage()] [url_frs_report()]  [url_enviromapper()]  [url_envirofacts_data()]
 #'   
 #' @return URL(s)
-#' @examples dontrun{
+#' @examples \dontrun{
 #' browseURL(url_frs_report(testids_registry_id)[1])
 #' }
 #' url_frs_report(testids_registry_id)

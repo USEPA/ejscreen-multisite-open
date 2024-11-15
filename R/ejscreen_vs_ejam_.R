@@ -238,11 +238,13 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   ejamsite <- ejamsite[ , !(names(ejamsite) %in% c('ST', 'statename', "REGION", "EJScreen Report", "EJScreen Map", "ECHO report"))]
   
   if (x100fix) {
-    ejamsite <- fix_pctcols_x100(ejamsite, cnames = x100varnames)
+    # *** what about  table_signif_round_x100() ... is that done now by ejamit() and or ejscreenit() ?
+    ejamsite <- table_x100(ejamsite, cnames = x100varnames)
   }
+  EJSCREEN_shown <- table_round(apisite)  # SLOW! *** # *** what about  table_signif_round_x100() 
+  EJAM_shown     <- table_round(ejamsite)  # SLOW! *** # *** what about  table_signif_round_x100() 
+  warning("SHOULD CONFIRM this code creates EJSCREEN_shown correctly -- actually as shown on single site community report?")
   
-  EJSCREEN_shown <- table_round(apisite)  # SLOW! ***
-  EJAM_shown     <- table_round(ejamsite)  # SLOW! ***
   suppressWarnings({
     apisite               <- as.matrix(as.data.frame(lapply( apisite,    as.numeric))) # should now work if only 1 point (1 row) was analyzed
     ejamsite              <- as.matrix(as.data.frame(lapply(ejamsite,    as.numeric)))
@@ -352,7 +354,7 @@ ejscreen_vs_ejam_1var_bysite <- function(vs, pts, varname = "blockcount_near_sit
 #'    
 #' @examples
 #'   radius = 3
-#'   dontrun{
+#'   \dontrun{
 #'   pts <- testpoints_n(100, weighting = 'frs')
 #'   
 #'   # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:
@@ -697,7 +699,7 @@ ejscreen_vs_ejam_1var_cdf = function(vs, varname = 'pop') {
 #'
 #' @examples 
 #'   mysite <- 9
-#'   dontrun{
+#'   \dontrun{
 #'   vs <- ejscreen_vs_ejam(testpoints_10, radius = 3)
 #'   ejscreen_vs_ejam_see1(vs, mysite = mysite, myvars = colnames(vs$EJAM))[!is.na(vs$EJSCREEN[mysite, ]) , 1:2]
 #'   }
@@ -744,7 +746,7 @@ ejscreen_vs_ejam_see1 <- function(vs, myvars = c("ejam_uniq_id", 'pop', names_d)
 #'   but you may also want the output of ejscreen_vs_ejam_see1()
 #' @examples 
 #'  radius = 3; n = 3
-#'  dontrun{
+#'  \dontrun{
 #'   vs <- ejscreen_vs_ejam(testpoints_10, radius = radius, include_ejindexes = TRUE)
 #'   ejscreen_vs_ejam_see1map(vs, n = n, overlay_blockgroups = TRUE)
 #'  }

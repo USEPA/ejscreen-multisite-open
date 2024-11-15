@@ -1187,15 +1187,46 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ##################################################### #
   
   # the ejscreen community report shows percentiles only for E,D,EJ, plus health,climate,criticalservice tables:
-  namelists <- intersect(c('names_health', 'names_climate', 'names_criticalservice'), unique(map_headernames$varlist))
-  varsneedpctiles <- unique(c(names_e,  names_d, subs, 
-                              namesbyvarlist(namelists)$rname
-  ) )
-  varsneedpctiles <- intersect(varsneedpctiles, names(results_bysite))
+  #Changed varsneedpctiles to dynamically source from map_headernames
+  subs_drop = switch(subgroups_type,
+                     alone    = "names_d_subgroups_nh",
+                     nh       = "names_d_subgroups_alone",
+                     both     = NULL,
+                     original = "names_d_subgroups_alone")
+
+  subs_list <- switch(subgroups_type,
+                      nh = "names_d_subgroups_nh",
+                      alone = "names_d_subgroups_alone",
+                      both = c("names_d_subgroups_alone", "names_d_subgroups_nh"),
+                      original = "names_d_subgroups")
   
+  namelists <- c('names_e','names_d',subs_list, 'names_health','names_climate')
+  varsneedpctiles <- map_headernames %>%
+    ## need to pull rows in same order of name lists
+    slice(unlist(sapply(namelists, function(a) which(map_headernames$varlist %in% a)))) %>% 
+    #filter(pctile. == 1,
+    filter( 
+          !(rname %in% c("Demog.Index.State", "Demog.Index.Supp.State"))) %>%
+    #select(topic_root_term) %>% 
+    distinct(rname) %>% pull(rname)
+  
+  if(is.null(subs_drop)){
+    
+  }else{
+    subs_drop <- namesbyvarlist(subs_drop)$rname
+    subs_drop <- setdiff(subs_drop, 'pcthisp')
+  }
+
+
+  varsneedpctiles <- intersect(varsneedpctiles, names(results_bysite))
+  varsneedpctiles <- setdiff(varsneedpctiles, subs_drop)
+
+
   varnames.us.pctile    <- paste0(      'pctile.', varsneedpctiles) # but EJ indexes do not follow that naming scheme and are handled with separate code
   varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles) # but EJ indexes do not follow that naming scheme and are handled with separate code
   
+
+
   # set up empty tables to store the percentiles we find
   us.pctile.cols_bysite     <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(us.pctile.cols_bysite)     <- varnames.us.pctile
   state.pctile.cols_bysite  <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(state.pctile.cols_bysite)  <- varnames.state.pctile
@@ -1209,20 +1240,35 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     
     myvar <- varsneedpctiles[i]
     
-    if ((myvar %in% names(usastats)) & (myvar %in% names(results_bysite)) & (myvar %in% names(results_overall))) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
-      us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
-        unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
-      us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
-        unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
-      # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
-    } else { # cannot find that variable in the percentiles lookup table
-      us.pctile.cols_bysite[    , varnames.us.pctile[[i]]] <- NA
-      us.pctile.cols_overall[   , varnames.us.pctile[[i]]] <- NA
+    ################################## #
+    ## alternatively, to add new column of percentiles directly to results tables:
+    add_pctiles_directly_not_merge <- FALSE
+    if (add_pctiles_directly_not_merge) {
+      results_bysite[, varnames.us.pctile[[i]]  := pctile_from_raw_lookup(
+        unlist(results_bysite[  , ..myvar]),
+        varname.in.lookup.table = myvar, lookup = usastats)]
+      results_bysite[, varnames.us.pctile[[i]]  := pctile_from_raw_lookup(
+        unlist(results_bysite[  , ..myvar]),
+        varname.in.lookup.table = myvar, lookup = usastats)]
+    } else {
+      
+      if ((myvar %in% names(usastats)) & (myvar %in% names(results_bysite)) & (myvar %in% names(results_overall))) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
+        us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
+          unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
+        us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
+          unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
+        # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
+      } else { # cannot find that variable in the percentiles lookup table
+        us.pctile.cols_bysite[    , varnames.us.pctile[[i]]] <- NA
+        us.pctile.cols_overall[   , varnames.us.pctile[[i]]] <- NA
+      }
+      
     }
+    ################################## #
     
     ################################## #
     #### >>>Demog.Index SPECIAL CASE:####
-
+    
     # state.pctile.Demog.Index <- 
     # percentile based on using the blockgroupstats$Demog.Index.State  value (myvar_to_use)
     #  but look in statestats$Demog.Index  column  
@@ -1258,10 +1304,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     }
     
   }
-  # Q: does this convert it from data.table to data.frame? I think not. xxx
   
-  results_overall <- cbind(results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
-  results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
+  if (add_pctiles_directly_not_merge) {
+    # already done
+  } else {
+    results_overall <- cbind(results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+    results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
+  }
   ##____________________________________________________  #  ##################################################### #
   
   #### EJ INDEX PERCENTILES ####
@@ -1314,7 +1363,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         
         us.pctile.cols_bysite[    , ejnames_pctile[i]]    <- pctile_from_raw_lookup(
           unlist( results_bysite[  , ..myvar]),
-          varname.in.lookup.table = myvar, lookup = usastats)
+          varname.in.lookup.table = myvar, lookup = usastats) 
         
         us.pctile.cols_overall[   , ejnames_pctile[i]]    <- pctile_from_raw_lookup(
           unlist(results_overall[  , ..myvar]),
@@ -1440,7 +1489,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   ############################################################################## #
   ### Nationwide  ####
-
+  
   avg.cols_overall <-   usastats[ usastats$PCTILE == "mean",  names_these] # not a data.table, or it would need to say  usastats[ PCTILE == "mean",  ..names_these]
   ## all.equal( as.vector(unlist(avg.cols_overall)), as.vector(unlist( data.frame(t( usastats_means(names_these, dig = 7)  ))  ) ) ) # TRUE, but that function is not any simpler for getting the means
   # rename the colnames to avg instead of just basic name

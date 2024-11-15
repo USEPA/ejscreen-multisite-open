@@ -5,9 +5,9 @@
 \title{Utility to load datasets from AWS DMAP Data Commons, into memory}
 \usage{
 dataload_from_aws(
-  varnames = c("blockwts", "blockpoints", "blockid2fips", "quaddata", "bgej",
-    "bgid2fips", "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic",
-    "frs_by_mact")[1:4],
+  varnames = c("blockwts", "blockpoints", "quaddata", "bgej", "bgid2fips",
+    "blockid2fips", "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic",
+    "frs_by_mact")[1:3],
   ext = c(".arrow", ".rda")[2],
   fun = c("arrow::read_ipc_file", "load")[2],
   envir = globalenv(),
@@ -67,9 +67,10 @@ or tables()
 
 or object.size(quaddata)
 
-NOTE: blockid2fips is HUGE in memory, and is used only in
-state_from_blockid_table() and state_from_blockid(), which are not always needed by the app
-blockid2fips is roughly 600 MB in RAM because it stores 8 million block FIPS as text.
+blockid2fips was used only in  state_from_blockid(), which is no longer used by testpoints_n(),
+so not loaded unless/until needed.
+Avoids loading the huge file "blockid2fips" (100MB) and just uses "bgid2fips" (3MB) as needed, that is only 3\% as large in memory.
+blockid2fips was roughly 600 MB in RAM because it stores 8 million block FIPS as text.
 
 Files may include the following:
 \itemize{
@@ -79,7 +80,7 @@ Files may include the following:
 \item frs_by_naics      (approx  60 MB RAM)
 \item frs_by_mact
 \item quaddata     (168 MB on disk, 229 MB RAM)
-\item blockid2fips ( 20 MB on disk, 621 MB RAM!)
+\item blockid2fips ( 20 MB on disk, 621 MB RAM!) No longer needed.
 \item blockpoints  ( 86 MB on disk, 164 MB RAM)
 \item blockwts     ( 31 MB on disk, 196 MB RAM)
 \item bgej         (123 MB RAM)

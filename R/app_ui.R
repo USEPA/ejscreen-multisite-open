@@ -63,7 +63,7 @@ app_ui  <- function(request) {
       # at one point was this:
       #
       # tabsetPanel(                         id = 'all_tabs',     ##
-      #   tabPanel(title = 'About EJAM',
+      #   tabPanel(title = 'About',
       #   tabPanel(title = 'Site Selection',
       #   tabPanel(title =   , # ??
       #   tabsetPanel(                       id = 'results_tabs', ##
@@ -79,9 +79,9 @@ app_ui  <- function(request) {
       # TABSETPANEL ALL -  tabsetPanel(id = 'all_tabs',  ####
       tabsetPanel( # up to line 1101 or so
         id = 'all_tabs',
-        # type = 'hidden', # xxxx ***
-        selected = 'Site Selection',  # tabs are  'About EJAM',   'Site Selection', 'EJScreen Batch Tool', 'EJScreen Batch Tool',
-        # ______ About ______ tabPanel(title = 'About EJAM' ####
+        
+        selected = 'Site Selection',
+        # ______ About ______ tabPanel(title = 'About' ####
         
         tabPanel(title = 'About',
                  br(),
@@ -1025,7 +1025,7 @@ app_ui  <- function(request) {
         # . --------------------------------------------------------------- ####
         ## . ####
         # EJSCREEN API MODULE -  tabPanel(title = 'EJScreen Batch Tool'   ####
-        # may move to another tab. or in a conditional UI panel.
+        # may just link to separate app. or may put in a conditional UI panel.
         # tabPanel(title = 'EJScreen Batch Tool',
         #
         #          h3("Access to EJScreen results via the API"),
@@ -1149,7 +1149,7 @@ app_ui  <- function(request) {
                  ## Viewing maps, saving results ####
                  h2("Viewing maps, saving results"),
                  
-                 textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", value = ""),
+                 textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", ""),
                  
                  ## Map colors, weights, opacity ####
                  ### in ejscreenapi:
@@ -1249,7 +1249,7 @@ app_ui  <- function(request) {
                  ## input: GROUP NAME for 2d set of comparisons
                  shiny::textInput(inputId = 'an_threshgroup2',
                                   label = 'Name for 2nd set of comparisons',
-                                  value =   default.an_threshgroup2
+                                  value = default.an_threshgroup2
                  ),
                  ## input: variable names for 2d set of comparisons
                  shiny::selectizeInput(inputId = 'an_threshnames2',
@@ -1282,7 +1282,7 @@ app_ui  <- function(request) {
                  #                  was DISABLED while PDF KNITTING DEBUGGED
                  radioButtons("format1pager", "Format", choices = c(html = "html", html = "pdf"), inline = TRUE),
                  
-                 textInput(inputId = "Custom_title_for_bar_plot_of_indicators", label = "Enter title for bar plot of indicators", value = "" ),
+                 textInput(inputId = "Custom_title_for_bar_plot_of_indicators", label = "Enter title for bar plot of indicators", value = gsub("[^a-zA-Z0-9 ]", "", "") ),
                  
                  ######################################################## #
                  ## Long report options ####
@@ -1351,9 +1351,8 @@ app_ui  <- function(request) {
         ## . ####
         
       ), # end tabset panel from line 37 or so ^^^^^^^^^  ## ##
-      
       html_footer_fmt  ## adds HTML footer - defined in global.R
-      
+
     ) ## end fluidPage
   ) # end tag list
   

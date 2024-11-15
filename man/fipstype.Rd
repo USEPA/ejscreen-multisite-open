@@ -37,9 +37,9 @@ but might be a blockgroup fips with a missing leading zero.
  fipsexamples <- c(
    fips_state_from_statename("Alaska"),
    fips_counties_from_state_abbrev("DE")[1],
-    substr(blockid2fips$blockfips[1],1,11),
+    "01001020100", # substr(blockgroupstats$bgfips[1],1,11),
     blockgroupstats$bgfips[1],
-    blockid2fips$blockfips[1]
+    "010010201001000" # blockid2fips$blockfips[1]
  )
  cbind(fipsexamples, type = fipstype(fipsexamples))
 }

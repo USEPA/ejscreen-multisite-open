@@ -89,8 +89,11 @@
     }
     
     #################### # 
-    #   blockid2fips is used only in state_from_blockid_table() and state_from_blockid(), which are not necessarily used, 
-    #   so not loaded unless/until needed
+    #   blockid2fips was used only in  state_from_blockid(), which is no longer used by testpoints_n(), 
+    #     so not loaded unless/until needed.
+    #     Avoids loading the huge file "blockid2fips" (100MB) and just uses "bgid2fips" (3MB) as needed, that is only 3% as large in memory.
+    #     blockid2fips was roughly 600 MB in RAM because it stores 8 million block FIPS as text.
+    #
     # Alternative to pins board was DMAP data commons / AWS, where .rda format had been used: 
     # EJAM:::dataload_from_aws(justchecking = TRUE)
     ## could download directly like this:

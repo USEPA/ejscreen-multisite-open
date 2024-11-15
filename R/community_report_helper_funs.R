@@ -383,7 +383,6 @@ generate_report_footnotes <- function(
   #  app_server, 
   #  ejam2report(), and
   #  community_report_template.Rmd 
-
   
   dieselnote = paste0("
   <span style= 'font-size: 9pt'>
@@ -414,7 +413,7 @@ generate_report_footnotes <- function(
 #' @param totalpop, total population included in location(s) analyzed
 #' @param locationstr, description of the location(s) analyzed
 #' @param in_shiny, whether the function is being called in or outside of shiny - affects location of header
-#' @param report_title generic name of this type of report, to be shown at top, like "EJScreen-EJAM Multisite Report"
+#' @param report_title generic name of this type of report, to be shown at top, like "EJScreen-EJAM Multisite Report" or "EJAM Multisite Report"
 #'
 #' @keywords internal
 #'
