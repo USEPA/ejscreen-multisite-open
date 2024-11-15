@@ -94,11 +94,9 @@ test_that("fips_valid() works but is slow", {
       "10001", 
       "01001", 1001
     )),
-    c(FALSE, FALSE, TRUE, 
-      FALSE,
-      TRUE,
-      TRUE, FALSE
-    )
+    c(TRUE , TRUE , TRUE , # once leading zeroes are added, these are ok state fips
+      FALSE ,   # "00"  is not an actual fips
+      TRUE,  TRUE,  TRUE    )# once leading zeroes are added, these are ok county fips
   )
   
   expect_identical(
@@ -120,11 +118,97 @@ test_that("fips_valid() works but is slow", {
 )
 #################################################################### #
 
+testthat::test_that("fipstype_from_nchar for 1-15", {
+  
+  #     n      ftype
+  # 1   1      state
+  # 2   2      state
+  # 3   3       <NA>
+  # 4   4     county
+  # 5   5     county
+  # 6   6       city
+  # 7   7       city
+  # 8   8       <NA>
+  # 9   9       <NA>
+  # 10 10      tract
+  # 11 11      tract  # tract unless is bg missing a leading zero.. AMBIGUOUS CASE IF NOT SURE IF IT IS MISSING A LEADING ZERO.
+  # 12 12 blockgroup
+  # 13 13       <NA>
+  # 14 14      block
+  # 15 15      block
+  
+  t1 <- c(1:15, 15)
+  t1_type_found <- fipstype_from_nchar(t1)
+  t1_type_expected <- c(
+    "state", "state", NA, # 1,2,  3
+    "county", "county",   # 4,5
+    "city", "city",     # 6,7
+    NA, NA,   # 8,9
+    
+    "tract", # 10 
+    "tract",   # and   11   ***
+    
+    "blockgroup",     # 12
+    NA,          # 13
+    "block", "block",   # 14,15
+    "block"   # REPEAT OF 15
+  )
+  expect_identical(t1_type_expected, t1_type_found) 
+  
+})
+############################################################################# #
+
+testthat::test_that("fipstype_from_nchar NA if BAD inputs", {
+  
+  t2 <- c(16, 0, NA, "", 'text', FALSE)
+  t2_type_found <- fipstype_from_nchar(t2)
+  t2_type_expected <- c(NA, NA, NA, NA, NA, NA)
+  # expect_identical(t2_type_expected, t2_type_found) # ONE IS LOGICAL OTHER IS CHARACTER
+  expect_true(all(is.na(t2_type_found)))
+  
+})
+############################################################################# #
+
+# fipstype2nchar
+
+testthat::test_that("fipstype2nchar ok", {
+  
+  #     n      ftype
+  # 1   1      state
+  # 2   2      state
+  # 3   3       <NA>
+  # 4   4     county
+  # 5   5     county
+  # 6   6       city
+  # 7   7       city
+  # 8   8       <NA>
+  # 9   9       <NA>
+  # 10 10      tract
+  # 11 11      tract  # tract unless is bg missing a leading zero.. AMBIGUOUS CASE IF NOT SURE IF IT IS MISSING A LEADING ZERO.
+  # 12 12 blockgroup
+  # 13 13       <NA>
+  # 14 14      block
+  # 15 15      block
+  
+  
+  t1_n_expected <- c(2,2, NA, 5,5, 7,7, NA,NA,
+                     10,10,  12,  NA,  15,15,15,
+                     NA, NA, NA, NA, NA, NA)
+  # NOT same as original inputs, t1
+  
+  t1_n_found <- fipstype2nchar(t1_type_found)
+  
+  expect_identical(t1_n_found, t1_n_expected)
+  
+})
+
+############################################################################# #
+
 # fipstype()
 
-testfips16 = c("1", "12", "123", "1234", "12345", "123456", "1234567", "12345678", "123456789",
-               "1234567890", "12345678901", "123456789012", "1234567890123", "12345678901234",
-               "123456789012345", "1234567890123456")
+# testfips16 = c("1", "12", "123", "1234", "12345", "123456", "1234567", "12345678", "123456789",
+#                "1234567890", "12345678901", "123456789012", "1234567890123", "12345678901234",
+#                "123456789012345", "1234567890123456")
 # cbind(fipstype(testfips16), fips_lead_zero(testfips16), testfips16)
 # testfips16
 #
@@ -138,22 +222,131 @@ testfips16 = c("1", "12", "123", "1234", "12345", "123456", "1234567", "12345678
 # [8,] NA           NA                "12345678"
 # [9,] NA           NA                "123456789"
 # [10,] "tract"      "01234567890"     "1234567890"
-# [11,] "tract"      "12345678901"     "12345678901"  # AMBIGUOUS CASE - MIGHT BE BLOCK GROUP MISSING THE LEADING 0 ***
+# [11,] "tract" ?    "12345678901"     "12345678901"  # AMBIGUOUS CASE - MIGHT BE BLOCK GROUP MISSING THE LEADING 0 ***
 # [12,] "blockgroup" "123456789012"    "123456789012"
 # [13,] NA           NA                "1234567890123"
 # [14,] "block"      "012345678901234" "12345678901234"
 # [15,] "block"      "123456789012345" "123456789012345"
 # [16,] NA           NA                "1234567890123456"
+######################################## #
+
+
+test_that("fipstype() 11 digits tract vs blockgroup", {
+  
+  realtracts = substr(blockgroupstats$bgfips,1,11)
+  realbgs    = blockgroupstats$bgfips
+  
+  test_tract_missing0 =   4013116500   # 10 digits tract missing 0
+  test_tract_good     = "04013116500"  # 11 digits full tract includes leading 0 !!!!!!!!!!
+  test_bg_missing0    =   40131165002  # 11 digits blockgroup missing leading 0 !!!!!!!!!!
+  test_bg_good        = "040131165002" # 12 digits full blockgroup
+  
+  # confirm test cases are what we want
+  expect_equal(11, nchar(test_tract_good))  # 11 digits full tract includes leading 0
+  expect_equal(11, nchar(test_bg_missing0)) # 11 digits blockgroup missing leading 0
+  expect_true(test_tract_missing0 %in% as.numeric(realtracts)) # it is a real tract
+  expect_true(test_tract_good %in% realtracts) # it is a real tract
+  expect_true(test_bg_missing0 %in% as.numeric(realbgs)) # it is a real BG
+  expect_true(test_bg_good %in% realbgs) # it is a real BG
+  
+  # Able to distinguish between tract and blockgroup for an 11-digit number:
+  
+  expect_identical(
+    fipstype(test_tract_missing0), 'tract'
+  )
+  expect_identical(
+    fipstype(test_tract_good), 'tract'
+  )
+  expect_identical(
+    fipstype(test_bg_missing0), 'blockgroup'
+  )  
+  expect_identical(
+    fipstype(test_bg_good), 'blockgroup'
+  )
+  ##################### # 
+  
+})
+######################################## #
 
 test_that("fipstype() works", {
   
-  testfips16 = c("1", "12", "123", "1234", "12345", 
-                 "123456", "1234567",  # CDP/CITY
-                 "12345678", "123456789",
-                 "1234567890", "12345678901", "123456789012", "1234567890123", "12345678901234",
-                 "123456789012345", "1234567890123456")
+  casex = vector()
+  testx = vector()
+  truex = vector()
+  
+  testx[1] = "12345678901";  casex[1]  <- "test_11_char_invalid"; truex[1] <- NA
+  testx[2] =  12345678901;   casex[2]  <- 'test_11_num_invalid';  truex[2] <- NA
+  
+  testx[3]  =  40109109500;   casex[3] <- 'test_11_tract_num_neednozero';    truex[3] <- "tract"
+  testx[12] = "06073020041";  casex[12] <- 'test_10_char_tract_missingzero'; truex[12] <- "tract"
+  testx[4]  =   6073020041;   casex[4] <- 'test_10_num_tract_missingzero';   truex[4] <- "tract"
+  testx[5]  =   60730200411;  casex[5] <- 'test_11_BG_num_missing_leadzero'; truex[5] <- "blockgroup"
+  testx[6]  = "060730200411"; casex[6] <- 'test_12_bg_char_hasleadzero';     truex[6] <- "blockgroup"
+  testx[7]  =  240338006062;  casex[7] <- 'test_12_bg_num_neednozero';       truex[7] <- "blockgroup"
+  testx[8]  = "240338006062"; casex[8] <- 'test_12_bg_char_neednozero';      truex[8] <- "blockgroup"
+  
+  testx[9] =   "123456789012"; casex[9]  <- 'test_12_char_invalid'; truex[9] <- NA
+  testx[10] =   123456789012;  casex[10] <- 'test_12_num_invalid'; truex[10] <- NA
+  testx[11] =  "012345678912"; casex[11] <- 'test_12_char_invalid_hasleadzero'; truex[11] <- NA
+  
+  n = 12
+  
+  print(
+    cbind(fips = testx[1:n], 
+          actual =  truex[1:n],
+          fipstype = fipstype(testx[1:n]), 
+          expected = "?",
+          fips_valid = fips_valid(testx[1:n]),
+          fips_valid_afterlead0fixed = fips_valid(fips_lead_zero(testx[1:n])),
+          nchar = nchar(testx[1:n]), 
+          case = casex[1:n],
+          bgfips_ok_asis = ifelse(testx[1:n] %in% realbgs, 'bg',''),
+          tractfips_ok_asis = ifelse(testx[1:n] %in% realtracts, 'tract','')
+    )
+  )
+  
+  ######################################### # 
+  
+  test_tract_missing0 =   4013116500   # 10 digits tract missing 0
+  test_tract_good     = "04013116500"  # 11 digits full tract includes leading 0 !!!!!!!!!!
+  test_bg_missing0    =   40131165002  # 11 digits blockgroup missing leading 0 !!!!!!!!!!
+  test_bg_good        = "040131165002" # 12 digits full blockgroup
+  
+  testfips16 = c("1", "12",   # 1,2 is State fips
+                 "123",    # 3 is bad
+                 "1234", "12345",   # 4 5 county
+                 "123456", "1234567",    # 6,7 is CDP/CITY
+                 "12345678", "123456789",  # 8 9 bad
+                 "1234567890",   # 10  like a tract MISSING LEAD ZERO
+                 
+                 test_tract_good, # 11 digit TRACT INCLUDES LEAD 0
+                 test_bg_missing0, # 11 digit BLOCKGROUP MISSING LEAD 0
+                 
+                 # "12345678901",  # 11 NOT A REAL FIPS AND  AMBIGUOUS -- SHOULD CHECK ACTUAL FIPS VALIDITY
+                 "123456789012", # 12 bg
+                 "1234567890123",   # 13 bad
+                 "12345678901234", "123456789012345",  # 14,15 block
+                 "1234567890123456")  # 16 bad
+  
   
   suppressWarnings({
+    
+    expect_identical(
+      
+      fipstype(testfips16),
+      
+      c("state", "state",   # 1,2 is State fips
+        NA,                   # 3 is bad
+        "county", "county",    # 4 5 county
+        "city", "city",         # 6,7 is CDP/CITY
+        NA, NA,     # 8, 9 bad
+        "tract",     # 10   tract
+        "tract",       # 11   AMBIGUOUS ??????? ***
+        "blockgroup",   # 12
+        NA,              # 13 bad
+        "block", "block",    # 14, 15 
+        NA)                    # 16 bad
+    )
     
     expect_no_error({
       testfips <- c("1", "12", "123", "1234", "12345", 
@@ -179,16 +372,7 @@ test_that("fipstype() works", {
         fipstype(test_types) == "county"
       )
     })
-    expect_identical(
-      fipstype(testfips16),
-      c("state", "state", NA, 
-        "county", "county", 
-        "city", "city", 
-        NA, NA, 
-        "tract", "tract", 
-        "blockgroup", NA, 
-        "block", "block", NA)
-    )
+    
     expect_true(!identical(fipstype(c(NA,NA)), c(NA,NA))) # c(NA,NA) is logical class
     expect_identical(fipstype( c(NA_character_,NA_character_)), c(NA_character_,NA_character_))
     expect_identical(fipstype("words"), NA_character_)
@@ -199,7 +383,9 @@ test_that("fipstype() works", {
 })
 #################################################################### #
 
-# fips_lead_zero() tests are at the end of this file 
+# (this makes it appear in file outline view in expected order)
+`fips_lead_zero tests are at end of this file` = function() {}
+rm(`fips_lead_zero tests are at end of this file`) 
 
 #################################################################### #
 #    counties_as_sites()          # creates table like getblocksnearby()   and could get used by EJAM/R/mod_fips_picker-DRAFT.R
@@ -312,48 +498,8 @@ test_that("is.island() works", {
 ## fips_ from_ ####
 #################################################################### #
 #################################################################### #
-# fips_from_table()
 
-test_that("fips_from_table() works", {
-  # fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips',
-  #                 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST', 'FIPS.COUNTY', 'FIPS.TRACT')
-  suppressWarnings({
-    mydat <- data.frame(
-      FIPS = c("10001", 1, 10, NA, "text"),
-      other = c("ok", "ok", "ok", "not ok, na", "not fips, text")
-    )
-    expect_no_error({
-      x = fips_from_table(fips_table = mydat)
-    })
-    expect_true(
-      all(c("10001", "01", "10", NA, NA) == x, na.rm = T)
-    )
-    
-    mydat_y <- data.frame(
-      countyfips = c("10001", 1, 10, NA, "text"),
-      other = c("ok", "ok", "ok", "not ok, na", "not fips, text")
-    )
-    expect_warning({
-      y = fips_from_table(mydat_y)
-    })
-    expect_identical(x, y)
-    
-    # uses acceptable names in order or preference picking best one
-    # uses statefips as first choice here and ignores countyfips
-    mydat_z <- data.frame(
-      countyfips = "01001",
-      statefips = "10"
-    )
-    expect_true(
-      fips_from_table(mydat_z) == "10"
-    )
-    expect_warning(
-      # no suitable colname found
-      fips_from_table(data.frame(x = 1:3, y = 1:3))
-    )
-    
-  })
-})
+
 #################################################################### #
 #     name2fips()  # inconsistent name but useful . inverse of  fips2name()  
 #          fips_from_name()  # same as name2fips()
@@ -452,16 +598,11 @@ test_that("name2fips() works on city/town/cdp", {
     )
     
   })
-  
 })
 #################################################################### #
-
-
-
-test_that("name2fips() works on state or county", {
-  
-  # THESE SEEM SLOW... ***
-  
+test_that("fips_from_name aka name2fips() works on state or county", {
+  junk = capture_output({
+    
   suppressWarnings({
     expect_no_error({
       x = name2fips(c("delaware", "NY"))
@@ -491,7 +632,122 @@ test_that("name2fips() works on state or county", {
       identical(name2fips(c("georgia", "Harris County, TX", NA)), c("13", "48201", NA))
     )
   })
+  })
+
 })
+#################################################################### #
+# fips_from_table()
+
+test_that("fips_from_table() works", {
+  # fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips',
+  #                 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST', 'FIPS.COUNTY', 'FIPS.TRACT')
+  suppressWarnings({
+    mydat <- data.frame(
+      FIPS = c("10001", 1, 10, NA, "text"),
+      other = c("ok", "ok", "ok", "not ok, na", "not fips, text")
+    )
+    expect_no_error({
+      x = fips_from_table(fips_table = mydat)
+    })
+    expect_true(
+      all(c("10001", "01", "10", NA, NA) == x, na.rm = T)
+    )
+    
+    mydat_y <- data.frame(
+      countyfips = c("10001", 1, 10, NA, "text"),
+      other = c("ok", "ok", "ok", "not ok, na", "not fips, text")
+    )
+    expect_warning({
+      y = fips_from_table(mydat_y)
+    })
+    expect_identical(x, y)
+    
+    # uses acceptable names in order or preference picking best one
+    # uses statefips as first choice here and ignores countyfips
+    mydat_z <- data.frame(
+      countyfips = "01001",
+      statefips = "10"
+    )
+    expect_true(
+      fips_from_table(mydat_z) == "10"
+    )
+    expect_warning(
+      # no suitable colname found
+      fips_from_table(data.frame(x = 1:3, y = 1:3))
+    )
+    
+  })
+})
+#################################################################### #
+# fips_place2placename()
+
+test_that("fips_place2placename() works", {
+  
+  # testplaces = c("North Richmond, CA", "McFarland, CA", "Chelsea, MA", "Hamtramck, MI",
+  #                "St. John the Baptist Parish, LA", "Dallas, TX", 
+  #                "chicago, IL", "chicago, Illinois", "East Chicago, IN",
+  #                "Salt Lake City, UT", "Commerce City, North Denver",
+  #                "Atlanta, GA", "Westside, GA", "Queens Creek Watershed, GA",
+  #                "Grand Rapids, MI", "Jackson, MI", "Adrian, MI", "East St. Louis, IL",
+  #                "Cahokia Heights, IL", "Cahokia village, IL", "xyz facility, IL", "Rocky Mountain Interagency site, CO",
+  #                "New York CAFO", "mega-site adjacent to xyz, New York",
+  #                "Bad Name project", "Chicago large Project, IL",
+  #                "Cuyahoga County, OH", "Cuyahoga County, Ohio", "Cuyahoga, OH", "Cuyahoga County, OH project",
+  #                
+  #                "New York", "new york, NY", "new york, new york"
+  # )
+  # 
+  # testfips = fips_place_from_placename(testplaces)
+  
+  
+  testfips1 = c(4276536L, 657240L, 4203656L, 5531225L, 7218891L, 2721986L, 
+                3901042L, 4053400L, 3439630L, 423760L, 3986366L, 506340L, 4243944L, 
+                5430364L, 5582825L, 5136216L, 2740238L, 4250272L, 3405740L, 3714460L
+  )
+  testname1 = c("Thompsontown borough, PA", "Pine Mountain Club CDP, CA", "Avondale borough, PA", 
+                "Greenfield town, WI", "Coco comunidad, PR", "Fosston city, MN", 
+                "Albany village, OH", "Oakland town, OK", "Lebanon borough, NJ", 
+                "Florence town, AZ", "Woodlawn village, OH", "Birdsong town, AR", 
+                "Littlestown borough, PA", "Gauley Bridge town, WV", "Vilas town, WI", 
+                "Heathsville CDP, VA", "Maple Lake township, MN", "Mohnton borough, PA", 
+                "Beverly city, NJ", "Cooleemee town, NC")
+  
+  expect_no_error({
+    testresult1 = fips_place2placename(testfips1)
+  })
+  expect_equal(
+    testresult1,
+    testname1
+  )
+  
+  
+  expect_true(
+    is.na(fips_place2placename(NA))
+  )
+  
+  expect_true(
+    all(is.na(fips_place2placename(c(NA, NA))   )  )
+    )
+  
+})
+#################################################################### #
+# fips_place_from_placename()
+
+test_that("fips_place_from_placename() works", {
+  junk <- testthat::capture_output({
+    expect_no_error({
+      fips_place_from_placename("Thompsontown borough, PA")
+      fips_place_from_placename("Thompsontown borough, pennsylvania")
+      fips_place_from_placename("Thompsontown, PA")
+    })
+    expect_equal(
+      fips_place_from_placename(c("atlanta,ga", "los angeles,ca")),
+      c(1304000, 644000)
+    )
+    expect_true(is.na(fips_place_from_placename("xyz,ny")))
+  })
+})
+
 #################################################################### #
 #    fips_state_from_state_abbrev()
 
@@ -574,6 +830,40 @@ test_that("fips_state_from_statename() works", {
       expect_warning(fips_state_from_statename(c(NA, "Montana")))  # maybe should warn some are NA
     })
   })
+})
+#################################################################### #
+# fips_states_in_eparegion
+
+test_that("fips_states_in_eparegion", {
+  
+  test_all_stfips = stateinfo2$FIPS.ST[!is.na(stateinfo2$FIPS.ST)]
+  
+  expect_no_error({
+    test_all_stfips_found = fips_states_in_eparegion(1:10)
+  })
+  expect_true(
+    setequal(
+      test_all_stfips, 
+      c("01", "02", "04", "05", "06", "08", "09", "10", "11", "12", 
+        "13", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", 
+        "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", 
+        "36", "37", "38", "39", "40", "41", "42", "44", "45", "46", "47", 
+        "48", "49", "50", "51", "53", "54", "55", "56", "60", "66", "69", 
+        "72", "74", "78")
+    )
+  )
+  expect_setequal(
+    test_all_stfips_found, test_all_stfips
+  )
+  
+  for (region in 1:10) {
+    expect_setequal(
+      fips_states_in_eparegion(region), 
+      stateinfo2$FIPS.ST[stateinfo2$REGION %in% region]
+      # name2fips(c("Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont"))
+    )
+  }
+  
 })
 #################################################################### #
 # fips_counties_from_statefips()  # should it be statefips or state_fips
@@ -751,13 +1041,13 @@ test_that("fips_counties_from_countyname() works", {
 #   # 2 counties
 #   fips_bg_from_anyfips(c(36009,36011))
 ############################################################################# #
-test_that('by state', {
+test_that('fips_bg_from_anyfips - by STATE', {
   expect_no_warning({val <- fips_bg_from_anyfips(36)})
   expect_no_warning({val <- fips_bg_from_anyfips("36")})
   expect_equal(length(val), 16070)
 })
 ################## #
-test_that('by county', {
+test_that('fips_bg_from_anyfips - by COUNTY', {
   expect_no_warning({val <- fips_bg_from_anyfips(36071)})
   expect_no_warning({val <- fips_bg_from_anyfips("36071")})
   expect_equal(length(val), 292)
@@ -767,7 +1057,7 @@ test_that('by county', {
   expect_equal(y, val)
 })
 ################## #
-test_that('by  tract', {
+test_that('fips_bg_from_anyfips - by  TRACT', {
   expect_no_warning({val <- fips_bg_from_anyfips(36071000100)})
   expect_no_warning({val <- fips_bg_from_anyfips("36071000100")})
   expect_equal(length(val), 4)
@@ -777,7 +1067,7 @@ test_that('by  tract', {
   expect_equal(y, val)
 })
 ################## #
-test_that('by  block group', {
+test_that('fips_bg_from_anyfips - by  BG', {
   expect_no_warning({val <- fips_bg_from_anyfips(360710001001)})
   expect_no_warning({val <- fips_bg_from_anyfips("360710001001")})
   expect_equal(length(val), 1)
@@ -790,7 +1080,7 @@ test_that('by  block group', {
 
 # ACTUALLY     CANNOT use fips_bg_from_anyfips() with city fips SINCE CDP IS NOT BROKEN INTO BGS EXACTLY 
 
-test_that('by CITY', {
+test_that('fips_bg_from_anyfips - by CITY', {
   expect_warning({val <- fips_bg_from_anyfips(3651000)})
   expect_warning({val <- fips_bg_from_anyfips("3651000")})
   #expect_equal(length(val), 1)
@@ -805,7 +1095,7 @@ test_that('by CITY', {
 # even if 2 inputs contain or are inside same bg (turn into same bgid)
 #  - do we want that to be the behavior? ***
 
-test_that("returns only UNIQUE bgs in and/or containing the(se) fips", {
+test_that("fips_bg_from_anyfips - returns only UNIQUE BGS in and/or containing the(se) fips", {
   expect_true({
     length(fips_bg_from_anyfips(c("36071010801"))) == 3 # contains 3 unique blockgroups
   })
@@ -819,7 +1109,8 @@ test_that("returns only UNIQUE bgs in and/or containing the(se) fips", {
     length(fips_bg_from_anyfips(c(360710108011012, 360710108011006, 360710108011023))) == 1 # one unique bg returned even if it contains multiple blocks provided as query terms
   })
 })
-test_that('by  block - uniques only - is that behavior we want?', {
+
+test_that('fips_bg_from_anyfips - by BLOCK - uniques only - is that behavior we want?', {
   expect_true( {
     length(fips_bg_from_anyfips(rep("360710108011", 5))) == 1
   })
@@ -828,7 +1119,7 @@ test_that('by  block - uniques only - is that behavior we want?', {
   expect_equal(length(val), 1)
 })
 ################## #
-test_that('test leading zero addition', {
+test_that('fips_bg_from_anyfips - leading zero addition', {
   
   expect_no_warning({val <- fips_bg_from_anyfips("1055")}) # county
   expect_no_warning({val <- fips_bg_from_anyfips(1055)})
@@ -851,7 +1142,7 @@ test_that('test leading zero addition', {
   expect_equal(substr(val[1], 1,2) , "01")
 })
 ################## #
-test_that('returns bgs inside given tract(s)', {
+test_that('fips_bg_from_anyfips - returns BGS in tract(s)', {
   tractfips1 <- "10005051900"
   expect_true(fipstype(tractfips1) == "tract") # tract as input,
   expect_true(all(fips_bg_from_anyfips(tractfips1) %in% blockgroupstats$bgfips)) # returns actual bg fips
@@ -872,7 +1163,7 @@ test_that('returns bgs inside given tract(s)', {
 # fips_bg_from_anyfips("$1001")
 
 #  NO ERROR for invalid strings, no string cleaning (dashes/dots not removed)
-test_that('NO ERROR if inputs are invalid text strings', {
+test_that('fips_bg_from_anyfips - NO ERROR if invalid text', {
   suppressWarnings({
     expect_no_error({val <- fips_bg_from_anyfips("blue")})
     expect_no_error({val <- fips_bg_from_anyfips("36-071")})
@@ -882,7 +1173,7 @@ test_that('NO ERROR if inputs are invalid text strings', {
 })
 
 #  warnings for invalid strings, no string cleaning (dashes/dots not removed)
-test_that('WARN if inputs are invalid text strings', {
+test_that('fips_bg_from_anyfips - WARN if invalid text', {
   suppressWarnings({
     expect_warning({val <- fips_bg_from_anyfips("blue")})
     expect_warning({val <- fips_bg_from_anyfips("36-071")})
@@ -1011,6 +1302,90 @@ test_that("fips2countyname() works", {
     
   })
 })
+#################################################################### #
+#  fips2tractname()
+
+test_that("fips2tractname() works", {
+  
+  test_tracts = c("04019005200", "31047968600", "16031950600")
+  # fipstype(test_tracts)
+  
+  suppressMessages({
+    
+    expect_equal(
+      fips2tractname(test_tracts, prefix = "TRACT: ")
+      ,
+      paste0("TRACT: ", test_tracts)
+      
+    )
+    expect_equal(
+      fips2tractname(test_tracts)
+      ,
+      paste0("tract ", test_tracts)
+    )
+    
+    expect_no_error(
+      suppressWarnings({
+        fips2tractname(NA)
+      })
+    ) 
+    suppressWarnings(
+      expect_warning(
+        fips2tractname(NA)
+      )
+    )
+    
+    expect_true(
+      suppressWarnings(
+        is.na(fips2tractname(NA))
+      )
+    )
+    
+  })
+})
+#################################################################### #
+#  fips2blockgroupname()
+
+
+test_that("fips2blockgroupname() works", {
+  
+  test_bg = c("061110086021", "370850704022")
+  # fipstype(test_bg)
+  
+  suppressMessages({
+    
+    expect_equal(
+      fips2blockgroupname(test_bg, prefix = "PREFIX: ")
+      ,
+      paste0("PREFIX: ", test_bg)
+      
+    )
+    expect_equal(
+      fips2blockgroupname(test_bg)
+      ,
+      paste0("blockgroup ", test_bg)
+    )
+    
+    expect_no_error(
+      suppressWarnings({
+        fips2blockgroupname(NA)
+      })
+    ) 
+    suppressWarnings(
+      expect_warning(
+        fips2blockgroupname(NA)
+      )
+    )
+    
+    expect_true(
+      suppressWarnings(
+        is.na(fips2blockgroupname(NA))
+      )
+    )
+    
+  })
+})
+
 #################################################################### #
 #    fips2name()    # inverse of name2fips()
 
@@ -1340,21 +1715,35 @@ test_that('10 digit', {
 })
 #################### # #################### #
 # test with 11 digits
-# AMBIGUOUS CASE - MIGHT BE A BLOCKGROUP MISSING A LEADING ZERO, BUT FUNC ASSUMES IT IS A TRACT FIPS.
-# adds no leading zero since it is inferred as a 11 digit census-tract-code
-#  - WHICH MIGHT BE WRONG IF USER TRIED TO PROVIDE BG FIPS LACKING its LEADING ZERO
+# AMBIGUOUS CASE - MIGHT BE A BLOCKGROUP MISSING A LEADING ZERO
+# or A complete TRACT FIPS.
+# 
 test_that('11 digit', {
   options(scipen = 999)
   on.exit({options(scipen = 0)})
   
-  expect_no_warning({val <- fips_lead_zero("00000000001")}) # leading zero
-  expect_equal(val, "00000000001")
-  expect_no_warning({val <- fips_lead_zero(10000000000)}) # numeric
-  expect_equal(val, "10000000000")
-  expect_no_warning({val <- fips_lead_zero(10000000001)}) # numeric
-  expect_equal(val, "10000000001")
-  expect_no_warning({val <- fips_lead_zero("00000000000")}) # zero string
-  expect_equal(val, "00000000000")
+  test_invalid_11 = "01234567891" # lead zero gets added and then it is called a blockgroup though invalid
+  expect_no_warning(fips_lead_zero(test_invalid_11))
+  expect_equal(fips_lead_zero(test_invalid_11), paste0("0", test_invalid_11))
+  
+  test_tract_missing0 =   4013116500   # 10 digits tract missing 0
+  test_tract_good     = "04013116500"  # 11 digits full tract includes leading 0 !!!!!!!!!!
+  test_bg_missing0    =   40131165002  # 11 digits blockgroup missing leading 0 !!!!!!!!!!
+  test_bg_good        = "040131165002" # 12 digits full blockgroup
+  
+  expect_equal(fips_lead_zero(test_tract_missing0), paste0("0", test_tract_missing0))
+  expect_equal(fips_lead_zero(test_tract_good), test_tract_good)
+  expect_equal(fips_lead_zero(test_bg_missing0), paste0("0", test_bg_missing0))
+  expect_equal(fips_lead_zero(test_bg_good), test_bg_good)
+  
+  # expect_no_warning({val <- fips_lead_zero("00000000001")}) # leading zero
+  # expect_equal(val, "00000000001")
+  # expect_no_warning({val <- fips_lead_zero(10000000000)}) # numeric
+  # expect_equal(val, "10000000000")
+  # expect_no_warning({val <- fips_lead_zero(10000000001)}) # numeric
+  # expect_equal(val, "10000000001")
+  # expect_no_warning({val <- fips_lead_zero("00000000000")}) # zero string
+  # expect_equal(val, "00000000000")
   
   options(scipen = 0)
 })

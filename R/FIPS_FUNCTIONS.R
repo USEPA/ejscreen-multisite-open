@@ -49,22 +49,33 @@
 #     misc functions ####
 ############################################################################# #
 
+#' check if FIPS code is valid, meaning it is an actual Census FIPS code for a State, County, City/CDP, etc.
+#'
+#' @param fips vector of numeric or character fips. works for state, county, city/cdp, tract, blockgroup or block fips.
+#' 
+#' @return logical vector
+#' 
+#' @export
+#'
 fips_valid <- function(fips) {
   
-  # before using this, one should clean fips using 
-  #   fips <- fips_lead_zero(fips)
-  
+  suppressWarnings({
+    fips <- fips_lead_zero(fips)
+  })
   ok <- rep(FALSE, length(fips))
-  suppressWarnings({kind <- fipstype(fips)})
+  suppressWarnings({
+    kind <- fipstype(fips)
+  })
+  
   kind[is.na(kind)] <- "fail"
   ok[kind == "state"]      <- fips[kind == "state"]  %in% stateinfo2$FIPS.ST[!is.na(stateinfo2$FIPS.ST)]
   ok[kind == "county"]     <- fips[kind == "county"] %in% substr(blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)], 1, 5)
   
-  ok[kind == "city"]      <- as.integer(fips[kind == "city"])  %in%  as.integer(censusplaces$fips) # it is integer in censusplaces$fips
+  ok[kind == "city"] <- as.integer(fips[kind == "city"])  %in%  as.integer(censusplaces$fips) # it is integer in censusplaces$fips
   
-  ok[kind == "tract"]      <- fips[kind == "tract"]  %in%  substr(blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)], 1, 11)
+  ok[kind == "tract"]      <- fips[kind == "tract"]      %in%  substr(blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)], 1, 11)
   ok[kind == "blockgroup"] <- fips[kind == "blockgroup"] %in%  substr(blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)], 1, 12)
-  # note not all bgfips were in bgpts table:  setdiff_yx(bgpts$bgfips, blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)])
+  
   if (any(kind == "block")) {
     if (!exists("blockid2fips")) {
       dataload_from_pins("blockid2fips")
@@ -83,6 +94,9 @@ fipstype_from_nchar <- function(n) {
   # fipstype_from_nchar(c(0:16, NA, 16))
   # see  [fips_lead_zero()]  and  [fipstype()]   for details
   
+  # for the ones that are 11, would need to confirm it was not a bg missing its leading zero!
+  if (any(11 %in% n)) {message("Note FIPS of 11 digits is probably a tract, but might be a blockgroup fips with a missing leading zero.")}
+  
   n2f <- data.frame(
     n = 1:15,
     ftype = c(
@@ -96,7 +110,7 @@ fipstype_from_nchar <- function(n) {
       NA,
       NA,
       'tract',
-      'tract',
+      'tract',  # tract unless is bg missing a leading zero.. AMBIGUOUS CASE IF NOT SURE IF IT IS MISSING A LEADING ZERO.
       'blockgroup',
       NA,
       'block',
@@ -115,7 +129,7 @@ fipstype_from_nchar <- function(n) {
   # 8   8       <NA>
   # 9   9       <NA>
   # 10 10      tract
-  # 11 11      tract
+  # 11 11      tract  # tract unless is bg missing a leading zero.. AMBIGUOUS CASE IF NOT SURE IF IT IS MISSING A LEADING ZERO.
   # 12 12 blockgroup
   # 13 13       <NA>
   # 14 14      block
@@ -127,58 +141,124 @@ fipstype_from_nchar <- function(n) {
 }
 ############################################################################# #
 
+fipstype2nchar = function(ftype) {
+  
+  # inverse of fipstype_from_nchar()
+  # utility to see expected full number of characters/digits
+  #   (including any leading zeroes that should be there)
+  #   of each FIPS code, based on type like "tract" 
+  
+  n2f <- data.frame(
+    n = 1:15,
+    ftype = c(
+      'state',
+      'state',
+      NA,
+      'county',
+      'county',
+      'city',
+      'city',
+      NA,
+      NA,
+      'tract',
+      'tract',  # ??????????
+      'blockgroup',
+      NA,
+      'block',
+      'block'
+    )
+  )
+  
+  #     n      ftype
+  # 1   1      state
+  # 2   2      state
+  # 3   3       <NA>
+  # 4   4     county
+  # 5   5     county
+  # 6   6       city
+  # 7   7       city
+  # 8   8       <NA>
+  # 9   9       <NA>
+  # 10 10      tract
+  # 11 11      tract  # ??????????
+  # 12 12 blockgroup
+  # 13 13       <NA>
+  # 14 14      block
+  # 15 15      block
+  
+  print('one way')
+  print(
+    rev(1:15)[match(ftype, fipstype_from_nchar(rev(1:15)))]
+  ) 
+  print('other way')
+  n2f$n = n2f$n[order(n2f$n, decreasing = TRUE)]
+  return(
+    n2f$n[match(ftype, n2f$ftype)]
+  )
+  
+}
+############################################################################# #
 
-#' FIPS - Identify what type of Census geography is each FIPS code (block, county, etc.)
-#' @details Note a number of length 11 is an ambiguous case - might be a tract fips
-#'   but might be a blockgroup fips with a missing leading zero. 
+
+#' FIPS - Identify what type of Census geography each FIPS code seems to be (block, county, etc.)
+#' @details NOTE: Does NOT check if fips is a real fips. For that, use [fips_valid()]
+#' 
+#' Note a number of length 11 is an ambiguous case this is able to resolve as 
+#'   either a complete tract fips or a blockgroup fips with a missing leading zero.
 #' @param fips vector of one or more Census FIPS with or without leading zeroes, as strings or numeric
 #'
-#' @return vector of types: "block", "blockgroup", "tract", "county", or "state"
+#' @return vector of types: "block", "blockgroup", "tract", "city", "county", or "state"
 #'
 #' @examples
-#'  testfips <- c("1", "12", "123", "1234", "12345", "", NA, "words")
-#'  fipstype(testfips)
-#'  
-#'  testfips16 = c("1", "12", "123", "1234", "12345", "123456", "1234567", "12345678", "123456789",
-#'                 "1234567890", "12345678901", "123456789012", "1234567890123", "12345678901234",
-#'                                "123456789012345", "1234567890123456")
-#'  cbind(fipstype(testfips16), fips_lead_zero(testfips16), testfips16)
-#'
-#'  fips_counties_from_statename(c("Connecticut", "Delaware") )
-#'  # [1] "09001" "09003" "09005" "09007" "09009" "09011" "09013" "09015" "10001" "10003" "10005"
+#'  fips_counties_from_statename("Delaware")
 #'  fipstype(9001)
 #'  fipstype("10001")
-#'  # note blockid2fips is a large file, but can be obtained via [dataload_from_pins()]
-#'  \dontrun{
-#'  fipsexamples <- c(
-#'    fips_state_from_statename("Alaska"),
-#'    fips_counties_from_state_abbrev("DE")[1],
-#'     substr(blockid2fips$blockfips[1],1,11),
-#'     blockgroupstats$bgfips[1],
-#'     blockid2fips$blockfips[1]
-#'  )
-#'  cbind(fipsexamples, type = fipstype(fipsexamples))
-#' }
-#'
+#'  
+#' test_tract_missing0 =   4013116500   # 10 digits tract missing 0
+#' test_tract_good     = "04013116500"  # 11 digits full tract includes leading 0 !!!!!!!!!!
+#' test_bg_missing0    =   40131165002  # 11 digits blockgroup missing leading 0 !!!!!!!!!!
+#' test_bg_good        = "040131165002" # 12 digits full blockgroup
+#' 
+#' fipstype(test_tract_missing0)
+#' fipstype(test_tract_good)
+#' fipstype(test_bg_missing0)
+#' fipstype(test_bg_good)
+#' 
+#' fips_valid(test_tract_missing0)
+#' fips_valid(test_bg_missing0)
+#' 
 #' @export
 #'
 fipstype <- function(fips) {
   
-  ftype <- fipstype_from_nchar(nchar(suppressWarnings(as.numeric(fips))))
-   
-  # fips <- fips_lead_zero(fips = fips) # cleans them so each is NA or a valid nchar() string
-  # ftype <- rep(NA, length(fips))
-  # ftype[nchar(fips, keepNA = FALSE) == 15] <- "block"
-  # ftype[nchar(fips, keepNA = FALSE) == 12] <- "blockgroup"
-  # ftype[nchar(fips, keepNA = FALSE) == 11] <- "tract"
-  # ftype[nchar(fips, keepNA = FALSE) ==  7] <- "city" # a place/city/town/CDP/etc. as in censusplaces$placename or $fips  # e.g, 5560500 is Oshkosh, WI
-  # ftype[nchar(fips, keepNA = FALSE) ==  5] <- "county"
-  # ftype[!is.na(fips) & nchar(fips) ==  2] <- "state"
+  # ftype <- fipstype_from_nchar(nchar(suppressWarnings((fips)))) 
+  ## **** fipstype_from_nchar() would NEED WORK STILL, BEFORE replacing code below,
+  ## to handle case of 11 digits ! see is.character(fips) or is.numeric.text(fips) etc. ???
+  
+  ftype <- rep(NA, length(fips))
+  
+  fips <- fips_lead_zero(fips = fips) # cleans them so each is NA or a valid nchar() string
+  
+  n <- nchar(fips, keepNA = FALSE)
+  # Using keepNA=F here simplifies selecting which elements are n characters long while not selecting the ones that are NA.
+  # For fips that show up as missing values (i.e., NA, i.e., NA_character_),
+  #  if keepNA = FALSE nchar() returns 2 (since 2 is the number of printing characters in NA)
+  #  if keepNA = TRUE, nchar() returns NA_integer_ 
+  # The default for nchar() is keepNA = TRUE (unless you set  type = "width").
+  
+  ftype[n == 15] <- "block"
+  ftype[n == 12] <- "blockgroup"
+  
+  ftype[n == 11] <- "tract" ## once correctly added the leading zero if approp.
+  
+  ftype[n ==  7] <- "city" ## a place/city/town/CDP/etc. as in censusplaces$placename or $fips  # e.g, 5560500 is Oshkosh, WI
+  ftype[n ==  5] <- "county"
+  
+  ftype[!is.na(fips) & nchar(fips) ==  2] <- "state" # This avoids the NA values and then gets the actual nchar() of the fips that were not NA.
   
   if (anyNA(ftype)) {
-    
-    howmanyna = sum(is.na(ftype))
-    warning("NA returned for ", howmanyna," fips that do not seem to be block, blockgroup, tract, county, or state FIPS (lengths with leading zeroes should be 15,12,11,5,2 respectively")
+    howmanyna <- sum(is.na(ftype))
+    warning("NA returned for ", howmanyna," fips that do not seem to be block, blockgroup, tract, city/CDP, county, or state FIPS (lengths with leading zeroes should be 15,12,11,7,5,2 respectively")
   }
   return(ftype)
 }
@@ -212,7 +292,11 @@ fips_lead_zero <- function(fips) {
   
   #	TRY TO CLEAN UP vector of FIPS AND INFER GEOGRAPHIC SCALE
   
-  ## keepNA = FALSE means that nchar() returns the number 2 instead of NA, which makes this work right.
+  # Using keepNA=F here simplifies selecting which elements are n characters long while not selecting the ones that are NA.
+  # For fips that show up as missing values (i.e., NA, i.e., NA_character_),
+  #  if keepNA = FALSE nchar() returns 2 (since 2 is the number of printing characters in NA)
+  #  if keepNA = TRUE, nchar() returns NA_integer_ 
+  # The default for nchar() is keepNA = TRUE (unless you set  type = "width").
   
   fips[nchar(fips, keepNA = FALSE) == 0]	<- NA
   # 1 or 2 characters is state fips
@@ -229,10 +313,93 @@ fips_lead_zero <- function(fips) {
   # 8-9 are bad
   fips[nchar(fips, keepNA = FALSE) == 8]	<- NA
   fips[nchar(fips, keepNA = FALSE) == 9]	<- NA
-  # 10 or 11 is tract
+  
+  # do not convert 10 digit to 11 here yet because first we want to check the ones that were given as 11 already.
+  
+  ############################################# #
+  
+  ## SPECIAL CASE OF 11 DIGITS - FIGURE OUT IF IT IS A TRACT OR BLOCKGROUP
+  
+  lens = nchar(fips, keepNA = FALSE)
+  if (11 %in% lens) {
+    
+    # 11  AMBIGUOUS CASE:  tract with all 11 digits 
+    #     OR  blockgroup with missing zero and hence not 12 ?
+    #    if it is the former, we would want to leave it alone
+    #    if it is the latter, we would want to add a leading zero here !!
+    #    So, we need to check which one it actually is, 
+    #    by looking in all bgfips or all tract fips.
+    
+    # if (!exists("bgid2fips")) {dataload_from_pins("bgid2fips", silent = T)}
+    tfips = unique(substr(blockgroupstats$bgfips, 1, 11))
+    ## would want to do this ONLY for the fips that are NOT a valid tract fips:
+    # fips[nchar(fips, keepNA = FALSE) == 11]	<- paste0("0", fips[nchar(fips, keepNA = FALSE) == 11])
+    valid_tract = fips[lens == 11] %in% tfips
+    fips[lens == 11][!valid_tract]	<- paste0("0", fips[lens == 11][!valid_tract])
+    
+    # test_tract_missing0 =   4013116500
+    # test_tract_good     = "04013116500"
+    # test_bg_good        = "040131165002"
+    # test_bg_missing0    =   40131165002
+    
+    # test_invalid_11 = "01234567891" # lead zero gets added and then it is called a blockgroup though invalid
+    
+    ## NOTES: 
+    ## to get ALL fips, including changed ones in CT not just the ones in blockgroupstats
+    ## confirmed blockgroupstats bgfips are all in (but only a subset of) 
+    ## the ones derived from either bgid2fips or blockid2fips
+    ## since 19 bg in CT were missing in blockgroupstats not  bgid2fips or blockid2fips datasets. 
+    ## and block fips identical in both  bgid2fips and blockid2fips
+    # bgfips_via_blockgroupstats = blockgroupstats[ , unique( bgfips )]
+    # bgfips_via_blockid2fips = blockid2fips[, unique(substr(blockfips, 1, 12))]
+    # bgfips_via_bgid2fips = bgid2fips[, unique(substr(bgfips, 1, 12))]
+    # length(bgfips_via_blockid2fips)
+    # ##[1] 242355
+    # length(bgfips_via_bgid2fips)
+    # ##[1] 242355
+    # length(bgfips_via_blockgroupstats)
+    # all(bgfips_via_blockgroupstats %in% bgfips_via_blockid2fips)
+    # ##[1] TRUE
+    # all.equal(bgfips_via_bgid2fips, bgfips_via_blockid2fips)
+    # ##[1] TRUE  
+    ## bgid2fips is smaller, so use that to get full bgfips list or full tractfips list:
+    
+    ## check all tract fips values in our datasets
+    # > dataload_from_pins('all')
+    # > tfips_via_blockgroupstats = unique(substr(blockgroupstats$bgfips, 1, 11))
+    # > tfips_via_blockid2fips = unique(substr(blockid2fips$blockfips, 1, 11))
+    # > tfips_via_bgid2fips = unique(substr(bgid2fips$bgfips, 1, 11))
+    # > all.equal(tfips_via_blockid2fips, tfips_via_bgid2fips)
+    # [1] TRUE
+    # > all(tfips_via_blockgroupstats %in% tfips_via_blockid2fips)
+    # [1] TRUE
+    # > length(tfips_via_blockgroupstats)
+    # [1] 85396  #  lacks 19 bg in CT, but is subset of all tract fips in block datasets
+    # > length(tfips_via_blockid2fips)
+    # [1] 85413  # has 
+    # > length(tfips_via_bgid2fips)
+    # [1] 85413  # has
+    
+    ## Confirmed never could be a case where some 11 digits that
+    ## correct11 = came from 1st 11 of blockfips, or one that
+    ## bad11 = came from supposedly 1st 11 of blockfips AFTER A LEADING 0 HAD BEEN DROPPED 
+    ## and that works as exact tract fips but 
+    ##  also works as an actual bgfips once leading zero is prefixed?
+    # correct11 = unique(substr(blockid2fips$blockfips, 1, 11))
+    # blockfips_withleading0 = blockid2fips[substr(blockfips,1,1) == 0, blockfips]
+    # bad11 = unique(substr(blockfips_withleading0, 2, 12))
+    #  intersect(correct11, bad11)
+    ## character(0)
+    # any(bad11 %in% correct11)
+    ## FALSE
+  }
+  ############################################# #
+  
+  # 10   is tract with missing zero 
   fips[nchar(fips, keepNA = FALSE) == 10]	<- paste0("0", fips[nchar(fips, keepNA = FALSE) == 10])
-  # 11 tract
+  
   # 12 is blockgroup
+  
   # 13 is bad
   fips[nchar(fips, keepNA = FALSE) == 13]	<- NA
   # 14-15 is block
@@ -1535,10 +1702,64 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
 }
 ############################################################################# #
 
+fips2blockgroupname <- function(fips, ftype = 'blockgroup', prefix = "") {
+  
+  # simplistic - could just return the fips itself as the name, or NA,
+  # but adds a default prefix to each fips
+  
+  # in case any block fips were provided, it reports name of parent Census unit required
+  fips <- substr(fips_lead_zero(fips), 1, 12) # #########  block group is 12 digits once leading zero included
+  fips[fipstype(fips) != "blockgroup"] <- NA
+  
+  if (missing(prefix)) {
+    prefix <- paste0(ftype, " ") 
+  }
+  xname <- paste0(prefix, fips)
+  
+  if (anyNA(fips)) {
+    howmanyna = sum(is.na(fips))
+    warning(howmanyna, " fips could not be converted to", ftype, "name - returning NA for those")
+    xname[is.na(fips)] <- NA
+  }
+  return(xname)
+}
+############################################################################# #
+
+fips2tractname <- function(fips, ftype = 'tract', prefix = "") {
+  
+  # simplistic - could just return the fips itself as the name, or NA,
+  # but adds a default prefix to each fips
+  
+  nchar_perfect = which(ftype == fipstype_from_nchar(1:15))
+  
+  
+  # in case any longer fips were provided, it reports name of requested type of parent Census unit
+  fips <- substr(fips_lead_zero(fips), 1, 11) # #########  tract is 11 digits once leading zero is there
+  fips[fipstype(fips) != "tract"] <- NA
+  
+  if (missing(prefix)) {
+    prefix <- paste0(ftype, " ") 
+  }
+  xname <- paste0(prefix, fips)
+  
+  if (anyNA(fips)) {
+    howmanyna = sum(is.na(fips))
+    warning(howmanyna, " fips could not be converted to", ftype, "name - returning NA for those")
+    xname[is.na(fips)] <- NA
+  }
+  return(xname)
+}
+############################################################################# #
+
 
 #' FIPS - Get county or state names from county or state FIPS codes
 #'
-#' @param fips vector of US Census FIPS codes for Counties (5 digits each) or States (2 digits).
+#' @param fips vector of US Census FIPS codes for 
+#' - States (2 digits once any required leading zeroes are included)
+#' - Counties (5)
+#' - City/town/CDP (7)
+#' - Tracts (11)
+#' - Blockgroups (12)
 #'   Can be string or numeric, with or without leading zeroes.
 #' @param ... passed to fips2countyname() to control whether it appends something like , NY or , New York
 #'   after county name
@@ -1572,6 +1793,11 @@ fips2name  <- function(fips, ...) {
   fcity <- ftype == "city"
   if (any(!nafips & fcity)) { #  
     out[!nafips & fcity] <- fips_place2placename(fips = fips[!nafips & fcity], ...)
+  }
+  
+  fbg <- ftype == "blockgroup"
+  if (any(!nafips & fbg)) {
+    out[!nafips & fbg] <- fips2blockgroupname(fips = fips[!nafips & fbg], ...)
   }
   
   if (anyNA(out)) {
@@ -1750,8 +1976,8 @@ pre_comma = function(x, lastcomma = TRUE, if_no_comma_do_nothing = TRUE, trim = 
       ## eg. see results for case 14,  x = "before1st of many,after1st of many,beforelast of many,afterlast of many"
       # based on gsub from post_comma(x, lastcomma = TRUE, if_no_comma_do_nothing = TRUE, trim = FALSE)
       gsub("(.*),([^,]*)", '\\1', x),  # <<<<<<<<<<<<<<<<<<<<<
-# precomma  = function(x) {trimws(
-#     gsub("(.*),(.*)", "\\1", x, ignore.case = T))} # simplistic version
+      # precomma  = function(x) {trimws(
+      #     gsub("(.*),(.*)", "\\1", x, ignore.case = T))} # simplistic version
       
       no_comma_output  
       # if no comma at all, no text BEFORE a comma, so return empty string when if_no_comma_do_nothing = F
