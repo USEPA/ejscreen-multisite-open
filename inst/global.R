@@ -27,8 +27,11 @@ library(shiny)
 bookmarking_allowed <- TRUE  # https://mastering-shiny.org/action-bookmark.html
 if (bookmarking_allowed) {enableBookmarking(store = "url")}
 
+default_hide_about_tab <- TRUE
+default_hide_plot_range_tab <- TRUE
 default_hide_advanced_settings <- TRUE
 default_hide_written_report <- TRUE
+default_hide_ejscreenapi_tab <- TRUE
 default_testing        <- FALSE
 default_shiny.testmode <- FALSE  # If TRUE, then various features for testing Shiny applications are enabled.
 default_print_uploaded_points_to_log <- TRUE
@@ -45,7 +48,7 @@ options(spinner.color = "#005ea2", spinner.type = 4)
 desc <- desc::desc(file = "DESCRIPTION")
 ejam_app_version  <- desc$get("Version")
 ## trim version number to Major.Minor
-ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ejam_app_version)[[1]][2]-1)
+ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ejam_app_version)[[1]][2] - 1)
 
 acs_version_global = desc$get("ACSVersion")#as.vector(metadata_mapping$blockgroupstats[['acs_version']]) # "2017-2021"
 ejscreen_version_global = desc$get("EJScreenVersion")#as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']])
