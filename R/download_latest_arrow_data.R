@@ -24,7 +24,10 @@ download_latest_arrow_data <- function(
   
   # get latest Arrow version (from EJAMData repo's latest release tag) 
   # and user's Arrow version (from DESCRIPTION's ArrowVersion attribute)
-  latestArrowVersion <- piggyback::pb_releases(repo = "USEPA/ejamdata")[1, "tag_name"]
+  latestArrowVersion <- piggyback::pb_releases(
+    repo = "USEPA/ejamdata",
+    .token = NULL
+  )[1, "tag_name"]
   ejamdata_version_fpath <- paste0(EJAM:::app_sys('data'),"/ejamdata_version.txt")
   if(!file.exists(ejamdata_version_fpath)) {
     usersArrowVersions <- NULL
