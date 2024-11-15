@@ -142,8 +142,8 @@ test_interactively = function(ask = TRUE,
         ),
         test_shape = c(
           "test-shapefile_xyz.R",
-          "test-ejam2shapefile.R",
-          "test-shapes_from_fips.R"
+          "test-ejam2shapefile.R"#,
+          #"test-shapes_from_fips.R"
         ),
         test_getblocks = c(
           "test-radius_inferred.R",              # this is SLOW THOUGH
@@ -185,13 +185,14 @@ test_interactively = function(ask = TRUE,
           "test-mod_view_results.R"    
         ),
         test_app = c(
-          "test-report_residents_within_xyz.R",  # maybe belongs in a separate group about reports/tables?
+          #"test-report_residents_within_xyz.R",  # maybe belongs in a separate group about reports/tables?
           "test-ui_and_server.R",
           "test-FIPS-shiny-functionality.R", "test-latlon-shiny-functionality.R", "test-NAICS-shiny-functionality.R", "test-shapefile-shiny-functionality.R"
         ),
         test_test = c(
-          "test-test1.R", #   fast way to check this script via  biglist <- test_interactively(ask = FALSE, y_runsome = T, tname = 'test')
-          "test-test2.R"  #   fast way to check this script
+          "test-test.R"#, #   fast way to check this script via  biglist <- test_interactively(ask = FALSE, y_runsome = T, tname = 'test')
+          #"test-test2.R",  #   fast way to check this script
+          #"test-test.R"
         ),
         test_golem = c(
           "test-golem_utils_server.R", # not used
