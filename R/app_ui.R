@@ -80,14 +80,14 @@ app_ui  <- function(request) {
       tabsetPanel( # up to line 1101 or so
         id = 'all_tabs',
         # type = 'hidden', # xxxx ***
-        selected = 'Site Selection',  # tabs are  'About EJAM',   'Site Selection', 'EJScreen Batch Tool', 'EJScreen Batch Tool',
+        selected = 'Site Selection',  # tabs were  'About EJAM',   'Site Selection', 'EJScreen Batch Tool', 'EJScreen Batch Tool',
         # ______ About ______ tabPanel(title = 'About EJAM' ####
         
         tabPanel(title = 'About',
                  br(),
                  fluidRow(
                    column(8,
-                          
+
                           ## html intro text from global.R
                           intro_text,
                           actionButton(inputId = 'back_to_site_sel2', label = div(icon('play', style = 'transform: rotate(180deg);'), HTML('&nbsp;'), 'Return to Site Selection'), class = 'usa-button'),
@@ -661,7 +661,7 @@ app_ui  <- function(request) {
                                             
                                             ### _HISTOPLOT (RANGE OF SCORES) - tabPanel(title = 'Plot Full Range of Scores' ####
                                             
-                                            tabPanel(id="plot_range", 
+                                            tabPanel(id = "plot_range", 
                                                      title = 'Plot Full Range of Scores',
                                                      ### _HISTOGRAM
                                                      #h3(id = 'histogram',"Explore Indicator Distributions"),
@@ -706,10 +706,11 @@ app_ui  <- function(request) {
                                                        
                                                      ) # end wellpanel
                                             ) # end tab panel for histograms
-                                          )
-                                      )
+                                          ) # end navbarPage
+                                      ) # end div(class = 'navbar1'
                                       
-                             ), # end 'Details' results tab
+                             ) # end 'Details' results tab
+                             # ,  # uncomment this comma if uncommenting the FULL REPORT tabPanel called 'Written Report'
                              
                              ######################################################################################################### #
                              #. ####
@@ -717,328 +718,331 @@ app_ui  <- function(request) {
                              #. ## ##
                              
                              
-                             tabPanel(title = 'Written Report',
-                                      
-                                      #  MAKE SURE all parameter names are used (identical names, and all are there) in these 4 places:
-                                      #  1. input$ ids in app_ui.R, from user, to customize the long report
-                                      #  2. params$ list passed by app_server.R to render the Rmd doc
-                                      #  3. params: accepted in  .Rmd yaml info header
-                                      #  4. params$  as used within body of  .Rmd text inline and in r code blocks.
-                                      
-                                      br(), ## vertical space
-                                      
-                                      wellPanel(
-                                        br(), ## vertical space
-                                        
-                                        ## arrange text and buttons
-                                        fluidRow(
-                                          column(6,
-                                                 ## add text above report settings
-                                                 p('Edit report settings below to tailor the full report to your specific analysis.')
-                                          ),
-                                          column(6,
-                                                 ## output: button to download static report
-                                                 shiny::downloadButton(outputId = 'rg_download',
-                                                                       label = 'Download report',
-                                                                       class = 'usa-button'),
-                                                 
-                                          )
-                                        ), ######################################################### #
-                                        
-                                        #------- WHERE was analyzed? (where/ what sector/zones/types of places)
-                                        
-                                        #?  # analysis_title =  input$analysis_title,
-                                        # zonetype =  input$rg_zonetype,   ### names differ by   rg_
-                                        # where = input$rg_enter_miles,   ############# names differ
-                                        # distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),   #############  param derived from input
-                                        # sectorname_short = input$rg_enter_sites,                 ############# names differ
-                                        # ## allow for either or
-                                        # in_the_x_zone = ifelse(nchar(input$in_the_x_zone_enter) > 0,     ######  _enter  and derived from inputs
-                                        #                        input$in_the_x_zone_enter,
-                                        #                        input$in_the_x_zone),
-                                        # facilities_studied = ifelse(nchar(input$facilities_studied_enter) > 0,    ####   _enter and derived from inputs
-                                        #                             input$facilities_studied_enter,
-                                        #                             input$facilities_studied),
-                                        # within_x_miles_of = paste0("within ", paste0(input$bt_rad_buff,' miles'), " of"),   ##### param derived from input
-                                        #
-                                        # in_areas_where = paste0(input$in_areas_where, ' ', input$in_areas_where_enter),   ######   _enter
-                                        # risks_are_x = input$risks_are_x,                      ### names match
-                                        # source_of_latlons = input$source_of_latlons,          ### names match
-                                        # sitecount = nrow(data_processed()$results_bysite),      ### param derived from data
-                                        
-                                        # put input$analysis_title   here???
-                                        
-                                        fluidRow(          #    param is called  where
-                                          column(4,
-                                                 ## input: analysis location - uses current value of radius slider
-                                                 uiOutput('rg_enter_miles')
-                                          )),
-                                        
-                                        # param distance is based on input$bt_rad_buff
-                                        
-                                        fluidRow(
-                                          column(4,
-                                                 ## input:  - which sites analyzed  #    param is called   sectorname_short
-                                                 textInput(inputId = "rg_enter_sites",
-                                                           label = "Describe sites analyzed:",
-                                                           value = "facilities in the _____ source category"),
-                                          )
-                                        ),
-                                        
-                                        fluidRow(
-                                          column(4,
-                                                 ## input:   # zonetype =  input$rg_zonetype
-                                                 selectInput(inputId = 'rg_zonetype',
-                                                             label = 'Zone Type (How are zones defined?)',
-                                                             choices = c('General' = 'zone_is_named_x','Proximity' = 'zone_is_nearby',
-                                                                         'Risk' = 'zone_is_risk_x'))
-                                          ),
-                                          column(4,
-                                                 ## input:   #  based on  input$bt_rad_buff
-                                                 selectInput(inputId = 'within_x_miles_of',
-                                                             label = 'Near to',
-                                                             choices = c('near the','nearby',''))
-                                          )
-                                        ),
-                                        
-                                        fluidRow(
-                                          column(4,
-                                                 ## input:    # in_areas_where calculated from input$in_areas_where, and input$in_areas_where_enter
-                                                 selectInput(inputId = 'in_areas_where',
-                                                             label = 'Describe the surrounding area',
-                                                             choices = c('in areas with',
-                                                                         'where','in block groups where')
-                                                 )
-                                          ),
-                                          column(4,
-                                                 ## input:
-                                                 textInput(inputId = 'in_areas_where_enter',
-                                                           label = 'Add area details',
-                                                           value = '')
-                                          )
-                                        ),
-                                        fluidRow(
-                                          column(8,
-                                                 ## input:
-                                                 selectInput(inputId = 'risks_are_x',
-                                                             label = 'Risk level',
-                                                             choices = c("risk is at or above 1 per million (lifetime individual cancer risk due to inhalation of air toxics from this source category)",
-                                                                         "risk is above 1 per million",
-                                                                         "the area is in nonattainment",
-                                                                         "PM2.5 levels are in the highest decile",
-                                                                         "ozone concentrations are at least 70 ppb")
-                                                 )
-                                          )
-                                        ),
-                                        fluidRow(
-                                          column(4,
-                                                 ## input:
-                                                 selectInput(inputId = 'in_the_x_zone',
-                                                             label = 'General study location',
-                                                             choices = c('in the study area' = 'area', 'in the analyzed locations' = 'locs',
-                                                                         'in [State X] (specify)' = 'state',
-                                                                         'in EPA Region [XX] (specify)' = 'region')
-                                                 )
-                                          ),
-                                          column(4,
-                                                 ## add free text box if certain values chosen from radio button
-                                                 conditionalPanel(
-                                                   condition = "input.in_the_x_zone == 'state' || input.in_the_x_zone == 'region'",
-                                                   textInput(inputId = 'in_the_x_zone_enter',
-                                                             label = 'Other - please specify',
-                                                             value = 'in ')
-                                                 )
-                                          )
-                                        ),
-                                        
-                                        fluidRow(
-                                          column(4,
-                                                 ## input:
-                                                 selectInput(inputId = 'facilities_studied',
-                                                             label = 'Facilities Studied',
-                                                             choices = c('facilities subject to this proposed rule' = 'rule',
-                                                                         'analyzed facilities' = 'fac','analyzed sites' = 'sites',
-                                                                         'facilities in the ___ source category' = 'cat',
-                                                                         'facilities in the ____ sector (NAICS code __)' = 'sector')
-                                                 )
-                                          ),
-                                          column(4,
-                                                 ## add free text box if certain values chosen
-                                                 conditionalPanel(
-                                                   condition = "input.facilities_studied == 'cat' || input.facilities_studied == 'sector' || input.facilities_studied == 'rule'",
-                                                   textInput(inputId = 'facilities_studied_enter',
-                                                             label = 'Other - please specify')
-                                                 )
-                                          )
-                                        ),
-                                        
-                                        fluidRow(
-                                          column(4,
-                                                 ## input:
-                                                 textInput(inputId = 'source_of_latlons',
-                                                           label = 'Source of Points',
-                                                           placeholder = "EPA's Facility Registry Service (FRS)"),
-                                          )
-                                        ),
-                                        
-                                        
-                                        #------- METHODS, AUTHORS, ETC.
-                                        
-                                        fluidRow(
-                                          column(2,
-                                                 ## input:
-                                                 textInput(inputId = "rg_author_name",
-                                                           label = "Author Name(s):",
-                                                           value = "FirstName LastName")
-                                          ),
-                                          column(2,
-                                                 ## input:
-                                                 textInput(inputId = "rg_author_email",
-                                                           label = "Author Email(s):",
-                                                           value = "author@email.org")
-                                          ),
-                                          column(2,
-                                                 ## input: checkbox to add line for coauthor information
-                                                 checkboxInput(inputId = 'rg_add_coauthors',
-                                                               label = 'Add co-authors?',
-                                                               value = FALSE)
-                                          )
-                                        ),
-                                        ## if checkbox is checked, add textinputs for co-author name and email
-                                        conditionalPanel(
-                                          condition = 'input.rg_add_coauthors == 1',
-                                          fluidRow(
-                                            column(2,
-                                                   ## input:
-                                                   textInput(inputId = 'coauthor_names', 'Co-Author Name(s)')
-                                            ),
-                                            column(2,
-                                                   ## input:
-                                                   textInput(inputId = 'coauthor_emails', 'Co-Author Email(s)')
-                                            )
-                                          )
-                                        ),
-                                        fluidRow(
-                                          ## input:
-                                          textInput(inputId = 'fundingsource',
-                                                    label = 'Funding Source',
-                                                    placeholder = "The Inflation Reduction Act (for example)"),
-                                          ## input:
-                                          textInput(inputId = 'acs_version',
-                                                    label = 'Version of ACS data (years)',
-                                                    placeholder =  as.vector(metadata_mapping$blockgroupstats[['acs_version']])),
-                                          ## input:
-                                          textInput(inputId = 'ejscreen_version',
-                                                    label = 'Version of EJScreen',
-                                                    placeholder =  as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']]))
-                                        ),
-                                        ############################ #
-                                        
-                                        #------- RESULTS (tables and map and plots)
-                                        
-                                        # total_pop: NA
-                                        # results: NA
-                                        # results_formatted: NA
-                                        # map: NA
-                                        # map_placeholder_png:                 "map_placeholder.png"
-                                        # envt_table: NA
-                                        # envt_table_placeholder_png:   "envt_table_placeholder.png"
-                                        # envt_table_placeholder_rda:   "envt_table_placeholder.rda"
-                                        # demog_table: NA
-                                        # demog_table_placeholder_png: "demog_table_placeholder.png"
-                                        # demog_table_placeholder_rda: "demog_table_placeholder.rda"
-                                        # boxplot: NA
-                                        # boxplot_placeholder_png:         "boxplot_placeholder.png"
-                                        # barplot: NA
-                                        # barplot_placeholder_png:         "barplot_placeholder.png"
-                                        #
-                                        
-                                        
-                                        #------- TEXT PHRASES DESCRIBING AND INTERPRETING RESULT
-                                        
-                                        # demog_how_elevated: NA
-                                        # envt_how_elevated: NA
-                                        # demog_high_at_what_share_of_sites: NA
-                                        # envt_high_at_what_share_of_sites: NA
-                                        # conclusion1: NA
-                                        # conclusion2: NA
-                                        # conclusion3: NA
-                                        
-                                        fluidRow(
-                                          column(4,
-                                                 ## input:
-                                                 textInput(inputId = 'demog_how_elevated',
-                                                           label = 'Elevation of Demographic Indicators',
-                                                           placeholder = 'moderately elevated'),
-                                          ),
-                                          column(4,
-                                                 ## input:
-                                                 textInput(inputId = 'envt_how_elevated',
-                                                           label = 'Elevation of Environmental Indicators',
-                                                           placeholder = 'moderately elevated'),
-                                          )
-                                        ),
-                                        fluidRow(
-                                          column(4,
-                                                 ## input:
-                                                 selectInput(inputId = 'demog_high_at_what_share_of_sites',
-                                                             label = 'Demographic indicators high at what share of sites?',
-                                                             choices = c('a surprisingly large share of these sites',
-                                                                         'some of these sites, just as it varies nationwide',
-                                                                         'a relatively small share of these sites'),
-                                                             selected = 'some of these sites, just as it varies nationwide'),
-                                          ),
-                                          column(4,
-                                                 ## input:
-                                                 selectInput(inputId = 'envt_high_at_what_share_of_sites',
-                                                             label = 'Environmental indicators high at what share of sites?',
-                                                             choices = c('a surprisingly large share of these sites',
-                                                                         'some of these sites, just as it varies nationwide',
-                                                                         'a relatively small share of these sites'),
-                                                             selected = 'some of these sites, just as it varies nationwide'),
-                                          )
-                                        ),
-                                        fluidRow(
-                                          column(8,
-                                                 ## input: conclusion 1 -
-                                                 textAreaInput(inputId = 'conclusion1',
-                                                               label = 'Conclusion 1',
-                                                               placeholder = "The people living near these sites are 40% more likely to be in Limited-English Households than the average US resident. (for example)"
-                                                 )
-                                          )
-                                        ),
-                                        fluidRow(
-                                          column(8,
-                                                 ## input: conclusion 2-
-                                                 textAreaInput(inputId = 'conclusion2',
-                                                               label = 'Conclusion 2',
-                                                               placeholder = "The % low income among these residents is 2.4 times the rate in the US overall. (for example)")
-                                          )
-                                        ),
-                                        fluidRow(
-                                          column(8,
-                                                 ## input: conclusion 3 -
-                                                 textAreaInput(inputId = 'conclusion3',
-                                                               label = 'Conclusion 3',
-                                                               placeholder = "The average resident near these sites is 1.5 times as likely to be Hispanic as the average person in their State overall. (for example)")
-                                          )
-                                        ),
-                                      ) # end wellpanel
-                             )#, # end written report  tab
+                             # tabPanel(title = 'Written Report',
+                             #          
+                             #          #  MAKE SURE all parameter names are used (identical names, and all are there) in these 4 places:
+                             #          #  1. input$ ids in app_ui.R, from user, to customize the long report
+                             #          #  2. params$ list passed by app_server.R to render the Rmd doc
+                             #          #  3. params: accepted in  .Rmd yaml info header
+                             #          #  4. params$  as used within body of  .Rmd text inline and in r code blocks.
+                             #          
+                             #          br(), ## vertical space
+                             #          
+                             #          wellPanel(
+                             #            br(), ## vertical space
+                             #            
+                             #            ## arrange text and buttons
+                             #            fluidRow(
+                             #              column(6,
+                             #                     ## add text above report settings
+                             #                     p('Edit report settings below to tailor the full report to your specific analysis.')
+                             #              ),
+                             #              column(6,
+                             #                     ## output: button to download static report
+                             #                     shiny::downloadButton(outputId = 'rg_download',
+                             #                                           label = 'Download report',
+                             #                                           class = 'usa-button'),
+                             #                     
+                             #              )
+                             #            ), ######################################################### #
+                             #            
+                             #            #------- WHERE was analyzed? (where/ what sector/zones/types of places)
+                             #            
+                             #            #?  # analysis_title =  input$analysis_title,
+                             #            # zonetype =  input$rg_zonetype,   ### names differ by   rg_
+                             #            # where = input$rg_enter_miles,   ############# names differ
+                             #            # distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),   #############  param derived from input
+                             #            # sectorname_short = input$rg_enter_sites,                 ############# names differ
+                             #            # ## allow for either or
+                             #            # in_the_x_zone = ifelse(nchar(input$in_the_x_zone_enter) > 0,     ######  _enter  and derived from inputs
+                             #            #                        input$in_the_x_zone_enter,
+                             #            #                        input$in_the_x_zone),
+                             #            # facilities_studied = ifelse(nchar(input$facilities_studied_enter) > 0,    ####   _enter and derived from inputs
+                             #            #                             input$facilities_studied_enter,
+                             #            #                             input$facilities_studied),
+                             #            # within_x_miles_of = paste0("within ", paste0(input$bt_rad_buff,' miles'), " of"),   ##### param derived from input
+                             #            #
+                             #            # in_areas_where = paste0(input$in_areas_where, ' ', input$in_areas_where_enter),   ######   _enter
+                             #            # risks_are_x = input$risks_are_x,                      ### names match
+                             #            # source_of_latlons = input$source_of_latlons,          ### names match
+                             #            # sitecount = nrow(data_processed()$results_bysite),      ### param derived from data
+                             #            
+                             #            # put input$analysis_title   here???
+                             #            
+                             #            fluidRow(          #    param is called  where
+                             #              column(4,
+                             #                     ## input: analysis location - uses current value of radius slider
+                             #                     uiOutput('rg_enter_miles')
+                             #              )),
+                             #            
+                             #            # param distance is based on input$bt_rad_buff
+                             #            
+                             #            fluidRow(
+                             #              column(4,
+                             #                     ## input:  - which sites analyzed  #    param is called   sectorname_short
+                             #                     textInput(inputId = "rg_enter_sites",
+                             #                               label = "Describe sites analyzed:",
+                             #                               value = "facilities in the _____ source category"),
+                             #              )
+                             #            ),
+                             #            
+                             #            fluidRow(
+                             #              column(4,
+                             #                     ## input:   # zonetype =  input$rg_zonetype
+                             #                     selectInput(inputId = 'rg_zonetype',
+                             #                                 label = 'Zone Type (How are zones defined?)',
+                             #                                 choices = c('General' = 'zone_is_named_x','Proximity' = 'zone_is_nearby',
+                             #                                             'Risk' = 'zone_is_risk_x'))
+                             #              ),
+                             #              column(4,
+                             #                     ## input:   #  based on  input$bt_rad_buff
+                             #                     selectInput(inputId = 'within_x_miles_of',
+                             #                                 label = 'Near to',
+                             #                                 choices = c('near the','nearby',''))
+                             #              )
+                             #            ),
+                             #            
+                             #            fluidRow(
+                             #              column(4,
+                             #                     ## input:    # in_areas_where calculated from input$in_areas_where, and input$in_areas_where_enter
+                             #                     selectInput(inputId = 'in_areas_where',
+                             #                                 label = 'Describe the surrounding area',
+                             #                                 choices = c('in areas with',
+                             #                                             'where','in block groups where')
+                             #                     )
+                             #              ),
+                             #              column(4,
+                             #                     ## input:
+                             #                     textInput(inputId = 'in_areas_where_enter',
+                             #                               label = 'Add area details',
+                             #                               value = '')
+                             #              )
+                             #            ),
+                             #            fluidRow(
+                             #              column(8,
+                             #                     ## input:
+                             #                     selectInput(inputId = 'risks_are_x',
+                             #                                 label = 'Risk level',
+                             #                                 choices = c("risk is at or above 1 per million (lifetime individual cancer risk due to inhalation of air toxics from this source category)",
+                             #                                             "risk is above 1 per million",
+                             #                                             "the area is in nonattainment",
+                             #                                             "PM2.5 levels are in the highest decile",
+                             #                                             "ozone concentrations are at least 70 ppb")
+                             #                     )
+                             #              )
+                             #            ),
+                             #            fluidRow(
+                             #              column(4,
+                             #                     ## input:
+                             #                     selectInput(inputId = 'in_the_x_zone',
+                             #                                 label = 'General study location',
+                             #                                 choices = c('in the study area' = 'area', 'in the analyzed locations' = 'locs',
+                             #                                             'in [State X] (specify)' = 'state',
+                             #                                             'in EPA Region [XX] (specify)' = 'region')
+                             #                     )
+                             #              ),
+                             #              column(4,
+                             #                     ## add free text box if certain values chosen from radio button
+                             #                     conditionalPanel(
+                             #                       condition = "input.in_the_x_zone == 'state' || input.in_the_x_zone == 'region'",
+                             #                       textInput(inputId = 'in_the_x_zone_enter',
+                             #                                 label = 'Other - please specify',
+                             #                                 value = 'in ')
+                             #                     )
+                             #              )
+                             #            ),
+                             #            
+                             #            fluidRow(
+                             #              column(4,
+                             #                     ## input:
+                             #                     selectInput(inputId = 'facilities_studied',
+                             #                                 label = 'Facilities Studied',
+                             #                                 choices = c('facilities subject to this proposed rule' = 'rule',
+                             #                                             'analyzed facilities' = 'fac','analyzed sites' = 'sites',
+                             #                                             'facilities in the ___ source category' = 'cat',
+                             #                                             'facilities in the ____ sector (NAICS code __)' = 'sector')
+                             #                     )
+                             #              ),
+                             #              column(4,
+                             #                     ## add free text box if certain values chosen
+                             #                     conditionalPanel(
+                             #                       condition = "input.facilities_studied == 'cat' || input.facilities_studied == 'sector' || input.facilities_studied == 'rule'",
+                             #                       textInput(inputId = 'facilities_studied_enter',
+                             #                                 label = 'Other - please specify')
+                             #                     )
+                             #              )
+                             #            ),
+                             #            
+                             #            fluidRow(
+                             #              column(4,
+                             #                     ## input:
+                             #                     textInput(inputId = 'source_of_latlons',
+                             #                               label = 'Source of Points',
+                             #                               placeholder = "EPA's Facility Registry Service (FRS)"),
+                             #              )
+                             #            ),
+                             #            
+                             #            
+                             #            #------- METHODS, AUTHORS, ETC.
+                             #            
+                             #            fluidRow(
+                             #              column(2,
+                             #                     ## input:
+                             #                     textInput(inputId = "rg_author_name",
+                             #                               label = "Author Name(s):",
+                             #                               value = "FirstName LastName")
+                             #              ),
+                             #              column(2,
+                             #                     ## input:
+                             #                     textInput(inputId = "rg_author_email",
+                             #                               label = "Author Email(s):",
+                             #                               value = "author@email.org")
+                             #              ),
+                             #              column(2,
+                             #                     ## input: checkbox to add line for coauthor information
+                             #                     checkboxInput(inputId = 'rg_add_coauthors',
+                             #                                   label = 'Add co-authors?',
+                             #                                   value = FALSE)
+                             #              )
+                             #            ),
+                             #            ## if checkbox is checked, add textinputs for co-author name and email
+                             #            conditionalPanel(
+                             #              condition = 'input.rg_add_coauthors == 1',
+                             #              fluidRow(
+                             #                column(2,
+                             #                       ## input:
+                             #                       textInput(inputId = 'coauthor_names', 'Co-Author Name(s)')
+                             #                ),
+                             #                column(2,
+                             #                       ## input:
+                             #                       textInput(inputId = 'coauthor_emails', 'Co-Author Email(s)')
+                             #                )
+                             #              )
+                             #            ),
+                             #            fluidRow(
+                             #              ## input:
+                             #              textInput(inputId = 'fundingsource',
+                             #                        label = 'Funding Source',
+                             #                        placeholder = "The Inflation Reduction Act (for example)"),
+                             #              ## input:
+                             #              textInput(inputId = 'acs_version',
+                             #                        label = 'Version of ACS data (years)',
+                             #                        placeholder =  as.vector(metadata_mapping$blockgroupstats[['acs_version']])),
+                             #              ## input:
+                             #              textInput(inputId = 'ejscreen_version',
+                             #                        label = 'Version of EJScreen',
+                             #                        placeholder =  as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']]))
+                             #            ),
+                             #            ############################ #
+                             #            
+                             #            #------- RESULTS (tables and map and plots)
+                             #            
+                             #            # total_pop: NA
+                             #            # results: NA
+                             #            # results_formatted: NA
+                             #            # map: NA
+                             #            # map_placeholder_png:                 "map_placeholder.png"
+                             #            # envt_table: NA
+                             #            # envt_table_placeholder_png:   "envt_table_placeholder.png"
+                             #            # envt_table_placeholder_rda:   "envt_table_placeholder.rda"
+                             #            # demog_table: NA
+                             #            # demog_table_placeholder_png: "demog_table_placeholder.png"
+                             #            # demog_table_placeholder_rda: "demog_table_placeholder.rda"
+                             #            # boxplot: NA
+                             #            # boxplot_placeholder_png:         "boxplot_placeholder.png"
+                             #            # barplot: NA
+                             #            # barplot_placeholder_png:         "barplot_placeholder.png"
+                             #            #
+                             #            
+                             #            
+                             #            #------- TEXT PHRASES DESCRIBING AND INTERPRETING RESULT
+                             #            
+                             #            # demog_how_elevated: NA
+                             #            # envt_how_elevated: NA
+                             #            # demog_high_at_what_share_of_sites: NA
+                             #            # envt_high_at_what_share_of_sites: NA
+                             #            # conclusion1: NA
+                             #            # conclusion2: NA
+                             #            # conclusion3: NA
+                             #            
+                             #            fluidRow(
+                             #              column(4,
+                             #                     ## input:
+                             #                     textInput(inputId = 'demog_how_elevated',
+                             #                               label = 'Elevation of Demographic Indicators',
+                             #                               placeholder = 'moderately elevated'),
+                             #              ),
+                             #              column(4,
+                             #                     ## input:
+                             #                     textInput(inputId = 'envt_how_elevated',
+                             #                               label = 'Elevation of Environmental Indicators',
+                             #                               placeholder = 'moderately elevated'),
+                             #              )
+                             #            ),
+                             #            fluidRow(
+                             #              column(4,
+                             #                     ## input:
+                             #                     selectInput(inputId = 'demog_high_at_what_share_of_sites',
+                             #                                 label = 'Demographic indicators high at what share of sites?',
+                             #                                 choices = c('a surprisingly large share of these sites',
+                             #                                             'some of these sites, just as it varies nationwide',
+                             #                                             'a relatively small share of these sites'),
+                             #                                 selected = 'some of these sites, just as it varies nationwide'),
+                             #              ),
+                             #              column(4,
+                             #                     ## input:
+                             #                     selectInput(inputId = 'envt_high_at_what_share_of_sites',
+                             #                                 label = 'Environmental indicators high at what share of sites?',
+                             #                                 choices = c('a surprisingly large share of these sites',
+                             #                                             'some of these sites, just as it varies nationwide',
+                             #                                             'a relatively small share of these sites'),
+                             #                                 selected = 'some of these sites, just as it varies nationwide'),
+                             #              )
+                             #            ),
+                             #            fluidRow(
+                             #              column(8,
+                             #                     ## input: conclusion 1 -
+                             #                     textAreaInput(inputId = 'conclusion1',
+                             #                                   label = 'Conclusion 1',
+                             #                                   placeholder = "The people living near these sites are 40% more likely to be in Limited-English Households than the average US resident. (for example)"
+                             #                     )
+                             #              )
+                             #            ),
+                             #            fluidRow(
+                             #              column(8,
+                             #                     ## input: conclusion 2-
+                             #                     textAreaInput(inputId = 'conclusion2',
+                             #                                   label = 'Conclusion 2',
+                             #                                   placeholder = "The % low income among these residents is 2.4 times the rate in the US overall. (for example)")
+                             #              )
+                             #            ),
+                             #            fluidRow(
+                             #              column(8,
+                             #                     ## input: conclusion 3 -
+                             #                     textAreaInput(inputId = 'conclusion3',
+                             #                                   label = 'Conclusion 3',
+                             #                                   placeholder = "The average resident near these sites is 1.5 times as likely to be Hispanic as the average person in their State overall. (for example)")
+                             #              )
+                             #            ),
+                             #          ) # end wellpanel
+                             # )  # end written report  tab
                              
                  ) ## end of tabset panel results_tabs ^^^^^^^^^^  ####
                  
-        ),  # end of tab panel See Results ^^^^^^^^^^  ####
-        
-        # An advanced tab had been hidden by default but can be activated by a button (from within the About EJAM tab)
+        )      # end of tab panel See Results ^^^^^^^^^^  ####
+
+    ,  # uncomment this comma if uncommenting the advanced tab AND/OR ejscreenapi module
+       
         
         ######################################################## #
         #
         # . --------------------------------------------------------------- ####
         ## . ####
-        # EJSCREEN API MODULE -  tabPanel(title = 'EJScreen Batch Tool'   ####
-        # may move to another tab. or in a conditional UI panel.
-        # tabPanel(title = 'EJScreen Batch Tool',
+        # EJSCREEN API MODULE -  tabPanel   ####
+        ## may move to another tab. or in a conditional UI panel.
+        ## see default_hide_ejscreenapi_tab in global.R
+   
+        # tabPanel(title = 'EJScreen Batch Tool',  
         #
         #          h3("Access to EJScreen results via the API"),
         #          h4("(slow, fewer features, and cannot aggregate overall, but exactly replicates EJScreen web app)"),
@@ -1060,37 +1064,39 @@ app_ui  <- function(request) {
         #          # uiOutput("mod_ejscreenapi_ui_TO_SHOW_IN_APP_UI")  # this approach would use the module UI from the outer app server, not here
         #          # mod_ejscreenapi_ui_test("x1")
         #
-        # ),
+        # )
+        # , # uncomment if uncommenting BOTH ejscreenapi module tab and advanced tab
+   
         ######################################################## #
         ## . ####
         # ADVANCED SETTINGS - tabPanel(title = "Advanced Settings"  ####
         ######################################################## #
         
         tabPanel(title = "Advanced Settings",
-                 
+
                  h3("Advanced settings and experimental features not fully tested"),
-                 
+
                  # SET DEFAULTS / OPTIONS
-                 
+
                  # * Each time a user session is started, the application-level option set is duplicated, for that session.
                  # * If the options are set from inside the server function, then they will be scoped to the session.
                  # h5("Note: Some defaults and caps are defined in global.R"),
-                 
+
                  ######################################################## #
                  ## Bookmarking button ####
                  h2("Bookmarking to save settings and inputs"),
-                 
+
                  conditionalPanel(condition = bookmarking_allowed, {
                    bookmarkButton()  # https://mastering-shiny.org/action-bookmark.html
                  }),
                  ######################################################## #
                  ### ------------------------ app title ### #
                  # will not be editable here.
-                 
+
                  ######################################################## #
                  ##  Uploading files/points/shapes ####
                  h2("Limits on uploads/points/shapes"),
-                 
+
                  numericInput('max_pts_upload', label = "Cap on number of points one can UPLOAD, additional ones in uploaded table get dropped entirely",
                               min = 1000,  step = 500,
                               value = default_max_pts_upload,
@@ -1107,46 +1113,46 @@ app_ui  <- function(request) {
                               min = 1000,  step = 100,
                               value = default_max_pts_run,
                               max =        maxmax_pts_run),
-                 
+
                  numericInput('max_shapes_map', label = "Cap on number of shapes (polygons) one can MAP",
                               min = 10,  step = 10,
                               value = default_max_shapes_map,
                               max =        maxmax_shapes_map),
-                 
+
                  numericInput(inputId = 'max_mb_upload', label = 'Cap on size of file(s) one can upload in MB (an issue for shapefiles, mainly)',
                               min = minmax_mb_upload,
                               value = global_or_param("default_max_mb_upload"),
                               max = maxmax_mb_upload,
                               step = minmax_mb_upload),
-                 
+
                  ######################################################## #
                  ## *Radius* options ####
                  h2("Radius options"),
-                 
+
                  # minradius  # (set via global.R)
                  # minradius_shapefile # (0 set via global.R)
                  # stepradius # (set via global.R)
-                 
+
                  numericInput('default_miles', label = "Default miles radius",  # what is shown at app startup for all but shapefiles
-                              ### Also note server code where radius can be modified via updateSliderInput, 
+                              ### Also note server code where radius can be modified via updateSliderInput,
                               ### and saved current value stored is specific to each upload type, returns to that when switch type back.
                               min = minradius,  # from global.R
                               value = global_or_param("default_default_miles"),
-                              max   = global_or_param("default_max_miles")), # (set via global.R) highest allowed default (i.e. initial) value 
-                 
+                              max   = global_or_param("default_max_miles")), # (set via global.R) highest allowed default (i.e. initial) value
+
                  numericInput('default_miles_shapefile', label = "Default miles width of buffer around shapefile edges",
                               min = minradius_shapefile, # from global.R
                               global_or_param("default_default_miles_shapefile"),
-                              max   =     max_default_miles), # (set via global.R) highest allowed default (i.e. initial) value 
-                 
+                              max   =     max_default_miles), # (set via global.R) highest allowed default (i.e. initial) value
+
                  numericInput('max_miles', label = "Maximum radius in miles",
                               value = global_or_param("default_max_miles"), # (set via global.R) initial cap that advanced tab lets you increase here
                               max        = maxmax_miles), # (set via global.R) i.e., even in the advanced tab one cannot exceed this cap
-                 
+
                  ######################################################## #
                  ## Calculating and reporting extra metrics ####
                  h2("Calculating and reporting extra metrics"),
-                 
+
                  checkboxInput('calculate_ratios',
                                label = "Results in Excel should include ratios to US and State averages",
                                value = default_calculate_ratios),
@@ -1156,17 +1162,17 @@ app_ui  <- function(request) {
                  checkboxInput('include_extraindicators',
                                label = 'Results should include extra indicators from Community Report - *** not implemented yet',
                                value = default_include_extraindicators),
-                 
+
                  ######################################################## #
                  ## Viewing maps, saving results ####
                  h2("Viewing maps, saving results"),
-                 
+
                  textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", value = ""),
-                 
+
                  ## Map colors, weights, opacity ####
                  ### in ejscreenapi:
                  numericInput(inputId = "circleweight_in", label = "weight of circles in maps", value = default_circleweight),
-                 
+
                  # opacitymin   <- 0
                  # opacitymax   <- 0.5
                  # opacitystep  <- 0.025
@@ -1175,43 +1181,43 @@ app_ui  <- function(request) {
                  # base_color_default      <- "blue"  ;
                  # cluster_color_default   <- "red"   ;
                  # highlight_color_default <- 'orange';
-                 
+
                  ######################################################## #
                  ## Spreadsheet formatting of results ####
                  h2("Spreadsheet formatting of results"),
-                 
+
                  # heatmap column names
-                 
-                 
+
+
                  # heatmap cutoffs for bins
-                 
-                 
+
+
                  # heatmap colors for bins
-                 
-                 
+
+
                  checkboxInput("ok2plot",
                                label = "OK to try to plot graphics and include in Excel download",
                                value = default_ok2plot),
-                 
+
                  ######################################################## #
                  ##  Finding distances: getblocksnearby() ####
                  h2("Finding distances to nearby blocks and residents"),
-                 
+
                  radioButtons(inputId = "avoidorphans",
                               label =  "Avoid orphans (by searching for nearest one out to maxradius, instead of reporting NA when no block is within radius)",
                               choices = c(Yes = TRUE, No = FALSE),
                               inline = TRUE,
                               selected = default_avoidorphans),
-                 
+
                  numericInput(inputId = 'maxradius', # THIS IS NOT THE MAX RADIUS USERS CAN PICK - THIS IS THE MAX TO WHICH IT COULD SEARCH IF avoidorphans=T
                               label = 'If avoid orphans=T, Max distance in miles to search for closest single block if site has none within normal radius',
                               value =  default_maxradius,  # 50000 / meters_per_mile, # 31.06856 miles !!
                               min = 0, max = default_maxradius, step = 1),
-                 
+
                  ######################################################## #
                  ## Which indicators to include in outputs via doaggregate() ####
                  h2("Which indicators to include in outputs"),
-                 
+
                  shiny::selectInput('subgroups_type',
                                     #    "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
                                     #    "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
@@ -1219,26 +1225,26 @@ app_ui  <- function(request) {
                                     label = "Which definition of demographic race ethnicity subgroups to include?",
                                     choices = list(NonHispanicAlone = 'nh', Alone = 'alone', Both = 'both'),
                                     selected = default_subgroups_type),
-                 
+
                  shiny::radioButtons(inputId = "need_proximityscore",
                                      label = "Results should include proximity score?",
                                      choices = list(Yes = TRUE, No = FALSE ),
                                      selected = default_need_proximityscore),
-                 
+
                  shiny::radioButtons(inputId = "include_ejindexes",
                                      label = "Need EJ Indexes",
                                      choices = list(Yes = TRUE, No = FALSE ),
                                      selected = default_include_ejindexes),
-                 
+
                  shiny::radioButtons(inputId = "extra_demog",
                                      label = "Need extra indicators from EJScreen v2.2 report, on language, age groups, gender, percent with disability, poverty, etc.",
                                      choices = list(Yes = TRUE, No = FALSE ),
                                      selected = default_extra_demog),
-                 
+
                  ######################################################## #
                  ## Counting indicators reaching certain thresholds ####
                  h2("Counting indicators reaching certain thresholds"),
-                 
+
                  ## input: GROUP NAME for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
                  shiny::textInput(inputId = 'an_threshgroup1',
                                   label = 'Name for 1st set of comparisons',
@@ -1257,7 +1263,7 @@ app_ui  <- function(request) {
                               value = default.an_thresh_comp1
                  ),
                  ###### #
-                 
+
                  ## input: GROUP NAME for 2d set of comparisons
                  shiny::textInput(inputId = 'an_threshgroup2',
                                   label = 'Name for 2nd set of comparisons',
@@ -1275,50 +1281,50 @@ app_ui  <- function(request) {
                               label = 'Threshold value(s) for 2nd set of comparisons (e.g. %ile 1-100):',
                               value = default.an_thresh_comp2
                  ),
-                 
+
                  ######################################################## #
                  ## Short report options ####
                  h2("Short report"),
-                 
+
                  shiny::textInput("standard_analysis_title",
                                   label = "Default title to show on each short report",
                                   value = default_standard_analysis_title),
-                 
+
                  ## input: Type of plot for 1page report
                  shiny::radioButtons(inputId = "plotkind_1pager",
                                      label = "Type of plot for 1page report",
                                      choices = list(Bar = "bar", Box = "box", Ridgeline = "ridgeline"),
                                      selected = default_plotkind_1pager),
-                 
+
                  ## _radio button on format of short report
                  #                  was DISABLED while PDF KNITTING DEBUGGED
                  radioButtons("format1pager", "Format", choices = c(html = "html", html = "pdf"), inline = TRUE),
-                 
+
                  textInput(inputId = "Custom_title_for_bar_plot_of_indicators", label = "Enter title for bar plot of indicators", value = "" ),
-                 
+
                  ######################################################## #
                  ## Long report options ####
                  h2("Long report"),
-                 
+
                  # relocate any here from the Full Report tab??
-                 
+
                  br(), ## vertical space
-                 
+
                  shiny::radioButtons(inputId = "more3",
                                      label = "placeholder for options not yet implemented",
                                      choices = list(TBD = "a", etc = "b"),
                                      selected = "a"),
-                 
+
                  # ),
-                 
+
                  ##################################################### #
                  ## Testing modes ####
                  h2("Testing/ debugging modes!!!"),
-                 
+
                  radioButtons("testing", "testing?", choices = c(Yes = TRUE, No = FALSE),
                               inline = TRUE,
                               selected = default_testing),
-                 
+
                  radioButtons("shiny.testmode", "shiny.testmode?", choices = c(Yes = TRUE, No = FALSE),
                               inline = TRUE,
                               selected = default_shiny.testmode),
@@ -1343,22 +1349,23 @@ app_ui  <- function(request) {
                  #
                  # shiny.autoload.r (defaults to TRUE)
                  # If TRUE, then the R/ of a shiny app will automatically be sourced.
-                 
+
                  checkboxInput('print_uploaded_points_to_log', label = "Print each new uploaded lat lon table full contents to server log",
                                value = default_print_uploaded_points_to_log),
                  ## . ####
-                 ############################################################### # 
+                 ############################################################### #
                  # ejscreen API tool link ####
-                 
+
                  span('EJAM tool for batch use of the EJScreen API: ',
                       a('ejscreenapi tool',
                         href = 'https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/',
                         target = '_blank', rel = 'noreferrer noopener'))
-                 
+
                  # end advanced features and settings subtab
                  ##################################################################### #
-                 
+
         ) # end Advanced Settings + API tab ## ##
+   
         ################################################################################ #
         ## . ####
         
