@@ -162,6 +162,7 @@ reference:
   - name2fips
   - fips2name
   - fipstype
+  - fips_valid
   - fips_lead_zero
   - fips_bgs_in_fips
   - fips_from_table

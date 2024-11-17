@@ -739,15 +739,20 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
 # helper used by fips2name()
 
 fips_place2placename = function(fips, append_st = TRUE) {
-  
-  fips <- as.integer(fips) # because it is integer in censusplaces$fips
+  suppressWarnings({
+    fips <- as.integer(fips) # because it is integer in censusplaces$fips
+  })
   if (!all(fips %in% censusplaces$fips)) {warning("check fips - some are not found in censusplaces$fips")}
-  
-  place_nost <- censusplaces$placename[match(fips, censusplaces$fips)]
-  
+  suppressWarnings({
+    place_nost <- censusplaces$placename[match(fips, censusplaces$fips)]
+  })
   if (append_st) {
-    st <- fips2state_abbrev(fips)
-    return(paste0(place_nost, ", ", st))
+    suppressWarnings({
+      st <- fips2state_abbrev(fips)
+    })
+    place_st = paste0(place_nost, ", ", st)
+    place_st[is.na(place_nost)] <- NA
+    return(place_st)
   } else {
     return(place_nost)
   }
@@ -838,7 +843,7 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = FALSE,
       "UT", "Reservation", "gore", "township", "157-30", "158-30", 
       "County", "location", "grant", "purchase", "City", "urbana", 
       "comunidad", "corporation")
-
+  
   kept_terms <- c('County',  # but not the lower case version?
                   'City', 'city',  # HANDLED SEPARATELY BELOW AS A SPECIAL CASE
                   'defined', '(balance)', 'gore', 
@@ -852,7 +857,7 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = FALSE,
   # ignored_terms <-  c(
   #    "county", "CDP", "town", "township", "village",
   #   "plantation", "Reservation", "UT", "government", "corporation")
-   
+  
   all_place_st <- paste(censusplaces$placename, censusplaces$ST, sep = ", ")
   
   rgx <- paste0(paste0(" ", ignored_terms, ","), collapse = "|")
@@ -905,7 +910,7 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = FALSE,
   if (!exact) {
     
     ### for exact=F, could recode to query name using grep within given ST, separately?
-      
+    
     ########################### # ########################### # ########################### # ########################### # 
     ########################### # ########################### # ########################### # ########################### # 
     
@@ -916,7 +921,7 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = FALSE,
     # so it searches for and finds only places not counties or states
     
     fips_place_from_placename_grep <- function(tx) {
-    
+      
       ## name2fips_grep_censusplaces 
       # cat("Just using grep looking in censusplaces$placename, for the full placename including state, wont work since placename field is without the state part\n")
       # pname = pre_comma(place_st)
@@ -1693,32 +1698,33 @@ fips2tractname <- function(fips, ftype = 'tract', prefix = "") {
 #'
 fips2name  <- function(fips, ...) {
   
-  #   # more general than fips2countyname() or fips2statename() ... does either/both
-  fips <- fips_lead_zero(fips)
-  ftype <- fipstype(fips)
-  nafips <- is.na(fips)
-  
-  out <- rep(NA, length(fips))
-  
-  ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
-  fstate <- ftype == "state"
-  if (any(!nafips & fstate)) {
-    out[!nafips & fstate]  <- fips2statename(fips = fips[!nafips & fstate])
-  }
-  fcounty <- ftype == "county"
-  if (any(!nafips & fcounty)) { # this prevents irrelevant warning "this function should only be used to convert county fips to county name..."
-    out[!nafips & fcounty] <- fips2countyname(fips = fips[!nafips & fcounty], ...)
-  }
-  fcity <- ftype == "city"
-  if (any(!nafips & fcity)) { #  
-    out[!nafips & fcity] <- fips_place2placename(fips = fips[!nafips & fcity], ...)
-  }
-  
-  fbg <- ftype == "blockgroup"
-  if (any(!nafips & fbg)) {
-    out[!nafips & fbg] <- fips2blockgroupname(fips = fips[!nafips & fbg], ...)
-  }
-  
+  suppressWarnings({
+    #   # more general than fips2countyname() or fips2statename() ... does either/both
+    fips <- fips_lead_zero(fips)
+    ftype <- fipstype(fips)
+    nafips <- is.na(fips)
+    
+    out <- rep(NA, length(fips))
+    
+    ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
+    fstate <- ftype == "state"
+    if (any(!nafips & fstate)) {
+      out[!nafips & fstate]  <- fips2statename(fips = fips[!nafips & fstate])
+    }
+    fcounty <- ftype == "county"
+    if (any(!nafips & fcounty)) { # this prevents irrelevant warning "this function should only be used to convert county fips to county name..."
+      out[!nafips & fcounty] <- fips2countyname(fips = fips[!nafips & fcounty], ...)
+    }
+    fcity <- ftype == "city"
+    if (any(!nafips & fcity)) { #  
+      out[!nafips & fcity] <- fips_place2placename(fips = fips[!nafips & fcity], ...)
+    }
+    
+    fbg <- ftype == "blockgroup"
+    if (any(!nafips & fbg)) {
+      out[!nafips & fbg] <- fips2blockgroupname(fips = fips[!nafips & fbg], ...)
+    }
+  })
   if (anyNA(out)) {
     howmanyna = sum(is.na(out))
     warning("NA returned for ", howmanyna," values that failed to match")

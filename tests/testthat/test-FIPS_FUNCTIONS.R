@@ -265,6 +265,18 @@ test_that("fipstype() 11 digits tract vs blockgroup", {
   )
   ##################### # 
   
+  # > nchar(060372623011)  
+  # [1] 11
+  # > fips_lead_zero('60372623011') # 11 digits - identified it as actual BG missing a 0
+  # [1] "060372623011"
+  # # fips_lead_zero(060372623011) == "060372623011"
+  # [1] TRUE
+  
+  # > nchar("34023001410") 
+  # [1] 11
+  # fips_lead_zero("34023001410") == "34023001410" # 11 digits - identifies it as actual TRACT.
+  # [1] TRUE
+  
 })
 ######################################## #
 
@@ -720,7 +732,7 @@ test_that("fips_place2placename() works", {
     testname1
   )
   
-  
+  suppressWarnings({
   expect_true(
     is.na(fips_place2placename(NA))
   )
@@ -728,7 +740,7 @@ test_that("fips_place2placename() works", {
   expect_true(
     all(is.na(fips_place2placename(c(NA, NA))   )  )
     )
-  
+  })
 })
 #################################################################### #
 # fips_place_from_placename()
@@ -1473,7 +1485,11 @@ test_that("fips_lead_zero correct for 1 through 16 digits long", {
     "123",  
     "1234", "12345",               # 4 or 5 digits becomes 5 digit county fips
     "123456", "1234567", "12345678", "123456789",
-    "1234567890", "12345678901", # 10 or 11 digits becomes 11 digit tract fips
+    "1234567890",     # 10  digits becomes 11 digit tract fips
+    
+    "12345678901",  # 11 is ambiguous and gets checked to see if real bg missing 0 or real tract.
+    #### and if not valid, we just add a zero.
+    
     "123456789012",     # 12 digits is already like a 12 digit blockgroup fips
     "1234567890123",
     "12345678901234","123456789012345", # 14 or 15 becomes 15 digit block fips
@@ -1486,7 +1502,9 @@ test_that("fips_lead_zero correct for 1 through 16 digits long", {
         "01234", "12345",                # county fips 5 digits
         "0123456"  ,       "1234567",    # city/cdp fips  7 digits
         NA, NA, 
-        "01234567890", "12345678901",    # tract fips 11 digits
+        "01234567890",    #TrACT 11
+        "012345678901",    # AMBIGUOUS IF NOT REAL FIPS AND 11 digits
+
         "123456789012",             # blockgroup fips 12 digits
         NA, 
         "012345678901234", "123456789012345", # block 15 digits

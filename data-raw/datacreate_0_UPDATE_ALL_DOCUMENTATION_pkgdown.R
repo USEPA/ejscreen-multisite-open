@@ -8,6 +8,7 @@
 #doask = TRUE   # or #  
 doask = FALSE 
 if (!interactive()) {doask <- FALSE}
+offline_cat()
 
 # defaults
 dotests       = FALSE

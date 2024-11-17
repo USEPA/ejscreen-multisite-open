@@ -116,7 +116,7 @@ ejscreen_vs_ejam <- function(latlon, radius = 3,
   api1 <- ejscreenapi_plus(latlon, radius = radius,
                            fips = fips,
                            # shapefile = shapefile,  # NOT IMPLEMENTED 
-                           save_when_report = save_when_report, report_every_n = report_every_n,
+                           save_when_report = save_when_report, report_every_n = report_every_n, verbose = TRUE,
                            calculate_ratios = calculate_ratios)
   
   ## b) this would work but after using ejscreenapi_plus()  but waste of time since we do not need map, boxplot, interactive DT viewer, etc.

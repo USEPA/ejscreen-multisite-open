@@ -534,17 +534,18 @@ test_interactively = function(ask = TRUE,
     if (y_runall == FALSE && y_runsome == FALSE) {
       stop('no tests run')
     } else {
-      if (interactive() & ask & (y_runall | ("test_shape" %in% names(testlist)))) {
-        # ***  note if interactive it normally tries to prompt for shapefile folder in some cases  
-        if (missing(noquestions)) {
-          if (askYesNo("run tests where you have to interactively specify folders for shapefiles?")) {
-            noquestions <- FALSE
-          }  else {
-            noquestions <- TRUE
-          }
-        } else {
-          # noquestions  was given as a parameter
-        }}
+      noquestions <- TRUE
+      # if (interactive() & ask & (y_runall | ("test_shape" %in% names(testlist)))) {
+      #   # ***  note if interactive it normally tries to prompt for shapefile folder in some cases  
+      #   if (missing(noquestions)) {
+      #     if (askYesNo("run tests where you have to interactively specify folders for shapefiles?")) {
+      #       noquestions <- FALSE
+      #     }  else {
+      #       noquestions <- TRUE
+      #     }
+      #   } else {
+      #     # noquestions  was given as a parameter
+      #   }}
     }
   } # end if not just basic
   # finished asking what to do and setting up
@@ -1016,7 +1017,7 @@ loggable <- function(x, file = 'will be created using timestamp if not provided 
 
 }
 ################################### # 
-
+# example of using it ####
 #  biglist <- test_interactively()
 ## or
 # mydir = "~/../Downloads/unit testing"

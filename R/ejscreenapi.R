@@ -105,6 +105,8 @@ ejscreenapi <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326 ,
                         getstatefromplacename = TRUE
 ) {
   
+  offline_warning(); offline_cat()
+  
   if (!is.null(shapefile)) {warning('shapefile not implemented yet for ejscreenapi()')}
   
   if (any(!is.null(fips))) {
@@ -160,8 +162,8 @@ ejscreenapi <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326 ,
   pts <- data.frame(lon = lon, lat = lat)
   n <- NROW(pts)
 
-  # if (verbose) {
-  cat("\n Using EJScreen to analyze", n, 'sites',
+  if (verbose) {
+  cat("\n Using ejscreenapi() to analyze", n, 'sites',
       ## 'for residents living within a radius of', radius[1], unit, 'from each site.', 
       '\n', file = stderr())
   if (n > 10) {
@@ -169,7 +171,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326 ,
       speedmessage(n = n, perhourslow = 900, perhourfast = 1800, perhourguess = 1400), '\n', file = stderr()
     )
   }
-  # }
+  }
   # be ready to save progress so far if it crashes during a very time consuming long run #### 
   # if (save_when_report & !on_server_so_dont_save_files){
   tdir = tempdir()
