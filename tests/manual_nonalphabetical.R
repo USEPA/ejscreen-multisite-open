@@ -101,8 +101,6 @@ test_interactively = function(ask = TRUE,
       testlist = list( 
         
         test_fips = c(
-          # "test-fips_lead_zero.R",   
-          # "test-fips_bg_from_anyfips.R",    #   test_file("tests/testthat/test-fips_bg_from_anyfips.R")
           "test-FIPS_FUNCTIONS.R",
           "test-state_from_fips_bybg.R",  
           "test-state_from_latlon.R"   

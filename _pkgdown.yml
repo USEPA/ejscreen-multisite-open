@@ -163,7 +163,7 @@ reference:
   - fips2name
   - fipstype
   - fips_lead_zero
-  - fips_bg_from_anyfips
+  - fips_bgs_in_fips
   - fips_from_table
   - fips_place_from_placename
   - censusplaces
