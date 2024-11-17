@@ -105,7 +105,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326 ,
                         getstatefromplacename = TRUE
 ) {
   
-  if (!is.null(shapefile)) {warning('shapefile not implemented yet')}
+  if (!is.null(shapefile)) {warning('shapefile not implemented yet for ejscreenapi()')}
   
   if (any(!is.null(fips))) {
     
@@ -159,9 +159,17 @@ ejscreenapi <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326 ,
   
   pts <- data.frame(lon = lon, lat = lat)
   n <- NROW(pts)
-  if (verbose) {
-    cat("\nAnalyzing", n, 'sites, for residents living within a radius of', radius[1], unit, 'from each site.\n\n', file = stderr())
+
+  # if (verbose) {
+  cat("\n Using EJScreen to analyze", n, 'sites',
+      ## 'for residents living within a radius of', radius[1], unit, 'from each site.', 
+      '\n', file = stderr())
+  if (n > 10) {
+    cat(
+      speedmessage(n = n, perhourslow = 900, perhourfast = 1800, perhourguess = 1400), '\n', file = stderr()
+    )
   }
+  # }
   # be ready to save progress so far if it crashes during a very time consuming long run #### 
   # if (save_when_report & !on_server_so_dont_save_files){
   tdir = tempdir()
@@ -188,14 +196,15 @@ ejscreenapi <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326 ,
   #################################################  #################################################
   benchmark.start <- Sys.time()
 
-    if (length(radius) == 1) {radius <- rep(radius, n)}
-    if (length(fips) == 1) {fips <- rep(fips, n)}
-    if (length(namestr) == 1) {namestr <- rep(namestr, n)}
-    
-    for (i in 1:n) {
+
+  if (length(radius) == 1) {radius <- rep(radius, n)}
+  if (length(fips) == 1) {fips <- rep(fips, n)}
+  if (length(namestr) == 1) {namestr <- rep(namestr, n)}
+  
+  for (i in 1:n) {
     
     if (NROW(shapefile) == 0) {shaperow <- NULL} else {shaperow <- shapefile[i, ]}
-      
+    
     ############################################################################### # 
     ## use API to get buffer result from EJScreen server ** ####
     
@@ -287,9 +296,9 @@ ejscreenapi <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326 ,
     hrsleft <- remaining / hourly
     exact_minutes_to_go <- hrsleft * 60
     minutes_to_go <- round(exact_minutes_to_go, 0)
-    if (i == 10) {
-      if (verbose) {
-        cat('    Estimated', minutes_to_go, 'minutes remaining at the rate so far.\n', file = stderr())
+    if (i == 10 & n > 19) {
+      if (verbose | n > 19) {
+        cat('    Estimated', minutes_to_go, 'minutes remaining for ejscreenapi() at the rate so far.\n', file = stderr())
       }
     }
     # CAN SAVE INTERIM RESULTS IF NEEDED, in case it fails after a large number were done.

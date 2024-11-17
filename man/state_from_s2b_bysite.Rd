@@ -30,9 +30,26 @@ In many analyses, all the sites will be single-state sites, and this function wi
 However, for the rare edge case where you did not save the lat,lon of sites you analyzed,
 you would need to approximate those from the lat/lon of the blocks and their distances,
 via latlon_from_s2b(), separately.
+
+These two functions differ -- one gets the state info for each unique site,
+and the other gets the state abbreviation of each unique block:
+Note: unexported function
+xx = state_from_s2b_bysite(testoutput_getblocksnearby_10pts_1miles)[]
+NROW(xx)
+\link{1} 10
+length(unique(testoutput_getblocksnearby_10pts_1miles$ejam_uniq_id))
+\link{1} 10
+
+length(EJAM:::state_from_blockid_table(testoutput_getblocksnearby_10pts_1miles))
+\link{1} 1914
+NROW(testoutput_getblocksnearby_10pts_1miles)
+\link{1} 1914
 }
 \examples{
 \dontrun{
+# unexported function
+table(state_from_blockid_table(testoutput_getblocksnearby_10pts_1miles))
+state_from_s2b_bysite(testoutput_getblocksnearby_10pts_1miles)[]
 
   x = getblocksnearby(pts, radius = 30)
   y = state_from_s2b_bysite(x)
@@ -46,8 +63,9 @@ via latlon_from_s2b(), separately.
   x$ST == y$FacState
   }
   state_from_s2b_bysite(testoutput_getblocksnearby_10pts_1miles) 
-  
+
 }
 \seealso{
 \code{\link[=state_from_blockid_table]{state_from_blockid_table()}} \code{\link[=state_per_site_for_doaggregate]{state_per_site_for_doaggregate()}}
 }
+\keyword{internal}

@@ -42,6 +42,7 @@
 #' 
 #' @param testing optional for testing only
 #' @param updateProgress optional Shiny progress bar to update during formatting
+#' @param ejscreen_ejam_caveat optional text if you want to change this in the notes tab
 #' @param ... other params passed along to [openxlsx::writeData()]
 #' 
 #' @import graphics
@@ -85,9 +86,12 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                              
                              testing=FALSE, updateProgress = NULL,
                              launchexcel = FALSE, saveas = NULL,
-                             
+                             ejscreen_ejam_caveat = NULL,
                              ...) {
   
+  if (is.null(ejscreen_ejam_caveat)) {
+    ejscreen_ejam_caveat <- "Some numbers as shown on the EJScreen report for a single location will in some cases appear very slightly different than in EJScreen's multisite reports. All numbers shown in both types of reports are estimates, and any differences are well within the range of uncertainty inherent in the American Community Survey data as used in EJScreen. Slight differences are inherent in very quickly calculating results for multiple locations."
+  }
   ###################  #   ###################  #   ###################  #   ###################  # 
   
   # HANDLE ERRORS ETC. ####
@@ -373,6 +377,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     "Distance type" = radius_or_buffer_description,
     "Population at x% of sites" =  popshare_p_lives_at_what_pct(eachsite$pop, p = 0.50, astext = TRUE),
     "Population at N sites" = popshare_at_top_n(eachsite$pop, c(1, 5, 10), astext = TRUE),
+    "Note on site-specific estimates" = ejscreen_ejam_caveat,
+    
     check.names = FALSE
   )
   notes_df <- as.data.frame(  t(notes_df) )
@@ -384,7 +390,9 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     openxlsx::addStyle(     wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), cols = 1,  style = openxlsx::createStyle(wrapText = TRUE), stack = TRUE)
   } else {usernoterows <- 0}
   openxlsx::setRowHeights(wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), heights = 50)
-  openxlsx::setColWidths( wb, sheet = 'notes', cols = 1:4,            widths = "auto")
+  openxlsx::setColWidths( wb, sheet = 'notes', cols = 1:4,            widths = "auto") # in general ok to auto-width, but...
+  openxlsx::setColWidths( wb, sheet = 'notes', cols = 2, widths = 70) # so the long caveat can wrap
+  openxlsx::addStyle(     wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), cols = 2, style = openxlsx::createStyle(wrapText = TRUE), stack = TRUE) # so the long caveat wraps
   ######################################################################## #
   
   ## DATA tabs - Overall and Each Sites ####

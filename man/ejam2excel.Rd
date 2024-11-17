@@ -55,8 +55,7 @@ prompts RStudio user interactively asking where to save the downloaded file}
 
 \item{hyperlink_colnames}{optional names of columns with URLs}
 
-\item{site_method}{site selection method, such as NAICS, FRS, SHP, latlon,
-optional site method parameter used to create a more specific title with create_filename}
+\item{site_method}{optional site method parameter used to create a more specific title with create_filename}
 
 \item{...}{optional additional parameters passed to \code{\link[=table_xls_format]{table_xls_format()}}, such as
 heatmap_colnames, heatmap_cuts, heatmap_colors, etc.}

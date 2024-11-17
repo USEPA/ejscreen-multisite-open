@@ -55,9 +55,7 @@ EJAM is the EJ Analysis Multi-site (EJAM) tool provided by the United States Env
 
 ### EJAM as a Web App
 
--   [Using EJAM as a Web App](https://usepa.github.io/EJAM/articles/0_webapp.html) <!-- 
-            -   EJAM beta test is accessible only if at EPA offices or on VPN
-        -->
+-   [Using EJAM as a Web App](https://usepa.github.io/EJAM/articles/0_webapp.html)
 
 ### EJAM as a Software Toolkit for Analysts and Developers
 
