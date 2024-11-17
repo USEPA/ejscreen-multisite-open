@@ -142,9 +142,12 @@ app_ui  <- function(request) {
                     selectInput(inputId = 'ss_choose_method_drop',
                                 label = tags$span('How would you like to select categories?'),
                                 choices = c('by Industry (NAICS) Code' = 'NAICS',
-                                            'by Industry (SIC) Code'   = 'SIC',
-                                            'by EPA Program'           = 'EPA_PROGRAM',
-                                            'by MACT subpart'          = 'MACT'))
+                                            'by EPA Program'           = 'EPA_PROGRAM')
+                                # choices = c('by Industry (NAICS) Code' = 'NAICS',
+                                #             'by Industry (SIC) Code'   = 'SIC',
+                                #             'by EPA Program'           = 'EPA_PROGRAM',
+                                #             'by MACT subpart'          = 'MACT')
+                                )
                   ),
                   
                   ### input: what LOCATIONS type to upload? (IDs, latlon, FIPS, Shapes) ####
@@ -157,10 +160,14 @@ app_ui  <- function(request) {
                                   'What type of data are you uploading?'
                                 ),
                                 choices = c('Latitude/Longitude file upload'               = 'latlon',
-                                            'EPA Facility ID (FRS Identifiers)'            = 'FRS',
-                                            'EPA Program IDs'                              = 'EPA_PROGRAM',
-                                            'FIPS Codes'                                   = 'FIPS',
+                                            'EPA Facility IDs (FRS Identifiers)'            = 'FRS',
+                                            'Census FIPS Codes (e.g., Counties or Cities)'   = 'FIPS',
                                             'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
+                                # choices = c('Latitude/Longitude file upload'               = 'latlon',
+                                #             'EPA Facility ID (FRS Identifiers)'            = 'FRS',
+                                #             'EPA Program IDs'                              = 'EPA_PROGRAM',
+                                #             'FIPS Codes'                                   = 'FIPS',
+                                #             'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
                     )
                   ),
               ),
@@ -311,8 +318,6 @@ app_ui  <- function(request) {
                           
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'EPA_PROGRAM'",
-                            span('More info about these programs can be found here: ', a('https://www.epa.gov/frs/frs-data-sources', href = 'https://www.epa.gov/frs/frs-data-sources', target = '_blank', rel = 'noreferrer noopener')),
-                            br(),
                             ## input: select an EPA program from list ------------------------------------- - ------------------------------------- -
                             selectizeInput(inputId = 'ss_select_program', label = 'Pick an EPA program',
                                            ## named vector in global.R - values are acronyms,
@@ -321,6 +326,13 @@ app_ui  <- function(request) {
                                            selected = default_epa_program_selected, # not sure this is a good idea but trying it out
                                            ## add X to remove selected options from list
                                            options = list('plugins' = list('remove_button'))),
+                            br(), 
+                            span('More info about ', a('these EPA programs', href = 'https://www.epa.gov/frs/frs-data-sources', target = '_blank', rel = 'noreferrer noopener')),
+                            br(), 
+                            span('Search for regulated facilities in ', a('EPA Envirofacts', href = 'https://enviro.epa.gov/envirofacts/multisystem/search', target = '_blank', rel = 'noreferrer noopener')),
+                            br(),
+                            span('Search for regulated facilities in ', a('EPA ECHO data', href = 'https://echo.epa.gov/', target = '_blank', rel = 'noreferrer noopener')),
+                            br()
                           ), # end conditional panel EPA programs
                           ################################################################# #
                           
