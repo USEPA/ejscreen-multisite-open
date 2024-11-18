@@ -470,16 +470,70 @@ fips_place2placename = function(fips, append_st = TRUE) {
   place_nost <- censusplaces$placename[match(fips, censusplaces$fips)]
   
   if (append_st) {
+    suppressWarnings({
     st <- fips2state_abbrev(fips)
-    return(paste0(place_nost, ", ", st))
+    })
+    place_st =  paste0(place_nost, ", ", st)
+    place_st[is.na(place_nost) | is.na(st)] <- NA
+    return(place_st)
   } else {
     return(place_nost)
   }
 }
 ####################################################### #
 
-fips_place_from_placename = function(place_st, geocoding = FALSE) {
+
+#' search using names of cities, towns, etc. to try to find matches and get FIPS
+#' helper used by name2fips()
+#' @details
+#' 
+#' helper used by [name2fips()]
+#' 
+#' Finding places by name is tricky because the master list [censusplaces] names places
+#' using the words city, town, township, village, borrough, and CDP
+#' while most people will not think to include that qualifier as part of a query.
+#' 
+#' Also, about 300 places like "Salt Lake City" have the word "City" as an essential part
+#' of their actual name, so those are listed in that table in the format, "Salt Lake City city"
+#' 
+#' Also, in some cases the exact same town or township name occurs more than once in a State so
+#'  a query by name and state is not always naming a unique place. This function does not 
+#' currently distinguish between those. This is relatively rare - out of 38,000 place names,
+#' fewer than 600 unique place-state pairs appear more than once, and fewer than 150 of those appear
+#' more than twice in the same state.
+#' Cases with 4+ duplicates in a state arise only for towns and townships.
+#' Chula Vista CDP, TX and San Antonio comunidad, PR each occur three times.
+#' All other duplicates are where a CDP, borough, etc. occurs twice in a state.
+#' Almost all duplicates are in PA, WI, MI or MN.
+#' Pennsylvania in particular has many frequently reused township names:
+#' In that state, these place names occur more than 15 times each:
+#' Franklin township, Union township, Washington township, Jackson township.
+#' There are more than 500 unique name-state pairs that are reused within a state.
+#' 
+#' @param place_st vector of place names in format like "yonkers, ny" or "Chelsea city, MA"
+#' @param geocoding set to TRUE to use a geocoding service to try to find hits
+#' @param exact  FALSE is to allow partial matching 
+#' @param usegrep if exact=T, usegrep if TRUE will use the helper function fips_place_from_placename_grep()
+#' @param verbose prints more to console about possible hits for each queried place name
+#' @return prints a table of possible hits but returns just the vector of fips
+#' 
+#' @keywords internal
+#'
+fips_place_from_placename = function(place_st, geocoding = FALSE, exact = FALSE, usegrep = FALSE, verbose = TRUE) {
   
+  # CAUTION - currently assumes a placename,ST occurs only once per state,
+  # but there are exceptions like Denver township, MI occurs twice for example, in 2 different counties of same state.
+  
+  #   exact = FALSE  option will use grep() instead of match()
+  
+  ## examples 
+  ## Search for place fips based on partial name of place
+  # fips_place_from_placename(c('denver',  "new york" ), exact = F)
+  # fips_place_from_placename('chelsea,ma', exact = F)
+  # fips = fips_place_from_placename('chelsea city, MA', exact = T)
+  #  # 2513205
+  # mapview(  shapes_places_from_placefips(fips_place_from_placename('chelsea city, MA', exact = T) ))
+
   ## examples
   # place_st = 
   ## used by name2fips or fips_from_name 
@@ -487,9 +541,74 @@ fips_place_from_placename = function(place_st, geocoding = FALSE) {
   # seealso [shapes_places_from_placefips()] [fips_place2placename()] [fips_place_from_placename()] [censusplaces]
   
   # see https://www2.census.gov/geo/pdfs/reference/GARM/Ch9GARM.pdf
-  
+  if (length(place_st) == 0) {return(NULL)}
   if (any(!grepl(",", place_st))) {warning("place_st should be in form of placename, ST like Port Chester, NY")}
   
+  ### for exact=F, could recode to query name using grep within given ST, separately?
+  # pname = pre_comma(place_st)
+  # st = EJAM:::fips2state_abbrev(fips_state_from_statename( post_comma(place_st)))
+  
+  ######################################################################################## #
+  # words to ignore like "city" ####
+  
+  # placetypes = unique(gsub(".* ", "",         substr(censusplaces$placename,nchar(censusplaces$placename) - 15,99)))
+  # placetypes = unique(gsub(".* (.*$)", "\\1", substr(censusplaces$placename,nchar(censusplaces$placename) - 15,99))) 
+  # grep('UT$', censusplaces$placename, value = T)
+  # grep('urbana$', censusplaces$placename, value = T)
+  
+  placetypes <- 
+    c("city", "CDP", "municipality", "borough", "town", "defined", 
+      "(balance)", "village", "government", "county", "plantation", 
+      "UT", "Reservation", "gore", "township", "157-30", "158-30", 
+      "County", "location", "grant", "purchase", "City", "urbana", 
+      "comunidad", "corporation")
+  
+  kept_terms <- c('County',  # but not the lower case version?
+                  'City', 'city',  # HANDLED SEPARATELY BELOW AS A SPECIAL CASE
+                  'defined', '(balance)', 'gore', 
+                  'urbana', "comunidad",
+                  "157-30", "158-30",
+                  "municipality", "borough", "location", "grant", "purchase")
+  
+  ignored_terms <- placetypes
+  ignored_terms <- ignored_terms[!(ignored_terms %in% kept_terms)]
+  
+  # ignored_terms <-  c(
+  #    "county", "CDP", "town", "township", "village",
+  #   "plantation", "Reservation", "UT", "government", "corporation")
+  
+  all_place_st <- paste(censusplaces$placename, censusplaces$ST, sep = ", ")
+  
+  rgx <- paste0(paste0(" ", ignored_terms, ","), collapse = "|")
+  all_place_st_dont_say_cdp <- gsub(rgx, ",", all_place_st)
+  place_st_dont_say_cdp     <- gsub(rgx, ",", place_st)
+  
+  ##### special cases like "Salt Lake City city" 
+  # Normally we want to remove/ignore the word "city" because the master list uses it for every city even though we almost always omit the word "city" in a query, 
+  # such as where "Chelsea city, MA" is in master list but "Chelsea, MA" would be a typical query.
+  # However, about 302 cities must retain the word "city" and are seen as "...City city" in censusplaces$placename. 
+  #   sum(grepl("city city", censusplaces$placename, ignore.case = T))
+  # If we removed "city," in those special cases,
+  # the original "salt lake city city" "UT" in master list  becomes   "salt lake city, UT"  which is ok but 
+  # then a query that said "salt lake city, ut" would lose the " city" and be just "salt lake, UT" and fail to match "salt lake city, UT" !
+  # If you instead remove "city" from the 10,164 census places with that word, 
+  #   sum(grepl("city", censusplaces$placename))
+  # and not from any query terms, that means you
+  # would not find "Chelsea, MA" without asking for "Chelsea city, MA" which is not intuitive.
+  ## So we will convert "x city city" to just "x city" in censusplaces$placename, but
+  ## in any query terms, we will convert "x city" to "x" UNLESS "x city" is among about 300 specialcase places with "city" as an essential part of their name:
+  
+  specialcase = grep("city city", all_place_st_dont_say_cdp, ignore.case = T)
+  # 
+  # drop 1 word "city" from master list even for places like "salt lake city city"
+  all_place_st_dont_say_cdp_or_city <- gsub(" city,", ",", all_place_st_dont_say_cdp, ignore.case = T)
+  # but drop 1 word "city" from query in all but the special cases where query is a place that has to say "city" once, as part of the name, and matches that way:
+  specialquery <- tolower(place_st_dont_say_cdp) %in% tolower(all_place_st_dont_say_cdp_or_city[specialcase]) # looks for exact matches assuming query may say "salt lake city, UT" and special list now says the same.
+  place_st_dont_say_cdp_or_city <- place_st_dont_say_cdp
+  place_st_dont_say_cdp_or_city[!specialquery]     <- gsub(" city,", ",", place_st_dont_say_cdp_or_city[!specialquery],     ignore.case = T) # in case not geocoding
+  
+  ######################################################################################## #
+
   if (geocoding) {
     if (!exists("geocoding")) {
       warning("Need to load the AOI package for geocoding to work. Using geocoding=FALSE instead, here.")
@@ -497,22 +616,266 @@ fips_place_from_placename = function(place_st, geocoding = FALSE) {
       # geocoding fails sometimes when CDP is part of the name
       place_st_dont_say_cdp <- gsub(" CDP,", ",", place_st)
       
-      arcgis_address_xy <- geocode(place_st_dont_say_cdp)
+      arcgis_address_xy <- geocode(place_st_dont_say_cdp)  # or _or_city ?
       setDT(arcgis_address_xy)
       place_st <- arcgis_address_xy[ , .(best = arcgis_address[1]), by = "request"]$best
       # now place_st are the best guesses via geocoding, ready to look for matches in table of fips and place names
       cat("Names based on geocoding:\n", paste0(head(place_st, 30), collapse = ", "), ifelse(length(place_st) > 30, " ...etc. ", ""), "\n")
     }
   }
-  all_place_st <- paste(censusplaces$placename, censusplaces$ST, sep = ", ")
-  all_place_st_dont_say_cdp <- gsub(" CDP, ", ",", all_place_st)
-  place_st_dont_say_cdp <- gsub(" CDP,", ",", place_st) # in case not geocoding
-  results <- censusplaces[match(tolower(place_st_dont_say_cdp), tolower(all_place_st_dont_say_cdp), nomatch = NA), ]
-  print(results)
+
+
+  ## would output of geocoding require same handling of ignored terms??
+  ######################################################################################## #
+  
+  # remove/ignore a space after comma
+  
+  # all_place_st_dont_say_cdp = gsub(", ", ",", all_place_st_dont_say_cdp) # why not _or_city ?
+  all_place_st_dont_say_cdp_or_city = gsub(", ", ",", all_place_st_dont_say_cdp_or_city)
+  
+  # place_st_dont_say_cdp     = gsub(", ", ",", place_st_dont_say_cdp)     # why not _or_city ?
+  place_st_dont_say_cdp_or_city = gsub(", ", ",", place_st_dont_say_cdp_or_city)
+  
+  if (!exact) {
+    
+    ### for exact=F, could recode to query name using grep within given ST, separately?
+    
+    ########################### # ########################### # ########################### # ########################### # 
+    ########################### # ########################### # ########################### # ########################### # 
+    
+    # utility to query city/CDP, ST via grep to get FIPS
+    # search each of those parts in censusplaces$placename and $ST
+    # so this searches for and finds only places not counties or states
+    
+    fips_place_from_placename_grep <- function(tx, all_placename = censusplaces$placename, all_ST = censusplaces$ST) {
+      
+      # examples
+      #   fips_place_from_placename_grep(c('white plains, ny', 'queens,new york'))
+      #   fips_place_from_placename_grep('white plains')
+      
+      hits = list()
+      ###################### #  ###################### #  
+      for (i in seq_along(tx)) {
+        
+        queryfull <- tx[i]
+        query_city   <- pre_comma(queryfull, trim = T)
+        if (grepl(',', queryfull) ) {
+          query_state <- post_comma(queryfull, trim = T)
+          query_state <- statename2st(query_state)
+        } else {
+          query_state <- "" # NA would never match on state since blank. "" matches any state.   # assume if no comma they meant city but not ST is specified
+        }
+        city_matched  = !is.na(query_city) & grepl( query_city, all_placename, ignore.case = T)
+        state_matched = !is.na(query_state) & grepl(query_state, all_ST, ignore.case = T)
+        found_careful = censusplaces[city_matched & state_matched, ]
+        
+        if (NROW(found_careful) == 0) {
+          empty = censusplaces[0,]
+          empty = empty[1,]
+          hits[[i]] <- data.frame(query = tx[i], empty)
+        } else {
+          hits[[i]] <- data.frame(query = tx[i], found_careful)
+          rownames(hits[[i]]) <- NULL # ?
+        }
+        
+        hits[[i]] <- cbind(hits[[i]],
+                           count_city_matched = sum(city_matched),
+                           # count_state_matched = sum(state_matched),
+                           count_city_state_matched = sum(city_matched & state_matched))
+      }
+      ###################### #  ###################### #  
+      
+      hits <- data.table::rbindlist(hits)
+      cat("\nSummary of hits per query term\n\n")
+      print(hits[ , .(count_city_matched = count_city_matched[1], 
+                      # count_state_matched = count_state_matched[1], 
+                      count_city_state_matched = count_city_state_matched[1]
+      ), by = 'query'])
+      cat("\n\n")
+      hits[, `:=`(eparegion = NULL, stfips = NULL, countyfips = NULL) ]
+      setcolorder(hits, c('query', 'placename', 'ST', 'countyname', 'fips', 'count_city_matched', 'count_city_state_matched'))
+      print(hits)
+      # invisible(hits$fips)
+      return(hits[])
+    }
+    ########################### # ########################### # ########################### # ########################### # 
+    ########################### # ########################### # ########################### # ########################### # 
+    
+    
+    ### Should try better query than below, using newer fips_place_from_placename_grep() 
+    ### that does split of city,ST and searching each part, after removing words like "city" etc.  :
+    
+    if (usegrep) { 
+      
+    results <- fips_place_from_placename_grep(place_st_dont_say_cdp_or_city,
+                                              all_placename = pre_comma(all_place_st_dont_say_cdp_or_city, trim = TRUE),
+                                              all_ST = post_comma(all_place_st_dont_say_cdp_or_city, trim = TRUE))
+    results <- results[, .( query,placename,ST,countyname,fips, count_city_matched, count_city_state_matched)]
+
+    ### Get back a table of candidates,
+    ###   but where do we check for exact match ? and where to choose which of possible hits is best ?
+    
+  
+    } else {
+      
+      ### the way it was done before  fips_place_from_placename_grep() was drafted:
+      
+      
+      ## IF USING fips_place_from_placename_grep  below... then need this:
+      # all_place_st_dont_say_cdp_or_city_PRECOMMA <- pre_comma(all_place_st_dont_say_cdp_or_city)
+ 
+    
+    
+    results <- list()
+    
+    for (i in 1:length(place_st_dont_say_cdp_or_city)) {
+      
+      # query was NA so just return NA values as result for that input
+      if (is.na(place_st_dont_say_cdp_or_city[i])) {
+        results[[i]] <- censusplaces[1,] # to get the right colnames
+        results[[i]][1,] <- rep(NA, NCOL(results[[i]]))
+        results[[i]]$query <- place_st[i]
+      } else {
+        
+        # first check if nearly exact match does work (ignoring cdp and city words) 
+        ## but using match() returns only 1st hit and that misses dupes like in PA
+        # exactresult <- censusplaces[match(tolower(place_st_dont_say_cdp_or_city[i]), tolower(all_place_st_dont_say_cdp_or_city), nomatch = NA, incomparables = NA), ]
+        exactresult <- censusplaces[tolower(all_place_st_dont_say_cdp_or_city) %in% tolower(place_st_dont_say_cdp_or_city[i]), ]
+        if (NROW(exactresult) == 1) {
+          results[[i]] <-   exactresult
+          results[[i]]$query <- place_st[i]
+          next  # done with this query term 
+        }
+        if (NROW(exactresult) > 1) {
+          # looks like there are duplicates, where same township name appears twice or more in a single state like in PA
+          results[[i]] <- exactresult
+          results[[i]]$query <- place_st[i]
+          
+        } else  {
+          
+          # no exact match, so use grepl()
+          # This can return multiple rows for a single input queried place, 
+          # so it will not be 1-to-1 in/output:
+          
+          results[[i]]  <- censusplaces[grepl(place_st_dont_say_cdp_or_city[i], all_place_st_dont_say_cdp_or_city, ignore.case = TRUE), ]
+        
+          ## or else maybe at least try now: (but better to do this whole thing at once outside this loop)
+          # results[[i]]  <- fips_place_from_placename_grep(tx = place_st_dont_say_cdp_or_city[i],
+          #                                                 all_placename = all_place_st_dont_say_cdp_or_city_PRECOMMA,
+          #                                                 all_ST = censusplaces$ST)
+          
+          
+          }
+        if (NROW(results[[i]]) > 20) {
+          # too many hits - ignore most, like if query was "California" ?
+          # warning("large number of apparent matches?")
+        }
+        if (NROW(results[[i]]) == 0) {
+          # zero results for this query term, by exact match and by grepl(), so return NA values for this input
+          results[[i]] <- censusplaces[1,] # to get the right colnames
+          results[[i]][1,] <- rep(NA, NCOL(results[[i]]))
+        } 
+        results[[i]]$query <- place_st[i]
+      }
+    }
+    
+    }
+    #################################################### # 
+    ## compile those findings and print to show possible hits, duplicates, county info, etc.
+    
+    if (is.data.frame(results[[1]])) {
+      results <- data.frame(rbindlist(results))
+      rownames(results) <- NULL
+    } else {
+      results = data.frame() # and results$fips will be NULL and NROW is 0
+    }
+    
+    
+    if (verbose) {
+      if (NROW(results) == 0) {
+        cat(paste0('\n\nyou can also try, for example:\n  censusplaces[grep("', place_st[1], '", censusplaces$placename, ignore.case = T), ]\n\n'))
+      }
+    }
+    # but show this even if !verbose :
+    if (NROW(results[!is.na(results$fips), ]) != 0) {
+      cat("\nExact match, or Cities/CDPs showing any multiple possible matches, etc. (excluding if no match):\n\n")
+      multihit = results$query %in% results$query[duplicated(results$query)]
+      multihit = multihit[!is.na(results$fips)]
+      print(data.frame(
+        results[!is.na(results$fips), ], 
+        multiple = ifelse(multihit, "yes", "")
+      ))
+      cat("\n\n")
+    }
+    #################################################### # 
+    
+    # TRY TO RETURN THE ONE BEST GUESS FOR EACH QUERIED TERM
+    
+    if (NROW(results) != 0) {
+      place_st_notna = place_st[!is.na(place_st)]
+      
+      rownums2drop <- NULL
+      for (i in 1:length(place_st_notna)) {
+        theserows <- results$query == place_st_notna[i] & !is.na(results$fips)
+        theserownumbers = which(theserows)
+        these = results[theserows, ]
+        if (NROW(these) > 1) {
+          # TRY TO RETURN THE ONE BEST GUESS (already have returned near exact match if one was found)
+          perfect = (
+            tolower(paste0(gsub(" city| CDP", "", these$placename, ignore.case = T), ", ", these$ST)) ==
+              tolower(gsub(" city| CDP", "", these$query[1], ignore.case = T))
+          )
+          
+          # xyz city ?
+          # perfect <- tolower(gsub(these$query[1] , '', these$placename , ignore.case = TRUE)) %in% c(" city")
+          
+          if (sum(perfect) > 1 ) {
+            # just use the first of multiple perfect-ish hits
+            perfect[perfect][2:length(perfect[perfect])] <- FALSE
+          }
+          
+          if (sum(perfect) == 0) {
+            # no ideal match so far, so try to match on first 2 letters:
+            perfect <- tolower(substr(these$placename,1,2)) == tolower(substr(these$query[1],1,2))
+            if (sum(perfect) > 1) {
+              # just use the first of multiple perfect-ish hits 
+              perfect[perfect][2:length(perfect[perfect])] <- FALSE
+            }  
+            if (sum(perfect) == 0) {
+              # just use the first of multiple ok hits 
+              perfect <- c(TRUE, rep(FALSE, length(perfect) - 1))
+            } 
+          }
+          # drop all but one best guess or 1st guess
+          rownums2drop = c(rownums2drop, theserownumbers[!perfect])
+        }
+      }
+      if (!is.null(rownums2drop)) {
+        results <- results[-rownums2drop, ]
+      }
+    }
+  } else {
+    # exact results are 1-to-1
+    results <- censusplaces[match(tolower(place_st_dont_say_cdp), tolower(all_place_st_dont_say_cdp), nomatch = NA, incomparables = NA), ]
+    results$query  <- place_st 
+    
+  }
+  
+  # DROPPING NA VALUES  WOULD MEAN IT IS NOT 1-TO-1 WHEN ANY NA VALUES 
+  # results <- results[!is.na(results$fips), ]
+  # cat("\nNon-NA results:\n\n")
+  # print(results[!is.na(results$fips), ])
+  
+  rownames(results) <- NULL
+  
+  if (verbose & NROW(results) > 0) {
+    cat("\nCities/CDPs including NA values but only 1 best guess per queried place:\n\n")
+    print(results)
+  }
   return(results$fips)
 }
-####################################################### #
-####################################################### #
+####################################################### ######################################################## #
+
 
 #' Get FIPS codes from names of states or counties
 #' inverse of fips2name(), 1-to-1 map statename, ST, countyname to FIPS of each
@@ -539,9 +902,9 @@ name2fips = function(x) {
   })
   # fips[is.na(fips)] = substr(blockgroupstats$bgfips,1,5)[match(x[is.na(fips)]), blockgroupstats$countyname]
   # only tries for those that were neither ST nor statename
-  
+  if (any(is.na(fips))) {
   fips[is.na(fips)] <- fips_place_from_placename(x[is.na(fips)])
-  
+  }
   # if (any(toupper(ST) %in% c("AS", "GU","MP", "UM", "VI"))) {
   #   message("note some of ST are among AS, GU, MP, UM, VI")
   # }

@@ -16,7 +16,17 @@ ejscreen_vs_ejam_summary(
 \item{vs}{output of ejscreen_vs_ejam()}
 
 \item{myvars}{optional to check just a subset of the colnames found in vs$EJAM and vs$EJSCREEN,
-such as myvars = c(names_d, names_d_subgroups) or myvars = grep("pctile", colnames(vs$EJAM), value = T)}
+such as these possible values:
+
+myvars = "all"    # all the indicators in the output tables, i.e., colnames(vs$EJAM)
+
+myvars = "inboth" # just the ones in both (not NA values because EJAM or EJSCREEN did not report the indicator)
+
+myvars = "bad"    # just the ones in both where EJAM_shown and EJSCREEN_shown disagree
+
+myvars = c(names_d, names_d_subgroups) or
+
+myvars = grep("pctile", colnames(vs$EJAM), value = T)}
 
 \item{tol}{optional, set this so that results can be said to agree with this tolerance
 if they differ by less than tol percent where tol is expressed as a fraction 0 to 1.}

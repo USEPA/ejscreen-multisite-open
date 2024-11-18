@@ -15,7 +15,8 @@ ejscreen_vs(
   shapefile = NULL,
   savedejscreentableoutput,
   x100fix = TRUE,
-  x100varnames = names_pct_as_fraction_ejamit
+  x100varnames = names_pct_as_fraction_ejamit,
+  ...
 )
 }
 \arguments{

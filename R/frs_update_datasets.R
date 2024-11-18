@@ -122,6 +122,9 @@ frs_update_datasets <- function(folder = NULL,
     usethis::use_data(frs_by_naics, overwrite = TRUE)
   }
   ###################################################### #
+  
+  stop('see EJAM/data-raw/datacreate_frs_by_sic.R and compare to this script ***')
+  
   cat("\nTrying to create frs_by_sic\n")
   frs_by_sic <- frs_clean_sic(frs)
   frs_by_sic <- EJAM:::frs_make_sic_lookup(frs_by_sic)

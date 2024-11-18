@@ -1,6 +1,11 @@
 
+
 #' see which columns seem numeric and could be rounded, e.g. - DRAFT NOT FULLY TESTED
-#' 
+#' @details
+#' Does not report "08" as numeric-ish, so cannot check fips with leading zero this way, e.g.
+#' To do that you could check if is.na(as.numeric(x)) 
+#' but "08" is not roundable.
+#' @seealso [is.numeric.text()] 
 #' @param x data.table, data.frame, or vector
 #' @param only.if.already.numeric logical, if TRUE, only reports TRUE for a column (or element) if  is.numeric() is TRUE for that one 
 #' @param strip.characters.before.coerce logical, if TRUE, tries to remove spaces and percentage signs before trying to coerce to numeric
@@ -9,9 +14,9 @@
 #' 
 #' @keywords internal
 #' 
-var_is_numeric_ish <- function(
+is.numericish <- function(
     
-    x, only.if.already.numeric=FALSE, strip.characters.before.coerce=FALSE) {
+  x, only.if.already.numeric=FALSE, strip.characters.before.coerce=FALSE) {
   # treat a vector differently than a matrix/data.frame/data.table
   # even if those nonvectors are just 1 row (multiple indicators) like results_overall,
   # or just 1 column (single indicator) of a table (e.g., subset of df where drop=F)

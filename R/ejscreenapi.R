@@ -193,7 +193,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
 
   if (length(radius) == 1) {radius <- rep(radius, n)}
   if (length(fips) == 1) {fips <- rep(fips, n)}
-  if (length(namestr) == 1) {namestr <- rep(namestr, n)}
+  # if (length(namestr) == 1) {namestr <- rep(namestr, n)}
   
   for (i in 1:n) {
     
@@ -205,7 +205,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
     ej.data <- try(ejscreenRESTbroker(
       lon = pts$lon[[i]], 
       lat = pts$lat[[i]], 
-      radius = radius, 
+      radius = radius[[i]], 
       unit = unitcode, wkid = wkid,
       fips = fips[[i]],
       ipurl = ipurl,
@@ -224,7 +224,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
       pdfurl[[i]] <- try(ejscreenapi1(
         lon = pts$lon[[i]], 
         lat = pts$lat[[i]], 
-        radius = radius, 
+        radius = radius[[i]], 
         unit = unit, wkid = wkid, 
         fips = fips[[i]],
         ipurl = ipurl,

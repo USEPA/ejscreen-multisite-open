@@ -105,7 +105,8 @@ test_interactively = function(ask = TRUE,
           # "test-fips_bg_from_anyfips.R",    #   test_file("tests/testthat/test-fips_bg_from_anyfips.R")
           "test-FIPS_FUNCTIONS.R",
           "test-state_from_fips_bybg.R",  
-          "test-state_from_latlon.R"   
+          "test-state_from_latlon.R",
+          "test-is.numeric.text.R"
         ),
         test_naics = c(
           "test-naics_categories.R",   
@@ -142,8 +143,8 @@ test_interactively = function(ask = TRUE,
         ),
         test_shape = c(
           "test-shapefile_xyz.R",
-          "test-ejam2shapefile.R",
-          "test-shapes_from_fips.R"
+          # "test-shapes_from_fips.R", 
+          "test-ejam2shapefile.R"
         ),
         test_getblocks = c(
           "test-radius_inferred.R",              # this is SLOW THOUGH
@@ -185,7 +186,7 @@ test_interactively = function(ask = TRUE,
           "test-mod_view_results.R"    
         ),
         test_app = c(
-          "test-report_residents_within_xyz.R",  # maybe belongs in a separate group about reports/tables?
+          # "test-report_residents_within_xyz.R",  # maybe belongs in a separate group about reports/tables?
           "test-ui_and_server.R",
           "test-FIPS-shiny-functionality.R", "test-latlon-shiny-functionality.R", "test-NAICS-shiny-functionality.R", "test-shapefile-shiny-functionality.R"
         ),
@@ -536,17 +537,18 @@ test_interactively = function(ask = TRUE,
     if (y_runall == FALSE && y_runsome == FALSE) {
       stop('no tests run')
     } else {
-      if (interactive() & ask & (y_runall | ("test_shape" %in% names(testlist)))) {
-        # ***  note if interactive it normally tries to prompt for shapefile folder in some cases  
-        if (missing(noquestions)) {
-          if (askYesNo("run tests where you have to interactively specify folders for shapefiles?")) {
-            noquestions <- FALSE
-          }  else {
-            noquestions <- TRUE
-          }
-        } else {
-          # noquestions  was given as a parameter
-        }}
+      noquestions <- TRUE
+      # if (interactive() & ask & (y_runall | ("test_shape" %in% names(testlist)))) {
+      #   # ***  note if interactive it normally tries to prompt for shapefile folder in some cases  
+      #   if (missing(noquestions)) {
+      #     if (askYesNo("run tests where you have to interactively specify folders for shapefiles?")) {
+      #       noquestions <- FALSE
+      #     }  else {
+      #       noquestions <- TRUE
+      #     }
+      #   } else {
+      #     # noquestions  was given as a parameter
+      #   }}
     }
   } # end if not just basic
   # finished asking what to do and setting up

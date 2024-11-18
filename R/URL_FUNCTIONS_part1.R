@@ -73,13 +73,19 @@ urls_clusters_and_sort_cols <- function(results_table) {
   ## Fix existing link to pdf-like report 
   # to make URL clickable in table, move to near 1st column, 
   # NOTE: browser can print that report to pdf with margins = c(0.3, 0.3, 0.3, 1.75) # Left Top Right Bottom
-  areaid <- if ("areaid" %in% names(results_table)) {
+  if ("areaid" %in% names(results_table)) {
     areaid   <- results_table$areaid
-    areatype <- results_table$areatype
-    namestr  <- results_table$namestr
   } else {
     areaid   <- ""
+  }
+  if ("areatype" %in% names(results_table)) {
+    areatype <- results_table$areatype
+  } else {
     areatype <- ""
+  }
+  if ("namestr" %in% names(results_table)) {
+    namestr  <- results_table$namestr
+  } else {
     namestr  <- ""
   }
   pdfurl <- url_ejscreen_report(lon = results_table$lon, lat = results_table$lat, radius = results_table$distance, 
