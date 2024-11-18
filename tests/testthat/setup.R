@@ -48,7 +48,8 @@ if (exists("ejamit") & exists("blockgroupstats") & exists("testpoints_10")) {
     suppressMessages(  suppressWarnings({  ejamoutnow <- try(
       ejamit(testpoints_10, radius = 1,
              quiet = TRUE, silentinteractive = TRUE,
-             include_ejindexes = TRUE)) # include_ejindexes = FALSE was the default but we want to test with them included
+             include_ejindexes = TRUE)
+      ) # include_ejindexes = FALSE was the default but we want to test with them included
     }))
   }
   # NOTE THE DEFAULT VALUES OF ejamit() !
@@ -112,13 +113,13 @@ pts <- data.frame(lat = test2lat, lon = test2lon)
 ## some test output from ejscreenit 
 # SLOW FOR API to run several points
 apiref_list <- testoutput_ejscreenit_5 # 5 points, 1 mile radius
-apinow_list <- ejscreenit(testpoints_5, radius = 1, nosave = T, nosee = T, interactiveprompt = F, calculate_ratios = T)
+# apinow_list <- ejscreenit(testpoints_5, radius = 1, nosave = T, nosee = T, interactiveprompt = F, calculate_ratios = T)
 apiref = apiref_list$table
-apinow = apinow_list$table
+# apinow = apinow_list$table
 apiref$timeSeconds <- NULL # these vary
-apinow$timeSeconds <- NULL # these vary
+# apinow$timeSeconds <- NULL # these vary
 apiref$`Seconds elapsed obtaining data` <- NULL
-apinow$`Seconds elapsed obtaining data` <- NULL
+# apinow$`Seconds elapsed obtaining data` <- NULL
 
 # 
 # 

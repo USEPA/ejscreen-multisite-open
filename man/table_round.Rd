@@ -15,7 +15,7 @@ or names of vector elements, within x}
 
 \item{varnametype}{optional, name of column in map_headernames that is looked in for var}
 
-\item{...}{passed to \code{\link[=var_is_numeric_ish]{var_is_numeric_ish()}}}
+\item{...}{passed to \code{\link[=is.numericish]{is.numericish()}}}
 }
 \value{
 Returns the original x but with appropriate cells rounded off.
@@ -42,6 +42,6 @@ because rounding info says 0 digits when the intent is to show 0 digits after th
 
 }
 \seealso{
-\code{\link[=table_signif_round_x100]{table_signif_round_x100()}} \code{\link[=table_signif]{table_signif()}} \code{\link[=table_round]{table_round()}} \code{\link[=table_x100]{table_x100()}} \code{\link[=var_is_numeric_ish]{var_is_numeric_ish()}} \code{\link[=table_rounding_info]{table_rounding_info()}}
+\code{\link[=is.numericish]{is.numericish()}} \code{\link[=table_rounding_info]{table_rounding_info()}}
 }
 \keyword{internal}

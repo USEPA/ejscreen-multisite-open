@@ -5,7 +5,12 @@
 \title{EJAM/EJSCREEN comparisons - see summary stats after ejscreen_vs_ejam() for JUST 1 VARLIST at a time, just 2-3 key stats
 What percent of sites have agreement to +-1\%? etc.}
 \usage{
-ejscreen_vs_ejam_summary_byvarlist(vs = NULL, vsum = NULL, tol = 0.01)
+ejscreen_vs_ejam_summary_byvarlist(
+  vs = NULL,
+  vsum = NULL,
+  myvars = colnames(vs$EJAM),
+  tol = 0.01
+)
 }
 \arguments{
 \item{vs}{from ejscreen_vs() can be provided (if vsum is not provided)}

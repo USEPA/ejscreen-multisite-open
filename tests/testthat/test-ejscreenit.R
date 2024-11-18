@@ -16,6 +16,8 @@ test2lon <- c(-118.241073, -76.641674)
 # brokerout <- try(ejscreenRESTbroker(lon = testpoints_5$lon[1], lat = testpoints_5$lat[1], radius = testradius))
 # missing_api_results <- inherits(brokerout, "try-error")
 
+apinow_list <- ejscreenit(testpoints_5, radius = 1, nosave = T, nosee = T, interactiveprompt = F, calculate_ratios = T)
+apinow = apinow_list$table
 
 apiref$`Seconds elapsed obtaining data` = NULL
 apinow$`Seconds elapsed obtaining data` = NULL

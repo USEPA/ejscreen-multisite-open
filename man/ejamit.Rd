@@ -35,6 +35,8 @@ ejamit(
   silentinteractive = FALSE,
   called_by_ejamit = TRUE,
   testing = FALSE,
+  showdrinkingwater = FALSE,
+  showpctowned = FALSE,
   ...
 )
 }

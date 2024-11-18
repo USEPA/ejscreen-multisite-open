@@ -152,6 +152,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
                         infer_sitepoints=FALSE,
                         called_by_ejamit=FALSE, updateProgress = NULL,
                         silentinteractive=TRUE, testing=FALSE,
+                        showdrinkingwater = FALSE,
+                        showpctowned = FALSE,
                         ...) {
   
   ###################################################### #
@@ -762,11 +764,18 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   }
   ############################################### #
   ## >>> TEMPORARY PATCH UNTIL FORMULA FIXED - SEE ISSUE #498  https://github.com/USEPA/EJAM/issues/498 ####
-  results_overall$pctownedunits <- NA; results_bysite$pctownedunits <- NA
-  
-  results_overall$drinking <- NA; results_bysite$drinking <- NA
-  
-  
+  if (!showdrinkingwater) {
+    print(results_overall[ , .( drinking)])
+    print(results_bysite[ , .(ejam_uniq_id,  drinking)])
+    results_overall$drinking <- NA
+    results_bysite$drinking <- NA    
+  }
+  if (!showpctowned) {
+  print(results_overall[ , .(pctownedunits )])
+  print(results_bysite[ , .(ejam_uniq_id, pctownedunits)])
+  results_overall$pctownedunits <- NA
+  results_bysite$pctownedunits <- NA
+}
   ############################################### #
   ##     later, for results_overall, will calc state pctiles once we have them for each site
   
