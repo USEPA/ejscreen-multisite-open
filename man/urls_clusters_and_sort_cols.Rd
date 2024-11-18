@@ -7,7 +7,7 @@
 urls_clusters_and_sort_cols(results_table)
 }
 \arguments{
-\item{results_table}{from ejscreenapi() function for example}
+\item{results_table}{from \code{\link[=ejscreenapi]{ejscreenapi()}} function for example}
 }
 \value{
 the input table but with extra columns
@@ -16,15 +16,14 @@ the input table but with extra columns
 Add or update, and reorder, columns with results
 }
 \details{
-Creates weblinks to maps, as EJScreenMAP column,
-
-Adds weblinks to pdf-like reports, as new column
-
-Adds a column to flag sites that are close to other sites, and
-
-Puts certain columns first.
+Was used for \code{\link[=ejscreenapi_plus]{ejscreenapi_plus()}} not for \code{\link[=ejamit]{ejamit()}}, to create weblinks to maps, for output table.
+\enumerate{
+\item Adds weblinks in column.
+\item Adds a column to flag sites that are close to other sites, and
+\item Puts certain columns first.
+}
 }
 \seealso{
-\code{\link[=url_ejscreenmap]{url_ejscreenmap()}} \code{\link[=distance_near_eachother]{distance_near_eachother()}}
+\code{\link[=url_4table]{url_4table()}} for the EJAM version. \code{\link[=url_ejscreenmap]{url_ejscreenmap()}} \code{\link[=distance_near_eachother]{distance_near_eachother()}}
 }
 \keyword{internal}

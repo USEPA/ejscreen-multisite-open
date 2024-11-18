@@ -101,8 +101,6 @@ test_interactively = function(ask = TRUE,
       testlist = list( 
         
         test_fips = c(
-          # "test-fips_lead_zero.R",   
-          # "test-fips_bg_from_anyfips.R",    #   test_file("tests/testthat/test-fips_bg_from_anyfips.R")
           "test-FIPS_FUNCTIONS.R",
           "test-state_from_fips_bybg.R",  
           "test-state_from_latlon.R",
@@ -143,7 +141,7 @@ test_interactively = function(ask = TRUE,
         ),
         test_shape = c(
           "test-shapefile_xyz.R",
-          # "test-shapes_from_fips.R", 
+          "test-shapes_from_fips.R",
           "test-ejam2shapefile.R"
         ),
         test_getblocks = c(
@@ -186,7 +184,7 @@ test_interactively = function(ask = TRUE,
           "test-mod_view_results.R"    
         ),
         test_app = c(
-          # "test-report_residents_within_xyz.R",  # maybe belongs in a separate group about reports/tables?
+          "test-report_residents_within_xyz.R",  # maybe belongs in a separate group about reports/tables?
           "test-ui_and_server.R",
           "test-FIPS-shiny-functionality.R", "test-latlon-shiny-functionality.R", "test-NAICS-shiny-functionality.R", "test-shapefile-shiny-functionality.R"
         ),
@@ -282,7 +280,7 @@ test_interactively = function(ask = TRUE,
       # x2 = test1group(c("test-test1.R", "test-test2.R"), groupname = 'test', print4group = TRUE)
       # print(x1)
       # print(x2)
-      
+
       
       test1group <- function(fnames = test_all, groupname = "",
                              reporter = "minimal", # some of the code below now only works if using this setting
@@ -1017,10 +1015,10 @@ loggable <- function(x, file = 'will be created using timestamp if not provided 
   #   
   #   }) 
   ## use file = logfilename  or file = NULL  to override whatever the y_save value is
-  
+
 }
 ################################### # 
-
+# example of using it ####
 #  biglist <- test_interactively()
 ## or
 # mydir = "~/../Downloads/unit testing"

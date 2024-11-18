@@ -159,7 +159,7 @@ ejamit <- function(sitepoints,
                    maxradius = 31.07,
                    avoidorphans = FALSE,
                    quadtree = NULL,
-                   fips = NULL,
+                   fips = NULL,  # namestr = '', ?
                    shapefile = NULL,
                    countcols = NULL,
                    popmeancols = NULL,
@@ -257,6 +257,12 @@ ejamit <- function(sitepoints,
 
     # getblocksnearby_from_fips() should include doing something like fips_lead_zero() ?
     # but also want to know what type each fips is (probably all should be same like all are tracts or all are county fips)
+    
+    ftype = fipstype(fips)
+    if ('city' %in% ftype) {
+      if (!missing(radius) & radius > 0) {warning('radius ignored because we cannot add buffers around cities/CDPs currently')}
+    }
+    
     radius <- 999 # use this value when analyzing by fips not by circular buffers.
     if (!silentinteractive) {cat('Finding blocks in each FIPS Census unit.\n')}
     
@@ -461,10 +467,10 @@ ejamit <- function(sitepoints,
     
     # analyzing by FIPS not lat lon values
     areatype <- fipstype(fips)
-    if (!(all(areatype %in% c("blockgroup", "tract", "city", "county")))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' for the EJScreen API")}
+    if (!(all(areatype %in% c("blockgroup", "tract", "city", "county", 'state')))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' 'state' for the EJScreen API")}
     out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(   areaid   = fips, areatype = areatype, as_html = T),
-      `EJScreen Map`    = url_ejscreenmap(       wherestr = fips, as_html = T),
+      `EJScreen Report` = url_ejscreen_report(   areaid   = fips, areatype = areatype, as_html = T), #  namestr=my text not implemented here
+      `EJScreen Map`    = url_ejscreenmap(       wherestr = fips2name(fips), as_html = T),  # this needs a name not FIPS
       `ECHO report` = echolink
     )]
   } else {

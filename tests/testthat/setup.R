@@ -7,15 +7,21 @@ cat("Starting setup.R for testing \n")
 # When tests try to test the shiny app, the app should handle doing source(system.file("global.R", package = "EJAM")).
 
 ############################### #
+# keep track of global envt side effects ####
 # Keep track and alert us if any functions in tests have
 #  changed global options, a side effect we probably want functions to avoid
 
 set_state_inspector(function() {
   list(options = options())
 })
+############################### #
+# internet available? ####
+offline_warning("NO INTERNET CONNECTION AVAILABLE - SOME TESTS MAY FAIL WITHOUT CLEAR EXPLANATION")
+offline_cat("\n\nNO INTERNET CONNECTION AVAILABLE - SOME TESTS MAY FAIL WITHOUT CLEAR EXPLANATION\n\n")
+# skip_if_offline()
 
 ################################## #
-# GET DATA AND BUILD INDEX JUST IN CASE
+# GET DATA AND BUILD INDEX JUST IN CASE ####
 # to run tests interactively, you also need to do
 # require(testthat)
 # require(data.table)
@@ -40,7 +46,7 @@ suppressMessages({suppressWarnings({
 # html_header_fmt
 
 ############################### #
-# Create ejamoutnow here in setup.R, since some tests are using it.
+# Create ejamoutnow here in setup.R, since some tests are using it. ####
 
 if (exists("ejamit") & exists("blockgroupstats") & exists("testpoints_10")) {
   if (!exists("ejamoutnow")) {
@@ -64,7 +70,7 @@ if (exists("ejamit") & exists("blockgroupstats") & exists("testpoints_10")) {
 }
 
 ############################### #
-## Create some test cases we can use for inputs error checking:
+## Create some test cases we can use for inputs error checking: ####
 
 bad_numbers <- list(
   num0len          = numeric(0L),  # these might be OK
@@ -109,9 +115,15 @@ test2lat <- c(33.943883,    39.297209)
 test2lon <- c(-118.241073, -76.641674)
 pts <- data.frame(lat = test2lat, lon = test2lon)
 
+## now done only in one test file to avoid repeating it each time setup.R is run, in test-ejscreenit.R
+# apinow_list <- ejscreenit(testpoints_5, radius = 1, nosave = T, nosee = T, interactiveprompt = F, calculate_ratios = T) # defaults to verbose=FALSE via ejscreenapi_plus() ?
+# apinow = apinow_list$table
+# apinow$timeSeconds <- NULL # these vary
+# apinow$`Seconds elapsed obtaining data` <- NULL
 
 ## some test output from ejscreenit 
 # SLOW FOR API to run several points
+
 apiref_list <- testoutput_ejscreenit_5 # 5 points, 1 mile radius
 # apinow_list <- ejscreenit(testpoints_5, radius = 1, nosave = T, nosee = T, interactiveprompt = F, calculate_ratios = T)
 apiref = apiref_list$table
@@ -121,8 +133,6 @@ apiref$timeSeconds <- NULL # these vary
 apiref$`Seconds elapsed obtaining data` <- NULL
 # apinow$`Seconds elapsed obtaining data` <- NULL
 
-# 
-# 
 # outrest       <- ejscreenRESTbroker(lon = testlon, lat = testlat, radius = testradius)
 # outrest2table <- ejscreenRESTbroker2table(outrest, getstatefromplacename = TRUE)
 # out1          <- ejscreenapi1(lon = testlon,  lat = testlat, radius = testradius) # CAN SOMETIMES TAKE 30 SECONDS, SOMETIMES 5 SECONDS
@@ -133,13 +143,16 @@ if (!exists("out_api", envir = globalenv())) { # should be there if test_interac
   # where setup was being sourced over and over again by manual_nonalphabetical.R
   suppressMessages({
     junk <- capture_output({
-      out_api       <- ejscreenapi(lon = test2lon, lat = test2lat, radius = testradius, on_server_so_dont_save_files = TRUE, save_when_report = FALSE)
+      out_api       <- ejscreenapi(lon = test2lon, lat = test2lat, radius = testradius,
+                                   verbose = TRUE,
+                                   on_server_so_dont_save_files = TRUE, save_when_report = FALSE)
     })
     # x <- try(ejscreenRESTbroker(lon = testpoints_5$lon[1], lat = testpoints_5$lat[1], radius = testradius))
     # missing_api_results <- inherits(x, "try-error")
   })
 }
 ############################### #
+# >>> cleanup after testing?? #### 
 # # Run after all tests
 # # Setup code is typically best used to create external resources that are needed by many tests. It’s best kept to a minimum because you will have to manually run it before interactively debugging tests.
 # # But, is this right?  it is from the help example but what is cleanup() ?? ***

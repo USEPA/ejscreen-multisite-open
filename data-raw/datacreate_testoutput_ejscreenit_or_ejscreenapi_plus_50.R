@@ -50,7 +50,7 @@ if (make_testoutput_ejscreenapi_1pts_1miles) {
   testoutput_ejscreenapi_1pts_1miles <- ejscreenapi(lon = testpoints_5$lon[1], lat = testpoints_5$lat[1], radius = 1, unit = "miles", wkid = 4326,
                                                     report_every_n = 25, # report_every_n = 1000,
                                                     save_when_report = FALSE, format_report_or_json = "pjson", on_server_so_dont_save_files = FALSE, ipurl = "ejscreen.epa.gov",
-                                                    updateProgress = NULL, drop_redundant_indicators = FALSE)
+                                                    updateProgress = NULL, drop_redundant_indicators = FALSE, verbose = FALSE)
   
   testoutput_ejscreenapi_1pts_1miles <- EJAM:::metadata_add(testoutput_ejscreenapi_1pts_1miles)
   usethis::use_data(testoutput_ejscreenapi_1pts_1miles,   overwrite = TRUE)

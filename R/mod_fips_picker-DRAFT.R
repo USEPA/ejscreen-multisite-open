@@ -242,7 +242,7 @@ server_placespicker <- function(input, output, session) {
         statetable[statetable$ST %in% input$statepicker, varnames]
       )
       # bgstable(
-      # EJAM::fips_bg_from_anyfips(fips = displaytable()$FIPS.ST)
+      #
       # )
     }
   })
@@ -297,7 +297,7 @@ server_placespicker <- function(input, output, session) {
       
       # bgstable(
       #   # ??? 
-      #   # EJAM::fips_bg_from_anyfips(fips = NA) # NOT SURE PLACES FIPS NEATLY FALL INTO BLOCKGROUPS
+      #   
       # )
     }
   })
