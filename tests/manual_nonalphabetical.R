@@ -141,7 +141,7 @@ test_interactively = function(ask = TRUE,
         ),
         test_shape = c(
           "test-shapefile_xyz.R",
-          # "test-shapes_from_fips.R", 
+          "test-shapes_from_fips.R",
           "test-ejam2shapefile.R"
         ),
         test_getblocks = c(
@@ -184,7 +184,7 @@ test_interactively = function(ask = TRUE,
           "test-mod_view_results.R"    
         ),
         test_app = c(
-          # "test-report_residents_within_xyz.R",  # maybe belongs in a separate group about reports/tables?
+          "test-report_residents_within_xyz.R",  # maybe belongs in a separate group about reports/tables?
           "test-ui_and_server.R",
           "test-FIPS-shiny-functionality.R", "test-latlon-shiny-functionality.R", "test-NAICS-shiny-functionality.R", "test-shapefile-shiny-functionality.R"
         ),

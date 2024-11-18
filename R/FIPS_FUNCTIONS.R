@@ -595,8 +595,9 @@ is.island <- function(ST=NULL, statename=NULL, fips=NULL) {
 #'   "Harris County, TX"
 #'   (not the same as where ST is separate in [fips_counties_from_countyname()])
 #'   Ignores case.
-#' @param exact must match exactly but set to FALSE if you want partial matching
+#' @param exact if TRUE, query must match exactly but set to FALSE if you want partial matching
 #'   and possibly more than one result for a query term x
+#' @param usegrep passed to [fips_place_from_placename()] and if TRUE, helps find partial matches
 #' @param geocoding passed to [fips_place_from_placename()]
 #' @param details set to TRUE to return a table of details on places instead of just the fips vector
 #' @return vector of character fips codes (unless details = TRUE)
@@ -615,7 +616,7 @@ is.island <- function(ST=NULL, statename=NULL, fips=NULL) {
 #' 
 #' @export
 #'
-name2fips = function(x, exact = TRUE, geocoding = FALSE, details = FALSE) {
+name2fips = function(x, exact = FALSE, usegrep = FALSE, geocoding = FALSE, details = FALSE) {
   
   suppressWarnings({ # do not need to get warned that x is not a ST abbrev here
     # figure out if x is ST, statename, countyname.
@@ -635,7 +636,9 @@ name2fips = function(x, exact = TRUE, geocoding = FALSE, details = FALSE) {
     # e.g. "Denver city, CO" or "Denver, Colorado" or "Funny River CDP, AK"
     x_stillnomatch <- x[is.na(fips)]
     # query among 40k placenames
-    placefips <- fips_place_from_placename(place_st = x_stillnomatch, exact = FALSE, verbose = FALSE,
+    placefips <- fips_place_from_placename(place_st = x_stillnomatch, 
+                                           exact = exact, usegrep = usegrep, 
+                                           verbose = FALSE,
                                            geocoding = geocoding)
     if (length(placefips) > 0) {
       fips[is.na(fips)] <- placefips
@@ -669,9 +672,11 @@ name2fips = function(x, exact = TRUE, geocoding = FALSE, details = FALSE) {
 
 #' @export
 #' @noRd
-names2fips <- function(x, exact = TRUE, geocoding = FALSE, details = FALSE) {
+names2fips <- function(...) {
+  # names2fips <- function(x, exact = FALSE, usegrep = FALSE, geocoding = FALSE, details = FALSE) {
   # this is just an alias where "names" is plural instead of singular "name"
-  name2fips(x = x, exact = exact, geocoding = geocoding, details = details) 
+  # name2fips(x = x, exact = exact, segrep = usegrep, geocoding = geocoding, details = details)
+  name2fips(...)
 }
 ############################################################################# #
 
@@ -793,7 +798,7 @@ fips_place2placename = function(fips, append_st = TRUE) {
 #' @param place_st vector of place names in format like "yonkers, ny" or "Chelsea city, MA"
 #' @param geocoding set to TRUE to use a geocoding service to try to find hits
 #' @param exact  FALSE is to allow partial matching 
-#' @param usegrep if exact=T, usegrep if TRUE will use the helper function fips_place_from_placename_grep()
+#' @param usegrep DRAFT PARAM if exact=T, usegrep if TRUE will use the helper function fips_place_from_placename_grep()
 #' @param verbose prints more to console about possible hits for each queried place name
 #' @return prints a table of possible hits but returns just the vector of fips
 #' 
@@ -827,7 +832,7 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = FALSE,
   } else {
     return(rep(NA, length(place_st)))
   }
-  # convert statename to ST abbrev., for querying, but retain original as submitted to show in results table printed
+  # convert statename to ST abbrev., for querying, but retain original as submitted to show in results table printed?
   place_st_dont_say_cdp <- place_st
   place_st_dont_say_cdp[ok] <- place_statename2place_st(place_st_dont_say_cdp[ok])
   
@@ -868,7 +873,7 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = FALSE,
   
   rgx <- paste0(paste0(" ", ignored_terms, ","), collapse = "|")
   all_place_st_dont_say_cdp <- gsub(rgx, ",", all_place_st)
-  place_st_dont_say_cdp     <- gsub(rgx, ",", place_st)
+  place_st_dont_say_cdp     <- gsub(rgx, ",", place_st_dont_say_cdp)
   
   ##### special cases like "Salt Lake City city" 
   # Normally we want to remove/ignore the word "city" because the master list uses it for every city even though we almost always omit the word "city" in a query, 
@@ -916,7 +921,7 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = FALSE,
   ## would output of geocoding require same handling of ignored terms??
   ######################################################################################## #
   
-  # remove/ignore a space after comma
+  # remove/ignore a space after comma? although pre_comma(x, trim = T) handles that
   
   # all_place_st_dont_say_cdp = gsub(", ", ",", all_place_st_dont_say_cdp) # why not _or_city ?
   all_place_st_dont_say_cdp_or_city = gsub(", ", ",", all_place_st_dont_say_cdp_or_city)

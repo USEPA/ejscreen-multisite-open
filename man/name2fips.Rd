@@ -7,7 +7,13 @@
 \title{Get FIPS codes from names of states or counties
 inverse of fips2name(), 1-to-1 map statename, ST, countyname to FIPS of each}
 \usage{
-name2fips(x, exact = TRUE, geocoding = FALSE, details = FALSE)
+name2fips(
+  x,
+  exact = FALSE,
+  usegrep = FALSE,
+  geocoding = FALSE,
+  details = FALSE
+)
 }
 \arguments{
 \item{x}{vector of 1 or more exact names of states or ST abbreviations or
@@ -16,8 +22,10 @@ countynames that include the comma and state abbrev., like
 (not the same as where ST is separate in \code{\link[=fips_counties_from_countyname]{fips_counties_from_countyname()}})
 Ignores case.}
 
-\item{exact}{must match exactly but set to FALSE if you want partial matching
+\item{exact}{if TRUE, query must match exactly but set to FALSE if you want partial matching
 and possibly more than one result for a query term x}
+
+\item{usegrep}{passed to \code{\link[=fips_place_from_placename]{fips_place_from_placename()}} and if TRUE, helps find partial matches}
 
 \item{geocoding}{passed to \code{\link[=fips_place_from_placename]{fips_place_from_placename()}}}
 
