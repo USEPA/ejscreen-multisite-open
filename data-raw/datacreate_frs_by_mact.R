@@ -120,6 +120,63 @@ rm(y)
 
 
 ############################################# #
+############################################# #
+
+## see which MACT categories have more/less location info
+
+x = frs_by_mact[, .( n = .N, mact_table$dropdown_label[mact_table$subpart %in% subpart], haslatlon = sum(!is.na(lat)), pctok = round(100 * sum(!is.na(lat)) / .N, 0)), by = 'subpart']
+setorder(x, n)
+print(x, nrows = 138)
+plot(x$n / 1000, x$pctok, xlim = c(0, 10), ylab = "% with latlon", 
+     xlab = "Thousands of facilities (not showing 43k in RICE ZZZZ)", 
+     main = "How many facilities in each MACT Subpart have location info?")
+bigpct = x$pctok > 50
+text(x$n[bigpct] / 1000, x$pctok[bigpct],
+     pos = 4,
+     labels = x$V2[bigpct],
+     # labels =  x$subpart[bigpct]
+     )
+
+# ***   largest % of sites missing lat lon are in these subparts (excluding very small categories)
+print(x[n > 10,][pctok < 50, ][order(pctok), ][1:25, ] ) 
+
+# ***   largest numbers (not %) of sites with missing latlon are in these subparts
+x[, nolatlon := n - haslatlon] 
+x[order(-nolatlon), ][1:25,]
+# 
+#    subpart     n                                                                                          V2 haslatlon pctok nolatlon
+#     <char> <int>                                                                                      <char>     <int> <num>    <int>
+# 1:    ZZZZ 42819                 ZZZZ - Stationary Reciprocating Internal Combustion Engines (Rice) (42,556)     24981    58    17838
+# 2:      HH  8343                                      HH - Oil And Natural Gas Production Facilities (8,325)      2718    33     5625
+# 3:       A  7944                                                              A - General Provisions (7,939)      2738    34     5206
+# 4:       M  8791                                                  M - Dry Cleaners Perchloroethylene (8,790)      4526    51     4265
+# 5:   DDDDD  4324 DDDDD - Major Sources: Industrial/Commercial/Institutional Boilers & Process Heater (4,315)      1351    31     2973
+# 6:       N  2453                                                         N - Chromium Electroplating (2,453)       684    28     1769
+# 7:       T  2357                                                    T - Halogenated Solvent Cleaning (2,357)       758    32     1599
+# 8:  HHHHHH  6906              HHHHHH - Paint Strip & Misc Surface Coating Operations At Area Sources (6,906)      5340    77     1566
+# 9:  CCCCCC  3507                                             CCCCCC - Gasoline Dispensing Facilities (3,508)      2436    69     1071
+# 10:  JJJJJJ  2089             JJJJJJ - Industrial, Commercial, And Institutional Boilers Area Sources (2,091)      1059    51     1030
+# 11:    MMMM  1375                            MMMM - Surface Coating Of Misc. Metal Parts And Products (1,372)       431    31      944
+# 12:      JJ  1046                                        JJ - Wood Furniture Manufacturing Operations (1,046)       244    23      802
+# 13:    WWWW  1252                                     WWWW - Reinforced Plastic Composites Production (1,253)       478    38      774
+# 14:  BBBBBB  1935 BBBBBB - Gasoline Distribution Bulk Terminals, Bulk Plants, And Pipeline Facilities (1,936)      1189    61      746
+# 15:    AAAA  1211                                              AAAA - Municipal Solid Waste Landfills (1,203)       585    48      626
+# 16:    FFFF   673                             FFFF - Miscellaneous Organic Chemical Manufacturing (Mon) (674)       148    22      525
+# 17:       R  1120                                                           R - Gasoline Distribution (1,120)       597    53      523
+# 18:      KK   710                                                            KK - Printing & Publishing (710)       210    30      500
+# 19:       H   601                                             H - Equipment Leaks Of Hazardous Organics (602)       121    20      480
+# 20:    DDDD   740                                            DDDD - Plywood And Composite Wood Products (738)       266    36      474
+# 21:    EEEE   571                                    EEEE - Organic Liquids Distribution (Non-Gasoline) (570)       111    19      460
+# 22:    PPPP   662                                  PPPP - Surface Coating Of Plastic Parts And Products (663)       206    31      456
+# 23:       G   538             G - Socmi Process Vents, Storage Vessels, Transfer Operations, Wastewater (539)       115    21      423
+# 24:     RRR   655                                                   RRR - Secondary Aluminum Production (653)       237    36      418
+# 25:    JJJJ   538                                                     JJJJ - Paper & Other Web Coatings (535)       142    26      396
+# subpart     n                                                                                          V2 haslatlon pctok nolatlon
+############################################# #
+############################################# #
+
+
+############################################# #
 # ~ ####
 
 # CREATE "mact_table" from "frs_by_mact" for site counts by Subpart ####
@@ -139,6 +196,7 @@ mact_table <- types
 mact_counts <- frs_by_mact[, .N, by = 'subpart'] 
 mact_table <- dplyr::left_join(mact_table, mact_counts)
 mact_table$dropdown_label <- paste0(mact_table$dropdown_label, ' (',prettyNum(mact_table$N, big.mark = ','), ')')
+
 rm(mact_counts, types)
 
 ########################################################################### # 

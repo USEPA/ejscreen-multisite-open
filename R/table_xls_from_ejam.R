@@ -93,6 +93,8 @@ table_xls_from_ejam <- function(ejamitout,
   # these should be data.tables or at least they used to be when coming from ejamit() but not within server code...
   # so does that cause a problem for table_xls_format() if they are data.table format???
   
+  # table_xls_format ####
+  
   wb_out <- table_xls_format(
     
     # ### if we must provide data.frame only, not data.table, here, then we may need to convert them:

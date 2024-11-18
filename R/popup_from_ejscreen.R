@@ -55,19 +55,11 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   names_ej_pctile_pop_USORSTATE <- gsub("(.*)( \\(.*\\%ile.*)$", "\\1", names_ej_pctile_pop_USORSTATE) # removes " (US%ile)" 
   
   ############################################ #
-  # how many significant digits to report?
-  
-  esigfigs <- map_headernames[ "" != (map_headernames$sigfigs), c("sigfigs", 'rname')]
-  names(esigfigs) <- c("sigfigs", "evar")
-  esigfigs.api <- esigfigs
-  
-  ############################################ #
   # text explaining units of measure like ug/m3
   
   popupunits <- map_headernames[ "" != (map_headernames$units), c("units", 'rname')]
   names(popupunits) <- c("units","evar")
   popupunits.api <- popupunits
-  
   ############################################ #
   # ensure expected colnames are in outputs; replace empty values with NA, or this crashes
   
@@ -91,19 +83,30 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   # ie their lengths differ. the code is not robust to that.  ***
   
   ############################################ #
-  # define functions to write map popup text with given indicator names, signif digits
-  # but this may get replaced by decimal places not sigfigs, at least for EJAM Excel formatting, since that seems easier to implement in that code.
-  signifarray.api <- function(dat, digits = 6) {
-    if (!(is.data.frame(dat))) {dat <- as.data.frame(dat)}
-    y <- mapply(FUN = signif, x = dat, digits = digits)
-    return(y)
-  }
-  ejscreensignifarray.api <- function(dat, digits = 'ejscreen') {
-    if (!missing(digits)) {
-      digits <- as.numeric(esigfigs.api[match(colnames(dat), esigfigs.api$evar), 'sigfigs'])
-    } 
-    return( signifarray.api(dat = dat, digits = digits))
-  }
+  # define functions to write map popup text with given indicator names 
+  ############################################ #
+  ### Now  table_signif_round_x100() not ejscreensignifarray.api() for the rounding and sig figs and x100 scaling.
+  ############# ## #
+  ## how many significant digits to report?
+  # esigfigs <- map_headernames[ "" != (map_headernames$sigfigs), c("sigfigs", 'rname')]
+  # names(esigfigs) <- c("sigfigs", "evar")
+  # esigfigs.api <- esigfigs
+  # ejscreensignifarray.api <- function(dat, digits = 'ejscreen') {
+  #   if (missing(digits) || is.null(digits) || any(digits %in% 'ejscreen')) {
+  #     suppressWarnings({
+  #       # digits <- as.numeric(esigfigs.api[match(colnames(dat), esigfigs.api$evar), 'sigfigs'])
+  #       digits <- as.numeric(varinfo(colnames(dat), 'sigfigs')$sigfigs)
+  #     })
+  #   }
+  #   signifarray.api <- function(dat, digits = 6) {
+  #     if (!(is.data.frame(dat))) {dat <- as.data.frame(dat)}
+  #     digits[is.na(digits)] <- 22 # if it was NA for some reason, use 22 which is the most allowed and avoids any rounding
+  #     y <- mapply(FUN = signif, x = dat, digits = digits)
+  #     return(y)
+  #   }
+  #   return( signifarray.api(dat = dat, digits = digits))
+  # }
+  ############################################ #
   pctileAsText <- function(x) {
     # note: x should be a vector or data.frame of percentiles from 0 to 100, not 0 to 1
     result <- sapply(x, function(z) {
@@ -131,7 +134,8 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
       basenames <- colnames(d)
     }
     ptext <- function(x, y.us, y.st) {
-      paste(round(100 * x), '% (', pctileAsText(y.us), ' in US, ', pctileAsText(y.st),' in State)', sep = '')
+      # By this point, x already should be a rounded percentage 0 - 100, not 0-1
+      paste(x, '% (', pctileAsText(y.us), ' in US, ', pctileAsText(y.st),' in State)', sep = '')
     }
     x <- mapply(
       FUN = ptext,
@@ -200,12 +204,10 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
     if (missing(basenames)) {
       # might add code to handle cases like only one row, matrix not df, etc?
       basenames <- colnames(e)
-    } 
-    if (missing(sigfigs) || is.null(sigfigs)) {
-      sigfigs <- esigfigs.api$sigfigs[match(basenames, esigfigs.api$evar)]
-      sigfigs[is.na(sigfigs)] <- 2
     }
-    e <- data.frame(ejscreensignifarray.api(e, digits = as.numeric(sigfigs)), stringsAsFactors = FALSE)
+    #  # replaced with  table_signif_round_x100() in body of popup_from_ejscreen()
+    # e <- data.frame(ejscreensignifarray.api(e, digits = sigfigs), stringsAsFactors = FALSE)
+    
     if (missing(units) || is.null(units)) {
       units <- popupunits.api$units[match(basenames, popupunits.api$evar)]
       units[is.na(units)] <- ''
@@ -233,7 +235,7 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   }
   ############################################################################# #  
   
-  # USE THOSE FUNCTIONS TO CREATE POPUPS ####
+  # CREATE POPUPS via those functions ####
   
   # add some code here for when some or even all of these names are missing (just leave those out of popup). ***
   # if no names at all are found that are expected, just at least have a blank popup or something like an id number. ***
@@ -271,20 +273,27 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
     }
   }
   
-  # make popups text for DEMOGRAPHICS (US & STATE PCTILES) ####
+  ################################################################ #
+  
+  # SIGNIF, ROUND, X100 ####
+  
+  out <- table_signif_round_x100(out)  # convert to rounded numbers, incl. % as 0-100 no decimals.
+  
+  ################################################################ #
+  # popups text for DEMOG (US & STATE PCTILES) ####
   if (length(dok) == 0) {
     warning('none of names_d were found in out')
     poptext.d <- NULL
   } else {
     poptext.d <-  make.popup.d.api(
-      d = out[, names_d_pop], 
+      d = out[, names_d_pop], ################### # # #   DROPPED THIS x100 AND HANDLE IT ELSEWHERE ***
       pctile = out[, names_d_pctile_pop], 
       state.pctile = out[, names_d_state_pctile_pop], 
-      prefix = '') # includes state pctiles too, now
+      prefix = '')
     names(poptext.d) <- names_d_nice_pop
   }
   
-  # make popups text for ENVIRONMENTAL INDICATORS (US & STATE PCTILES) ####
+  # popups text for ENVT  (US & STATE PCTILES) ####
   if (length(eok) == 0) {
     warning('none of names_e were found in out')
     poptext.e <- NULL
@@ -294,13 +303,13 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
       pctile = out[, names_e_pctile_pop], 
       state.pctile = out[, names_e_state_pctile_pop], 
       prefix = ''
-    ) # includes state pctiles too, now
-    names(poptext.e) <- names_e_nice_pop  # ejscreen::names.e.nice  # longer form is   ejscreen::nicenames(names(poptext.e))
+    ) 
+    names(poptext.e) <- names_e_nice_pop
   }
   
-  # make popups text for EJ INDEXES (US & STATE PCTILES, FOR NORMAL & SUPPLEMENTARY EJ INDEXES) ####
+  # popups text for EJ INDEXES (US & STATE PCTILES, FOR NORMAL & SUPPLEMENTARY EJ INDEXES) ####
   if (length(pok) == 0) {
-    warning('none of names_ej_pctile found in out')
+    message('none of names_ej_pctile found in out')
     poptext.ej <- NULL
   } else {
     poptext.ej <-  make.popup.ej.api(
@@ -372,8 +381,6 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
     pops_link3, 
     sep = '<br>'
   )
-  # for (i in 1:NCOL(x)) { x[,i] <- paste(labels[i] , x[,i], sep = ': ' )}
-  # as.vector(apply(x, MARGIN = 1, FUN = function(thisrow) paste(thisrow, collapse='<br>')) )
   
   if (verbose) {popup_print(z)} #  was  cat(gsub('<br>','  <br>\n',z))  #  see in console   
   return(z) # invisible(z) did not seem to work for some reason

@@ -14,9 +14,13 @@ ejscreen_vs_ejam_see1(
 \item{vs}{output of ejscreen_vs_ejam() or ejscreen_vs()}
 
 \item{myvars}{optional to check just a subset of the colnames found in vs$EJAM and vs$EJSCREEN,
-such as
+such as these possible values:
 
-myvars = colnames(vs$EJAM) or
+myvars = "all"    # all the indicators in the output tables, i.e., colnames(vs$EJAM)
+
+myvars = "inboth" # just the ones in both (not NA values because EJAM or EJSCREEN did not report the indicator)
+
+myvars = "bad"    # just the ones in both where EJAM_shown and EJSCREEN_shown disagree
 
 myvars = c(names_d, names_d_subgroups) or
 
@@ -35,9 +39,9 @@ EJAM/EJSCREEN comparisons - see results for 1 site after using ejscreen_vs_ejam(
 see also ejscreen_vs_ejam_1var_bysite() and ejscreen_vs_explain()
 }
 \examples{
-  dontrun{
-  vs <- ejscreen_vs_ejam(testpoints_10, radius = 3)
   mysite <- 9
+  \dontrun{
+  vs <- ejscreen_vs_ejam(testpoints_10, radius = 3)
   ejscreen_vs_ejam_see1(vs, mysite = mysite, myvars = colnames(vs$EJAM))[!is.na(vs$EJSCREEN[mysite, ]) , 1:2]
   }
 

@@ -84,6 +84,8 @@
 #'
 #'   * **count_of_blocks_near_multiple_sites**  additional detail
 #'
+#'   * **sitetype** indicates if analysis used latlon, fips, or shp
+#'   
 #' @examples
 #' 
 #' # See examples in vignettes/ articles at https://usepa.github.io/EJAM/index.html
@@ -159,7 +161,7 @@ ejamit <- function(sitepoints,
                    maxradius = 31.07,
                    avoidorphans = FALSE,
                    quadtree = NULL,
-                   fips = NULL,
+                   fips = NULL,  # namestr = '', ?
                    shapefile = NULL,
                    countcols = NULL,
                    popmeancols = NULL,
@@ -185,6 +187,8 @@ ejamit <- function(sitepoints,
                    silentinteractive = FALSE,
                    called_by_ejamit = TRUE,
                    testing = FALSE,
+                   showdrinkingwater = FALSE,
+                   showpctowned = FALSE,
                    ...
 ) {
 
@@ -260,7 +264,9 @@ ejamit <- function(sitepoints,
         called_by_ejamit = called_by_ejamit,
         updateProgress = updateProgress,
         silentinteractive = silentinteractive,
-        testing = testing
+        testing = testing,
+        showdrinkingwater = showdrinkingwater,
+        showpctowned = showpctowned
       )
     )
 
@@ -276,6 +282,7 @@ ejamit <- function(sitepoints,
     # getblocksnearby_from_fips() should include doing something like fips_lead_zero() ?
     # but also want to know what type each fips is (probably all should be same like all are tracts or all are county fips)
 
+    #### *** should confirm this is needed ####
     # Here we retain all rows, columns include ejam_uniq_id, valid, invalid_msg
     data_uploaded = data.frame(fips = fips, ejam_uniq_id = fips, n = 1:length(fips), valid = fips_valid(fips))
     data_uploaded$invalid_msg = ifelse(data_uploaded$valid, "",  "invalid FIPS")
@@ -283,6 +290,7 @@ ejamit <- function(sitepoints,
     
     # Here we only keep valid ones (vector not data.frame)
     fips <- fips#[data_uploaded$valid]
+    #### *** should confirm this is needed ####
     
     ## . radius is ignored for fips ####
     radius <- 999 # use this value when analyzing by fips not by circular buffers, as input to doaggregate(),
@@ -335,7 +343,9 @@ ejamit <- function(sitepoints,
         called_by_ejamit = called_by_ejamit,
         updateProgress = updateProgress,
         silentinteractive = silentinteractive,
-        testing = testing
+        testing = testing,
+        showdrinkingwater = showdrinkingwater,
+        showpctowned = showpctowned
       )
     )
   } # end fips type
@@ -354,7 +364,9 @@ ejamit <- function(sitepoints,
     
     # Get pts, if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
     # adds ejam_uniq_id column if it is missing. if present and not 1:N, warns but leaves it that way so ejamit_compare_types_of_places() can work.
-    sitepoints <- sitepoints_from_anything(anything = sitepoints, invalid_msg_table = TRUE, set_invalid_to_na = FALSE)
+    sitepoints <- sitepoints_from_anything(anything = sitepoints, 
+                                           invalid_msg_table = TRUE,  
+                                           set_invalid_to_na = FALSE)
     stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
     
     # Here are preserved ALL rows (pts) including invalid ones
@@ -430,7 +442,9 @@ ejamit <- function(sitepoints,
         called_by_ejamit = called_by_ejamit,
         updateProgress = updateProgress,
         silentinteractive = silentinteractive,
-        testing = testing
+        testing = testing,
+        showdrinkingwater = showdrinkingwater,
+        showpctowned = showpctowned
       )
     )
 
@@ -517,10 +531,10 @@ ejamit <- function(sitepoints,
     
     # analyzing by FIPS not lat lon values
     areatype <- fipstype(fips)
-    if (!(all(areatype %in% c("blockgroup", "tract", "city", "county")))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' for the EJScreen API")}
+    if (!(all(areatype %in% c("blockgroup", "tract", "city", "county", 'state')))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' 'state' for the EJScreen API")}
     out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(   areaid   = fips, areatype = areatype, as_html = T),
-      `EJScreen Map`    = url_ejscreenmap(       wherestr = fips, as_html = T),
+      `EJScreen Report` = url_ejscreen_report(   areaid   = fips, areatype = areatype, as_html = T), #  namestr=my text not implemented here
+      `EJScreen Map`    = url_ejscreenmap(       wherestr = fips2name(fips), as_html = T),  # this needs a name not FIPS
       `ECHO report` = echolink
     )]
   } else {
@@ -592,6 +606,11 @@ ejamit <- function(sitepoints,
   # * table_tall_from_overall() ####
   
   out$formatted <- table_tall_from_overall(out$results_overall, fixcolnames(names(out$results_bysite), 'r', 'long')) # out$longnames)
+  
+  ###################################### #
+  ## report the sitetype ####
+  
+  out$sitetype <- sitetype
   
   ###################################### #
   if (interactive() & !silentinteractive & !in_shiny) {

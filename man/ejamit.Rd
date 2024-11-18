@@ -35,6 +35,8 @@ ejamit(
   silentinteractive = FALSE,
   called_by_ejamit = TRUE,
   testing = FALSE,
+  showdrinkingwater = FALSE,
+  showpctowned = FALSE,
   ...
 )
 }
@@ -139,6 +141,7 @@ one row per ejam_uniq_id (i.e., each site analyzed), one column per indicator
 indicator across everyone within each demographic group.
 \item \strong{longnames}  descriptive long names for the indicators in the above outputs
 \item \strong{count_of_blocks_near_multiple_sites}  additional detail
+\item \strong{sitetype} indicates if analysis used latlon, fips, or shp
 }
 }
 \description{

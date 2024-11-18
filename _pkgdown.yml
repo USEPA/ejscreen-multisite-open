@@ -163,10 +163,11 @@ reference:
   - name2fips
   - fips2name
   - fipstype
+  - fips_valid
   - fips_lead_zero
-  - fips_counties_from_countyname
-  - fips_bg_from_anyfips
+  - fips_bgs_in_fips
   - fips_from_table
+  - fips_place_from_placename
   - censusplaces
 - subtitle: "Counties"
   contents:
@@ -290,7 +291,7 @@ reference:
   - plot_barplot_ratios
   - plot_ridgeline_ratios_ez
   - plot_ridgeline_ratios
-  - plot_vs_us
+  - plot_boxplot_pctiles
   - boxplots_ratios
   - ejam2barplot_sitegroups
   - plot_barplot_sitegroups
@@ -412,18 +413,8 @@ reference:
   - out_bydistance2results_bydistance
   - out_bydistance2results_bydistance_bysite
   - out_bydistance2results_bysite_bydistance
+  - plot_vs_us
   - meters_per_mile
-  - testpoints_bad
-  - testpoints_overlap3
-  - test_regid
-  - test_address_parts1
-  - test_address_table_9
-  - test_address_table_goodnames
-  - test_address_table_withfull
-  - test_addresses_9
-  - test_addresses2
-  - testoutput_ejscreenapi_1pts_1miles
-  - testoutput_ejscreenRESTbroker_1pts_1miles
   - format_ejamit_columns
   - table_order_variables
   - custom_ejamit
@@ -447,9 +438,15 @@ reference:
   - getfrsnearby
   - proxistat2
   - proximity.score.in.miles
+  - fips_counties_from_countyname
+  - fips_place_from_placename
+  - shapefile_filepaths_validize
+  - shapefile_from_json
   - state_from_s2b_bysite
   - state_from_blockid_table
   - state_from_blockid
+  - table_round
+  - table_rounding_info
   - table_tall_from_overall
   - tablefixed
   - table_validated_ejamit_row
@@ -457,13 +454,11 @@ reference:
   - table4gt_from_scorevectors
   - table_gt_format_step1
   - table_gt_format_step2
-  - testpoints_100_dt
-  - test_xtrac
-  - testoutput_ejscreenapi_plus_5
   - x_anyother
   - url_getacs_epaquery_chunked
   - url_get_eparest_chunked_by_id
   - url_get_via_url
+  - urls_clusters_and_sort_cols
   - create_filename
   - fixnames_aliases
   - fixcolnames_infer
@@ -471,6 +466,22 @@ reference:
   - varname2varcategory_ejam
   - varname2vartype_ejam
   - vartype_cat2color_ejam
+  - sitepoints_from_anything
+  - ejampackages
+  - testpoints_bad
+  - testpoints_overlap3
+  - test_regid
+  - test_address_parts1
+  - test_address_table_9
+  - test_address_table_goodnames
+  - test_address_table_withfull
+  - test_addresses_9
+  - test_addresses2
+  - testoutput_ejscreenapi_1pts_1miles
+  - testoutput_ejscreenRESTbroker_1pts_1miles
+  - testpoints_100_dt
+  - test_xtrac
+  - testoutput_ejscreenapi_plus_5
   - namez
   - names_age
   - names_age_count
@@ -565,9 +576,3 @@ reference:
   - names_these_ratio_to_state_avg
   - names_these_state_avg
   - names_wts
-  - shapefile_filepaths_validize
-  - shapefile_from_json
-  - sitepoints_from_anything
-  - table_round
-  - table_rounding_info
-  - ejampackages

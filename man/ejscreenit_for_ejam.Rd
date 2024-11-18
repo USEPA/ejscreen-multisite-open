@@ -9,7 +9,9 @@ ejscreenit_for_ejam(
   radius = 3,
   fips = NULL,
   shapefile = NULL,
-  fillmissingcolumns = TRUE,
+  namestr = "",
+  nosave = TRUE,
+  nosee = TRUE,
   ...
 )
 }
@@ -22,11 +24,17 @@ ejscreenit_for_ejam(
 
 \item{shapefile}{not implemented}
 
+\item{namestr}{optional text}
+
+\item{nosave}{passed to \code{\link[=ejscreenit]{ejscreenit()}}}
+
+\item{nosee}{passed to \code{\link[=ejscreenit]{ejscreenit()}}}
+
+\item{...}{other parameters passed to \code{\link[=ejscreenit]{ejscreenit()}}}
+
 \item{fillmissingcolumns}{optional. set to TRUE if you want the output
 to have exactly all the same columns as the EJAM table would, and
 fill in with NA values all the columns not provided by EJScreen API.}
-
-\item{...}{passed to ejscreenit()}
 }
 \value{
 a data.table that looks like output of ejamit()$results_bysite

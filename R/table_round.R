@@ -8,8 +8,8 @@
 #' @param var optional, but assumed to be names(x) by default, specifies colnames of table
 #'   or names of vector elements, within x
 #' @param varnametype optional, name of column in map_headernames that is looked in for var
-#' @param ... passed to [var_is_numeric_ish()] 
-#' @seealso [var_is_numeric_ish()] [table_rounding_info()]
+#' @param ... passed to [is.numericish()] 
+#' @seealso [is.numericish()] [table_rounding_info()]
 #' @return Returns the original x but with appropriate cells rounded off.
 #' @examples  
 #'   table_round(c(12.123456, 9, NA ), 'pm')
@@ -23,7 +23,6 @@
 #' 
 #'  table_round(x)
 #' 
-#' @export
 #' @keywords internal
 #'
 table_round <- function(x, var = names(x), varnametype="rname", ...) {
@@ -40,7 +39,7 @@ table_round <- function(x, var = names(x), varnametype="rname", ...) {
   # For a table, each column is treated as an indicator where it is roundable and rounded just 1 way for all rows of the column.
   
   dig <- table_rounding_info(var = var, varnametype = varnametype)
-  roundable <- var_is_numeric_ish(x, ...) 
+  roundable <- is.numericish(x, ...) 
   roundable[is.na(dig)] <- FALSE # if NA was returned as the number of digits to round to, dont try to round that one
   if (!any(roundable)) {
     warning('none of the columns of x = ', deparse1(substitute(x)),' appear to be roundable, so it is being returned unchanged')
