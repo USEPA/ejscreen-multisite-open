@@ -62,17 +62,22 @@ urls_clusters_and_sort_cols <- function(results_table) {
   ## Fix existing link to pdf-like report 
   # to make URL clickable in table, move to near 1st column, 
   # NOTE: browser can print that report to pdf with margins = c(0.3, 0.3, 0.3, 1.75) # Left Top Right Bottom
-  areaid <- if ("fips" %in% names(results_table)) {
-    areaid   <- results_table$fips
-    areatype <- fipstype(results_table$fips)
-    namestr  <- '' # results_table$namestr  ##   ignore at least for now
-    lat = NULL
-    lon = NULL
+
+  if ("areaid" %in% names(results_table)) {
+    areaid   <- results_table$areaid
   } else {
     lon = results_table$lon
     lat = results_table$lat
     areaid   <- ""
+  }
+  if ("areatype" %in% names(results_table)) {
+    areatype <- results_table$areatype
+  } else {
     areatype <- ""
+  }
+  if ("namestr" %in% names(results_table)) {
+    namestr  <- results_table$namestr
+  } else {
     namestr  <- ""
   }
   pdfurl <- url_ejscreen_report(lon = lon, lat = lat, radius = results_table$distance, 
@@ -135,8 +140,6 @@ urls_clusters_and_sort_cols <- function(results_table) {
 ########################################### #  ########################################### #
 
 
-
-
 #' utility to make html link from URL
 #' 
 #' Convert URL to HTML link that opens in new tab
@@ -159,6 +162,7 @@ url_linkify <- function(url, text) {
   #   enurl <- function(url, text) {tags$a(href = url, text)}
 } 
 ################################################### #################################################### #
+
 
 # convert EJAM html versions of weblinks back to simple URLs
 # in the output tables from ejamit or doaggregate

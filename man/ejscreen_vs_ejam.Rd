@@ -17,6 +17,8 @@ ejscreen_vs_ejam(
   include_ejindexes = TRUE,
   x100fix = TRUE,
   x100varnames = names_pct_as_fraction_ejamit,
+  showdrinkingwater = FALSE,
+  showpctowned = FALSE,
   ...
 )
 }

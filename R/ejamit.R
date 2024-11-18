@@ -185,6 +185,8 @@ ejamit <- function(sitepoints,
                    silentinteractive = FALSE,
                    called_by_ejamit = TRUE,
                    testing = FALSE,
+                   showdrinkingwater = FALSE,
+                   showpctowned = FALSE,
                    ...
 ) {
 
@@ -238,7 +240,9 @@ ejamit <- function(sitepoints,
         called_by_ejamit = called_by_ejamit,
         updateProgress = updateProgress,
         silentinteractive = silentinteractive,
-        testing = testing
+        testing = testing,
+        showdrinkingwater = showdrinkingwater,
+        showpctowned = showpctowned
       )
     )
     
@@ -295,7 +299,9 @@ ejamit <- function(sitepoints,
         called_by_ejamit = called_by_ejamit,
         updateProgress = updateProgress,
         silentinteractive = silentinteractive,
-        testing = testing
+        testing = testing,
+        showdrinkingwater = showdrinkingwater,
+        showpctowned = showpctowned
       )
     )
   }
@@ -385,7 +391,9 @@ ejamit <- function(sitepoints,
         called_by_ejamit = called_by_ejamit,
         updateProgress = updateProgress,
         silentinteractive = silentinteractive,
-        testing = testing
+        testing = testing,
+        showdrinkingwater = showdrinkingwater,
+        showpctowned = showpctowned
       )
     )
   }

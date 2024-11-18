@@ -53,7 +53,7 @@ several of which are not exported:
 \item \code{\link[=fixcolnames_infer]{fixcolnames_infer()}}
 \item EJAM fixcolnames2related()
 \item EJAM fixmapheadernamescolname()
-\item EJAM var_is_numeric_ish()
+\item EJAM is.numericish()
 \item EJAM varin_map_headernames()
 \item EJAM namesbyvarlist()
 \item EJAM names_whichlist()

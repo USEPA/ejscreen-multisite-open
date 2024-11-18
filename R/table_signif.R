@@ -45,7 +45,7 @@ table_signif <- function(dat, digits = NULL) {
       }
     }
     # digits must be NA for any non-numeric columns for this to work
-    digits[!var_is_numeric_ish(dat)] <- NA
+    digits[!is.numericish(dat)] <- NA
     dat[,!is.na(digits)] <- mapply(FUN = signif, x = dat[,!is.na(digits)], digits = digits[!is.na(digits)])
     # dat <- mapply(FUN = signif, x = dat, digits = digits)
     return(dat)
