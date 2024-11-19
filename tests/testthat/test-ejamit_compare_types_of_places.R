@@ -24,7 +24,7 @@ test_that("ejamit_compare_types_of_places works", {
   expect_equal(
     names(out),
     c("types", "sitecount_bytype", "results_bytype", "results_overall", 
-      "ejam_uniq_id", "typeofsite", "results_bysite", "longnames")
+      "ejam_uniq_id", "typeofsite", "results_bysite", "longnames", 'validstats')
   )
   expect_equal(
     out$types,
@@ -34,6 +34,8 @@ test_that("ejamit_compare_types_of_places works", {
     out$sitecount_bytype,
     1:2
   )
+  # confirms fixed state assignments for ejamit_compare_types_of_places()
+  expect_equal(out$results_bysite$statename, c("Georgia",  "Alabama",  "Illinois"))
 })
 ############################################################ #
 test_that("works if only 1 point", {
