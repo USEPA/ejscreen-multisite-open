@@ -149,6 +149,7 @@ reference:
   - shape_buffered_from_shapefile_points
   - shapefile2blockpoints
   - shapefile2latlon
+  - shapes_from_fips
   - shapes_counties_from_countyfips
   - shapes_blockgroups_from_bgfips
   - ejam2shapefile
