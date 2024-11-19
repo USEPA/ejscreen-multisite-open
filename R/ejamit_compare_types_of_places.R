@@ -219,7 +219,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
     
     cat("Type", i, "of", length(types), "=", types[i], " -- ")
     
-    if (sitetype == "latlon") {sitepoints_subset = sitepoints[typeofsite == types[i], ,drop=F]} else {sitepoints_subset = NULL}
+    if (sitetype == "latlon") {sitepoints_subset = sitepoints[typeofsite == types[i], ,drop = F]} else {sitepoints_subset = NULL}
     if (sitetype == "fips")   {fips_subset       = fips[      typeofsite == types[i]  ]} else {fips_subset       = NULL}
     if (sitetype == "shp")    {shapefile_subset  = shp[       typeofsite == types[i], ]} else {shapefile_subset  = NULL}
     
@@ -316,6 +316,13 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   out$results_overall$ejam_uniq_id <- out$types # NOTE: this for the "overall" table 1 row per type 
   #   is the code of each type, not typical ejam_uniq_id of 1:N
   names(out$results_overall) <- gsub("ejam_uniq_id", "typeofsite", names(out$results_overall)) # make it more clear by naming it this way
+  
+  out$validstats <- data.frame(type = out$types, 
+                               sitecountvalid = out$results_bytype$valid, 
+                               sitecount = out$sitecount_bytype, 
+                               pctvalid = round(100 * out$results_bytype$valid / out$sitecount_bytype, 0),
+                               pop = round(out$results_bytype$pop, table_rounding_info("pop"))
+  )
   
   # print some results ####
   print(  
