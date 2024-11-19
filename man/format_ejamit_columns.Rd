@@ -18,9 +18,10 @@ a named vector with formatted values, corresponding to valid column names provid
 Applies rounding, sigfig, and percentage info to display columns of ejamit using map_headernames
 }
 \examples{
-  x <- ejamit(testpoints_10, radius=1)
+  # x <- ejamit(testpoints_10, radius = 1)
+  x <- testoutput_ejamit_10pts_1miles
   format_ejamit_columns(x$results_overall, 'Demog.Index')
-  format_ejamit_columns(x$results_overall, c('Demog.Index', 'no2')
+  format_ejamit_columns(x$results_overall, c('Demog.Index', 'no2'))
   format_ejamit_columns(x$results_overall, names_d)
 
 }

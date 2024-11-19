@@ -66,8 +66,17 @@
 
 
 <dl><dt id="arg-mydf">mydf<a class="anchor" aria-label="anchor" href="#arg-mydf"></a></dt>
-<dd><p>data.frame or data.table with lat and lon columns or
-columns that <code><a href="latlon_infer.html">latlon_infer()</a></code> can infer to be that</p></dd>
+<dd><p>Typically something like the output of ejamit()$results_bysite, but
+can also be the full output of <code><a href="ejamit.html">ejamit()</a></code> in which case this uses just the $results_bysite table,
+and in general mydf can be a data.frame or data.table that has a set of
+points or polygons or Census FIPS codes.</p><ol><li><p>point data defined by columns named lat and lon, or columns that <code><a href="latlon_infer.html">latlon_infer()</a></code> can infer to be that,
+as from <code><a href="sitepoints_from_any.html">sitepoints_from_any()</a></code> or <code><a href="ejamit.html">ejamit()</a></code>$results_bysite</p></li>
+<li><p>polygon data in a spatial data.frame that has a geometry column of polygons, as from <code><a href="shapefile_from_any.html">shapefile_from_any()</a></code>, or</p></li>
+<li><p>Census units defined by FIPS codes in a column called "ejam_uniq_id"
+(not fips), where those fips are for States, Counties, Tracts, Blockgroups,
+or cities/towns/Census Designated Places (7 digits including any leading zeroes),
+e.g., as from names2fips('DE') or ejamit(fips='01')$results_bysite.</p></li>
+</ol></dd>
 
 
 <dt id="arg-radius">radius<a class="anchor" aria-label="anchor" href="#arg-radius"></a></dt>

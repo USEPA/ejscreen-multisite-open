@@ -60,7 +60,8 @@
 
 <dl><dt id="arg-statename">statename<a class="anchor" aria-label="anchor" href="#arg-statename"></a></dt>
 <dd><p>vector of state names like c("New York","Georgia"),
-ignoring case</p></dd>
+ignoring case.
+Converts any ST to statename in case abbreviations were provided instead of name.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -72,7 +73,7 @@ same length as input, so including any duplicates</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="fu">fips_state_from_statename</span><span class="op">(</span><span class="st">"Delaware"</span><span class="op">)</span></span>
-<span></span></code></pre></div>
+<span>  <span class="fu">fips_state_from_statename</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dc"</span>, <span class="st">'district of columbia'</span>, <span class="st">'georgia'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
