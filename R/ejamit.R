@@ -499,7 +499,7 @@ ejamit <- function(sitepoints,
   setorder(out$results_bysite, ejam_uniq_id)
   
 
-  out$results_overall$valid <- sum(out$results_bysite$valid, na.rm = TRUE)
+  out$results_overall$valid <- TRUE
   out$results_overall$invalid_msg <- ""
   if (!setequal(names(out$results_overall), names(out$results_bysite))) {stop('column names in bysite and overall do not match')}
   setcolorder(out$results_overall, names(out$results_bysite))
