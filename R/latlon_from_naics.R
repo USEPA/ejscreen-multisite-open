@@ -47,6 +47,7 @@
 #' @seealso [frs_from_naics()]  [frs_from_sic()] [latlon_from_sic()] [regid_from_naics()] [naics_from_any()]
 #'   
 #' @examples
+#' \dontrun{
 #'   regid_from_naics(321114)
 #'   latlon_from_naics(321114)
 #'   # latlon_from_naics(naics_from_any("cheese")[,code] )
@@ -65,7 +66,13 @@
 #'   naics_counts[NAICS %in% mycode, ]
 #'   # see parent codes that contain each code
 #'   naicstable[code %in% mycode, ]
-#'
+#'   
+#'   # how many were found via each naics code?
+#'   found = latlon_from_naics(c(211,331))
+#'   x = table( found$naics_found, found$naics_query)
+#'   x = x[order(x[, 1],decreasing = T),]
+#'   x
+#'   }
 #' @export
 #'
 latlon_from_naics <- function(naics, children = TRUE, id_only = FALSE, ...) {
