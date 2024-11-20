@@ -150,6 +150,7 @@ reference:
   - shape_buffered_from_shapefile_points
   - shapefile2blockpoints
   - shapefile2latlon
+  - shapes_from_fips
   - shapes_counties_from_countyfips
   - shapes_blockgroups_from_bgfips
   - ejam2shapefile
@@ -163,9 +164,11 @@ reference:
   - name2fips
   - fips2name
   - fipstype
+  - fips_valid
   - fips_lead_zero
-  - fips_bg_from_anyfips
+  - fips_bgs_in_fips
   - fips_from_table
+  - fips_place_from_placename
   - censusplaces
 - subtitle: "Counties"
   contents:

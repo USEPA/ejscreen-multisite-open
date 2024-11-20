@@ -101,11 +101,10 @@ test_interactively = function(ask = TRUE,
       testlist = list( 
         
         test_fips = c(
-          # "test-fips_lead_zero.R",   
-          # "test-fips_bg_from_anyfips.R",    #   test_file("tests/testthat/test-fips_bg_from_anyfips.R")
           "test-FIPS_FUNCTIONS.R",
           "test-state_from_fips_bybg.R",  
-          "test-state_from_latlon.R"   
+          "test-state_from_latlon.R",
+          "test-is.numeric.text.R"
         ),
         test_naics = c(
           "test-naics_categories.R",   
@@ -282,7 +281,7 @@ test_interactively = function(ask = TRUE,
       # x2 = test1group(c("test-test1.R", "test-test2.R"), groupname = 'test', print4group = TRUE)
       # print(x1)
       # print(x2)
-      
+
       
       test1group <- function(fnames = test_all, groupname = "",
                              reporter = "minimal", # some of the code below now only works if using this setting
@@ -537,17 +536,18 @@ test_interactively = function(ask = TRUE,
     if (y_runall == FALSE && y_runsome == FALSE) {
       stop('no tests run')
     } else {
-      if (interactive() & ask & (y_runall | ("test_shape" %in% names(testlist)))) {
-        # ***  note if interactive it normally tries to prompt for shapefile folder in some cases  
-        if (missing(noquestions)) {
-          if (askYesNo("run tests where you have to interactively specify folders for shapefiles?")) {
-            noquestions <- FALSE
-          }  else {
-            noquestions <- TRUE
-          }
-        } else {
-          # noquestions  was given as a parameter
-        }}
+      noquestions <- TRUE
+      # if (interactive() & ask & (y_runall | ("test_shape" %in% names(testlist)))) {
+      #   # ***  note if interactive it normally tries to prompt for shapefile folder in some cases  
+      #   if (missing(noquestions)) {
+      #     if (askYesNo("run tests where you have to interactively specify folders for shapefiles?")) {
+      #       noquestions <- FALSE
+      #     }  else {
+      #       noquestions <- TRUE
+      #     }
+      #   } else {
+      #     # noquestions  was given as a parameter
+      #   }}
     }
   } # end if not just basic
   # finished asking what to do and setting up
@@ -1016,10 +1016,10 @@ loggable <- function(x, file = 'will be created using timestamp if not provided 
   #   
   #   }) 
   ## use file = logfilename  or file = NULL  to override whatever the y_save value is
-  
+
 }
 ################################### # 
-
+# example of using it ####
 #  biglist <- test_interactively()
 ## or
 # mydir = "~/../Downloads/unit testing"

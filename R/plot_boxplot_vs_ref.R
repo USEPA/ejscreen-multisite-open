@@ -129,7 +129,8 @@ plot_boxplot_vs_ref <- function(bysite = NULL, # ejamit()$results_bysite,
 #' @param box.pch.ref use default
 #' @param box.pch.here description
 #' @param ... passed to boxplot()
-#' @examples dontrun{
+#' @examples 
+#' \dontrun{
 #'   out <- testoutput_ejamit_1000pts_1miles
 #'   # ejam2boxplot(out)
 #'   # plot_boxplot_vs_ref(out$results_bysite)
@@ -138,7 +139,6 @@ plot_boxplot_vs_ref <- function(bysite = NULL, # ejamit()$results_bysite,
 #'   plot_vs_us(out$results_bysite, varname = "pctlingiso", type =  'ggplot')
 #'   plot_vs_us(out$results_bysite, varname = "pctnhaa", type =  'ggplot')
 #'   plot_vs_us(out$results_bysite, varname = "pctnhaa", type = 'box', ylim = c(0, 20))
-#'   }
 #'   
 #'  # td = testoutput_ejamit_1000pts_1miles$results_bysite
 #'  # plot_vs_us(, type = 'box')
@@ -147,6 +147,8 @@ plot_boxplot_vs_ref <- function(bysite = NULL, # ejamit()$results_bysite,
 #'  # plot_vs_us(td, varname = "pctnhaa", type =  'ggplot')
 #'  # plot_vs_us(td, varname = "pctnhaa", type = 'box', ylim = c(0,20))
 #'  # plot_vs_us(td[td$ST %in% "DE", ], 'pcthisp', refdata = blockgroupstats[ST %in% "DE", .(pop, pcthisp)])
+#'   }
+#'   
 #' @return plots
 #' 
 #' @export
@@ -166,7 +168,7 @@ plot_vs_us <- function(bysite = NULL, # ejamit()$results_bysite,
                        box.pch.ref = 20, box.pch.here = 2,
                        ...) {
   
-  warning("draft function - some ref points may still be plotted among sites analyzed, etc.")
+  warning("draft function")
   
   # bysite
   if (is.null(bysite)) {

@@ -19,7 +19,7 @@
 #' - [fixcolnames_infer()]
 #' - EJAM fixcolnames2related()
 #' - EJAM fixmapheadernamescolname()
-#' - EJAM var_is_numeric_ish()
+#' - EJAM is.numericish()
 #' 
 
 #' - EJAM varin_map_headernames()

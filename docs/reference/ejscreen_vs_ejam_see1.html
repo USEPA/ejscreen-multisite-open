@@ -68,8 +68,10 @@
 
 <dt id="arg-myvars">myvars<a class="anchor" aria-label="anchor" href="#arg-myvars"></a></dt>
 <dd><p>optional to check just a subset of the colnames found in vs$EJAM and vs$EJSCREEN,
-such as</p>
-<p>myvars = colnames(vs$EJAM) or</p>
+such as these possible values:</p>
+<p>myvars = "all"    # all the indicators in the output tables, i.e., colnames(vs$EJAM)</p>
+<p>myvars = "inboth" # just the ones in both (not NA values because EJAM or EJSCREEN did not report the indicator)</p>
+<p>myvars = "bad"    # just the ones in both where EJAM_shown and EJSCREEN_shown disagree</p>
 <p>myvars = c(names_d, names_d_subgroups) or</p>
 <p>myvars = grep("pctile", colnames(vs$EJAM), value = T)</p></dd>
 

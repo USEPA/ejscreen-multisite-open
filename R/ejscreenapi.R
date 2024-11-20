@@ -58,7 +58,7 @@
 #' @param fips if used instead of lon,lat it should be a character FIPS code vector
 #'   (counties, tracts, or blockgroups)
 #' @param shapefile not implemented
-#' 
+#' @param namestr optional text
 #' @param report_every_n Should it report ETA snd possibly save interim file after every n points
 #' @param save_when_report optional, write .rdata file to working directory 
 #'   with results so far, after ever n points, to have most results even if it crashes
@@ -93,9 +93,10 @@
 #' @export
 #' @keywords internal
 #'  
-ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
+ejscreenapi <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326 ,
                         fips = NULL,
                         shapefile = NULL,
+                        namestr = '',
                         report_every_n=1000, save_when_report=FALSE, 
                         format_report_or_json='pjson', on_server_so_dont_save_files=FALSE, 
                         ipurl='ejscreen.epa.gov', updateProgress=NULL, drop_redundant_indicators=TRUE, 
@@ -104,12 +105,16 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
                         getstatefromplacename = TRUE
 ) {
   
+  offline_warning(); offline_cat()
+  
   if (!is.null(shapefile)) {warning('shapefile not implemented yet for ejscreenapi()')}
   
   if (any(!is.null(fips))) {
-    radius <- 0
+    
+    radius <- rep(0, length(fips))
     lat = rep(NA, length(fips))
     lon = rep(NA, length(fips))
+    
   } else {
     
     # Could possibly allow lat lon to be specified in a csv or xlsx file here, too.
@@ -123,6 +128,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
     }
     if (any(is.na(radius)) | any(radius <= 0) | any(radius > 100)) {stop('radius outside allowed range')}
   }
+  
   if (!(unit %in% c('miles', 'kilometers'))) {stop('unit must be miles or kilometers')}
   unitcode = switch(unit,
                     'miles' = 9035,
@@ -140,6 +146,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
           radius = radius, 
           unit = unit, wkid = wkid,
           fips = fips,
+          namestr = namestr,
           shapefile = shapefile, # something for shapefiles would require POST not GET
           format_report_or_json = "report")
       )
@@ -155,8 +162,8 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
   pts <- data.frame(lon = lon, lat = lat)
   n <- NROW(pts)
 
-  # if (verbose) {
-  cat("\n Using EJScreen to analyze", n, 'sites',
+  if (verbose) {
+  cat("\n Using ejscreenapi() to analyze", n, 'sites',
       ## 'for residents living within a radius of', radius[1], unit, 'from each site.', 
       '\n', file = stderr())
   if (n > 10) {
@@ -164,7 +171,7 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
       speedmessage(n = n, perhourslow = 900, perhourfast = 1800, perhourguess = 1400), '\n', file = stderr()
     )
   }
-  # }
+  }
   # be ready to save progress so far if it crashes during a very time consuming long run #### 
   # if (save_when_report & !on_server_so_dont_save_files){
   tdir = tempdir()
@@ -191,9 +198,10 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
   #################################################  #################################################
   benchmark.start <- Sys.time()
 
+
   if (length(radius) == 1) {radius <- rep(radius, n)}
   if (length(fips) == 1) {fips <- rep(fips, n)}
-  if (length(namestr) == 1) {namestr <- rep(namestr, n)}
+  # if (length(namestr) == 1) {namestr <- rep(namestr, n)}
   
   for (i in 1:n) {
     
@@ -203,11 +211,13 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
     ## use API to get buffer result from EJScreen server ** ####
     
     ej.data <- try(ejscreenRESTbroker(
-      lon = pts$lon[[i]], 
-      lat = pts$lat[[i]], 
-      radius = radius, 
+      lon = pts$lon[i], 
+      lat = pts$lat[i], 
+      radius = radius[i], 
       unit = unitcode, wkid = wkid,
-      fips = fips[[i]],
+      fips = fips[i],
+      namestr = namestr[i], ### #
+      shapefile = shaperow, 
       ipurl = ipurl,
       f = format_report_or_json
     ))
@@ -221,16 +231,20 @@ ejscreenapi <- function(lon, lat, radius = 3, unit ='miles', wkid=4326 ,
       
       # use API to get URL of report ####
       # or perhaps directly use    url_ejscreen_report()
-      pdfurl[[i]] <- try(ejscreenapi1(
-        lon = pts$lon[[i]], 
-        lat = pts$lat[[i]], 
-        radius = radius, 
+
+      pdfurl[i] <- try(ejscreenapi1(
+        lon = pts$lon[i], 
+        lat = pts$lat[i], 
+        radius = radius[i], 
         unit = unit, wkid = wkid, 
-        fips = fips[[i]],
+        fips = fips[i],
+        namestr = namestr[i],
+        shapefile = shaperow,
         ipurl = ipurl,
         format_report_or_json = 'report'
       ))
-      if (inherits(pdfurl[[i]], 'try-error')) {failed <- TRUE; warning('API not accessible or failed')}
+      
+      if (inherits(pdfurl[i], 'try-error')) {failed <- TRUE; warning('API not accessible or failed')}
       
       # parse response into data.frame format, at 1 buffer ####
       # note confusingly fromJSON() also is the name of functions in RJSONIO and in rjson packages.

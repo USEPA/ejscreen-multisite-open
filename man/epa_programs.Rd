@@ -14,10 +14,23 @@ epa_programs
 Named vector of EPA programs and facility count for each.
 }
 \details{
-This lists selected data sources for the facility registry services (FRS) database, as
-documented in \href{https://www.epa.gov/frs/frs-data-sources}{EPA documentation describing each FRS program code}.
+Also see
+\itemize{
+\item \href{https://www.epa.gov/frs/frs-data-sources}{EPA documentation describing each program code} aka data source.
+\item \href{https://www.epa.gov/sites/default/files/2021-05/frs_program_abbreviations_and_names.xlsx}{2021-05/frs_program_abbreviations_and_names.xlsx}
+}
+\subsection{For a table sorted by how many facilities from FRS are listed for each program:}{
 
-The named list is used by the shiny app for a dropdown menu used to pick a program.
+\code{epa_programs_counts <- frs_by_programid[, .N, by="program"][order(N), ]}
+}
+
+\subsection{Top 25 Federal ones (by trying to exclude State databases from the list)}{
+
+\code{epa_programs_counts$fed = !grepl("^[A-Z]{2}[-]", as.vector(epa_programs_counts$program),1,3)}
+
+\code{table(epa_programs_counts$fed)}
+
+\code{epa_programs_counts[fed == TRUE, ][order(-N), ][1:25, ]}
 
 Also see \link{frs_by_programid}
 }

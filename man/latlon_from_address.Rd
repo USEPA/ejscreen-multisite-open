@@ -26,11 +26,13 @@ param as provided is ignored and set to TRUE if aoimap=TRUE}
 
 \item{batchsize}{how many to request per geocode query, done in batches if necessary}
 
-\item{...}{passed to geocode() see help for AOI pkg}
+\item{...}{passed to geocode() see  \code{help(geocode, package = "AOI")}}
 }
 \value{
-returns tibble table of x,y or lat,lon values or geometries.
-see helpf for AOI pkg
+returns NULL if you have not installed and attached the AOI package.
+If AOI is attached via library() or require() or package imports,
+this returns a tibble table of x,y or lat,lon values or geometries.
+see the AOI package.
 }
 \description{
 geocode, but only if AOI package is installed and attached

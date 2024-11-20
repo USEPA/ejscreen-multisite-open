@@ -22,16 +22,16 @@
 #' @noRd
 #' 
 .onAttach <- function(libname, pkgname) {
-  
-  # These instead could be set in the golem-config.yml file
 
+  # These instead could be set in the golem-config.yml file
+  
   asap_aws   <- TRUE  # download large datasets now?           Set to FALSE while Testing/Building often
   asap_index <- TRUE  # build index those now?                 Set to FALSE while Testing/Building often 
   asap_bg    <- FALSE  # load now vs lazyload blockgroup data?  Set to FALSE while Testing/Building often
   
   # startup msg shown at library(EJAM) or when reinstalling from source ####
   packageStartupMessage("Now running .onAttach(), as part of attaching the EJAM package.")
-  # packageStartupMessage('The leaflet package is what requires sp\n')
+  
   
   # packageStartupMessage(
   #    
@@ -75,7 +75,7 @@
   #     \n\n"
   # )
   
-  # download BLOCK (not blockgroup) data, etc, from EPA AWS Data Commons ####
+  # download BLOCK (not blockgroup) data, etc ####
   
   if (asap_aws) {
     
@@ -112,7 +112,7 @@
     # this duplicates code from  global.R 
     
     if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
-    
+      
       indexblocks()   # EJAM function works only AFTER shiny does load all/source .R files or package attached
     }
   }

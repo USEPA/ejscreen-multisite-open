@@ -38,7 +38,7 @@ latlon_from_vectorofcsvpairs <- function(x) {
   
   if (!all(grepl(",", na.omit(x)))) {
     stop('commas missing -- x must be a character vector where each non-NA element has a comma, separating two numbers that are lat and lon, e.g., c("30,-83","32.5,-86.377325")')}
-  if (!all(var_is_numeric_ish( unlist(strsplit(x,",")) ))) {
+  if (!all(is.numericish( unlist(strsplit(x,",")) ))) {
     stop('non-numeric values found -- x must be a character vector where each non-NA element has a comma, separating two numbers that are lat and lon, e.g., c("30,-83","32.5,-86.377325")')}
   
   x <- gsub(pattern = " ", "", x)
