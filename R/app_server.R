@@ -144,12 +144,15 @@ app_server <- function(input, output, session) {
   #   tabPanel(title = 'EJScreen Batch Tool',
   #   tabPanel(title = 'Advanced Settings',
   
-  ## buttons to switch tabs (used to navigate if the clickable tab controls themselves are "hidden") ---------------------- #
+  ##     -------------------------- BUTTONS to switch tabs ---------------------- #
   
-  ## "About" button/link
+  # (to navigate if clickable tab controls are "hidden") 
+
+  ## "About" button/link  (might not be used)
   observeEvent(input$link_to_about_page, {updateTabsetPanel(session, inputId = "all_tabs", selected = "About EJAM")})
+  
   ## "back to site selection" buttons (to go back to site selection tab from results tab)
-  observeEvent(input$back_to_site_sel,  {updateTabsetPanel(session, inputId = 'all_tabs', selected = 'Site Selection')})
+  observeEvent(input$back_to_site_sel,  {updateTabsetPanel(session, inputId = 'all_tabs', selected = 'Site Selection')})  # might not  be used
   observeEvent(input$back_to_site_sel2, {updateTabsetPanel(session, inputId = 'all_tabs', selected = 'Site Selection')})
   ## "return to results" button (to go from site selection to results)
   observeEvent(input$return_to_results, {updateTabsetPanel(session, inputId = "all_tabs", selected = "See Results")})  # updateTabsetPanel(session, 'results_tabs', 'Summary')
@@ -161,6 +164,7 @@ app_server <- function(input, output, session) {
       shinyjs::hide(id = 'return_to_results')
     }
   })
+  ##    --------------------------  TABS to show/hide    -------------------------- -
   
   ## hide vs show ADVANCED tab at start  ---------------------- #   ***
   
@@ -175,16 +179,26 @@ app_server <- function(input, output, session) {
     }
   }
   ## hide vs show ADVANCE tab on button click (button in 'About EJAM' tab) ***
+  
   observeEvent(input$ui_show_advanced_settings,
                {showTab(inputId = 'all_tabs', target = 'Advanced Settings')})
   observeEvent(input$ui_hide_advanced_settings,
                {hideTab(inputId = 'all_tabs', target = 'Advanced Settings')})
-  ## hide vs show (full) Written Report tab
-  if (default_hide_written_report) {
-    hideTab(inputId = 'results_tabs', target = 'Written Report')
-  }
   
-  ## advanced tab size cap on file uploads  ---------------------- #
+  ## hide vs show ABOUT tab  ---------------------- #   ***
+  if (default_hide_about_tab) {
+    hideTab(inputId = 'all_tabs', target = 'About') 
+  }
+  ## hide vs show WRITTEN REPORT tab ---------------------- #   ***
+  if (default_hide_written_report) {
+      hideTab(inputId = 'results_tabs', target = 'Written Report') 
+  }
+  ## hide vs show HISTOGRAMS tab  ---------------------- #   ***
+  # if (default_hide_plot_range_tab) {
+  #   hideTab(inputId = 'details_subtabs', target = 'plot_range')  # will be fixed
+  # }
+  
+  ## advanced tab provides size cap on file uploads  ---------------------- #
   
   max_mb_upload_react <- reactive({
     x <- as.numeric((input$max_mb_upload))
@@ -3919,7 +3933,7 @@ app_server <- function(input, output, session) {
   #############################################################################  #
   #
   # ______ ejscreenapi MODULE _________ ####
-  # (to get batch via API)
+  # (to get batch via API)  see default_hide_ejscreenapi_tab in global.R etc.
   
   # create UI part for main EJAM app here rather than in app_ui because we need access to input$ radius of main app to pass that to module that uses it as the initial radius shown on its slider
   # pass from server code of app to server code of module by creating the main radius UI in server of app (cannot access the input$ in UI of app)

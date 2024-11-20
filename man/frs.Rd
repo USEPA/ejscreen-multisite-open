@@ -16,6 +16,9 @@ same as used in ECHO. See attributes(frs) to see date created, etc.
 
 Also, EJScreen has maps of EPA-regulated facilities of a few program types,
 as provided here: \url{https://www.epa.gov/ejscreen/ejscreen-map-descriptions#sites-reporting-to-epa}
+and for a table of acronym definitions
+see https://www.epa.gov/sites/default/files/2021-05/frs_program_abbreviations_and_names.xlsx
+and \link{epa_programs_defined}
 \itemize{
 \item Count of    all REGISTRY_ID rows:   Approx 7 million
 \item Count of unique REGISTRY_ID values: Approx 4-5 million
@@ -41,5 +44,5 @@ colnames
 }
 }
 \seealso{
-\link{frs_by_programid}  \link{frs_by_naics} \link{frs_by_sic}
+\link{epa_programs} \link{epa_programs_defined} \link{frs_by_programid}  \link{frs_by_naics} \link{frs_by_sic}
 }
