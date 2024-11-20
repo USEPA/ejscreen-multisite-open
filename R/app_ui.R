@@ -82,12 +82,12 @@ app_ui  <- function(request) {
         
         selected = 'Site Selection',
         # ______ About ______ tabPanel(title = 'About' ####
-        
+        ## see  default_hide_about_tab
         tabPanel(title = 'About',
                  br(),
                  fluidRow(
                    column(8,
-
+                          
                           ## html intro text from global.R
                           intro_text,
                           actionButton(inputId = 'back_to_site_sel2', label = div(icon('play', style = 'transform: rotate(180deg);'), HTML('&nbsp;'), 'Return to Site Selection'), class = 'usa-button'),
@@ -140,14 +140,11 @@ app_ui  <- function(request) {
                   conditionalPanel(
                     condition = 'input.ss_choose_method == "dropdown"',
                     selectInput(inputId = 'ss_choose_method_drop',
-                                label = tags$span('How would you like to select categories?'),
-                                choices = c('by Industry (NAICS) Code' = 'NAICS',
-                                            'by EPA Program'           = 'EPA_PROGRAM')
-                                # choices = c('by Industry (NAICS) Code' = 'NAICS',
-                                #             'by Industry (SIC) Code'   = 'SIC',
-                                #             'by EPA Program'           = 'EPA_PROGRAM',
-                                #             'by MACT subpart'          = 'MACT')
-                                )
+                                label = tags$span(
+                                  'How would you like to select categories?'
+                                ),
+                                choices = choices_for_type_of_site_category
+                    )
                   ),
                   
                   ### input: what LOCATIONS type to upload? (IDs, latlon, FIPS, Shapes) ####
@@ -159,15 +156,7 @@ app_ui  <- function(request) {
                                 label = tags$span(
                                   'What type of data are you uploading?'
                                 ),
-                                choices = c('Latitude/Longitude file upload'               = 'latlon',
-                                            'EPA Facility IDs (FRS Identifiers)'            = 'FRS',
-                                            'Census FIPS Codes (e.g., Counties or Cities)'   = 'FIPS',
-                                            'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
-                                # choices = c('Latitude/Longitude file upload'               = 'latlon',
-                                #             'EPA Facility ID (FRS Identifiers)'            = 'FRS',
-                                #             'EPA Program IDs'                              = 'EPA_PROGRAM',
-                                #             'FIPS Codes'                                   = 'FIPS',
-                                #             'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
+                                choices = choices_for_type_of_site_upload
                     )
                   ),
               ),
@@ -196,9 +185,9 @@ app_ui  <- function(request) {
                         column(
                           12,
                           ################################################################# #
-   # uploads:                          
+                          # uploads:                          
                           ## *Latitude Longitude* LOCATIONS Uploads  (conditional panel)  ------------------------------------- - ####
-
+                          
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlon'",
                             
@@ -253,8 +242,8 @@ app_ui  <- function(request) {
                           
                           
                           ## *CATEGORIES OF SITES*  input: choose among facility dropdown options, conditional panel ####
-
-     # uploads:  
+                          
+                          # uploads:  
                           
                           ## _FIPS - upload conditional panel ------------------------------------- - ####
                           
@@ -275,7 +264,7 @@ app_ui  <- function(request) {
                             actionButton('fips_help', label = 'More Info', class = 'usa-button usa-button--outline')
                           ), # end FIPS conditionalPanel
                           ################################################################# #
-
+                          
                           ## _FRS regid - upload  conditional panel ------------------------------------- - ####
                           
                           conditionalPanel(
@@ -313,7 +302,7 @@ app_ui  <- function(request) {
                             actionButton('epa_program_help', label = 'More Info', class = 'usa-button usa-button--outline')
                           ), #end EPA program upload conditional panel
                           ################################################################# #
-      # dropdowns:                    
+                          # dropdowns:                    
                           ## _EPA program - dropdown  conditional panel ------------------------------------- - ####
                           
                           conditionalPanel(
@@ -613,7 +602,7 @@ app_ui  <- function(request) {
                                             ### _BARPLOT (AVG SCORES) - tabPanel(title = 'Plot Average Scores' ####
                                             # .
                                             
-                                            tabPanel(id="plot_average", 
+                                            tabPanel(id = "plot_average", 
                                                      title = 'Plot Average Scores',
                                                      h4('About this Chart'),
                                                      helpText('These charts show how each demographic group and environmental stressor, in the analyzed locations, compares to its US average.'),
@@ -1030,9 +1019,9 @@ app_ui  <- function(request) {
                  ) ## end of tabset panel results_tabs ^^^^^^^^^^  ####
                  
         )      # end of tab panel See Results ^^^^^^^^^^  ####
-
-    ,  # uncomment this comma if uncommenting the advanced tab AND/OR ejscreenapi module
-       
+        
+        ,  # uncomment this comma if uncommenting the advanced tab AND/OR ejscreenapi module
+        
         
         ######################################################## #
         #
@@ -1041,7 +1030,7 @@ app_ui  <- function(request) {
         # EJSCREEN API MODULE -  tabPanel   ####
         ## may move to another tab. or in a conditional UI panel.
         ## see default_hide_ejscreenapi_tab in global.R
-   
+        
         # tabPanel(title = 'EJScreen Batch Tool',  
         #
         #          h3("Access to EJScreen results via the API"),
@@ -1066,37 +1055,37 @@ app_ui  <- function(request) {
         #
         # )
         # , # uncomment if uncommenting BOTH ejscreenapi module tab and advanced tab
-   
+        
         ######################################################## #
         ## . ####
         # ADVANCED SETTINGS - tabPanel(title = "Advanced Settings"  ####
         ######################################################## #
         
         tabPanel(title = "Advanced Settings",
-
+                 
                  h3("Advanced settings and experimental features not fully tested"),
-
+                 
                  # SET DEFAULTS / OPTIONS
-
+                 
                  # * Each time a user session is started, the application-level option set is duplicated, for that session.
                  # * If the options are set from inside the server function, then they will be scoped to the session.
                  # h5("Note: Some defaults and caps are defined in global.R"),
-
+                 
                  ######################################################## #
                  ## Bookmarking button ####
                  h2("Bookmarking to save settings and inputs"),
-
+                 
                  conditionalPanel(condition = bookmarking_allowed, {
                    bookmarkButton()  # https://mastering-shiny.org/action-bookmark.html
                  }),
                  ######################################################## #
                  ### ------------------------ app title ### #
                  # will not be editable here.
-
+                 
                  ######################################################## #
                  ##  Uploading files/points/shapes ####
                  h2("Limits on uploads/points/shapes"),
-
+                 
                  numericInput('max_pts_upload', label = "Cap on number of points one can UPLOAD, additional ones in uploaded table get dropped entirely",
                               min = 1000,  step = 500,
                               value = default_max_pts_upload,
@@ -1113,46 +1102,46 @@ app_ui  <- function(request) {
                               min = 1000,  step = 100,
                               value = default_max_pts_run,
                               max =        maxmax_pts_run),
-
+                 
                  numericInput('max_shapes_map', label = "Cap on number of shapes (polygons) one can MAP",
                               min = 10,  step = 10,
                               value = default_max_shapes_map,
                               max =        maxmax_shapes_map),
-
+                 
                  numericInput(inputId = 'max_mb_upload', label = 'Cap on size of file(s) one can upload in MB (an issue for shapefiles, mainly)',
                               min = minmax_mb_upload,
                               value = global_or_param("default_max_mb_upload"),
                               max = maxmax_mb_upload,
                               step = minmax_mb_upload),
-
+                 
                  ######################################################## #
                  ## *Radius* options ####
                  h2("Radius options"),
-
+                 
                  # minradius  # (set via global.R)
                  # minradius_shapefile # (0 set via global.R)
                  # stepradius # (set via global.R)
-
+                 
                  numericInput('default_miles', label = "Default miles radius",  # what is shown at app startup for all but shapefiles
                               ### Also note server code where radius can be modified via updateSliderInput,
                               ### and saved current value stored is specific to each upload type, returns to that when switch type back.
                               min = minradius,  # from global.R
                               value = global_or_param("default_default_miles"),
                               max   = global_or_param("default_max_miles")), # (set via global.R) highest allowed default (i.e. initial) value
-
+                 
                  numericInput('default_miles_shapefile', label = "Default miles width of buffer around shapefile edges",
                               min = minradius_shapefile, # from global.R
                               global_or_param("default_default_miles_shapefile"),
                               max   =     max_default_miles), # (set via global.R) highest allowed default (i.e. initial) value
-
+                 
                  numericInput('max_miles', label = "Maximum radius in miles",
                               value = global_or_param("default_max_miles"), # (set via global.R) initial cap that advanced tab lets you increase here
                               max        = maxmax_miles), # (set via global.R) i.e., even in the advanced tab one cannot exceed this cap
-
+                 
                  ######################################################## #
                  ## Calculating and reporting extra metrics ####
                  h2("Calculating and reporting extra metrics"),
-
+                 
                  checkboxInput('calculate_ratios',
                                label = "Results in Excel should include ratios to US and State averages",
                                value = default_calculate_ratios),
@@ -1162,17 +1151,17 @@ app_ui  <- function(request) {
                  checkboxInput('include_extraindicators',
                                label = 'Results should include extra indicators from Community Report - *** not implemented yet',
                                value = default_include_extraindicators),
-
+                 
                  ######################################################## #
                  ## Viewing maps, saving results ####
                  h2("Viewing maps, saving results"),
-
+                 
                  textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", value = ""),
-
+                 
                  ## Map colors, weights, opacity ####
                  ### in ejscreenapi:
                  numericInput(inputId = "circleweight_in", label = "weight of circles in maps", value = default_circleweight),
-
+                 
                  # opacitymin   <- 0
                  # opacitymax   <- 0.5
                  # opacitystep  <- 0.025
@@ -1181,43 +1170,43 @@ app_ui  <- function(request) {
                  # base_color_default      <- "blue"  ;
                  # cluster_color_default   <- "red"   ;
                  # highlight_color_default <- 'orange';
-
+                 
                  ######################################################## #
                  ## Spreadsheet formatting of results ####
                  h2("Spreadsheet formatting of results"),
-
+                 
                  # heatmap column names
-
-
+                 
+                 
                  # heatmap cutoffs for bins
-
-
+                 
+                 
                  # heatmap colors for bins
-
-
+                 
+                 
                  checkboxInput("ok2plot",
                                label = "OK to try to plot graphics and include in Excel download",
                                value = default_ok2plot),
-
+                 
                  ######################################################## #
                  ##  Finding distances: getblocksnearby() ####
                  h2("Finding distances to nearby blocks and residents"),
-
+                 
                  radioButtons(inputId = "avoidorphans",
                               label =  "Avoid orphans (by searching for nearest one out to maxradius, instead of reporting NA when no block is within radius)",
                               choices = c(Yes = TRUE, No = FALSE),
                               inline = TRUE,
                               selected = default_avoidorphans),
-
+                 
                  numericInput(inputId = 'maxradius', # THIS IS NOT THE MAX RADIUS USERS CAN PICK - THIS IS THE MAX TO WHICH IT COULD SEARCH IF avoidorphans=T
                               label = 'If avoid orphans=T, Max distance in miles to search for closest single block if site has none within normal radius',
                               value =  default_maxradius,  # 50000 / meters_per_mile, # 31.06856 miles !!
                               min = 0, max = default_maxradius, step = 1),
-
+                 
                  ######################################################## #
                  ## Which indicators to include in outputs via doaggregate() ####
                  h2("Which indicators to include in outputs"),
-
+                 
                  shiny::selectInput('subgroups_type',
                                     #    "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
                                     #    "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
@@ -1225,26 +1214,26 @@ app_ui  <- function(request) {
                                     label = "Which definition of demographic race ethnicity subgroups to include?",
                                     choices = list(NonHispanicAlone = 'nh', Alone = 'alone', Both = 'both'),
                                     selected = default_subgroups_type),
-
+                 
                  shiny::radioButtons(inputId = "need_proximityscore",
                                      label = "Results should include proximity score?",
                                      choices = list(Yes = TRUE, No = FALSE ),
                                      selected = default_need_proximityscore),
-
+                 
                  shiny::radioButtons(inputId = "include_ejindexes",
                                      label = "Need EJ Indexes",
                                      choices = list(Yes = TRUE, No = FALSE ),
                                      selected = default_include_ejindexes),
-
+                 
                  shiny::radioButtons(inputId = "extra_demog",
                                      label = "Need extra indicators from EJScreen v2.2 report, on language, age groups, gender, percent with disability, poverty, etc.",
                                      choices = list(Yes = TRUE, No = FALSE ),
                                      selected = default_extra_demog),
-
+                 
                  ######################################################## #
                  ## Counting indicators reaching certain thresholds ####
                  h2("Counting indicators reaching certain thresholds"),
-
+                 
                  ## input: GROUP NAME for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
                  shiny::textInput(inputId = 'an_threshgroup1',
                                   label = 'Name for 1st set of comparisons',
@@ -1263,7 +1252,7 @@ app_ui  <- function(request) {
                               value = default.an_thresh_comp1
                  ),
                  ###### #
-
+                 
                  ## input: GROUP NAME for 2d set of comparisons
                  shiny::textInput(inputId = 'an_threshgroup2',
                                   label = 'Name for 2nd set of comparisons',
@@ -1281,21 +1270,21 @@ app_ui  <- function(request) {
                               label = 'Threshold value(s) for 2nd set of comparisons (e.g. %ile 1-100):',
                               value = default.an_thresh_comp2
                  ),
-
+                 
                  ######################################################## #
                  ## Short report options ####
                  h2("Short report"),
-
+                 
                  shiny::textInput("standard_analysis_title",
                                   label = "Default title to show on each short report",
                                   value = default_standard_analysis_title),
-
+                 
                  ## input: Type of plot for 1page report
                  shiny::radioButtons(inputId = "plotkind_1pager",
                                      label = "Type of plot for 1page report",
                                      choices = list(Bar = "bar", Box = "box", Ridgeline = "ridgeline"),
                                      selected = default_plotkind_1pager),
-
+                 
                  ## _radio button on format of short report
                  #                  was DISABLED while PDF KNITTING DEBUGGED
                  radioButtons("format1pager", "Format", choices = c(html = "html", html = "pdf"), inline = TRUE),
@@ -1305,26 +1294,26 @@ app_ui  <- function(request) {
                  ######################################################## #
                  ## Long report options ####
                  h2("Long report"),
-
+                 
                  # relocate any here from the Full Report tab??
-
+                 
                  br(), ## vertical space
-
+                 
                  shiny::radioButtons(inputId = "more3",
                                      label = "placeholder for options not yet implemented",
                                      choices = list(TBD = "a", etc = "b"),
                                      selected = "a"),
-
+                 
                  # ),
-
+                 
                  ##################################################### #
                  ## Testing modes ####
                  h2("Testing/ debugging modes!!!"),
-
+                 
                  radioButtons("testing", "testing?", choices = c(Yes = TRUE, No = FALSE),
                               inline = TRUE,
                               selected = default_testing),
-
+                 
                  radioButtons("shiny.testmode", "shiny.testmode?", choices = c(Yes = TRUE, No = FALSE),
                               inline = TRUE,
                               selected = default_shiny.testmode),
@@ -1349,29 +1338,29 @@ app_ui  <- function(request) {
                  #
                  # shiny.autoload.r (defaults to TRUE)
                  # If TRUE, then the R/ of a shiny app will automatically be sourced.
-
+                 
                  checkboxInput('print_uploaded_points_to_log', label = "Print each new uploaded lat lon table full contents to server log",
                                value = default_print_uploaded_points_to_log),
                  ## . ####
                  ############################################################### #
                  # ejscreen API tool link ####
-
+                 
                  span('EJAM tool for batch use of the EJScreen API: ',
                       a('ejscreenapi tool',
                         href = 'https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/',
                         target = '_blank', rel = 'noreferrer noopener'))
-
+                 
                  # end advanced features and settings subtab
                  ##################################################################### #
-
+                 
         ) # end Advanced Settings + API tab ## ##
-   
+        
         ################################################################################ #
         ## . ####
         
       ), # end tabset panel from line 37 or so ^^^^^^^^^  ## ##
       html_footer_fmt  ## adds HTML footer - defined in global.R
-
+      
     ) ## end fluidPage
   ) # end tag list
   
