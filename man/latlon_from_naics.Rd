@@ -56,6 +56,7 @@ where you can find facilities based on NAICS or SIC.
 See more about NAICS industry codes at \url{https://www.naics.com/search}
 }
 \examples{
+\dontrun{
   regid_from_naics(321114)
   latlon_from_naics(321114)
   # latlon_from_naics(naics_from_any("cheese")[,code] )
@@ -74,7 +75,13 @@ See more about NAICS industry codes at \url{https://www.naics.com/search}
   naics_counts[NAICS \%in\% mycode, ]
   # see parent codes that contain each code
   naicstable[code \%in\% mycode, ]
-
+  
+  # how many were found via each naics code?
+  found = latlon_from_naics(c(211,331))
+  x = table( found$naics_found, found$naics_query)
+  x = x[order(x[, 1],decreasing = T),]
+  x
+  }
 }
 \seealso{
 \code{\link[=frs_from_naics]{frs_from_naics()}}  \code{\link[=frs_from_sic]{frs_from_sic()}} \code{\link[=latlon_from_sic]{latlon_from_sic()}} \code{\link[=regid_from_naics]{regid_from_naics()}} \code{\link[=naics_from_any]{naics_from_any()}}
