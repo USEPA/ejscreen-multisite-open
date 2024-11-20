@@ -24,7 +24,13 @@ within that overall category.}
 }
 \value{
 A data.table (not just data.frame) with columns called
-lat, lon, REGISTRY_ID, NAICS (unless id_only parameter set TRUE).
+lat, lon, REGISTRY_ID, NAICS, naics_found, naics_query (unless id_only parameter set TRUE).
+naics_query is the input parameter that was used (that had been provided to this function as naics).
+naics_found and NAICS are identical (redundant), and are the code found that
+was listed in the \link{frs_by_naics} table, so it might be a subcategory (child)
+of the naics_query term. For example, naics_query might be 33611 (5 digits)
+and for one facility the NAICS and naics_found might be 336111 (a 6-digit code)
+and for another facility they might be 336112.
 }
 \description{
 Get lat lon, Registry ID, given NAICS industry code(s)
@@ -38,6 +44,7 @@ and requires understanding the NAICS codes system, the FRS data, and the EJAM fu
 See the discussion in the "Advanced" or other vignettes/articles.
 \item Many FRS sites lack NAICS code!
 \item Note the difference between children = TRUE and children = FALSE
+\item The NAICS in the returned table may be a child NAICS not the NAICS used in the query! This may cause confusion if you are querying multiple parent NAICS and you want to analyze results by NAICS!
 }
 
 The functions like \code{\link[=regid_from_naics]{regid_from_naics()}}, \code{\link[=latlon_from_naics]{latlon_from_naics()}}, and \code{\link[=frs_from_naics]{frs_from_naics()}}
@@ -57,6 +64,16 @@ See more about NAICS industry codes at \url{https://www.naics.com/search}
   head(regid_from_naics(c(3366, 33661, 336611))
   head(regid_from_naics(3366, children = TRUE))
   # mapfast(frs_from_naics(336611)) # simple map
+  
+  # get name from one code
+  naics_from_code(336)$name
+  # get the name from each code
+  mycode = c(33611, 336111, 336112)
+  naics_from_code(mycode)$name
+  # see counts of facilities by code (parent) and subcategories (children)
+  naics_counts[NAICS \%in\% mycode, ]
+  # see parent codes that contain each code
+  naicstable[code \%in\% mycode, ]
 
 }
 \seealso{
