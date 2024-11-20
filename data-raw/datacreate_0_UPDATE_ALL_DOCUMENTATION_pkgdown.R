@@ -101,6 +101,7 @@ update_pkgdown = function(
   # UNIT TESTS ####
   
   if (dotests) {
+    cat('doing unit tests \n')
     source("./tests/manual_nonalphabetical.R")
     test_interactively(ask = doask & interactive() & testinteractively )
   }
@@ -119,12 +120,18 @@ update_pkgdown = function(
   # README & DOCUMENT ####
   
   if (dodocument) {
+    cat('rendering README.Rmd to .md  \n')
     rmarkdown::render("README.Rmd")  # renders .Rmd to create a  .md file that works in github as a webpage
     
     # build_rmd() would take a couple minutes as it installs the package in a temporary library
     # build_rmd() would just be a wrapper around rmarkdown::render() that 1st installs a temp copy of pkg, then renders each .Rmd in a clean R session.
     #################### # #################### # #################### # #################### # 
+    cat('detaching packages  \n')
+    golem::detach_all_attached()
+    require(devtools)
+    require(pkgdown)
     
+    cat('trying to do document() \n')
     document()
   }
   #################### # #################### # #################### # #################### # 
@@ -132,6 +139,8 @@ update_pkgdown = function(
   # INSTALL ####
   
   if (doinstall) {
+    
+    cat('doing install()  \n')  # there may be problems with this step being done from this function?
     system.time({
       
       # 4+ minutes for install() 
@@ -163,7 +172,7 @@ update_pkgdown = function(
         quiet = FALSE
       )
       #################### # 
-      
+      cat('detaching packages  \n')
       golem::detach_all_attached()
       require(devtools)
       require(pkgdown)
@@ -176,15 +185,20 @@ update_pkgdown = function(
   # so it loads the .rda from aws that are older and not all files are there. 
   ## why did it not use the pins versions since it did connect? and why not found in that local path???
   ## so did rm(list=ls()) and tried to continue from library( ) above .
-  
+  cat('doing rm() for most objects  \n')
   EJAM:::rmost(notremove = c('dotests', "dataload_pin_available", 'dopreviewonly', 'dodocument', 'doask', 'doinstall', 'doloadall_not_library'))
   
   #################### # #################### # #################### # #################### # 
   
   # LOAD ALL FROM SOURCE  ####
   if (doloadall_not_library) {
-    load_all()
+    cat('detaching packages, then doing load_all() \n')
+    golem::detach_all_attached()
+    require(devtools)
+    require(pkgdown)
+    devtools::load_all() 
   } else {
+    cat('doing require(EJAM) \n')
     x = try( require(EJAM) )
     if (inherits(x, "try-error")) {stop("try restarting R")}
     rm(x)
@@ -192,8 +206,10 @@ update_pkgdown = function(
   #################### # #################### # #################### # #################### # 
   
   # DATASETS FROM PINS  ####
-  
-  if (!EJAM:::dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
+  cat('checking pins board availability and doing dataload_  \n')
+  if (!EJAM:::dataload_pin_available()) {
+    cat("cannot build vignettes correctly without access to pins board (unless updated versions are saved locally)\n")
+    warning("cannot build vignettes correctly without access to pins board (unless updated versions are saved locally)")}
   EJAM::dataload_from_pins("all") #  # just in case 
   
   #################### # #################### # #################### # #################### # 
@@ -217,6 +233,7 @@ update_pkgdown = function(
   # ** BUILD SITE (HTML FILES) #### 
   
   if (dopreviewonly) {
+    cat("doing build_site() \n")
     
     pkgdown::build_site(
       examples = FALSE, lazy = TRUE, 
@@ -295,4 +312,5 @@ update_pkgdown(
 )
     
 ")
+  
   
