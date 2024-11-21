@@ -545,10 +545,10 @@ html_header_fmt <- tagList(
     tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
     tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
     
-    ## APP TITLE could be defined here, or if using golem package, in golem_add_external_resources() within app_ui.R ####
+    ## APP TITLE could be defined here, and/or in golem_add_external_resources() within app_ui.R ####
     #
     # tags$title('EJAM | US EPA'),
-    tags$meta(name = "application-name", content = "EJAM"),
+    tags$meta(name = "application-name", content = "EJScreen Multisite"),
     
     ## EPA FAVICONS - but can be specified in (and this would conflict with) golem_add_external_resources() within app_ui.R ####
     
