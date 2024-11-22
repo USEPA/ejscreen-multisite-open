@@ -323,7 +323,14 @@ app_ui  <- function(request) {
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'NAICS'",
                             div(style = 'border: 1px solid #005ea2; padding: 10px; background-color: white',
+                                
+                                radioButtons('naics_digits_shown', "See all subcategories of NAICS?",
+                                             inline = TRUE,
+                                             choiceNames = c("Basic list", "Detailed list"),
+                                             choiceValues = c('basic', 'detailed'),
+                                             selected = 'basic'),
                                 radioButtons('add_naics_subcategories', "Add all subcategories of NAICS?",
+                                             inline = TRUE,
                                              choiceNames = c("Yes","No"),
                                              choiceValues = c(TRUE,FALSE),
                                              selected = TRUE)
