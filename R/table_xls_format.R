@@ -322,10 +322,28 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
     }
     Sys.setenv(OPENSSL_CONF="/dev/null")
-    webshot::webshot(mypath, file = file.path(mytempdir, "map1.png"), cliprect = "viewport")
-    if (testing) cat(file.path(mytempdir, "map1.png"), '\n')
-    openxlsx::insertImage(wb, sheet = 'map', file = file.path(mytempdir, 'map1.png'),
-                          width = 9, height = 7)
+    map_file <- file.path(mytempdir, "map1.png")
+    tryCatch({
+      webshot::webshot(mypath, file = map_file, cliprect = "viewport")
+    }, error = function(e) {
+      message("Error converting HTML to PNG:", e$message)
+      # Handle the error (e.g., fallback mechanism, logging, etc.)
+    })
+    if (testing) cat(map_file, '\n')
+    # Insert image into workbook
+    if (file.exists(map_file)) {
+      tryCatch({
+        # height and width are static, need to be updated if content on map changes
+        openxlsx::insertImage(wb, sheet = 'map', file = map_file,
+                              width = 9, height = 7)
+      }, error = function(e) {
+        message("Error inserting image into Excel:", e$message)
+        # Handle the error (e.g., fallback mechanism, logging, etc.)
+      })
+    } else {
+      message("PNG file not found or could not be generated.")
+    }
+    
   }
   
 
