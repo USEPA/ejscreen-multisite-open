@@ -85,8 +85,8 @@ choices_for_type_of_site_category <- c(
   'by Industry (NAICS) Code' = 'NAICS'
   # ,
   # 'by Industry (SIC) Code'   = 'SIC'
-  ,
-  'by EPA Program'           = 'EPA_PROGRAM'
+  # ,
+  # 'by EPA Program'           = 'EPA_PROGRAM'
   # ,
   # 'by MACT subpart'          = 'MACT'
 )
