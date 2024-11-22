@@ -88,7 +88,7 @@ epa_programs_counts$fed = !grepl("^[A-Z]{2}[-]", as.vector(epa_programs_counts$p
 # drop some others
 
 othernonfedepa = c("ACES", "AZURITE", "BIA INDIAN SCHOOL",
-                "CASWIS", "CDAFLP", "CEDS", "CIM", "CNFRS", 
+                "CARB-TCH", "CASWIS", "CDAFLP", "CEDS", "CIM", "CNFRS", 
                 "DEN", "DTSC-ENVIROSTOR",
                 "FARR", "FDM", "FIS",
                 "GEIMS", "HWTS-DATAMART",
@@ -96,46 +96,50 @@ othernonfedepa = c("ACES", "AZURITE", "BIA INDIAN SCHOOL",
                 "MERI-FIS", "NDEQ", "NNEMS", 
                 "PDS", "PERMIT TRACKING", "REGION",
                 "SIMS", "SRPMICEMS", "STATE", 
-                "TEST", "UORS")
+                "TEST", "UORS", "WDEQ")
 
 epa_programs_counts$fed[epa_programs_counts$program %in% othernonfedepa] <- FALSE
 
-# what is left?
+# what is fed?
 
-# epa_programs_counts[!(epa_programs_counts$program %in% frsprogramcodes$code  ), ]
+epa_programs_counts[epa_programs_counts$fed,c(1:3,5)]
 
-#      program  count  pgm_text_dropdown    fed                                                             name
-#       <char>  <int>             <char> <lgcl>                                                           <char>
-# 1:      ICIS 160386     ICIS (160,386)   TRUE                         INTEGRATED COMPLIANCE INFORMATION SYSTEM
-# 2:  AIRS/AFS 100111 AIRS/AFS (100,111)   TRUE                                              AIR FACILITY SYSTEM
-# 3:  OSHA-OIS  84643  OSHA-OIS (84,643)   TRUE OCCUPATIONAL SAFETY AND HEALTH ADMINISTRATION INFORMATION SYSTEM
-# 4:      NCDB  70688      NCDB (70,688)   TRUE                                     NATIONAL COMPLIANCE DATABASE
-# 5:      SSTS  15945      SSTS (15,945)   TRUE                                    SECTION SEVEN TRACKING SYSTEM
-# 6:     CEDRI  14162     CEDRI (14,162)   TRUE                COMPLIANCE AND EMISSIONS DATA REPORTING INTERFACE
-# 7:     EGRID  10471     EGRID (10,471)   TRUE              EMISSIONS & GENERATION RESOURCE INTEGRATED DATABASE
-# 8:   EIA-860   8776    EIA-860 (8,776)   TRUE         ENERGY INFORMATION ADMINISTRATION-860 (EIA-860) DATABASE
-# 9:  AIRS/AQS   8327   AIRS/AQS (8,327)   TRUE                                               AIR QUALITY SYSTEM
-# 10:   OTAQREG   7280    OTAQREG (7,280)   TRUE      OFFICE OF TRANSPORTATION AND AIR QUALITY FUELS REGISTRATION
-# 11: LUST-ARRA   5683  LUST-ARRA (5,683)   TRUE                     LEAKING UNDERGROUND STORAGE TANK (LUST-ARRA)
-# 12:       EPS   2111        EPS (2,111)   TRUE                                         ELECTRONIC PERMIT SYSTEM
-# 13:      RBLC   1523       RBLC (1,523)   TRUE                                     RACT/BACT/LAER CLEARINGHOUSE
-# 14:      LMOP    821         LMOP (821)   TRUE                                LANDFILL METHANE OUTREACH PROGRAM
-# 15:       UST    658          UST (658)   TRUE                                         UNDERGROUND STORAGE TANK
-# 16:      FFEP    186         FFEP (186)   TRUE                     FEDERAL FACILITIES RECOVERY AND REUSE OFFICE
-# 17:      ECRM    140         ECRM (140)   TRUE                          ENFORCEMENT CRIMINAL RECORDS MANAGEMENT
-# 18:  FFDOCKET    107     FFDOCKET (107)   TRUE               FEDERAL FACILITY HAZARDOUS WASTE COMPLIANCE DOCKET
-# 19:       RFS     91           RFS (91)   TRUE                                          RENEWABLE FUEL STANDARD
-# 20:   RADINFO     51       RADINFO (51)   TRUE                                     RADIATION INFORMATION SYSTEM
-# 21:      BRAC     48          BRAC (48)   TRUE                                     BASE REALIGNMENT AND CLOSURE
-# 22:     SWIPR     26         SWIPR (26)   TRUE                     SUBPART W IMPOUNDMENT PHOTOGRAPHIC REPORTING
-# program  count  pgm_text_dropdown    fed                                                             name
+# what is fed but not on the very very short list (from ECHO search tool )
 
+   epa_programs_counts[!(epa_programs_counts$program %in% frsprogramcodes$code  ) & fed, 1:3]
+   # program  count                                                                            PGM_SYS_NAME
+   # <char>  <int>                                                                                  <char>
+   #   1:  AIRS/AFS 100111                                                                     AIR FACILITY SYSTEM
+   # 2:  AIRS/AQS   8327                                                                      AIR QUALITY SYSTEM
+   # 3:      BRAC     48                                                            BASE REALIGNMENT AND CLOSURE
+   # 4:     CEDRI  14162                                       COMPLIANCE AND EMISSIONS DATA REPORTING INTERFACE
+   # 5:      ECRM    140                                                 ENFORCEMENT CRIMINAL RECORDS MANAGEMENT
+   # 6:     EGRID  10471                                     EMISSIONS & GENERATION RESOURCE INTEGRATED DATABASE
+   # 7:   EIA-860   8776                                ENERGY INFORMATION ADMINISTRATION-860 (EIA-860) DATABASE
+   # 8:       EPS   2111                                                                ELECTRONIC PERMIT SYSTEM
+   # 9:  FFDOCKET    107                                      FEDERAL FACILITY HAZARDOUS WASTE COMPLIANCE DOCKET
+   # 10:      FFEP    186                                            FEDERAL FACILITIES RECOVERY AND REUSE OFFICE
+   # 11:      ICIS 160386                                                INTEGRATED COMPLIANCE INFORMATION SYSTEM
+   # 12:      LMOP    821                                                       LANDFILL METHANE OUTREACH PROGRAM
+   # 13: LUST-ARRA   5683 LEAKING UNDERGROUND STORAGE TANK (LUST) ¿ AMERICAN RECOVERY AND REINVESTMENT ACT (ARRA)
+   # 14:      NCDB  70688                                                            NATIONAL COMPLIANCE DATABASE
+   # 15:       OIL     41                                                                                    <NA>
+   #   16:  OSHA-OIS  84643                        OCCUPATIONAL SAFETY AND HEALTH ADMINISTRATION INFORMATION SYSTEM
+   # 17:   OTAQREG   7280                             OFFICE OF TRANSPORTATION AND AIR QUALITY FUELS REGISTRATION
+   # 18:   RADINFO     51                                                            RADIATION INFORMATION SYSTEM
+   # 19:      RBLC   1523                                                            RACT/BACT/LAER CLEARINGHOUSE
+   # 20:       RFS     91                                                                 RENEWABLE FUEL STANDARD
+   # 21:      SSTS  15945                                                           SECTION SEVEN TRACKING SYSTEM
+   # 22:     SWIPR     26                                            SUBPART W IMPOUNDMENT PHOTOGRAPHIC REPORTING
+   # 23:       UST    658                                                                UNDERGROUND STORAGE TANK
+   # program  count                                                                            PGM_SYS_NAME                
+ 
 # maybe keep some of those?
 
 maybe_keep_not_in_frsprogramcodes_echo <- c(
 #   # "ICIS", # 160K SITES
 #   # "OSHA-OIS",
-#   "EGRID",
+    "EGRID",
 #   "LUST-ARRA",
 #   "UST"
 )
@@ -153,20 +157,111 @@ epa_programs_counts$fed <- NULL
 
 epa_programs_counts <- epa_programs_counts[ (epa_programs_counts$program %in% epa_programs_defined$PGM_SYS_ACRNM), ] # removes 3 internal-only ones
 
+epa_programs_counts[,1:3]
+# 34 now
+# <char>  <int>                                                                                  <char>
+#   1:     ACRES  35582                                   ASSESSMENT, CLEANUP AND REDEVELOPMENT EXCHANGE SYSTEM
+# 2:       AIR 134295                                                                          ICIS-AIR (AIR)
+# 3:  AIRS/AFS 100111                                                                     AIR FACILITY SYSTEM
+# 4:  AIRS/AQS   8327                                                                      AIR QUALITY SYSTEM
+# 5:        BR   5672                                                                      BIENNIAL REPORTERS
+# 6:      BRAC     48                                                            BASE REALIGNMENT AND CLOSURE
+# 7:    CAMDBS    726                                      CLEAN AIR MARKETS DIVISION (CAMD) BUSINESS SYSTEMS
+# 8:     CEDRI  14162                                       COMPLIANCE AND EMISSIONS DATA REPORTING INTERFACE
+# 9:    E-GGRT   6084                                       ELECTRONIC GREENHOUSE GAS REPORTING TOOL (E-GGRT)
+# 10:      ECRM    140                                                 ENFORCEMENT CRIMINAL RECORDS MANAGEMENT
+# 11:     EGRID  10471                                     EMISSIONS & GENERATION RESOURCE INTEGRATED DATABASE
+# 12:   EIA-860   8776                                ENERGY INFORMATION ADMINISTRATION-860 (EIA-860) DATABASE
+# 13:       EIS 119772                                                         EMISSION INVENTORY SYSTEM (EIS)
+# 14:       EPS   2111                                                                ELECTRONIC PERMIT SYSTEM
+# 15:  FFDOCKET    107                                      FEDERAL FACILITY HAZARDOUS WASTE COMPLIANCE DOCKET
+# 16:      FFEP    186                                            FEDERAL FACILITIES RECOVERY AND REUSE OFFICE
+# 17:      ICIS 160386                                                INTEGRATED COMPLIANCE INFORMATION SYSTEM
+# 18:      LMOP    821                                                       LANDFILL METHANE OUTREACH PROGRAM
+# 19: LUST-ARRA   5683 LEAKING UNDERGROUND STORAGE TANK (LUST) ¿ AMERICAN RECOVERY AND REINVESTMENT ACT (ARRA)
+# 20:      NCDB  70688                                                            NATIONAL COMPLIANCE DATABASE
+# 21:     NPDES 409502                            NATIONAL POLLUTANT DISCHARGE ELIMINATION SYSTEM (ICIS-NPDES)
+# 22:  OSHA-OIS  84643                        OCCUPATIONAL SAFETY AND HEALTH ADMINISTRATION INFORMATION SYSTEM
+# 23:   OTAQREG   7280                             OFFICE OF TRANSPORTATION AND AIR QUALITY FUELS REGISTRATION
+# 24:   RADINFO     51                                                            RADIATION INFORMATION SYSTEM
+# 25:      RBLC   1523                                                            RACT/BACT/LAER CLEARINGHOUSE
+# 26:  RCRAINFO 525179                               RESOURCE CONSERVATION AND RECOVERY ACT INFORMATION SYSTEM
+# 27:       RFS     91                                                                 RENEWABLE FUEL STANDARD
+# 28:      SEMS  11217                                                  SUPERFUND ENTERPRISE MANAGEMENT SYSTEM
+# 29:      SFDW  40887                                                  SAFE DRINKING WATER INFORMATION SYSTEM
+# 30:      SSTS  15945                                                           SECTION SEVEN TRACKING SYSTEM
+# 31:     SWIPR     26                                            SUBPART W IMPOUNDMENT PHOTOGRAPHIC REPORTING
+# 32:      TRIS  34147                                                         TOXICS RELEASE INVENTORY SYSTEM
+# 33:      TSCA  13581                                                            TOXIC SUBSTANCES CONTROL ACT
+# 34:       UST    658                                                                UNDERGROUND STORAGE TANK
+# program  count                                                                            PGM_SYS_NAME
 ######################################################### ########################################################## #
 
 #  OR JUST USE A SHORT LIST TO SIMPLIFY PUBLIC INTERFACE
 #
 # just use a very short list taken from ECHO's website search tool:
 
+#   > frsprogramcodes
+# description     code
+# 1                     National Pollutant Discharge Elimination System (ICIS-NPDES)    NPDES
+# 2                      Integrated Compliance Information System for Air (ICIS-Air)      AIR
+# 3                 Resource Conservation and Recovery Act (RCRA) Information System RCRAINFO
+# 4                                            Risk Management Plan (RMP) facilities      RMP
+# 5                               The Safe Drinking Water Information System (SDWIS)     SFDW
+# 6                                       The Superfund Enterprise Management System     SEMS
+# 7                                       Clean Air Markets Division Business System   CAMDBS
+# 8                                           Toxics Release Inventory Program (TRI)     TRIS
+# 9                                                 Greenhouse Gas Reporting Program   E-GGRT
+# 10                                                Emissions Inventory System (EIS)      EIS
+# 11                                             Toxic Substances Control Act (TSCA)     TSCA
+# 12   Assessment, Cleanup and Redevelopment Exchange System (ACRES) for Brownfields    ACRES
+# 13 Biennial Reporters (BR) Hazardous Waste Treatment, Storage, Disposal Facilities       BR
+
+setdiff(frsprogramcodes$code, epa_programs_counts$program)
+# [1] "RMP"  # we lack RMP site info from the frs_by_program 
+
+setdiff_yx(frsprogramcodes$code, epa_programs_counts$program)
+# [1] "AIRS/AFS"  "AIRS/AQS"  "BRAC"      "CEDRI"     "ECRM"      "EGRID"     "EIA-860"   "EPS"       "FFDOCKET"  "FFEP"     
+# [11] "ICIS"      "LMOP"      "LUST-ARRA" "NCDB"      "OSHA-OIS"  "OTAQREG"   "RADINFO"   "RBLC"      "RFS"       "SSTS"     
+# [21] "SWIPR"     "UST" 
+
+epa_programs_counts[epa_programs_counts$program %in% setdiff( epa_programs_counts$program, frsprogramcodes$code), 1:3]
+
+#      program  count                                                                            PGM_SYS_NAME
+#       <char>  <int>                                                                                  <char>
+# 1:  AIRS/AFS 100,111                                                                     AIR FACILITY SYSTEM  - too big/general
+# 2:  AIRS/AQS   8,327                                                                      AIR QUALITY SYSTEM
+# 3:      BRAC     48                                                            BASE REALIGNMENT AND CLOSURE
+# 4:     CEDRI  14,162                                       COMPLIANCE AND EMISSIONS DATA REPORTING INTERFACE
+# 5:      ECRM    140                                                 ENFORCEMENT CRIMINAL RECORDS MANAGEMENT
+# 6:     EGRID  10,471                                     EMISSIONS & GENERATION RESOURCE INTEGRATED DATABASE  -- keep this ***
+# 7:   EIA-860   8,776                                ENERGY INFORMATION ADMINISTRATION-860 (EIA-860) DATABASE
+# 8:       EPS   2,111                                                                ELECTRONIC PERMIT SYSTEM
+# 9:  FFDOCKET    107                                      FEDERAL FACILITY HAZARDOUS WASTE COMPLIANCE DOCKET
+# 10:      FFEP    186                                            FEDERAL FACILITIES RECOVERY AND REUSE OFFICE
+# 11:      ICIS 160,386                                                INTEGRATED COMPLIANCE INFORMATION SYSTEM  - too big/general
+# 12:      LMOP    821                                                       LANDFILL METHANE OUTREACH PROGRAM
+# 13: LUST-ARRA   5,683 LEAKING UNDERGROUND STORAGE TANK (LUST) ¿ AMERICAN RECOVERY AND REINVESTMENT ACT (ARRA) - not sure it is clearly defined/useful
+# 14:      NCDB  70,688                                                            NATIONAL COMPLIANCE DATABASE  - too big/general
+# 15:  OSHA-OIS  84,643                        OCCUPATIONAL SAFETY AND HEALTH ADMINISTRATION INFORMATION SYSTEM  - too big/general
+# 16:   OTAQREG   7,280                             OFFICE OF TRANSPORTATION AND AIR QUALITY FUELS REGISTRATION
+# 17:   RADINFO     51                                                            RADIATION INFORMATION SYSTEM
+# 18:      RBLC   1,523                                                            RACT/BACT/LAER CLEARINGHOUSE - not sure it is clearly defined/useful
+# 19:       RFS     91                                                                 RENEWABLE FUEL STANDARD
+# 20:      SSTS  15,945                                                           SECTION SEVEN TRACKING SYSTEM
+# 21:     SWIPR     26                                            SUBPART W IMPOUNDMENT PHOTOGRAPHIC REPORTING
+# 22:       UST    658                                                                UNDERGROUND STORAGE TANK - not sure it is clearly defined/useful
+# program  count                                                                            PGM_SYS_NAME
+
 # > names(epa_programs_counts)
 # [1] "program"      "count"        "PGM_SYS_NAME" "PGM_SYS_DESC"
 
 
-epa_programs_counts <- epa_programs_counts[epa_programs_counts$program %in% frsprogramcodes$code, ]
+epa_programs_counts <- epa_programs_counts[epa_programs_counts$program %in% c("EGRID", frsprogramcodes$code), ]
 
 epa_programs_counts$shortname <- frsprogramcodes$description[match(epa_programs_counts$program, frsprogramcodes$code)]
 
+epa_programs_counts$shortname[epa_programs_counts$program == "EGRID"] <- "Emissions & Generation Resource Integrated Database"
 epa_programs_counts$shortname <- gsub("Clean Air Markets Division Business System", "Clean Air Markets Division (CAMD) Business System", epa_programs_counts$shortname)
 epa_programs_counts$shortname <- gsub("Greenhouse Gas Reporting Program", "Greenhouse Gas Reporting Program (E-GGRT)",  epa_programs_counts$shortname)
 epa_programs_counts$shortname <- gsub("The Superfund Enterprise Management System", "The Superfund Enterprise Management System (SEMS)", epa_programs_counts$shortname)
@@ -179,11 +274,32 @@ data.table::setcolorder(epa_programs_counts, c('count', 'program', 'shortname', 
 
 #  OR JUST USE A VERY, VERY SHORT LIST TO LIMIT IT TO ONLY GROUPS THAT CAN BE FINISHED QUICKLY, <5K OR 10K FACILITIES EACH
 
+# ejamit() analyzes about 6,000 sites per minute, 
+# so analyzing more than 3,000 seems too slow for a public tool.
+# Those could be cached or later optimized for speed.
+# but ALL of the interesting groups are >5k sites each except CAMDBS.
+# only 3 groups have < 10k each
+# 36k are in ACRES, Brownfields. 
+# 192 MB file. Takes 8 minutes total. 4 minutes to do getblocks alone. too long.
+#  48 MB file if delete the bybg table which took 3/4 of the total space!
+## offer those as cached results, or not at all.
 
-epa_programs_counts <- epa_programs_counts[epa_programs_counts$program %in% c(
-  "BR", "CAMDBS", "E-GGRT", "SEMS", "TSCA", "TRIS"
-  ), ]
+veryshort = c(
+  "BR", "CAMDBS", "E-GGRT", "SEMS", "TSCA", "TRIS", 
+  "ACRES", "EGRID"
+)
+setdiff(epa_programs_counts$program, veryshort)
 
+# "AIR"  "EIS"   "NPDES"  "SFDW"    "RCRAINFO"   # all are huge groups 
+
+epa_programs_counts <- epa_programs_counts[order(epa_programs_counts$count), ]  
+
+epa_programs_counts[epa_programs_counts$program %in% veryshort, 1:3]
+epa_programs_counts[ , 1:3]
+
+# JUST USE A VERY, VERY SHORT LIST 
+  epa_programs_counts <- epa_programs_counts[epa_programs_counts$program %in% veryshort, ]
+ 
 
 ######################################################### #
 
