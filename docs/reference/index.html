@@ -635,6 +635,12 @@
         <dd>Convert shapefile (class sf) of points to data.table of lat, lon columns</dd>
       </dl><dl><dt>
 
+          <code><a href="shapes_from_fips.html">shapes_from_fips()</a></code>
+
+        </dt>
+        <dd>Download shapefiles based on FIPS codes of States, Counties, Cities/CDPs, Tracts, or Blockgroups</dd>
+      </dl><dl><dt>
+
           <code><a href="shapes_counties_from_countyfips.html">shapes_counties_from_countyfips()</a></code>
 
         </dt>
@@ -685,7 +691,13 @@
           <code><a href="fipstype.html">fipstype()</a></code>
 
         </dt>
-        <dd>FIPS - Identify what type of Census geography is each FIPS code (block, county, etc.)</dd>
+        <dd>FIPS - Identify what type of Census geography each FIPS code seems to be (block, county, etc.)</dd>
+      </dl><dl><dt>
+
+          <code><a href="fips_valid.html">fips_valid()</a></code>
+
+        </dt>
+        <dd>check if FIPS code is valid, meaning it is an actual Census FIPS code for a State, County, City/CDP, etc.</dd>
       </dl><dl><dt>
 
           <code><a href="fips_lead_zero.html">fips_lead_zero()</a></code>
@@ -694,13 +706,7 @@
         <dd>FIPS - Add leading zeroes to fips codes if missing, replace with NA if length invalid</dd>
       </dl><dl><dt>
 
-          <code><a href="fips_counties_from_countyname.html">fips_counties_from_countyname()</a></code>
-
-        </dt>
-        <dd>get FIPS for a county based on part of the countyname and state abbrev</dd>
-      </dl><dl><dt>
-
-          <code><a href="fips_bg_from_anyfips.html">fips_bg_from_anyfips()</a></code>
+          <code><a href="fips_bgs_in_fips.html">fips_bgs_in_fips()</a></code>
 
         </dt>
         <dd>FIPS - Get unique blockgroup fips in or containing specified fips of any type</dd>
@@ -710,6 +716,12 @@
 
         </dt>
         <dd>FIPS - Read and clean FIPS column from a table, after inferring which col it is</dd>
+      </dl><dl><dt>
+
+          <code><a href="fips_place_from_placename.html">fips_place_from_placename()</a></code>
+
+        </dt>
+        <dd>search using names of cities, towns, etc. to try to find matches and get FIPS helper used by name2fips()</dd>
       </dl><dl><dt>
 
           <code><a href="censusplaces.html">censusplaces</a></code>
@@ -1396,16 +1408,16 @@
         <dd>Make ridgeline plot of ratios of demographic score to its average</dd>
       </dl><dl><dt>
 
-          <code><a href="plot_vs_us.html">plot_vs_us()</a></code>
+          <code><a href="plot_boxplot_pctiles.html">plot_boxplot_pctiles()</a></code>
 
         </dt>
-        <dd>DRAFT - Plot distribution of data among residents at sites vs reference area (US, etc.)</dd>
+        <dd>Boxplots comparing a few indicators showing how each varies across sites Visualize mean median etc. for each of several percentile indicators</dd>
       </dl><dl><dt>
 
           <code><a href="boxplots_ratios.html">boxplots_ratios()</a></code>
 
         </dt>
-        <dd>quick boxplots of demographics across sites as ratios to US means</dd>
+        <dd>boxplots of demographics across sites as ratios to US means</dd>
       </dl><dl><dt>
 
           <code><a href="ejam2barplot_sitegroups.html">ejam2barplot_sitegroups()</a></code>

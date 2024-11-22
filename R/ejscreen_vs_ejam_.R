@@ -86,7 +86,7 @@ ejscreen_vs_ejam <- function(latlon, radius = 3,
                              calculate_ratios = FALSE, include_ejindexes = TRUE,
                              x100fix = TRUE, 
                              x100varnames = names_pct_as_fraction_ejamit,
-                             showdrinkingwater = FALSE,
+                             showdrinkingwater = TRUE,
                              showpctowned = FALSE,
                              ...) {
   

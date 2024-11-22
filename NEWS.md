@@ -16,7 +16,6 @@
 -   Improved and updated vignettes (articles) on documentation website (GitHub pages pkgdown site content) and README
 -   Improved and updated documentation of R packages in help files.
 -   Conducted validation analysis comparing EJAM and EJScreen results for proximity to 2,000 randomly selected FRS sites (3 mile radius).
-    - Identified possible problem in drinking water indicator, to be resolved.
     - Removed % owner occupied housing (pctownedunits) indicator pending clarifications/ corrections re: EJScreen calculation.
     - Confirmed the displayed demographic indicator values agree for well over 95% of locations, and the environmental indicator values also closely agree at the vast majority of sites. (Exceptions being the two noted above).
     - Updated percentile lookup logic to match the recent changes in EJScreen – some edge cases still in progress.

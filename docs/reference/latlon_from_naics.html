@@ -87,7 +87,13 @@ within that overall category.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data.table (not just data.frame) with columns called
-lat, lon, REGISTRY_ID, NAICS (unless id_only parameter set TRUE).</p>
+lat, lon, REGISTRY_ID, NAICS, naics_found, naics_query (unless id_only parameter set TRUE).
+naics_query is the input parameter that was used (that had been provided to this function as naics).
+naics_found and NAICS are identical (redundant), and are the code found that
+was listed in the <a href="frs_by_naics.html">frs_by_naics</a> table, so it might be a subcategory (child)
+of the naics_query term. For example, naics_query might be 33611 (5 digits)
+and for one facility the NAICS and naics_found might be 336111 (a 6-digit code)
+and for another facility they might be 336112.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -96,6 +102,7 @@ and requires understanding the NAICS codes system, the FRS data, and the EJAM fu
 See the discussion in the "Advanced" or other vignettes/articles.</p></li>
 <li><p>Many FRS sites lack NAICS code!</p></li>
 <li><p>Note the difference between children = TRUE and children = FALSE</p></li>
+<li><p>The NAICS in the returned table may be a child NAICS not the NAICS used in the query! This may cause confusion if you are querying multiple parent NAICS and you want to analyze results by NAICS!</p></li>
 </ul><p>The functions like <code><a href="regid_from_naics.html">regid_from_naics()</a></code>, <code>latlon_from_naics()</code>, and <code><a href="frs_from_naics.html">frs_from_naics()</a></code>
 try to find EPA FRS sites based on naics codes or titles.</p>
 <p>EPA also provides a <a href="https://www.epa.gov/frs/frs-query#industrial" class="external-link">FRS Facility Industrial Classification Search tool</a>

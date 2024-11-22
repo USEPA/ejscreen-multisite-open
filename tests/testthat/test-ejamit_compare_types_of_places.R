@@ -1,4 +1,17 @@
 
+
+# could add tests here to check
+# validstats, 
+# ratiostats,
+# results_bytype$valid, 
+# results_bytype$sitecount,
+# results_overall$valid, 
+# results_overall$sitecount, 
+# etc. ***
+
+
+
+################################################################# #
 test_that("ejamit_compare_types_of_places works", {
   
   expect_no_error({
@@ -24,7 +37,8 @@ test_that("ejamit_compare_types_of_places works", {
   expect_equal(
     names(out),
     c("types", "sitecount_bytype", "results_bytype", "results_overall", 
-      "ejam_uniq_id", "typeofsite", "results_bysite", "longnames", 'validstats')
+      "ejam_uniq_id", "typeofsite", "results_bysite", "longnames",
+      'validstats', 'ratiostats')
   )
   expect_equal(
     out$types,
