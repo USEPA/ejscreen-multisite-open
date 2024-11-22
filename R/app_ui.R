@@ -1376,7 +1376,9 @@ golem_add_external_resources <- function() {
     # app title ####
     golem::bundle_resources(
       path = EJAM:::app_sys("app/www"),   #  points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www
-      app_title = "EJScreen Multisite"
+      
+      app_title = "EJScreen Multisite" # BUT SEE ALSO THE TITLE IN HTML IN global.R 
+      
     ),
     
     # favorites icons ####
