@@ -27,11 +27,7 @@ library(shiny)
 bookmarking_allowed <- TRUE  # https://mastering-shiny.org/action-bookmark.html
 if (bookmarking_allowed) {enableBookmarking(store = "url")}
 
-default_hide_about_tab <- TRUE
-default_hide_plot_range_tab <- TRUE
-default_hide_advanced_settings <- TRUE
-default_hide_written_report <- TRUE
-default_hide_ejscreenapi_tab <- TRUE
+
 default_testing        <- FALSE
 default_shiny.testmode <- FALSE  # If TRUE, then various features for testing Shiny applications are enabled.
 default_print_uploaded_points_to_log <- TRUE
@@ -62,6 +58,38 @@ show_full_header_footer <- FALSE
 ## (IP address  for ejscreenapi module) ###########################################
 # ips <- c('10.147.194.116', 'awsgeopub.epa.gov', '204.47.252.51', 'ejscreen.epa.gov')
 # whichip <- ips[4]
+
+######################################################## #
+# Tabs hidden / shown ####
+
+default_hide_about_tab <- TRUE 
+default_hide_plot_barplots_tab <- FALSE
+default_hide_plot_histo_tab <- TRUE
+default_hide_advanced_settings <- TRUE
+default_hide_written_report <- TRUE  # May be just commented out
+default_hide_ejscreenapi_tab <- TRUE  # May be just commented out
+
+######################################################## #
+# Options for Site Selection Methods ####
+
+choices_for_type_of_site_upload <- c(
+  'Latitude/Longitude file upload'                = 'latlon',
+  'EPA Facility IDs (FRS Identifiers)'            = 'FRS',
+  # 'EPA Program IDs'                               = 'EPA_PROGRAM',
+  # 'Census FIPS Codes (e.g., Counties or Cities)'  = 'FIPS',
+  'Shapefile of polygons'                         = 'SHP'
+)
+# , selected = 'latlon'   # would set initial value but default is 1st in list
+
+choices_for_type_of_site_category <- c(
+  'by Industry (NAICS) Code' = 'NAICS'
+  # ,
+  # 'by Industry (SIC) Code'   = 'SIC'
+  # ,
+  # 'by EPA Program'           = 'EPA_PROGRAM'
+  # ,
+  # 'by MACT subpart'          = 'MACT'
+)
 
 ######################################################## #
 # Options in site point or file uploads, radius  ####
@@ -466,13 +494,13 @@ fips_help_msg <- paste0('
   <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
   <label class="control-label" for="selectFrom1">
   <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit),',
-  # ' Census Designated Place (CDP) like city or township (6-digit or 7-digit),',   # uncomment this when ready ***
-  ' Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).</p>
+                        # ' Census Designated Place (CDP) like city or township (6-digit or 7-digit),',   # uncomment this when ready ***
+                        ' Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).</p>
   <p>The file should contain at least one column, FIPS, with the fips codes. ',
-  'It will also work with the following aliases: ',
-  'fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
+                        'It will also work with the following aliases: ',
+                        'fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
   ',
-  'There can be other columns like an ID column that should be unique (no duplicates),
+                        'There can be other columns like an ID column that should be unique (no duplicates),
   and each record should be separated by a carriage return.</p>
   <p>The file could be formatted as follows, for example: </p>
   </label>
@@ -609,17 +637,18 @@ html_header_fmt <- tagList(
     ))
   ), 
   
+
   ### >> APP TITLE in Header/ Body tag ####
 
   tags$body(
     class = "path-themes not-front has-wide-template", id = "top",
     tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds.min.js')
+    
+  ),    
   
-    ),    
- 
-######################################################################## #
+  ######################################################################## #
   if (!show_full_header_footer) {
-HTML('
+    HTML('
      <div class="container-fluid" style="border-spacing: 0; margin: 0; padding-bottom: 0; border: 0;
      border-right-width: 0px; font-size:24px; ";>
   
@@ -663,25 +692,25 @@ HTML('
   
 </div>
      ',
-  
-  ########################################################################## #
-  
-  ### Contact Us - Header ####
-  
-  #HTML(
-    '<div class="l-page  has-footer" style="padding-top:0">
+         
+         ########################################################################## #
+         
+         ### Contact Us - Header ####
+         
+         #HTML(
+         '<div class="l-page  has-footer" style="padding-top:0">
         <div class="l-constrain">
         
 
           
           
  '
-  )
-
-} else {
-  # To display the full header, html_header_fmt can be set to NULL or an empty tagList
-  HTML(
-    '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
+    )
+    
+  } else {
+    # To display the full header, html_header_fmt can be set to NULL or an empty tagList
+    HTML(
+      '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
             <a id="skip-to-main" href="#main" class="skiplinks__link visually-hidden focusable">Skip to main content</a>
          </div>
 
@@ -819,22 +848,22 @@ HTML('
 
 
           <main id="main" class="main" role="main" tabindex="-1">'
+      
+      #)    ,   #   comment  out when excluding html below
+      
+    ) # END OF   html_header_fmt()
+    ########################################################################## #
     
-  #)    ,   #   comment  out when excluding html below
-  
-  ) # END OF   html_header_fmt()
-  ########################################################################## #
-  
-}
+  }
 )
 
 
 html_footer_fmt <- tagList(
   if (!show_full_header_footer) {
-  ### Contact Us - Footer ####
-  # 
-  HTML(
-    ' 
+    ### Contact Us - Footer ####
+    # 
+    HTML(
+      ' 
       </div>
       
       <div class="l-page__footer">
@@ -842,7 +871,7 @@ html_footer_fmt <- tagList(
       </div>
       
     </div>'
-  )
+    )
   } else {
     ### Site Footer ####
     HTML(
@@ -1018,8 +1047,8 @@ html_footer_fmt <- tagList(
         </svg>
       </a>'
     )
-    }
+  }
   # ,
   # 
-
+  
 )

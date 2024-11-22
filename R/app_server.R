@@ -98,7 +98,7 @@ app_server <- function(input, output, session) {
       options(shiny.testmode = TRUE)
       cat('shiny.testmode == TRUE\n') 
     } else {
-      if(!isTRUE(getOption("shiny.testmode"))) {
+      if (!isTRUE(getOption("shiny.testmode"))) {
         options(shiny.testmode = FALSE)
         cat('shiny.testmode == FALSE\n')
       }
@@ -149,7 +149,7 @@ app_server <- function(input, output, session) {
   # (to navigate if clickable tab controls are "hidden") 
 
   ## "About" button/link  (might not be used)
-  observeEvent(input$link_to_about_page, {updateTabsetPanel(session, inputId = "all_tabs", selected = "About EJAM")})
+  # observeEvent(input$link_to_about_page, {updateTabsetPanel(session, inputId = "all_tabs", selected = "About EJAM")})
   
   ## "back to site selection" buttons (to go back to site selection tab from results tab)
   observeEvent(input$back_to_site_sel,  {updateTabsetPanel(session, inputId = 'all_tabs', selected = 'Site Selection')})  # might not  be used
@@ -193,10 +193,14 @@ app_server <- function(input, output, session) {
   if (default_hide_written_report) {
       hideTab(inputId = 'results_tabs', target = 'Written Report') 
   }
+  ## hide vs show BARPLOTS tab  ---------------------- #   ***
+  if (default_hide_plot_barplots_tab) {
+    hideTab(inputId = 'details_subtabs', target = 'Plot Average Scores')
+  }
   ## hide vs show HISTOGRAMS tab  ---------------------- #   ***
-  # if (default_hide_plot_range_tab) {
-  #   hideTab(inputId = 'details_subtabs', target = 'plot_range')  # will be fixed
-  # }
+  if (default_hide_plot_histo_tab) {
+    hideTab(inputId = 'details_subtabs', target = 'Plot Full Range of Scores')
+  }
   
   ## advanced tab provides size cap on file uploads  ---------------------- #
   
