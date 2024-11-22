@@ -545,10 +545,12 @@ html_header_fmt <- tagList(
     tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
     tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
     
-    ## APP TITLE could be defined here, or if using golem package, in golem_add_external_resources() within app_ui.R ####
-    #
+    ## >> APP TITLE could be defined here ####
+    # AND in golem_add_external_resources() IN app_ui.R,  
+    # AND BELOW IN SHORT VERSION OF HEADER
+    
     # tags$title('EJAM | US EPA'),
-    tags$meta(name = "application-name", content = "EJAM"),
+    tags$meta(name = "application-name", content = "EJScreen Multisite"),
     
     ## EPA FAVICONS - but can be specified in (and this would conflict with) golem_add_external_resources() within app_ui.R ####
     
@@ -607,7 +609,7 @@ html_header_fmt <- tagList(
     ))
   ), 
   
-  ### Body tag and Site Header ####
+  ### >> APP TITLE in Header/ Body tag ####
 
   tags$body(
     class = "path-themes not-front has-wide-template", id = "top",
@@ -637,7 +639,11 @@ HTML('
 
         <td valign="bottom" style="line-height:34px; padding: 0px; border-bottom-color: #ffffff; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #ffffff";>
           <span style="font-size: 17pt; font-weight:700; font-family:Arial";>EJScreen</span>
-          <span style="font-size: 10pt; font-weight:700;";>&nbsp;&nbsp;Environmental Justice Analysis Multisite (EJAM) Tool (Version 2.3)</span>
+<span style="font-size: 10pt; font-weight:700;";>
+
+&nbsp;&nbsp;EJ Analysis Multisite Tool (version 2.3)
+
+</span>
         </td>
 <!--        
         <td valign="middle" align="right">
