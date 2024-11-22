@@ -103,12 +103,12 @@
         "RemoteRepo": "EJAM",
         "RemoteUsername": "USEPA",
         "RemoteRef": "PUBLIC-EJSCREEN",
-        "RemoteSha": "5cf8a2f7e385becf6cb08270eb53dcad14221cf4",
+        "RemoteSha": "55359d0588e04fa9e988f3ad8284383014201bbc",
         "GithubRepo": "EJAM",
         "GithubUsername": "USEPA",
         "GithubRef": "PUBLIC-EJSCREEN",
-        "GithubSHA1": "5cf8a2f7e385becf6cb08270eb53dcad14221cf4",
-        "Built": "R 4.4.1; ; 2024-11-20 19:49:07 UTC; unix"
+        "GithubSHA1": "55359d0588e04fa9e988f3ad8284383014201bbc",
+        "Built": "R 4.4.1; ; 2024-11-21 19:55:43 UTC; unix"
       }
     },
     "KernSmooth": {
@@ -9702,7 +9702,7 @@
       "checksum": "d8c7c21d795a1c7ffc1a80ae152fc5b9"
     },
     "R/doaggregate.R": {
-      "checksum": "8b16cd800693d4bfa5bfb42c6b7cd342"
+      "checksum": "09a2bc3a68c85f1497a040ee449d6978"
     },
     "R/echo_colids_from_num_name_group.R": {
       "checksum": "0c40db05ced2ff5524d50ac48068e2ab"
@@ -9747,10 +9747,10 @@
       "checksum": "72f426ad512feb8543c8b9e8d6b83c15"
     },
     "R/ejamit.R": {
-      "checksum": "7f74d464fd11332c9d0663ab8d6138ed"
+      "checksum": "1e9c6867c51575204805368ef1be609d"
     },
     "R/ejscreen_vs_ejam_.R": {
-      "checksum": "455eb74bae314892794565657945fdda"
+      "checksum": "45580c2ba1e925c2d96c1363f350db79"
     },
     "R/ejscreenapi_plus.R": {
       "checksum": "4472b66af7f99c57b95007ca15e84160"
@@ -10116,7 +10116,7 @@
       "checksum": "4c5222f37a1523a7e2df57ded728615f"
     },
     "R/table_xls_format.R": {
-      "checksum": "27651bdf32fcb7d25dbc17d5d58df781"
+      "checksum": "ef7b528684bd708202a4d7dc6f3de159"
     },
     "R/table_xls_formatting_api.R": {
       "checksum": "16768ad32890e08e2fc7b13adb11f656"

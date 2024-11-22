@@ -89,6 +89,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                              ejscreen_ejam_caveat = NULL,
                              ...) {
   
+  ## check for PhantomJS installation
+  if(!webshot::is_phantomjs_installed()){
+    webshot::install_phantomjs()
+  }
+  
   if (is.null(ejscreen_ejam_caveat)) {
     ejscreen_ejam_caveat <- "Some numbers as shown on the EJScreen report for a single location will in some cases appear very slightly different than in EJScreen's multisite reports. All numbers shown in both types of reports are estimates, and any differences are well within the range of uncertainty inherent in the American Community Survey data as used in EJScreen. Slight differences are inherent in very quickly calculating results for multiple locations."
   }

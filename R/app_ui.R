@@ -48,34 +48,8 @@ app_ui  <- function(request) {
       ### html header inserted from global.R ####
       html_header_fmt,
       
-      ### title (for app and browser tab) ####
-      
-      #### this is now in html in global.R 
-      # h3(paste("EJScreen's Environmental Justice Analysis Multi-site Tool (EJAM) v", ejam_app_version, sep = "")),
-      # div( #class = "title-panel",
-      #     titlePanel(
-      #       title       = paste("EJScreen's Environmental Justice Analysis Multi-site Tool (EJAM) v", ejam_app_version, sep = ""),
-      #       windowTitle = paste("EJScreen's Environmental Justice Analysis Multi-site Tool (EJAM) v", ejam_app_version, sep = "")
-      #     )
-      # ),
-      
-      # ***outline of tabs*** ####
-      # at one point was this:
-      #
-      # tabsetPanel(                         id = 'all_tabs',     ##
-      #   tabPanel(title = 'About',
-      #   tabPanel(title = 'Site Selection',
-      #   tabPanel(title =   , # ??
-      #   tabsetPanel(                       id = 'results_tabs', ##
-      #       tabPanel(title = 'Summary',
-      #       tabPanel(title = 'Details',
-      #          tabPanel(title = 'Site-by-Site Table',
-      #          tabPanel(title = 'Plot Average Scores',
-      #          tabPanel(title = 'Plot Full Range of Scores',
-      #       tabPanel(title = 'Written Report',
-      #   tabPanel(title = 'EJScreen Batch Tool',
-      #   tabPanel(title = 'Advanced Settings',
-      
+      ### title is now in html in global.R (for app and browser tab) ####
+
       # TABSETPANEL ALL -  tabsetPanel(id = 'all_tabs',  ####
       tabsetPanel( # up to line 1101 or so
         id = 'all_tabs',
@@ -1344,8 +1318,9 @@ app_ui  <- function(request) {
                  ## . ####
                  ############################################################### #
                  # ejscreen API tool link ####
-                 
-                 span('EJAM tool for batch use of the EJScreen API: ',
+
+                 span('tool for batch use of the EJScreen API: ',
+
                       a('ejscreenapi tool',
                         href = 'https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/',
                         target = '_blank', rel = 'noreferrer noopener'))
@@ -1391,7 +1366,9 @@ golem_add_external_resources <- function() {
     # app title ####
     golem::bundle_resources(
       path = EJAM:::app_sys("app/www"),   #  points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www
-      app_title = "EJAM"
+      
+      app_title = "EJScreen Multisite" # BUT SEE ALSO THE TITLE IN HTML IN global.R 
+      
     ),
     
     # favorites icons ####
