@@ -149,7 +149,7 @@ naics_from_any("paint and coating", children = T)
 #  x <- ejamit(frs_from_naics("paint and coating"), 1)}
 ```
 
-See many more [Working with NAICS Codes (Industry Codes)], in a section below.
+See many more examples of [Working with NAICS Codes (Industry Codes)], in a section below.
 
 ### by EPA Regulatory Program
 
@@ -216,13 +216,48 @@ if (exists("frs_by_mact")) {
 
 ### NAICS Codes to Map or Analyze Facilities in one Industrial Sector
 
-NAICS/industry categories
-
-```{r pulpindustry, eval = TRUE}
+Overview of NAICS / industry categories, at n-digit level
+```{r naics_more}
+# see NAICS categories at the top (2-digit) level
 
 naics_categories()
+
+# see NAICS categories at the 3-digit level
+
+  # sorted alphabetical
 naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
+  # sorted by code
 naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
+
+```
+
+Find NAICS codes, from the name of an industry
+```{r naics_code_from_name}
+naics_from_any('paint')
+```
+
+Find industry names, from the NAICS codes
+```{r naics_namefromcode}
+# get name from one code
+naics_from_code(336)$name
+
+# get the name from each code
+naics_from_code(mycode)$name
+```
+
+Count facilities by NAICS code
+```{r naics_counts_by_code}
+mycode = c(33611, 336111, 336112)
+
+# see counts of facilities by code (parent) and subcategories (children)
+naics_counts[NAICS %in% mycode, ]
+
+# see parent codes that contain each code
+naicstable[code %in% mycode, ]
+```
+
+Find facilities, by name of industry
+```{r pulpindustry, eval = TRUE}
 
 # See a data table of facilities in one industry
 dataload_from_pins("frs")
@@ -234,7 +269,6 @@ head( frs_from_naics(naics_from_any(industryword)$code)[,1:4] )
 ```
 
 Quick map of EPA-regulated facilities in one industrial category, which you can click on to see popup windows about sites.
-
 ```{r mapfast(frs_from_naics), eval = TRUE, fig.height=5, fig.width=5}
 # note frs_from_naics() requires the frs dataset, which it tries to load on demand.
 dataload_from_pins("frs")
@@ -246,7 +280,6 @@ mapfast(frs_from_naics("smelt")) # may be slow the 1st time, if it loads frs dat
 (but note that this FRS dataset lacks NAICS for most facilities!)
 
 Table of facilities in an industry, plus links to each facility in ECHO and EJScreen
-
 ```{r frs_from_naics-chemicalmanuf, eval = FALSE}
 industryword <- "chemical manuf"
 #  industryword <- "smelt"
@@ -279,12 +312,11 @@ print(
 ```
 
 Map of facilities in an industry, plus popups with links to each facility in ECHO and EJScreen
-
 ```{r map2, eval = FALSE, fig.height=5, fig.width=5}
 mapfast(mysites)
 ```
 
-Search using industry codes or text in industry names
+Facilities searches using industry codes or text in industry names
 
 ```{r plastics-and-rubber, eval = TRUE}
 naics_from_any("plastics and rubber") 

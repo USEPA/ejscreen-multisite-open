@@ -21,7 +21,7 @@ doaggregate(
   updateProgress = NULL,
   silentinteractive = TRUE,
   testing = FALSE,
-  showdrinkingwater = FALSE,
+  showdrinkingwater = TRUE,
   showpctowned = FALSE,
   ...
 )
