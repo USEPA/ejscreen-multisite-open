@@ -103,12 +103,12 @@
         "RemoteRepo": "EJAM",
         "RemoteUsername": "USEPA",
         "RemoteRef": "PUBLIC-EJSCREEN",
-        "RemoteSha": "55359d0588e04fa9e988f3ad8284383014201bbc",
+        "RemoteSha": "8870f976aa9653d9cd35ed73da930189ac27104b",
         "GithubRepo": "EJAM",
         "GithubUsername": "USEPA",
         "GithubRef": "PUBLIC-EJSCREEN",
-        "GithubSHA1": "55359d0588e04fa9e988f3ad8284383014201bbc",
-        "Built": "R 4.4.1; ; 2024-11-21 19:55:43 UTC; unix"
+        "GithubSHA1": "8870f976aa9653d9cd35ed73da930189ac27104b",
+        "Built": "R 4.4.1; ; 2024-11-22 16:03:50 UTC; unix"
       }
     },
     "KernSmooth": {
@@ -6270,7 +6270,7 @@
       "checksum": "49ac2bf16e63b939012a1750b446f8fc"
     },
     "data/epa_programs.rda": {
-      "checksum": "3439d51b65fe49ee3925103b506d750b"
+      "checksum": "ad990bf9be653060edfe006ddb0baee8"
     },
     "data/formulas_all.rda": {
       "checksum": "bc20fbaeb0f1a069e8742e3b5b0cfb93"
@@ -6825,7 +6825,7 @@
       "checksum": "f5ca795fcfd2ae1843deb436b4dc86d0"
     },
     "inst/global.R": {
-      "checksum": "1463488737d56630a3d4f4a96162e0cd"
+      "checksum": "2ee7992cac3744fd7057d33e45695a7e"
     },
     "inst/golem-config.yml": {
       "checksum": "2f23fcfb2bb38dff71f229a4d419f7ba"
@@ -6912,7 +6912,7 @@
       "checksum": "64ba6f5f04750ffe3ee4409362342aec"
     },
     "inst/report/written_report/report.Rmd": {
-      "checksum": "07c1e02401e1a5f77b7ebb2747501af9"
+      "checksum": "ca013118a68ac0ce323bb64af4e7abad"
     },
     "inst/testdata/address/street_address_9.xlsx": {
       "checksum": "1b728cd5d7d525626c0cec494748a922"
@@ -6964,6 +6964,9 @@
     },
     "inst/testdata/examples_of_output/testoutput_ejamit_10pts_1miles.xlsx": {
       "checksum": "1355f3a526dd20dfdf32bf4d8f6715e2"
+    },
+    "inst/testdata/fips/cities_2.xlsx": {
+      "checksum": "33be33d30139064d97ddc5b35cf53329"
     },
     "inst/testdata/fips/counties_in_AL_detailed.xlsx": {
       "checksum": "1b4157ea58ae7d6519abb23726c100d7"
@@ -7542,7 +7545,7 @@
       "checksum": "e43ad2184fa1b18dd982f7b6c6c04e7d"
     },
     "man/doaggregate.Rd": {
-      "checksum": "bb88737060c33be384ba528d477ac080"
+      "checksum": "399ae8ded4f60ac1b862d4e26396399d"
     },
     "man/dupenames.Rd": {
       "checksum": "34df0ed4a9462e71b04d33c05e20eaac"
@@ -7608,7 +7611,7 @@
       "checksum": "cf0a536549c8a432caf02390ffa449fa"
     },
     "man/ejamit.Rd": {
-      "checksum": "b6183b506e9870b013dd5585727e89a8"
+      "checksum": "ee20c7e798129849f70532b378fc9b07"
     },
     "man/ejampackages.Rd": {
       "checksum": "35c88594ed9f81cb74b89946dea2f0bf"
@@ -7641,7 +7644,7 @@
       "checksum": "32931a660661695fdba1d01ef37bb2b1"
     },
     "man/ejscreen_vs_ejam.Rd": {
-      "checksum": "5c6bde203e4855ef4365dcfe3175a078"
+      "checksum": "97da045d67e143f3c9361b4c5818e360"
     },
     "man/ejscreen_vs_explain_summary.Rd": {
       "checksum": "2bd0197f061e6073b6bdd60b45b23fec"
@@ -7998,7 +8001,7 @@
       "checksum": "0ba407c0703cc6bbfc3b0feb5a1c514e"
     },
     "man/latlon_from_naics.Rd": {
-      "checksum": "e515c539b17e3c4fad3314c817701079"
+      "checksum": "a6e32f47501c93229715542a29104adb"
     },
     "man/latlon_from_program.Rd": {
       "checksum": "9ce07738576003e35159cff1eb222ee1"
@@ -9039,7 +9042,7 @@
       "checksum": "d3910f0129cced5f2e7c785de3791115"
     },
     "NEWS.md": {
-      "checksum": "fcdb661da9fec8a4a9ea84523192a0ad"
+      "checksum": "c70be4f2e44f18bec6fbec5e89b79daf"
     },
     "pkgdown/favicon/apple-touch-icon-120x120.png": {
       "checksum": "f6349c3d11bdcdba76a5a8e8b91133de"
@@ -9096,13 +9099,13 @@
       "checksum": "c50089f5dd28603e6f80d26660a70bfa"
     },
     "R/app_server.R": {
-      "checksum": "7a79ad6c3edc67da98e089b80470c831"
+      "checksum": "92d43ae78458436d060d5687d9d73dea"
     },
     "R/app_ui_EJAMejscreenapi.R": {
       "checksum": "57618042e645344c7247ad88429c033d"
     },
     "R/app_ui.R": {
-      "checksum": "6cb8f81283b9279f1cea3714b68e483d"
+      "checksum": "0515858a76bbbcdba2512ceed93d0bd4"
     },
     "R/batch.summarize.helpers.R": {
       "checksum": "3fa2b494d2b11cd71fc5c39195cdbe4f"
@@ -9195,7 +9198,7 @@
       "checksum": "0060d8db49caa50d6fe4a79d63bb967d"
     },
     "R/data_epa_programs.R": {
-      "checksum": "7d63d2fcfda1b42d16a35bec9b43c89a"
+      "checksum": "ec4a20551b354d8a331e3d0dbc87ad72"
     },
     "R/data_formulas_all.R": {
       "checksum": "973d6b9ffedc41145fad68022dec68ef"
@@ -9741,7 +9744,7 @@
       "checksum": "26289d7a5e4f86fcaa59b28b09a830c5"
     },
     "R/ejamit_compare_types_of_places.R": {
-      "checksum": "739c796bbee29a50fda20f32cf0dc685"
+      "checksum": "3b8466c7e309317daa501da8dc84268a"
     },
     "R/ejamit_sitetype_from_.R": {
       "checksum": "72f426ad512feb8543c8b9e8d6b83c15"
@@ -9918,7 +9921,7 @@
       "checksum": "4a3207fde943f89267cde6fb37e920cf"
     },
     "R/latlon_from_naics.R": {
-      "checksum": "52e2637567b68bc9d4cd65d5e7d09eec"
+      "checksum": "d9a1534cceb4843dfe4461e859cdb070"
     },
     "R/latlon_from_program.R": {
       "checksum": "702bb909bdfd224bb32cdadff6db9f24"
@@ -10116,7 +10119,7 @@
       "checksum": "4c5222f37a1523a7e2df57ded728615f"
     },
     "R/table_xls_format.R": {
-      "checksum": "ef7b528684bd708202a4d7dc6f3de159"
+      "checksum": "6db6c3324d161f78fda03b5f995f4781"
     },
     "R/table_xls_formatting_api.R": {
       "checksum": "16768ad32890e08e2fc7b13adb11f656"
