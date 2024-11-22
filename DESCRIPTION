@@ -39,6 +39,7 @@ Imports:
     openxlsx,
     pdist,
     pins,
+    piggyback,
     pkgload,
     readxl,
     rhandsontable,
