@@ -205,10 +205,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         warning('Values found in sites2blocks$distance were not but must be numeric - doaggregate() will treat them as zero values')
         radius <- 0
       } else {
-        warning('radius passed to doaggregate() must be a single number, in miles, at least 0, but was not, so now
-                inferring radius based on sites2blocks distances.')
+        warning('radius passed to doaggregate() must be a single number, in miles, at least 0, but was not, so
+                inferred radius =', radius, 'miles, based on sites2blocks distances found.')
         radius <- radius_inferred(sites2blocks)
-        message('Inferring approximate radius is ', radius, ' miles, based on distances found.')
       }
     }
     if (radius >= 1.5 * max(sites2blocks$distance)) {

@@ -168,6 +168,7 @@ latlon_is.islandareas <- function(lat, lon, exact_but_slow_islandareas = FALSE) 
 #'   (or data.frame with colnames lat and lon, in which case lon param must be missing)
 #' @param lon vector of longitudes
 #' @param quiet optional logical, if TRUE, show list of bad values in console
+#' @param invalid_msg_table set TRUE if you want a data.frame with colnames "valid" and "invalid_msg"
 #' @return logical vector, one element per lat lon pair (location)
 #' @param exact_but_slow_islandareas see [latlon_is.islandareas()]
 #' @seealso   [latlon_is.usa()] [latlon_is.islandareas()] [latlon_is.available()] [latlon_is.possible()]
@@ -182,7 +183,8 @@ latlon_is.islandareas <- function(lat, lon, exact_but_slow_islandareas = FALSE) 
 #'
 #' @export
 #'
-latlon_is.valid <- function(lat, lon, quiet = TRUE, exact_but_slow_islandareas = FALSE) {
+latlon_is.valid <- function(lat, lon, quiet = TRUE, invalid_msg_table = FALSE , exact_but_slow_islandareas = FALSE) {
+
   
   if (missing(lon) && !missing(lat)) {
     if (is.data.frame(lat)) {
@@ -190,27 +192,47 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE, exact_but_slow_islandareas =
       # do no use latlon_infer() here -- needs to have been done already elsewhere
       if (!all(c("lat", "lon") %in% colnames(lat))) {
         warning("if lat is a data.frame it must have lat and lon as colnames")
-        return(FALSE)
+        if (invalid_msg_table) {
+          return(data.frame(valid = rep(FALSE, NROW(lat)), invalid_msg = "lat or lon column names invalid"))
+        } else {
+          return(FALSE)
+        }
       }
       lon <- lat$lon
       lat <- lat$lat
     } else {
       warning('no lon values provided')
+      if (invalid_msg_table) {
+        return(data.frame(valid = rep(FALSE, NROW(lat)), invalid_msg = "lon missing"))
+      } else {
       return(FALSE)
-    }
+    }}
   }
   if (missing(lat)) {
     warning('no lat values provided')
-    return(FALSE)
+    if (invalid_msg_table) {
+      return(data.frame(valid = rep(FALSE, NROW(lon)), invalid_msg = "lat missing"))
+    } else {
+      return(FALSE)
+    }
   }
   if (is.null(lat) | is.null(lon)) {
     warning('No lat provided or no lon provided')
-    return(FALSE)
+    if (invalid_msg_table) {
+      return(data.frame(valid = rep(FALSE, NROW(lon) + NROW(lat)), invalid_msg = "lat or lon were NULL"))
+    } else {
+      return(FALSE)
+    }
   }
   if (all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))) {
     warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    if (invalid_msg_table) {
+    return(data.frame(valid = rep(FALSE, NROW(lat)), invalid_msg = "lat or lon not numeric"))
+    } else {
     return(FALSE)
   }
+
+}
   
   
   # assume none bad until proven otherwise
@@ -247,9 +269,17 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE, exact_but_slow_islandareas =
       }
     } 
   }
-  
-  return(!bad)
-  
+  if (invalid_msg_table) {
+    # ("valid" and "invalid_msg")
+    x = data.frame(valid = !bad, invalid_msg = ifelse(bad, "invalid latlon", ""))
+    x$invalid_msg[!roughly_in_core_usa_excluding_islandareas & !in_islandareas] <- "latlon may be outside States/PR/Island Areas"
+    x$invalid_msg[impossible] <- "latlon impossible"
+    x$invalid_msg[unavailable] <- "latlon missing"
+    return(x)
+  } else {
+    return(!bad)
+  }
+  }
   # sort(unique(substr(bgpts$bgfips,1,2)))     # bgpts has PR not island areas
   # sort(unique(substr(blockid2fips$blockfips,1,2))) #  has PR not island areas
   ## same for bgid2fips
@@ -280,4 +310,4 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE, exact_but_slow_islandareas =
   # FALSE    TRUE
   # 1384 3454658
   #
-}
+

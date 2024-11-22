@@ -64,9 +64,6 @@ table_x100 <- function(df, cnames = names_pct_as_fraction_ejamit
     message("missing cnames parameter so assuming defaults should be used")
   }
   tofix <- names(df)[names(df) %in% cnames]
-  if (length(tofix) != length(cnames)) {
-    # message("note that not all of cnames were found in df") # drop this since it happens always
-  }
   
   if (is.data.table(df)) {
     

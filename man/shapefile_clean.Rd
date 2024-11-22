@@ -2,7 +2,7 @@
 % Please edit documentation in R/shapefile_xyz.R
 \name{shapefile_clean}
 \alias{shapefile_clean}
-\title{Drop invalid rows and warn if all invalid and add unique ID}
+\title{Drop invalid rows, warn if all invalid, add unique ID, transform (CRS)}
 \usage{
 shapefile_clean(shp, crs = 4269)
 }
@@ -16,7 +16,7 @@ like input shp, but applying crs and dropping if not valid,
 plus column ejam_uniq_id 1:NROW()
 }
 \description{
-Drop invalid rows and warn if all invalid and add unique ID
+Drop invalid rows, warn if all invalid, add unique ID, transform (CRS)
 }
 \seealso{
 \code{\link[=shapefile_from_folder]{shapefile_from_folder()}}

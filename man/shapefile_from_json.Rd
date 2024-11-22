@@ -2,12 +2,12 @@
 % Please edit documentation in R/shapefile_xyz.R
 \name{shapefile_from_json}
 \alias{shapefile_from_json}
-\title{read .json shapefile data}
+\title{read .json or .geojson shapefile data}
 \usage{
 shapefile_from_json(path, cleanit = TRUE, crs = 4269, layer = NULL, ...)
 }
 \arguments{
-\item{path}{path and filename for .zip file}
+\item{path}{path and filename}
 
 \item{cleanit}{optional, whether to use \code{\link[=shapefile_clean]{shapefile_clean()}}}
 
@@ -22,5 +22,5 @@ default is crs = 4269 or Geodetic CRS NAD83}
 like output of \code{\link[sf:st_read]{sf::st_read()}}
 }
 \description{
-read .json shapefile data
+read .json or .geojson shapefile data
 }

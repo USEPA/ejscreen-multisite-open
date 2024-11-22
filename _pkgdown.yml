@@ -2,7 +2,8 @@ url: https://usepa.github.io/EJAM/
 template:
   bootstrap: 5
   params:
-    noindex: true
+  noindex: true  
+
 deploy:
   install_metadata: true
 navbar:

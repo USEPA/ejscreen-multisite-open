@@ -36,7 +36,8 @@
 #' @param lon_if_used If anything parameter is a vector of longitudes, lon_if_used must be the latitudes. Ignored otherwise.
 #' @param interactiveprompt If TRUE (default) and in interactive mode not running shiny,
 #'    will prompt user for file if "anything" is missing.
-#'    
+#' @param invalid_msg_table Set to TRUE to add columns "valid" and "invalid_msg" to output
+#' @param set_invalid_to_na used by latlon_df_clean()
 #' @seealso [sitepoints_from_any()] which is like this but also adds ejam_uniq_id column, 
 #'   and see [read_csv_or_xl()] and [latlon_df_clean()]
 #' @return A data.frame that has at least columns lon and lat (and others if they were in anything),
@@ -62,7 +63,7 @@
 #'
 #' @export
 #'
-latlon_from_anything <- function(anything, lon_if_used, interactiveprompt = TRUE) {
+latlon_from_anything <- function(anything, lon_if_used, interactiveprompt = TRUE, invalid_msg_table = FALSE, set_invalid_to_na = TRUE) {
   
 
   if (missing(anything) || is.null(anything) || all(length(anything) == 0) || all(is.na(anything)) || all("" == anything)) {
@@ -147,7 +148,7 @@ latlon_from_anything <- function(anything, lon_if_used, interactiveprompt = TRUE
     pts <- x
   }
   
-  pts <- latlon_df_clean(pts) # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
+  pts <- latlon_df_clean(pts, invalid_msg_table = invalid_msg_table, set_invalid_to_na = set_invalid_to_na) # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
 
   return(pts)
 }
@@ -160,7 +161,7 @@ latlon_from_anything <- function(anything, lon_if_used, interactiveprompt = TRUE
 #' @export
 #' @keywords internal
 #'
-latlon_any_format <- function(anything, lon_if_used, interactiveprompt = TRUE) {
-  latlon_from_anything(anything = anything, lon_if_used = lon_if_used, interactiveprompt = interactiveprompt)
+latlon_any_format <- function(anything, lon_if_used, interactiveprompt = TRUE, invalid_msg_table = FALSE) {
+  latlon_from_anything(anything = anything, lon_if_used = lon_if_used, interactiveprompt = interactiveprompt, invalid_msg_table = invalid_msg_table)
 }
 ########################################################### #
