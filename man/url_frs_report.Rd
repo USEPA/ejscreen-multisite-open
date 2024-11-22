@@ -20,7 +20,7 @@ URL(s)
 Get URL(s) for reports on facilities from EPA FRS (facility registry service)
 }
 \examples{
-dontrun{
+\dontrun{
 browseURL(url_frs_report(testids_registry_id)[1])
 }
 url_frs_report(testids_registry_id)

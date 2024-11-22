@@ -24,7 +24,8 @@
 #' @param react.v1_summary_plot optional - a plot object
 #' @param radius_or_buffer_description optional text phrase describing places analyzed
 #' @param hyperlink_colnames optional names of columns with URLs
-#' @param site_method optional site method parameter used to create a more specific title with create_filename
+#' @param site_method site selection method, such as NAICS, FRS, SHP, latlon,
+#'   optional site method parameter used to create a more specific title with create_filename
 #' @param ... optional additional parameters passed to [table_xls_format()], such as 
 #'   heatmap_colnames, heatmap_cuts, heatmap_colors, etc.
 #'   

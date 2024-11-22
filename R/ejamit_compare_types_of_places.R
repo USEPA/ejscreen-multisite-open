@@ -105,7 +105,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
     # sitepoints_from_any() will 
     # accept sitepoints interactively or from filepath or from object, 
     # infer lat/lon cols,
-
+    
     # Note sitepoints_from_any() is able to check if sitepoints was missing 
     #  in expected params of ejamit_compare_types_of_places()
     sitepoints <- sitepoints_from_any(sitepoints)   #############  this adds ejam_uniq_id only if not there yet
@@ -121,18 +121,12 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   ########################################################## # 
   
   if (sitetype == "shp") {
-    
-    # duplicates some code in ejamit() but is needed here to get ejam_uniq_id only once  to allow ejamit_compare_types_of_places() to work when it passes only a subset of rows to ejamit each time
-    # and so this function can handle just once any user provided filename, interactive selection of file, instead of each type of place trying to do that.
+    # shapefile_from_any()  now does shapefix() which creates unique ids only if not already there, etc.
     shp <- shapefile_from_any(shapefile, cleanit = FALSE)
-    if (!"ejam_uniq_id" %in% names(shp)) { 
-      shp <- cbind(ejam_uniq_id = 1:nrow(shp), shp) # assign id to ALL even empty or invalid inputs   #############  this adds ejam_uniq_id
-    }
-    
     if (is.null(typeofsite) || length(typeofsite) != NROW(shp)) {
       stop("typeofsite must be a vector as long as NROW(shapefile), (before empty or invalid ones are removed), each unique value defining a group of sites")
     }
-
+    
     shp$valid <- shp$valid <- (sf::st_is_valid(shp) &  !sf::st_is_empty(shp))
     shp[shp$valid, ] <- shapefile_clean(shp) # uses default crs = 4269;  drops invalid rows or return NULL if none valid  # shp <- sf::st_transform(shp, crs = 4269) # done by shapefile_clean()
     # *** is it ok to retain invalid rows for analysis or should they be dropped? can ejamit() handle those?? ***
@@ -219,7 +213,7 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
     
     cat("Type", i, "of", length(types), "=", types[i], " -- ")
     
-    if (sitetype == "latlon") {sitepoints_subset = sitepoints[typeofsite == types[i], ,drop=F]} else {sitepoints_subset = NULL}
+    if (sitetype == "latlon") {sitepoints_subset = sitepoints[typeofsite == types[i], ,drop = F]} else {sitepoints_subset = NULL}
     if (sitetype == "fips")   {fips_subset       = fips[      typeofsite == types[i]  ]} else {fips_subset       = NULL}
     if (sitetype == "shp")    {shapefile_subset  = shp[       typeofsite == types[i], ]} else {shapefile_subset  = NULL}
     
@@ -317,20 +311,40 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   #   is the code of each type, not typical ejam_uniq_id of 1:N
   names(out$results_overall) <- gsub("ejam_uniq_id", "typeofsite", names(out$results_overall)) # make it more clear by naming it this way
   
-  # print some results ####
-  print(  
-    data.frame(
-      sitetype  = out$types,
-      sitecount = out$sitecount_bytype,
-      pop = round(out$results_bytype$pop, table_rounding_info("pop")),
-      table_round(out$results_bytype[,
-                               names_d_ratio_to_state_avg,
-                               ## or else
-                               # c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
-
-                               with = FALSE,],  var = names_d_ratio_to_state_avg)
-    )
+  # create some summary stats across the site types
+  
+  x = out$results_bysite[, .(validresults = sum(valid)), by = out$typeofsite]
+  names(x) <- c("type", "valid")
+  x$sitecount = out$sitecount_bytype
+  x$pctvalid = round(100 * x$valid / x$sitecount, 0)
+  x$pop = round(out$results_bytype$pop, 0 )
+  x$pop_persite = round(x$pop / x$sitecount, 0)
+  x$pctofallpop = round(100 * x$pop / sum(x$pop), 0)
+  x$pctofallsitecount = round(100 * x$sitecount / sum(x$sitecount), 0)
+  
+  ratiostats = table_round(
+    out$results_bytype[,
+                       names_d_ratio_to_state_avg,
+                       ## or else
+                       # c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+                       with = FALSE,],  var = names_d_ratio_to_state_avg
   )
+  out$validstats <- data.frame(x)
+  out$ratiostats = ratiostats
+  
+  # put some key stats into the results_overall or results_bytype table
+  out$results_overall$valid <- x$valid
+  names(out$results_overall) <- gsub("invalid_msg", "sitecount", names(out$results_overall))
+  out$results_overall$sitecount <- out$sitecount_bytype
+  #
+  out$results_bytype$valid <- x$valid
+  names(out$results_bytype) <- gsub("invalid_msg", "sitecount", names(out$results_bytype))
+  out$results_bytype$sitecount <- out$sitecount_bytype
+  
+  # print some results ####
+  print(  out$validstats )
+  print(  out$ratiostats )
+  
   cat("Use  ejam2excel(out)  to view results, and see the types of sites compared, one row each, in the Overall tab\n")
   cat("Use ejam2barplot_sitegroups() to plot results.\n\n")
   ended <- Sys.time()

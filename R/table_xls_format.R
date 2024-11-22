@@ -42,6 +42,7 @@
 #' 
 #' @param testing optional for testing only
 #' @param updateProgress optional Shiny progress bar to update during formatting
+#' @param ejscreen_ejam_caveat optional text if you want to change this in the notes tab
 #' @param ... other params passed along to [openxlsx::writeData()]
 #' 
 #' @import graphics
@@ -85,9 +86,12 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                              
                              testing=FALSE, updateProgress = NULL,
                              launchexcel = FALSE, saveas = NULL,
-                             
+                             ejscreen_ejam_caveat = NULL,
                              ...) {
   
+  if (is.null(ejscreen_ejam_caveat)) {
+    ejscreen_ejam_caveat <- "Some numbers as shown on the EJScreen report for a single location will in some cases appear very slightly different than in EJScreen's multisite reports. All numbers shown in both types of reports are estimates, and any differences are well within the range of uncertainty inherent in the American Community Survey data as used in EJScreen. Slight differences are inherent in very quickly calculating results for multiple locations."
+  }
   ###################  #   ###################  #   ###################  #   ###################  # 
   
   # HANDLE ERRORS ETC. ####
@@ -373,6 +377,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     "Distance type" = radius_or_buffer_description,
     "Population at x% of sites" =  popshare_p_lives_at_what_pct(eachsite$pop, p = 0.50, astext = TRUE),
     "Population at N sites" = popshare_at_top_n(eachsite$pop, c(1, 5, 10), astext = TRUE),
+    "Note on site-specific estimates" = ejscreen_ejam_caveat,
+    
     check.names = FALSE
   )
   notes_df <- as.data.frame(  t(notes_df) )
@@ -384,7 +390,9 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     openxlsx::addStyle(     wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), cols = 1,  style = openxlsx::createStyle(wrapText = TRUE), stack = TRUE)
   } else {usernoterows <- 0}
   openxlsx::setRowHeights(wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), heights = 50)
-  openxlsx::setColWidths( wb, sheet = 'notes', cols = 1:4,            widths = "auto")
+  openxlsx::setColWidths( wb, sheet = 'notes', cols = 1:4,            widths = "auto") # in general ok to auto-width, but...
+  openxlsx::setColWidths( wb, sheet = 'notes', cols = 2, widths = 70) # so the long caveat can wrap
+  openxlsx::addStyle(     wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), cols = 2, style = openxlsx::createStyle(wrapText = TRUE), stack = TRUE) # so the long caveat wraps
   ######################################################################## #
   
   ## DATA tabs - Overall and Each Sites ####
@@ -405,6 +413,10 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   if (data.table::is.data.table(eachsite)) {
     data.table::setDF(eachsite) # to make syntax below work since it was written assuming data.frame only not data.table
   }
+
+  
+  ### Hyperlinks ####
+  
   # REPLACE THE URLS WITH GOOD ONES
   
   if (!("valid" %in% names(eachsite))) {
@@ -412,9 +424,45 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   } else {
     ok <- eachsite$valid
   }
-  #eachsite[ , hyperlink_colnames] <-  (url_4table(eachsite$lat, eachsite$lon, radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
-  eachsite[ok , hyperlink_colnames] <-  (url_4table(eachsite$lat[ok], eachsite$lon[ok], radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
-  eachsite[!ok , hyperlink_colnames] <-  NA # (url_4table(lat=NULL, lon=NULL, radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
+   
+## how ejamit() does this:
+  # if (sitetype == "fips") {
+  #   
+  #   # analyzing by FIPS not lat lon values
+  #   areatype <- fipstype(fips)
+  #   if (!(all(areatype %in% c("blockgroup", "tract", "city", "county", "state")))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' for the EJScreen API")}
+  #   out$results_bysite[ , `:=`(
+  #     `EJScreen Report` = url_ejscreen_report(   areaid   = fips, areatype = areatype, as_html = T), #  namestr=my text not implemented here
+  #     `EJScreen Map`    = url_ejscreenmap(       wherestr = fips2name(fips), as_html = T),  # this needs a name not FIPS
+  #     `ECHO report` = echolink
+  #   )]
+  # } else {
+  #   out$results_bysite[ , `:=`(
+  #     `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
+  #     `EJScreen Map`    = url_ejscreenmap(        lat = out$results_bysite$lat, lon = out$results_bysite$lon,                  as_html = T),
+  #     `ECHO report` = echolink
+  #   )]
+  # }
+  if (all(is.na(eachsite$lat)) &  all(fipstype(eachsite$ejam_uniq_id[!is.na(eachsite$ejam_uniq_id)]) %in%  c("blockgroup", "tract", "city", "county", "state"))) {
+    # fips codes EXIST so ignore lat lon -- ideally would check type of analysis done more robustly than just 
+    # seeing if ids can be interpreted as FIPS since ids like 1:10 are all state fips 
+    # so e.g., if 3 sites run and all 3 had invalid lat lon then it assumes 1:3 are FIPS.
+    fips = eachsite$ejam_uniq_id
+    lat = NULL # rep('', NROW(eachsite))
+    lon = NULL # rep('', NROW(eachsite))
+  } else {
+    fips <- NULL
+    lat = eachsite$lat
+    lon = eachsite$lon
+  }
+  if (radius_or_buffer_in_miles == 0 | is.na(radius_or_buffer_in_miles) | !is.numeric(radius_or_buffer_in_miles)) {
+    radlink <- ''
+  } else {
+    radlink <- radius_or_buffer_in_miles
+  }
+  eachsite[ok , hyperlink_colnames] <-  (url_4table(fips = fips[ok], lat =  lat[ok], lon =  lon[ok], 
+                                                    radius = radlink, as_html = FALSE))$results_bysite
+  eachsite[!ok , hyperlink_colnames] <-  NA 
   
   openxlsx::writeData(wb, 
                       sheet = 'Each Site', x = eachsite, 
@@ -441,8 +489,6 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     openxlsx::setColWidths(wb, "Overall 2", cols = 2, widths = 90)
   }
   ######################################################################## #
-  
-  ### Hyperlinks ####
   
   # special names for the pdf and map links #
   # ## External Hyperlink -- HOW TO DO THIS:   ***

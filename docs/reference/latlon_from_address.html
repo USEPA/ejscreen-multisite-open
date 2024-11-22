@@ -90,13 +90,15 @@ param as provided is ignored and set to TRUE if aoimap=TRUE</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>passed to geocode() see help for AOI pkg</p></dd>
+<dd><p>passed to geocode() see  <code><a href="https://rdrr.io/pkg/AOI/man/geoCode.html" class="external-link">help(geocode, package = "AOI")</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>returns tibble table of x,y or lat,lon values or geometries.
-see helpf for AOI pkg</p>
+    <p>returns NULL if you have not installed and attached the AOI package.
+If AOI is attached via library() or require() or package imports,
+this returns a tibble table of x,y or lat,lon values or geometries.
+see the AOI package.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

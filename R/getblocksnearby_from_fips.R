@@ -20,12 +20,46 @@
 #'   
 #'   # x=getblocksnearby_from_fips("482011000011") # one blockgroup only
 #'   # y=doaggregate(x)
-#' @seealso [getblocksnearby()] [fips_bg_from_anyfips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
+#' @seealso [getblocksnearby()] [fips_bgs_in_fips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
 #' 
 #' @export
 #'
 getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE) {
 
+  ######################################## #
+  # Handle special case where FIPS are for City/CDP ####
+  ftype = fipstype(fips)
+  if ('city' %in% ftype) {
+    if (!all(ftype[!is.na(ftype)] == 'city')) {
+      warning("Ignoring the City/CDP FIPS because getblocksnearby_from_fips cannot handle a combination of FIPS where some are city/Census Designated Places (6-7 digit FIPS) and others are not (e.g., Counties)")
+      fips[ftype == 'city'] <- NA
+    } else {
+      cat("note that fips for cities/cdps are handled as shapefiles for analysis\n")
+      # must use a separate function to handle City/CDP FIPS since they do not map onto block groups bounds or by FIPS digits
+      
+      # example:
+      # fips = fips_place_from_placename('chelsea city, MA', exact = T)
+      # 2513205
+      # mapview(  shapes_places_from_placefips(fips_place_from_placename('chelsea city, MA', exact = T) ))
+      # mapview(  shapes_places_from_placefips(fips_place_from_placename('chelsea,MA', exact = FALSE) ))
+      # mapview(shapes_places_from_placefips(  fips_place_from_placename('white plains, ny', exact = F)   ))
+      
+      polys = shapes_places_from_placefips(fips)
+      polys
+      s2b_pts_polys <- get_blockpoints_in_shape(
+        polys = polys
+      )  
+      
+      ## convert ejam_uniq_id 1:N to the fips here - to emulate what is done by getblocksnearby_from_fips()
+      ## *** try/ test this:  order of rows is not quite right yet
+      s2b_pts_polys$pts$ejam_uniq_id  <- as.character(fips[s2b_pts_polys$pts$ejam_uniq_id ])
+      
+      # drop the shapefile here - just return the blocks in each polygon
+      return(s2b_pts_polys$pts)
+    }
+  }
+  ######################################## #
+  
   if (!exists('blockid2fips')) {
     dataload_from_pins(varnames = 'blockid2fips')
   }
@@ -57,13 +91,22 @@ getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE
   }
   suppressWarnings({ # because if length was 1 and added NA at end, this reports irrelevant warning
   ## create two-column dataframe with bgs (values) and original fips (ind)
-  # fips_bg_from_anyfips() returns all blockgroup fips codes contained within each fips provided
-  all_bgs <- stack(sapply(fips_vec, fips_bg_from_anyfips))
+  # fips_bgs_in_fips1() returns all blockgroup fips codes contained within each fips provided
+  # fips_bgs_in_fips() replaces fips_bgs_in_fips1()
+    # all_bgs <- stack(sapply(fips_vec, fips_bgs_in_fips)) # newer - fast alone but slow in sapply?
+  all_bgs <- stack(sapply(fips_vec, fips_bgs_in_fips1)) # Slow:  1.4 seconds for all counties in region 6, e.g.
   })
   names(all_bgs) <- c('bgfips', 'ejam_uniq_id')
-  # *** It actually could be more efficient to replace the above fips_bg_from_anyfips() 
+  
+  # *** It actually could be more efficient to replace the above fips_bgs_in_fips1() 
   # or make a new func to provide bgid_from_anyfips() 
-  # instead of 1st getting bgfips and then needing to look up bgid by bgfips
+  # instead of 1st getting bgfips and then needing to look up bgid by bgfips - 
+  #
+  #    Can we just change to this?... 
+  #      use fips_bgs_in_fips() to get all bg fips values
+  #      use join to blockgroupstats on bgfips, to get all bgid values
+  #      use join to blockwts on bgid, to get all the blockid values.
+  #
   # Get bgid:
   all_bgs$bgid <- bgid2fips[match(all_bgs$bgfips, bgfips), bgid]
 

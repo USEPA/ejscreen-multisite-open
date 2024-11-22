@@ -307,10 +307,10 @@ stop('not done yet - see newer version of doaggregate() for weighted means')
   ########## no ratios, percentiles, averages, etc. etc.
   ########## no other columns added like radius.miles, lat/lon, URLs, block counts, etc. etc. 
   
-  ## see doaggregate() on whether this is done inside or after doaggregate()
-  # results_overall = fix_pctcols_x100(results_overall, cnames = names_pct_as_fraction_ejamit)
-  # results_bysite  = fix_pctcols_x100(results_bysite, cnames = names_pct_as_fraction_ejamit)
-  # results_bybg    = fix_pctcols_x100(results_bybg, cnames = names_pct_as_fraction_ejamit)
+  ## but also note newer table_signif_round_x100()
+  # results_overall = table_x100(results_overall, cnames = names_pct_as_fraction_ejamit)
+  # results_bysite  = table_x100(results_bysite, cnames = names_pct_as_fraction_ejamit)
+  # results_bybg    = table_x100(results_bybg, cnames = names_pct_as_fraction_ejamit)
 
   return(
     list(

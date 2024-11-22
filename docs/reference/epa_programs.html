@@ -60,7 +60,9 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Also see <a href="https://www.epa.gov/frs/frs-data-sources" class="external-link">EPA documentation describing each program code</a> aka data source.</p><div class="section">
+    <p>Also see</p><ul><li><p><a href="https://www.epa.gov/frs/frs-data-sources" class="external-link">EPA documentation describing each program code</a> aka data source.</p></li>
+<li><p><a href="https://www.epa.gov/sites/default/files/2021-05/frs_program_abbreviations_and_names.xlsx" class="external-link">2021-05/frs_program_abbreviations_and_names.xlsx</a></p></li>
+</ul><div class="section">
 <h3 id="for-a-table-sorted-by-how-many-facilities-from-frs-are-listed-for-each-program-">For a table sorted by how many facilities from FRS are listed for each program:<a class="anchor" aria-label="anchor" href="#for-a-table-sorted-by-how-many-facilities-from-frs-are-listed-for-each-program-"></a></h3>
 
 
@@ -72,6 +74,7 @@
 
 
 <p><code>epa_programs_counts$fed = !grepl("^[A-Z]{2}[-]", as.vector(epa_programs_counts$program),1,3)</code></p>
+<p><code>table(epa_programs_counts$fed)</code></p>
 <p><code>epa_programs_counts[fed == TRUE, ][order(-N), ][1:25, ]</code></p>
 <p>Also see <a href="frs_by_programid.html">frs_by_programid</a></p>
 </div>

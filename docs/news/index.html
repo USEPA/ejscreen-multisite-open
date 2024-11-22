@@ -45,6 +45,16 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.32.0" id="ejam-2320-ejscreen232-november-2024">EJAM 2.32.0-EJScreen2.32 (November 2024)<a class="anchor" aria-label="anchor" href="#ejam-2320-ejscreen232-november-2024"></a></h2>
+<ul><li>Added FIPS code functionality to handle over 40,000 Census Places such as cities and towns. Not yet in web app.</li>
+<li>Warnings if no internet connection, via new offline() internal function</li>
+<li>latlon_from_address() does better checks if it can do geocoding</li>
+<li>fips_bgs_in_fips() fixed, now returns NA for a 6-7 digit FIPS (city/CDP) since there are no simple child blockgroups that exactly and completely aggregate to cover a given CDP necessarily, and certainly not by just using the 7 digits of the city FIPS as if they were the first 7 of any BG FIPS.</li>
+<li>fips_place2placename() fixed, now returns NA not “NA, NA” for invalid 6-7 digit fips, and related functions will likewise.</li>
+<li>fips_valid() is exported</li>
+<li>Faster unit testing</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.32.0" id="ejam-2320-ejscreen232-august-october-2024">EJAM 2.32.0-EJScreen2.32 (August-October 2024)<a class="anchor" aria-label="anchor" href="#ejam-2320-ejscreen232-august-october-2024"></a></h2>
 <ul><li>Deployed updates 10/11/2024</li>
 <li>Incorporated new datasets to match EJScreen version 2.32 ozone and other data changes/corrections EJScreen version 2.32 released in August 2024.</li>
@@ -61,7 +71,6 @@
 <li>Addressed issues in % pre 1960 lead paint indicator</li>
 <li>Improved comparison/validation functions</li>
 </ul></li>
-<li>Added FIPS code functionality (not yet in web app) to handle over 40,000 Census Places such as cities and towns.</li>
 <li>Improved file upload read-in validation.</li>
 <li>Corrected several unit tests and added new ones.</li>
 <li>Adopted shinytest2 to create shiny-based testing of the app, package, and GitHub merges.</li>
@@ -110,7 +119,7 @@
 <li>
 <code><a href="../reference/mapfastej_counties.html">mapfastej_counties()</a></code> now accepts a data.frame not just data.table</li>
 <li>
-<code>fips_valid()</code> handles NA values better and recognizes more problematic fips</li>
+<code><a href="../reference/fips_valid.html">fips_valid()</a></code> handles NA values better and recognizes more problematic fips</li>
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-2-2-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-2-4"></a></h4>

@@ -6,7 +6,7 @@ if (1 == 0) {
   
   #                  to try it out
   # RUN THIS MINI APP ####
-  runApp(list(ui = ui_placespicker, server = server_placespicker),
+  shiny::runApp(list(ui = ui_placespicker, server = server_placespicker),
          test.mode = TRUE, quiet = TRUE)
   
 }
@@ -172,7 +172,6 @@ server_placespicker <- function(input, output, session) {
                            # only show prior picks that are in new set of states, since the state picks just changed
                            selected = hadbeenselected[hadbeenselected %in% mychoices]
       )
-      
     }
   })
   
@@ -201,7 +200,7 @@ server_placespicker <- function(input, output, session) {
     }
   })
   ################################### # 
-  
+
   ######################################################### # 
   
   # SHOW TABLE OF DATA when level changes ####
@@ -243,7 +242,7 @@ server_placespicker <- function(input, output, session) {
         statetable[statetable$ST %in% input$statepicker, varnames]
       )
       # bgstable(
-      # EJAM::fips_bg_from_anyfips(fips = displaytable()$FIPS.ST)
+      #
       # )
     }
   })
@@ -298,7 +297,7 @@ server_placespicker <- function(input, output, session) {
       
       # bgstable(
       #   # ??? 
-      #   # EJAM::fips_bg_from_anyfips(fips = NA) # NOT SURE PLACES FIPS NEATLY FALL INTO BLOCKGROUPS
+      #   
       # )
     }
   })

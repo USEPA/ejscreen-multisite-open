@@ -26,5 +26,6 @@ How many decimal places to round to for given variable(s)
  
 }
 \seealso{
-\code{\link[=varinfo]{varinfo()}} \code{\link[=table_round]{table_round()}}
+\code{\link[=table_signif_round_x100]{table_signif_round_x100()}} \code{\link[=table_signif]{table_signif()}} \code{\link[=table_round]{table_round()}} \code{\link[=table_x100]{table_x100()}}
 }
+\keyword{internal}
