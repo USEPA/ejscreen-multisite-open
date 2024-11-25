@@ -373,10 +373,10 @@ fill_tbl_full_subgroups <- function(output_df) {
 
 generate_report_footnotes <- function(
     # ejscreen_vs_ejam_caveat = "Note: Some numbers as shown on the EJScreen report for a single location will in some cases appear very slightly different than in EJScreen's multisite reports. All numbers shown in both types of reports are estimates, and any differences are well within the range of uncertainty inherent in the American Community Survey data as used in EJScreen. Slight differences are inherent in very quickly calculating results for multiple locations.",
-    diesel_caveat = paste0("Note: Diesel particulate matter index is from the EPA's Air Toxics Data Update, which is the Agency's ongoing, comprehensive evaluation of air toxics in the United States. This effort aims to prioritize air toxics, emission sources, and locations of interest for further study. It is important to remember that the air toxics data presented here provide broad estimates of health risks over geographic areas of the country, not definitive risks to specific individuals or locations. More information on the Air Toxics Data Update can be found at: ",
-                           url_linkify("https://www.epa.gov/haps/air-toxics-data-update", "https://www.epa.gov/haps/air-toxics-data-update"))
+  diesel_caveat = paste0("Note: Diesel particulate matter index is from the EPA's Air Toxics Data Update, which is the Agency's ongoing, comprehensive evaluation of air toxics in the United States. This effort aims to prioritize air toxics, emission sources, and locations of interest for further study. It is important to remember that the air toxics data presented here provide broad estimates of health risks over geographic areas of the country, not definitive risks to specific individuals or locations. More information on the Air Toxics Data Update can be found at: ",
+                         url_linkify("https://www.epa.gov/haps/air-toxics-data-update", "https://www.epa.gov/haps/air-toxics-data-update"))
 ) {
-
+  
   
   # This function gets called by 
   # build_community_report() in 
@@ -551,19 +551,62 @@ report_xmilesof <- function(radius, unitsingular = 'mile') {
 #'
 report_residents_within_xyz <- function(text1 = 'Residents within ', 
                                         radius = NULL, unitsingular = 'mile', 
-                                        nsites = 1, sitetype = c('latlon', 'fips', 'shp')[1]) {
+                                        nsites = 1, 
+                                        sitetype = c(
+                                          
+                                          # uploaded each site
+                                          'latlon', 'fips', 'shp',
+                                          'frs', 'epa_program_up',
+                                          'echo',
+                                          
+                                          # selected pulldown category
+                                          'naics', 'sic', 'mact', 
+                                          'epa_program_sel'
+                                          )[1]
+) {
   
   xmilesof <- report_xmilesof(radius, unitsingular = unitsingular)
   
   sitetype_nullna <- " place"
   if (is.null(sitetype)) {sitetype <- sitetype_nullna}
   sitetype[is.na(sitetype)] <- sitetype_nullna
-  if (sitetype == 'shp') {
-    location_type <- " selected polygon"
+  
+  # uploaded each site ---------------------------------- -
+  
+  if (sitetype == 'latlon') {
+    location_type <- " specified point"
+    
   } else if (sitetype == 'fips') {
-    location_type <- " selected Census unit"
-  } else if (sitetype == 'latlon') {
-    location_type <- " selected point"
+    location_type <- " specified Census unit"
+    
+  } else if (sitetype == 'shp') {
+    location_type <- " specified polygon"
+    
+  } else if (sitetype == 'frs') {
+    location_type <- " FRS ID-specified site"
+    
+  } else if (sitetype == 'epa_program_up') {
+    location_type <- " EPA Program ID-based site"
+    
+  } else if (sitetype == 'echo') {
+    location_type <- " regulated facility"
+
+  # selected pulldown category ---------------------------------- -
+    
+  } else if (sitetype == 'naics') {
+    location_type <- " NAICS industry-specific site"
+    
+  } else if (sitetype == 'sic') {
+    location_type <- " SIC industry-specific site"
+    
+  } else if (sitetype == 'mact') {
+    location_type <- " MACT category site"
+    
+  } else if (sitetype == 'epa_program_sel') {
+    location_type <- " EPA program-specific site"
+    
+  # misc / unknown ---------------------------------- -
+
   } else if (sitetype == sitetype_nullna) {
     # ok, use default filler
     location_type <- sitetype
