@@ -103,6 +103,7 @@ update_pkgdown = function(
   if (dotests) {
     cat('doing unit tests \n')
     source("./tests/manual_nonalphabetical.R")
+    # rstudioapi::documentOpen("./tests/manual_nonalphabetical.R")
     test_interactively(ask = doask & interactive() & testinteractively )
   }
   

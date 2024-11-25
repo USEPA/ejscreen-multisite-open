@@ -20,7 +20,7 @@ test_that('only the best alias #1',{
   expect_message({
     val <- latlon_df_clean(data.frame("a" = "-100.75%", "LONG" = 200, "Longitude" = " 175 ", "lat" = "$35"))
   }, regexp = "Replaced column names")
-  expect_equal(names(val), c('a', 'LONG', 'lon', 'lat', 'valid'))
+  expect_equal(names(val), c('a', 'LONG', 'lon', 'lat', 'valid',  "invalid_msg"))
 })
 
 # warning if latitude is not valid (outside 17.5 - 71.5)
@@ -50,7 +50,7 @@ test_that('only the best alias #2', {
           expect_warning({
     val <- latlon_df_clean(data.frame("a" = "-100.75%", "LONGITUDE" = 200, "Long" = " 175 ", "lat" = "$35"))
   })))))
-  expect_equal(names(val), c('a', 'lon', 'Long', 'lat', 'valid'))
+  expect_equal(names(val), c('a', 'lon', 'Long', 'lat', 'valid',  "invalid_msg"))
 })
 
 
@@ -100,7 +100,7 @@ test_that('case variants left alone', {
   expect_no_warning({
     val <- latlon_df_clean(data.frame("lon" = "-100.75%", "longing" = 200, "Lat" = " 175 ", "lat" = "$35", "LAT" = "66.4"))
     })
-  expect_equal(names(val), c('lon', 'longing','Lat', 'lat','LAT', 'valid'))
+  expect_equal(names(val), c('lon', 'longing','Lat', 'lat','LAT', 'valid', "invalid_msg"))
   expect_equal(val$lon, -100.75)
   expect_equal(val$lat, 35)
 })
@@ -116,7 +116,7 @@ test_that('case variants converted from long to lon and LONG to lon, so 2 cols h
               val <- latlon_df_clean(data.frame('LONG' = " 1 ", 'long' = " 2 ", 'lat' = " 3 "))
         })))
   )))
-  expect_equal(names(val), c('lon','lon','lat', 'valid'))
+  expect_equal(names(val), c('lon','lon','lat', 'valid', "invalid_msg"))
 })
 
 # unlike for latlon_infer, duplicate names don't cause a warning, since the
@@ -134,7 +134,7 @@ test_that('dupes renamed and warn', {
         val <- latlon_df_clean(data.frame('LONG' = " 1 ,", 'LONG' = " 2, ", "lat" = ",  35"))
         })))
       )))
-  expect_equal(names(val), c('lon','lon', "lat", "valid"))
+  expect_equal(names(val), c('lon','lon', "lat", "valid",  "invalid_msg"))
 })
 
 # same issue as previous test
@@ -147,7 +147,7 @@ test_that('dupes left as dupes', {
       val <- latlon_df_clean(data.frame('lat' = " 1 ,", 'lat' = " 2, ", 'lon' = ", 3"))
       }))
       )))
-  expect_equal(names(val), c('lat','lat','lon', 'valid'))
+  expect_equal(names(val), c('lat','lat','lon', 'valid', "invalid_msg"))
   expect_true(val$valid == FALSE)
 })
 

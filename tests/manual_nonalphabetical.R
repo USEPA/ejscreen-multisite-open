@@ -52,6 +52,9 @@ test_interactively = function(ask = TRUE,
                               mydir = NULL
 ) {
   
+  # to make a sound when an error is hit and when it finishes
+  if (interactive()) {require(beepr)} # using beepr::beep(10) since utils::alarm() may not work 
+  
   ########################################## # ########################################## # 
   if (missing(y_basic) & ask) {
     if (missing(y_basic)) {
@@ -441,6 +444,13 @@ test_interactively = function(ask = TRUE,
                                     skipped, error_cant_test)]),
             seconds = secs
           ))
+          
+          if (sum(xtable[[i]]$flag) > 0) {
+            # using beepr::beep() since utils::alarm() may not work
+            # using :: might create a dependency but prefer that pkg be only in Suggests in DESCRIPTION
+            if (interactive()) {beepr::beep(10)}
+            cat("\n NOT ALL PASSED IN", tgroupname, "\n\n")
+          }
           
         } # finished this one group of test files
         
