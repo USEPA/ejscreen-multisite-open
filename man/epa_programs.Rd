@@ -5,7 +5,7 @@
 \alias{epa_programs}
 \title{epa_programs (DATA) named vector with program counts}
 \format{
-An object of class \code{character} of length 6.
+An object of class \code{character} of length 8.
 }
 \usage{
 epa_programs
@@ -19,20 +19,7 @@ Also see
 \item \href{https://www.epa.gov/frs/frs-data-sources}{EPA documentation describing each program code} aka data source.
 \item \href{https://www.epa.gov/sites/default/files/2021-05/frs_program_abbreviations_and_names.xlsx}{2021-05/frs_program_abbreviations_and_names.xlsx}
 }
-\subsection{For a table sorted by how many facilities from FRS are listed for each program:}{
-
-\code{epa_programs_counts <- frs_by_programid[, .N, by="program"][order(N), ]}
-}
-
-\subsection{Top 25 Federal ones (by trying to exclude State databases from the list)}{
-
-\code{epa_programs_counts$fed = !grepl("^[A-Z]{2}[-]", as.vector(epa_programs_counts$program),1,3)}
-
-\code{table(epa_programs_counts$fed)}
-
-\code{epa_programs_counts[fed == TRUE, ][order(-N), ][1:25, ]}
 
 Also see \link{frs_by_programid}
-}
 }
 \keyword{datasets}
