@@ -79,7 +79,7 @@
         "Author": "Mark Corrales <corrales.mark@epa.gov>",
         "Maintainer": "Mark Corrales <corrales.mark@epa.gov>",
         "License": "MIT + file LICENSE.md",
-        "Description": "Web app and R tools to easily summarize\ndemographics and environmental indicators\nfor residents in or near a large number of areas or specific sites.\nSites can be specified in a variety of ways - coordinates, facility IDs,\ntype of facility, shapefile, or Census areas.\nVery fast identification of nearby blocks and distances, and\naggregation of indicators within each distance by site and overall.\nEJScreen indicators are included.",
+        "Description": "Web app and R tools to easily summarize\n    demographics and environmental indicators\n    for residents in or near a large number of areas or specific sites.\n    Sites can be specified in a variety of ways - coordinates, facility IDs,\n    type of facility, shapefile, or Census areas.\n    Very fast identification of nearby blocks and distances, and \n    aggregation of indicators within each distance by site and overall.\n    EJScreen indicators are included.",
         "URL": "https://usepa.github.io/EJAM, https://github.com/USEPA/EJAM",
         "Depends": "R (>= 2.10)",
         "Imports": "arrow,\nattempt,\ncollapse,\nconfig (>= 0.3.1),\ndata.table,\nDBI,\ndesc,\ndoSNOW,\ndplyr,\nDT,\nforeach,\nggplot2,\nggridges,\nglue,\ngolem (>= 0.3.3),\nhrbrthemes,\nhtmltools,\nleaflet,\nmagrittr,\nmethods,\nopenxlsx,\npdist,\npins,\npkgload,\nreadxl,\nrhandsontable,\nrmarkdown,\nRMySQL,\nSearchTrees,\nshinydisconnect,\nsf,\nshiny (>= 1.7.2),\nshinycssloaders,\nshinyjs,\nsp,\ntidyr,\ntidyverse,\nviridis,\nwebshot",
@@ -97,7 +97,18 @@
         "EJScreenReleaseDate": "2024-08-12",
         "ACSVersion": "2018-2022",
         "ACSReleaseDate": "2023-12-07",
-        "CensusVersion": "2020"
+        "CensusVersion": "2020",
+        "RemoteType": "github",
+        "RemoteHost": "api.github.com",
+        "RemoteRepo": "EJAM",
+        "RemoteUsername": "USEPA",
+        "RemoteRef": "PUBLIC-EJSCREEN",
+        "RemoteSha": "af6e0c06f7da603d74fe2204421e064a011e422c",
+        "GithubRepo": "EJAM",
+        "GithubUsername": "USEPA",
+        "GithubRef": "PUBLIC-EJSCREEN",
+        "GithubSHA1": "af6e0c06f7da603d74fe2204421e064a011e422c",
+        "Built": "R 4.4.1; ; 2024-11-25 19:58:33 UTC; windows"
       }
     },
     "KernSmooth": {
@@ -7776,7 +7787,7 @@
       "checksum": "6d5226386ef453df366ce02bc9eaf6ba"
     },
     "man/epa_programs.Rd": {
-      "checksum": "7b62d59409ca7ec74f7c5117e8abb307"
+      "checksum": "f84adc64af1601461a322fd20a274337"
     },
     "man/epa_programs_defined.Rd": {
       "checksum": "63dd31e834970d758fdeb910b0ce900b"
@@ -8685,7 +8696,7 @@
       "checksum": "34bc79fac9e9db9bb06e80da05c730bc"
     },
     "man/report_residents_within_xyz.Rd": {
-      "checksum": "eeee18c55780713800342e15dbce6b05"
+      "checksum": "56b3bb7ea9c402a15f26a24fe0db6fbf"
     },
     "man/rmost.Rd": {
       "checksum": "ef79a919e4f919ed286e6fa7e9d7b3a9"
