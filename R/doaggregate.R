@@ -1375,7 +1375,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         
         us.pctile.cols_overall[   , ejnames_pctile[i]]    <- pctile_from_raw_lookup(
           unlist(results_overall[  , ..myvar]),
-          varname.in.lookup.table = myvar, lookup = usastats)
+          varname.in.lookup.table = myvar, 
+          lookup = usastats)
         # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
       } else { # cannot find that variable in the percentiles lookup table
         # us.pctile.cols_bysite[    , ejnames_pctile[i]] <- NA
@@ -1385,7 +1386,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         
         ## check if state assignment is NA, only look for %iles if it is present
         state.pctile.cols_bysite[!is.na(results_bysite$ST) , ejnames_pctile[i]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
-          unlist(results_bysite[!is.na(results_bysite$ST)  , ..myvar_to_use]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST[!is.na(results_bysite$ST)]
+          unlist(results_bysite[!is.na(results_bysite$ST)  , ..myvar]),
+          varname.in.lookup.table = myvar, 
+          lookup = statestats, 
+          zone =  results_bysite$ST[!is.na(results_bysite$ST)]
         )
         state.pctile.cols_bysite[is.na(results_bysite$ST) , ejnames_pctile[i]] <- NA
         
