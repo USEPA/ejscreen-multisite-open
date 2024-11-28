@@ -13,6 +13,8 @@ download_latest_arrow_data(
 }
 \arguments{
 \item{varnames}{use defaults, or vector of names like "bgej" or use "all" to get all available}
+
+\item{repository}{repository name such as "USEPA/ejamdata"}
 }
 \description{
 Used when EJAM package is attached
