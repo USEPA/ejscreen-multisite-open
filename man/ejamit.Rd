@@ -23,7 +23,7 @@ ejamit(
   need_proximityscore = FALSE,
   infer_sitepoints = FALSE,
   need_blockwt = TRUE,
-  thresholds = list(90, 90),
+  thresholds = list(80, 80),
   threshnames = list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile,
     names_ej_supp_state_pctile)),
   threshgroups = list("EJ-US-or-ST", "Supp-US-or-ST"),
