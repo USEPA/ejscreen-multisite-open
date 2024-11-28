@@ -2879,8 +2879,8 @@ app_server <- function(input, output, session) {
 
     tableheadnames <- c('Site ID', 'Invalid Reason','Est. Population', 'Barplot Report',  # should confirm that Barplot/Community Report belongs here
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report',
-                        fixcolnames(c(names_d, names_d_subgroups, names_e), 'r', 'shortlabel')) # is this right?
-    ejcols          <- c(names_ej,          names_ej_state,          names_ej_supp,          names_ej_supp_state)
+                        fixcolnames(c(names_d, names_d_subgroups, names_e), 'r', 'shortlabel'))
+    ejcols          <- c(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)
     ejcols_short <- fixcolnames(ejcols, 'r', 'shortlabel')
     which_ejcols_here <- which(ejcols %in% names(data_processed()$results_bysite)  )
     cols_to_select <- c(cols_to_select, ejcols[         which_ejcols_here] )
