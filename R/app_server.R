@@ -1733,7 +1733,7 @@ app_server <- function(input, output, session) {
                     # called_by_ejamit = TRUE, # not sure this is needed or works here
                     testing = input$testing,
                     
-                    thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
+                    thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90), # or 80,80
                     threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
                     threshgroups = list(sanitized_an_threshgroup1(), sanitized_an_threshgroup2()) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
@@ -3163,7 +3163,7 @@ app_server <- function(input, output, session) {
         }
         
         #remove hyperlinks from excel output if shapefile is current_upload_method() - Temporary
-        if(current_upload_method() == "SHP"){
+        if (current_upload_method() == "SHP") {
           hyperlink_columns <- NULL
         }else{
           hyperlink_columns <- c("EJScreen Report", "EJScreen Map" ,'ECHO report')
