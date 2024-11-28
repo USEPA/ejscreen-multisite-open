@@ -10,7 +10,7 @@
 #'   Relies on [piggyback::pb_releases()] to download data files from a specific release (version) of the package.
 #' 
 #' @param varnames use defaults, or vector of names like "bgej" or use "all" to get all available
-#' @repository repository name such as "USEPA/ejamdata"
+#' @param repository repository name such as "USEPA/ejamdata"
 #' 
 #' @export
 #'
