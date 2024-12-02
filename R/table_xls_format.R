@@ -345,7 +345,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     if (file.exists(png_file)) {
       tryCatch({
         # height and width are static, need to be updated if content on community report changes
-        openxlsx::insertImage(wb, sheet = 'Community Report', file = png_file, width = 11, height = 30, dpi = 500)
+        openxlsx::insertImage(wb, sheet = 'Community Report', file = png_file, width = 10, height = 30, dpi = 500)
       }, error = function(e) {
         message("Error inserting image into Excel:", e$message)
         # Handle the error (e.g., fallback mechanism, logging, etc.)
