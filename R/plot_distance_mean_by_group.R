@@ -40,6 +40,11 @@ plot_distance_mean_by_group <- function(results_bybg_people,
                                         demogvarname=NULL, # namez$d, namez$d_subgroups),
                                         demoglabel=fixcolnames(demogvarname,"r","shortlabel"),
                                         graph=TRUE, returnwhat="table") {
+  
+  if (all(is.na(results_bybg_people$radius.miles))) { #Fips code ejam outputs do not have radius.miles, so check this to see if fips input. 
+    warning("plot_distance_mean_by_group does not work with NA distances This includes outputs from ejamit with fips inputs")
+    return(NA)
+  }
 
   if (is.null(demoglabel) & is.null(demogvarname)) {
     demoglabel <- fixcolnames(c(names_d, names_d_subgroups), oldtype = 'r', newtype = 'shortlabel')
