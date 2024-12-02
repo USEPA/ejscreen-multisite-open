@@ -212,7 +212,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   openxlsx::addWorksheet(wb, sheetName = 'Overall'  )
   if (!is.null(formatted)) {openxlsx::addWorksheet(wb, sheetName = 'Overall 2') }
   # openxlsx::addWorksheet(wb, sheetName = 'longnames')
-  openxlsx::addWorksheet(wb, sheetName = 'map') 
+  # openxlsx::addWorksheet(wb, sheetName = 'map') Community report already has a map, so we don't need this
   openxlsx::addWorksheet(wb, sheetName = 'Community Report')
 
   # openxlsx::addWorksheet(wb, sheetName = 'bybg') # a lot of rows and not essential except to calculate distance vs demog group stats/plots
