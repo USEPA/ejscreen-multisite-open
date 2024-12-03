@@ -297,7 +297,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
         fname <- NULL; warning('cannot create distance table')
       } else {
         openxlsx::addWorksheet(wb, sheetName = "plot_distances",  gridLines = FALSE)
-        openxlsx::insertImage(wb, sheet = "plot_distances", file = fname, width = 11, height = 7) #  The current plot gets inserted
+        openxlsx::insertImage(wb, sheet = "plot_distances", file = fname, width = 14, height = 9) 
+        #  The current plot gets inserted
       }
     }
 }
