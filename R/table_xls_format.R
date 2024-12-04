@@ -272,7 +272,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                       width = 9, height = 7, units = 'in')
       openxlsx::insertImage(wb, sheet = 'plot', 
                             file = paste0(mytempdir, '/', 'summary_plot.png'),
-                            width = 9, height = 7, startRow = 2)
+                            width = 9, height = 7)
     }
   }
   ### *plot_distance_by_group ####
