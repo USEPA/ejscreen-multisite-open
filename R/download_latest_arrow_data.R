@@ -4,6 +4,7 @@
 #' Used when EJAM is loaded
 #'
 #' @param varnames use defaults, or vector of names like "bgej" or use "all" to get all available
+#' @param envir if needed to specify environment other than default, e.g., globalenv() or parent.frame()
 #'
 #' @export
 #'
