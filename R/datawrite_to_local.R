@@ -21,10 +21,7 @@
 #'
 datawrite_to_local <- function(
     
-    varnames = c(
-      'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-      'bgej', 'bgid2fips',
-      'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"),
+    varnames = .arrow_ds_names,
     
     fnames = paste0(varnames, ".arrow"),
     

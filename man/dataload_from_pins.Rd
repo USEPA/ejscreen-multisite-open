@@ -5,9 +5,7 @@
 \title{Utility to download / load datasets from pin board}
 \usage{
 dataload_from_pins(
-  varnames = c("blockwts", "blockpoints", "quaddata", "bgej", "bgid2fips",
-    "blockid2fips", "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic",
-    "frs_by_mact")[1:3],
+  varnames = .arrow_ds_names[1:3],
   boardfolder = "Mark",
   auth = "auto",
   server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
@@ -15,7 +13,8 @@ dataload_from_pins(
   envir = globalenv(),
   justchecking = FALSE,
   ignorelocal = FALSE,
-  silent = FALSE
+  silent = FALSE,
+  onAttach = FALSE
 )
 }
 \arguments{

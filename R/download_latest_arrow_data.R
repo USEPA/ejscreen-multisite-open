@@ -8,20 +8,9 @@
 #'
 #' @export
 #'
+
 download_latest_arrow_data <- function(
-  varnames = c(
-    "blockpoints", 
-    "blockwts", 
-    "quaddata",
-    "bgej",
-    "bgid2fips",
-    "blockid2fips",
-    "frs",
-    "frs_by_mact",
-    "frs_by_naics",
-    "frs_by_programid",
-    "frs_by_sic"
-  ),
+  varnames = .arrow_ds_names,
   envir = globalenv()) {
   
   # Check if dataset(s) already loaded
