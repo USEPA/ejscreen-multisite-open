@@ -54,11 +54,7 @@
 #' @export
 #'
 dataload_from_pins <- function(
-    varnames = c('blockwts', 'blockpoints', "quaddata",
-                 # load only if /when needed:
-                 'bgej',
-                 'bgid2fips', 'blockid2fips',
-                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")[1:3],
+    varnames = .arrow_ds_names[1:3],
     boardfolder = "Mark",
     auth = "auto",
     server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
@@ -67,7 +63,8 @@ dataload_from_pins <- function(
     envir = globalenv(),
     justchecking = FALSE,
     ignorelocal = FALSE,
-    silent = FALSE) {
+    silent = FALSE,
+    onAttach = FALSE) {
   
   if (!all(is.character(varnames))) {
     ok = FALSE
@@ -116,7 +113,11 @@ dataload_from_pins <- function(
     board_available <- FALSE
     if (!silent) {cat("Failed trying to connect to pins board server.\n\n")}
     
-    EJAM:::download_latest_arrow_data() # run after dataload_from_pins in case that fails to install packages
+    # since can't connect to pins, download all arrow files to data directory
+    EJAM:::download_latest_arrow_data(
+      varnames = if(onAttach) .arrow_ds_names else varnames,
+      envir = envir
+    )
   } else {
     board_available <- TRUE
     if (!silent) {cat("Successfully connected to Posit Connect pins board.\n\n")}
