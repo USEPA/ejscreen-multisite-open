@@ -84,8 +84,6 @@
       dataload_from_pins(varnames = c("blockpoints", "blockwts", "quaddata"), 
                          folder_local_source = app_sys('data')) # use default local folder when trying dataload_from_local()
       # EJAM function ... but does it have to say EJAM :: here? trying to avoid having packrat see that and presume EJAM pkg must be installed for app to work. ***
-      
-      EJAM:::download_latest_arrow_data() # run after dataload_from_pins in case that fails to install packages
     }
     
     #################### # 

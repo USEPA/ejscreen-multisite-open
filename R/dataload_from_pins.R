@@ -115,6 +115,8 @@ dataload_from_pins <- function(
   if (inherits(board, "error")) {
     board_available <- FALSE
     if (!silent) {cat("Failed trying to connect to pins board server.\n\n")}
+    
+    EJAM:::download_latest_arrow_data() # run after dataload_from_pins in case that fails to install packages
   } else {
     board_available <- TRUE
     if (!silent) {cat("Successfully connected to Posit Connect pins board.\n\n")}
