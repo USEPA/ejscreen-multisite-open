@@ -203,7 +203,7 @@ thisplot <- thisdata %>%
   ggplot2::geom_hline(ggplot2::aes(yintercept = 1)) +
 
     ggplot2::scale_y_continuous(limits = c(0, NA), expand = ggplot2::expansion(mult = c(0, 0.05), add = c(0, 0))) +
-    ggplot2::theme(plot.margin = ggplot2::unit(c(0,100,0,0), "points"),
+    ggplot2::theme(plot.margin = ggplot2::unit(c(20,100,20,20), "points"),
                    plot.title = ggplot2::element_text(size = 14, hjust = 0.5),
                    axis.text.x = ggplot2::element_text(size = 10 , angle = -30, hjust = 0, vjust = 1)) + #
     NULL
