@@ -20,7 +20,12 @@ download_latest_arrow_data <- function(
     "frs_by_naics",
     "frs_by_programid",
     "frs_by_sic"
-  )) {
+  ),
+  envir = globalenv()) {
+  
+  # Check if dataset(s) already loaded
+  files_not_loaded <- sapply(varnames, function(v) !exists(v, envir = envir))
+  if(!all(files_not_loaded)) return(NULL)
   
   # get latest Arrow version (from EJAMData repo's latest release tag) 
   # and user's Arrow version (from DESCRIPTION's ArrowVersion attribute)
