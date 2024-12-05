@@ -16,6 +16,7 @@
 #' @param filename, path to file to save HTML content to; if null, returns as string (used in Shiny app)
 #' 
 #' @keywords internal
+#' @export
 #' 
 #' 
 build_barplot_report <- function(analysis_title, totalpop, locationstr, 
