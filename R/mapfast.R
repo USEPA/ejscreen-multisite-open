@@ -55,7 +55,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
   
   # if the whole list from ejamit(), not a data.frame, was provided
   if (is.list(mydf) && 'results_bysite' %in% names(mydf)) {
-    warning("mydf seems to be a lislt of tables such as output from ejamit() so using just the results_bysite table here")
+    warning("mydf seems to be a list of tables such as output from ejamit() so using just the results_bysite table here")
     if ("sitetype" %in% names(mydf)) {
       sitetype <- mydf$sitetype
     } else {sitetype <- NULL}
@@ -110,7 +110,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
   # sitetype ####
   
   if (!is.null(sitetype)) {
-    if (!siteype %in% c('shp', 'latlon', 'fips')) {
+    if (!sitetype %in% c('shp', 'latlon', 'fips')) {
       warning('sitetype cannot be interpreted as shp, latlon, or fips')
       sitetype <- 'none'
       xok <- FALSE
