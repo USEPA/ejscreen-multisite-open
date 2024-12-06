@@ -17,10 +17,12 @@
 choices_for_type_of_site_category = if_else(
   golem_opts$isPublic,
   'by Industry (NAICS) Code' = 'NAICS',
-  c('by Industry (NAICS) Code' = 'NAICS',
+  c(
+    'by Industry (NAICS) Code' = 'NAICS',
     'by Industry (SIC) Code'   = 'SIC',
     'by EPA Program'           = 'EPA_PROGRAM',
-    'by MACT subpart'          = 'MACT')
+    'by MACT subpart'          = 'MACT'
+  )
 )
 
 choices_for_type_of_site_upload <- if_else(
@@ -30,11 +32,13 @@ choices_for_type_of_site_upload <- if_else(
     'EPA Facility IDs (FRS Identifiers)'            = 'FRS',
     'Shapefile of polygons'                         = 'SHP'
   ),
-  choices = c('Latitude/Longitude file upload'               = 'latlon',
-              'EPA Facility ID (FRS Identifiers)'            = 'FRS',
-              'EPA Program IDs'                              = 'EPA_PROGRAM',
-              'FIPS Codes'                                   = 'FIPS',
-              'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
+  c(
+    'Latitude/Longitude file upload'               = 'latlon',
+    'EPA Facility ID (FRS Identifiers)'            = 'FRS',
+    'EPA Program IDs'                              = 'EPA_PROGRAM',
+    'FIPS Codes'                                   = 'FIPS',
+    'Shapefile of polygons'                        = 'SHP'
+  )
 )
 
 .app_title <-  if_else(golem_opts$isPublic, "EJScreen Multisite", "EJAM")
