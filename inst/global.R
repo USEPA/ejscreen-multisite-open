@@ -546,7 +546,7 @@ html_header_fmt <- tagList(
     # AND BELOW IN SHORT VERSION OF HEADER
     
     # tags$title('EJAM | US EPA'),
-    tags$meta(name = "application-name", content = "EJScreen Multisite"),
+    tags$meta(name = "application-name", content = .app_title),
     
     ## EPA FAVICONS - but can be specified in (and this would conflict with) golem_add_external_resources() within app_ui.R ####
     

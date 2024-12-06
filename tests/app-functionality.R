@@ -108,35 +108,35 @@ main_shinytest <- function(data_type) {
     
     ## DETAILS > PLOT RANGES (HISTO) ####
     
-    if (!default_hide_histograms_tab) {
+    if (!golem_opts$isPublic) {
       
       print("going to plot_range details subtab")
       app$set_inputs(details_subtabs = "Plot Full Range of Scores")
       app$expect_values(name="plot_range")
       app$wait_for_idle(timeout = 20000)
       
-    print("messing with summ hist options")
-    app$set_inputs(summ_hist_distn = "Sites")
-    app$expect_values(name="Sites")
-    app$set_inputs(summ_hist_data = "raw")
-    app$expect_values(name="hist-data-raw")
-    app$set_inputs(summ_hist_bins = 15)
-    app$set_inputs(summ_hist_bins = 20)
-    app$expect_values(name="hist_bins_20")
-    app$set_inputs(summ_hist_distn = "People")
-    app$expect_values(name="hist-distn-people")
-    app$set_inputs(summ_hist_data = "pctile")
-    app$expect_values(name="hist-data-pctile")
-    app$set_inputs(summ_hist_data = "raw")
-    app$expect_values(name="hist-data-raw2")
-    app$set_inputs(summ_hist_ind = "Demog.Index.Supp")
-    app$expect_values(name="Demog.Index.Supp")
-    app$set_inputs(summ_hist_ind = "pctlowinc")
-    app$expect_values(name="pctlowinc")
-    app$set_inputs(results_tabs = "Community Report")
-    app$expect_values(name="Community Report")
-    
-    print("finished test")
+      print("messing with summ hist options")
+      app$set_inputs(summ_hist_distn = "Sites")
+      app$expect_values(name="Sites")
+      app$set_inputs(summ_hist_data = "raw")
+      app$expect_values(name="hist-data-raw")
+      app$set_inputs(summ_hist_bins = 15)
+      app$set_inputs(summ_hist_bins = 20)
+      app$expect_values(name="hist_bins_20")
+      app$set_inputs(summ_hist_distn = "People")
+      app$expect_values(name="hist-distn-people")
+      app$set_inputs(summ_hist_data = "pctile")
+      app$expect_values(name="hist-data-pctile")
+      app$set_inputs(summ_hist_data = "raw")
+      app$expect_values(name="hist-data-raw2")
+      app$set_inputs(summ_hist_ind = "Demog.Index.Supp")
+      app$expect_values(name="Demog.Index.Supp")
+      app$set_inputs(summ_hist_ind = "pctlowinc")
+      app$expect_values(name="pctlowinc")
+      app$set_inputs(results_tabs = "Community Report")
+      app$expect_values(name="Community Report")
+      
+      print("finished test")
     }
     
   })

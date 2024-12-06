@@ -1,9 +1,18 @@
-default_hide_about_tab <- golem_opts$isPublic 
-default_hide_plot_barplots_tab <- !golem_opts$isPublic
-default_hide_plot_histo_tab <- golem_opts$isPublic
-default_hide_advanced_settings <- golem_opts$isPublic
-default_hide_written_report <- golem_opts$isPublic  # May be just commented out
-default_hide_ejscreenapi_tab <- golem_opts$isPublic  # May be just commented out
+# These are the items that are toggled depending on whether the version is Public or Private
+# if run_app(isPublic = TRUE), then it's Public
+# In all cases, items are hidden when isPublic = TRUE and are toggled in app_server.R, unless otherwise specified
+
+# About tab
+
+# Plot Barplots tab - Public (show), Private (hide)
+
+# Histograms tab
+
+# Advanced settings
+
+# Written Report
+
+# default_hide_ejscreenapi_tab <- golem_opts$isPublic  # This doesn't seem used
 
 choices_for_type_of_site_category = if_else(
   golem_opts$isPublic,
@@ -27,3 +36,7 @@ choices_for_type_of_site_upload <- if_else(
               'FIPS Codes'                                   = 'FIPS',
               'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
 )
+
+.app_title <-  if_else(golem_opts$isPublic, "EJScreen Multisite", "EJAM")
+
+.community_report_title <- if_else(golem_opts$isPublic, "EJScreen-EJAM Multisite Report", "EJAM Multisite Report")
