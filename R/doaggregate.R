@@ -774,7 +774,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   print(results_bysite[ , .(ejam_uniq_id, pctownedunits)])
   results_overall$pctownedunits <- NA
   results_bysite$pctownedunits <- NA
-}
+  }
+  
+
   ############################################### #
   ##     later, for results_overall, will calc state pctiles once we have them for each site
   
@@ -1175,7 +1177,11 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   results_overall$REGION <- NA
   results_overall$ejam_uniq_id <- NA  ## adds blank ejam_uniq_id column to results_overall (no longer tied to include_ejindexes)
   results_overall$in_how_many_states <- length(unique(na.omit(results_bysite$ST)))
+  #Set names in names_d_language that are in blockgroupstats to NA
   
+  names_d_language_blockgroupstats_intersect <- intersect(names_d_language,colnames(blockgroupstats))
+  results_overall[, names_d_language_blockgroupstats_intersect] <- NA
+  results_bysite[, names_d_language_blockgroupstats_intersect] <- NA
   # results_bybg_people$ST is created from sites2bgs_plusblockgroupdata_bysite$ST and ST is already in that table 
   # since ST was joined from blockgroupstats around line 569, for each bg, but that is not always 1 state for a given site.
   # sites2bgs_plusblockgroupdata_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  # same as the very slightly slower... fips2statename(fips_state_from_state_abbrev(ST))
@@ -1762,6 +1768,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # to avoid showing 4 versions of Demog.Index raw unitless.
   ######################## #
   
+
   # COLUMNS RENAME ####
   
   longnames <- fixcolnames(names(results_overall), oldtype = 'r', newtype = 'long')
@@ -1789,7 +1796,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     # blockcount_overall = blockcount_overall, # note already also in results_overall as a column now, so we dont need to duplicate it here
     # bgcount_overall = bgcount_overall        # note already also in results_overall as a column now, so we dont need to duplicate it here
   )
-  
+
   ########################### #
   
   # Show _overall in console, _bysite in viewer pane ####
