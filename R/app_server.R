@@ -3184,8 +3184,8 @@ app_server <- function(input, output, session) {
           # *** NOTE:  data_processed()$results_bybg_people  #considered not providing this to xlsx by default. It is huge and for expert users,
           # ***    but useful to create a plot of distance by group. Perhaps that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***
           
-          mapadd = TRUE,
-          report_map = report_map(),
+          mapadd = FALSE,
+          report_map = NULL,
           community_reportadd = TRUE,
           community_image = html_content,
           
