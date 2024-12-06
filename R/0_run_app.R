@@ -43,9 +43,15 @@ run_app      <- function(
     uiPattern = "/",
     ...
 ) {
+  # Assign golem_opts to the global environment
+  assign("golem_opts", list(...), envir = globalenv())
+  
   # temporary workaround, see https://github.com/ThinkR-open/golem/issues/6
   source(system.file("global.R", package = "EJAM")) # source('./inst/global1.R') # uses latest source version if devtools::load_all() has been done.
 
+  # sets switches controlling what is displayed in public version based on passed isPublic parameter
+  source(system.file("manage-public-private.R", package = "EJAM")) 
+  
   # This with_golem_options()  just does  shinyApp(ui = app_ui, server = app_server)
   #   which mean app_ui and app_server() need to have been loaded/attached via loadall
   #   (but it can show maintenance_page if that option is set.)
