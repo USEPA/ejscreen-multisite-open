@@ -2288,31 +2288,45 @@ app_server <- function(input, output, session) {
               labels = popup_labels),
             popupOptions = popupOptions(maxHeight = 200)
           )} else {
-            # FIPS   
-            popup_labels <- fixcolnames(namesnow = names(data_processed()$results_bysite), oldtype = 'r', newtype = 'shortlabel')
-            popup_labels[is.na(popup_labels)] <- names(data_processed()$results_bysite)[is.na(popup_labels)]
             
-            fips_shapes <- shapes_counties_from_countyfips(countyfips = data_processed()$results_bysite$ejam_uniq_id)
-            
-            if (!is.null(fips_shapes) && nrow(fips_shapes) > 0) {
-
-              leaflet(fips_shapes) %>%
-                addTiles() %>%
-                addPolygons(
-                  data = fips_shapes,
-                  color = "green",
-                  popup = popup_from_df(
-                    data_processed()$results_bysite %>%
+            req(data_uploaded())
+            FTYPES <- fipstype(data_uploaded())
+            if (all(FTYPES %in% "blockgroup") | (all(FTYPES %in% "county"))) {
+              # FIPS   
+              popup_labels <- fixcolnames(namesnow = names(data_processed()$results_bysite), oldtype = 'r', newtype = 'shortlabel')
+              popup_labels[is.na(popup_labels)] <- names(data_processed()$results_bysite)[is.na(popup_labels)]
+              
+              fips_shapes <- shapes_counties_from_countyfips(countyfips = data_processed()$results_bysite$ejam_uniq_id)
+              
+              if (!is.null(fips_shapes) && nrow(fips_shapes) > 0) {
+                
+                leaflet(fips_shapes) %>%
+                  addTiles() %>%
+                  addPolygons(
+                    data = fips_shapes,
+                    color = "green",
+                    popup = popup_from_df(
+                      data_processed()$results_bysite %>%
                       dplyr::mutate(dplyr::across(
                         dplyr::where(is.numeric), \(x) round(x, digits = 3))),
-                    labels = popup_labels
-                  ),
-                  popupOptions = popupOptions(maxHeight = 200)
-                )
-            } else {
-              #Possible failsafe needed if fips is invalid? Will it get to this stage? Blank map returned
+                      labels = popup_labels
+                    ),
+                    popupOptions = popupOptions(maxHeight = 200)
+                  )
+              } else {
+                #Possible failsafe needed if fips is invalid? Will it get to this stage? Blank map returned
+                leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+              }
+            } else{
+              #Leaflet map wont render so itll just be a blank map, something to consider down the line
               leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+              warning('cannot map FIPS types other than counties or blockgroups currently')
+              validate("cannot map FIPS types other than counties or blockgroups currently")
+              #Possible failsafe needed if fips is invalid? Will it get to this stage? Blank map returned
+
             }
+            
+          
           }
     }
     
