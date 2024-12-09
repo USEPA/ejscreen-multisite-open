@@ -288,7 +288,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                                       returnwhat = "plotfilename", graph = TRUE)
         )
       )
-      if (inherits(fname, "try-error")) {
+      if (inherits(fname, "try-error") | is.na(fname)) {
         fname <- NULL; warning('cannot create distance table')
       } else {
         openxlsx::addWorksheet(wb, sheetName = "plot_distances",  gridLines = FALSE)
