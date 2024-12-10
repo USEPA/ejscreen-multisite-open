@@ -3180,7 +3180,7 @@ app_server <- function(input, output, session) {
           eachsite  = data_processed()$results_bysite |> dplyr::select(names( data_processed()$results_bysite)[keepcols2]),# needs ..  # 1 row per site
           longnames = data_processed()$longnames[           keepcols2], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows.
           
-          custom_tab = data_processed()$results_summarized$cols,
+          custom_tab = data_summarized()$cols,
           custom_tab_name = "thresholds",
           
           # *** NOTE:  data_processed()$results_bybg_people  #considered not providing this to xlsx by default. It is huge and for expert users,
