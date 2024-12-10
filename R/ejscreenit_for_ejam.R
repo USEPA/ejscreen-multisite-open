@@ -14,6 +14,7 @@
 #'   fill in with NA values all the columns not provided by EJScreen API.
 #' @param nosave passed to [ejscreenit()]
 #' @param nosee passed to [ejscreenit()]
+#' @param fillmissingcolumns passed to [ejscreenapi2ejam_format()]
 #' @param ... other parameters passed to [ejscreenit()] 
 #' @seealso [ejscreen_vs_ejam()] [ejscreenapi2ejam_format()] which it uses.
 #' @return a data.table that looks like output of ejamit()$results_bysite

@@ -49,7 +49,7 @@ frs_from_sic <- function(sic_code_or_name, ...) {
 #'   See info about SIC industry codes at <https://www.naics.com/search>
 #' @param sic a vector of SIC codes, or
 #'   a data.table with column named code, as with output of [EJAM::sic_from_any()]
-#' @param d_only logical optional, set TRUE to get only the vector of REGISTRY_ID
+#' @param id_only logical optional, set TRUE to get only the vector of REGISTRY_ID
 #'   values back instead of a data.frame with lat,lon,SIC columns too. 
 #' @return A data.table (not just data.frame) with columns called
 #'   lat, lon, REGISTRY_ID, SIC (unless the id_only parameter is set to TRUE)

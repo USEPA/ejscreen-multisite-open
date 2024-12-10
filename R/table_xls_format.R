@@ -22,7 +22,7 @@
 #' @param ok2plot can set to FALSE to prevent plots from being attempted, while debugging
 #' @param analysis_title optional title passed from Shiny app to 'Notes' sheet
 #' @param buffer_desc optional description of buffer used in analysis, passed to 'Notes' sheet
-#' @param radius_miles If provided, miles buffer distance (from polygon or from point if circular buffers)
+#' @param radius_or_buffer_in_miles If provided, miles buffer distance (from polygon or from point if circular buffers)
 #' @param radius_or_buffer_description optional text saying if distance is radius or polygon buffer, passed to 'Notes' sheet  
 #' @param notes Text of additional notes to put in the notes tab, optional vector of character elements pasted in as one line each.
 #' @param custom_tab optional table to put in an extra tab
@@ -214,9 +214,14 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   openxlsx::addWorksheet(wb, sheetName = 'Overall'  )
   if (!is.null(formatted)) {openxlsx::addWorksheet(wb, sheetName = 'Overall 2') }
   # openxlsx::addWorksheet(wb, sheetName = 'longnames')
-  openxlsx::addWorksheet(wb, sheetName = 'map') 
-  openxlsx::addWorksheet(wb, sheetName = 'Community Report')
-  
+
+  if(mapadd){
+    openxlsx::addWorksheet(wb, sheetName = 'map') #Community report already has a map, so we don't need this in current format
+  }
+  if(community_reportadd){
+    openxlsx::addWorksheet(wb, sheetName = 'Community Report')
+  }
+
   # openxlsx::addWorksheet(wb, sheetName = 'bybg') # a lot of rows and not essential except to calculate distance vs demog group stats/plots
   ######################################################################## #
   
@@ -294,7 +299,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
         fname <- NULL; warning('cannot create distance table')
       } else {
         openxlsx::addWorksheet(wb, sheetName = "plot_distances",  gridLines = FALSE)
-        openxlsx::insertImage(wb, sheet = "plot_distances", file = fname, width = 11, height = 7) #  The current plot gets inserted
+        openxlsx::insertImage(wb, sheet = "plot_distances", file = fname, width = 14, height = 9) 
+        #  The current plot gets inserted
       }
     }
   }
@@ -347,7 +353,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     if (file.exists(png_file)) {
       tryCatch({
         # height and width are static, need to be updated if content on community report changes
-        openxlsx::insertImage(wb, sheet = 'Community Report', file = png_file, width = 11, height = 30, dpi = 500)
+        openxlsx::insertImage(wb, sheet = 'Community Report', file = png_file, width = 10, height = 30, dpi = 500)
       }, error = function(e) {
         message("Error inserting image into Excel:", e$message)
         # Handle the error (e.g., fallback mechanism, logging, etc.)
@@ -391,6 +397,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     openxlsx::addStyle(     wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), cols = 1,  style = openxlsx::createStyle(wrapText = TRUE), stack = TRUE)
   } else {usernoterows <- 0}
   openxlsx::setRowHeights(wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), heights = 50)
+  # Row height for "Note on site-specific estimates"
+  openxlsx::setRowHeights(wb, sheet = 'notes', rows = 8, heights = 91)
   openxlsx::setColWidths( wb, sheet = 'notes', cols = 1:4,            widths = "auto") # in general ok to auto-width, but...
   openxlsx::setColWidths( wb, sheet = 'notes', cols = 2, widths = 70) # so the long caveat can wrap
   openxlsx::addStyle(     wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), cols = 2, style = openxlsx::createStyle(wrapText = TRUE), stack = TRUE) # so the long caveat wraps
@@ -1031,7 +1039,7 @@ vartype_cat2color_ejam <- function(vartype=raw, varcategory="other") {
 #' 
 #' Convert R variable name of indicator to appropriate color for header row in Excel
 #' @param varname things like us.avg.pctlowinc 
-#'
+#' @param varnameinfo must be left as default currently
 #' @return vector of colors
 #' @seealso [varinfo()] [varname2vartype_ejam()] [varname2varcategory_ejam()] [vartype_cat2color_ejam()]
 #' @export

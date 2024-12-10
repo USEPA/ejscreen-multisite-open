@@ -1,33 +1,46 @@
 
-## (This function can also be defined as an RStudio addin with a keyboard shortcut in case that is useful)
 
-
-#' DRAFT - shiny gadget for interactive RStudio use - lets you pick 1 option via radio buttons in popup dialog
+#' DRAFT - addin/ gadget dialog box so RStudio user can pick a radio button
+#' Interactive dialog box of choices (RStudio addin that wraps a Shiny Gadget)
 #'
-#' @param choiceNames vector of options displayed
-#' @param choiceValues vector of corresponding values as returned by the function
-#' @param label  Appears just above the list of choices
-#' @param title Appears at top of dialog box and between cancel and done
-#' @param height of box in pixels
-#' @param width of box in pixels
-#' @details uses shiny::runGadget()
+#' @param choiceNames vector of options displayed, e.g., c("Points", "Shapes", "FIPS")
+#' @param choiceValues vector of corresponding values as returned by the function, e.g., c("latlon", "shp", "fips")
+#' @param title Appears just above the list of choices, e.g., "Select One"
+#' @param label Appears at top of dialog box and between cancel and done, e.g., "Choose one:"
+#' @param height height of box in pixels, e.g., 250
+#' @param width width of box in pixels, e.g., 100
+#' @return one of the choiceValues (if not cancelled/ error), once Done is clicked.
+#'
+#' @details uses [shiny::runGadget()]
 #' 
-#'   *** Note: Cannot really use within nontrivial scripts or functions as currently written
-#'   because the stopApp() seems to interrupt other processes and cause problems -
+#'   *** WARNING: AS DRAFTED, CANNOT use within nontrivial scripts or functions 
+#'   because the [stopApp()] seems to interrupt other processes and cause problems -
 #'   and seems related to a quirk seen if a script or function calls radiobox() twice - 
 #'   it will work the first time but show a blank popup window the 2d time...
 #'   e.g., if you  try to do this:
 #'   radius1 <- radiobox()
 #'   radius2 <- radiobox()
-#'   May all be related to this: https://github.com/rstudio/rstudio/issues/13394
+#'   May all be related to this issue: https://github.com/rstudio/rstudio/issues/13394
 #'   
-#' @return one of the choiceValues (if not cancelled/ error)
-#'
+#'   Note this function could be defined as an RStudio addin and assigned a keyboard shortcut, if that is useful.
+#'   
 #' @examples
+#' # chosen <- radiobox()
+#' # cat("you chose", chosen, '\n')
 #' \dontrun{
-#' radius <- EJAM:::radiobox(c("Far (3 miles)", "Medium (2 miles)", "Near (1 mile)"), c(3,2,1),
-#'   label = "Radius")
-#' cat("The radius will be", radius, "miles. \n")
+#'  junk = function() {
+#'   z =  radiobox()
+#'   # print(z)
+#'   return(z)
+#'  }
+#'  # (note this works after load_all or if it is an exported function)
+#'  radius <- radiobox(
+#'   c("Far (3 miles)", "Medium (2 miles)", "Near (1 mile)"),
+#'   c(3,2,1),
+#'   label = "Radius"
+#'  )
+#'  cat("The radius will be", radius, "miles. \n")
+#' 
 #' }
 #' 
 #' @keywords internal

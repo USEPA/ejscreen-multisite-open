@@ -188,8 +188,7 @@ statestats_queryd <- function(ST=sort(unique(EJAM::statestats$REGION)),
 
 #' statestats_querye - convenient way to see mean, pctiles of ENVIRONMENTAL indicators from lookup table
 #' 
-#' @inherit statestats_query return description details seealso examples
-#' @param dig how many digits to round to
+#' @inherit statestats_query params return description details seealso examples
 #' 
 #' @export
 #'

@@ -12,7 +12,13 @@ statestats_querye(
 )
 }
 \arguments{
-\item{dig}{how many digits to round to}
+\item{ST}{vector of state abbreviations, or USA}
+
+\item{varnames}{names of columns in lookup table, like "proximity.rmp"}
+
+\item{PCTILES}{vector of percentiles 0-100 and/or "mean"}
+
+\item{dig}{digits to round to}
 }
 \description{
 statestats_querye - convenient way to see mean, pctiles of ENVIRONMENTAL indicators from lookup table

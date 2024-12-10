@@ -66,6 +66,10 @@ ejam2barplot = function(ejamitout, varnames = c(names_d_ratio_to_avg , names_d_s
 ############################################################################################# #
 
 #' Same as ejam2barplot() but ejam2barplot() handles a sitenumber parameter
+#' 
+#' @inheritParams ejam2barplot
+#' @inheritDotParams ejam2barplot
+#' 
 #' @export
 #'
 plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),
@@ -203,7 +207,7 @@ thisplot <- thisdata %>%
   ggplot2::geom_hline(ggplot2::aes(yintercept = 1)) +
 
     ggplot2::scale_y_continuous(limits = c(0, NA), expand = ggplot2::expansion(mult = c(0, 0.05), add = c(0, 0))) +
-    ggplot2::theme(plot.margin = ggplot2::unit(c(0,100,0,0), "points"),
+    ggplot2::theme(plot.margin = ggplot2::unit(c(20,100,20,20), "points"),
                    plot.title = ggplot2::element_text(size = 14, hjust = 0.5),
                    axis.text.x = ggplot2::element_text(size = 10 , angle = -30, hjust = 0, vjust = 1)) + #
     NULL
