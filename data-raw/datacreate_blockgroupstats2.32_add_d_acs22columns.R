@@ -429,6 +429,9 @@ paste0(setdiff(names_d_language, names(blockgroupstats)) , collapse = ", "), "\n
 # METADATA + SAVE IN PKG ####
 # metadata_add(), use_data() 
 
+## replace drinking water NAs with 0s for calculation purposes
+blockgroupstats$drinking[is.na(blockgroupstats$drinking)] <- 0
+
 blockgroupstats    <- metadata_add(blockgroupstats)
 usethis::use_data(blockgroupstats, overwrite = T)
 
