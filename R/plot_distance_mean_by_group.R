@@ -98,20 +98,39 @@ plot_distance_mean_by_group <- function(results_bybg_people,
   }
 
   if (returnwhat == "plotfilename") {
-    fname = "distance_cdf.png"
-    mytempdir = tempdir()
-    png(file.path(mytempdir, fname), width = 2000, height = 1000)
-
-    colorlist <- ifelse(x$ratio < 1, "yellow", "gray")
-    colorlist[i.min] <- "orange"
-
-    barplot(x$ratio, names.arg = substr(rownames(x),1,13), cex.names = 0.6,
-            main = "Ratio of avg distance from site \n among group residents vs non-group",
-            xlab = paste0("Groups closer to sites are highlighted, with closest in orange (",mingrouptext,")"),
-            col = colorlist, ylab = "Average distance from site(s) for residents in given group / for residents not in given group")
-    abline(h = 1, col = "gray")
-
-    dev.off()
+    library(ggplot2)
+    
+    fname <- "distance_cdf.png"
+    mytempdir <- tempdir()
+    
+    data <- data.frame(
+      Group = substr(rownames(x), 1, 13),
+      Ratio = x$ratio,
+      Color = ifelse(x$ratio < 1, "yellow", "gray")
+    )
+    data$Color[i.min] <- "orange" 
+    
+    plot <- ggplot(data, aes(x = Group, y = Ratio, fill = Color)) +
+      geom_bar(stat = "identity", show.legend = FALSE) + 
+      geom_hline(yintercept = 1, color = "gray") + 
+      scale_fill_identity() + 
+      labs(
+        title = "Ratio of avg distance from site \n among group residents vs non-group",
+        x = paste0("Groups closer to sites are highlighted, with closest in orange (", mingrouptext, ")"),
+        y = "Average distance from site(s) for residents in given group / for residents not in given group"
+      ) +
+      theme_minimal(base_size = 15) +
+      theme(
+        axis.text.x = element_text(angle = -30, hjust = 0.5, vjust = 0.5, size = 14),  
+        axis.text.y = element_text(size = 14),  
+        axis.title.y = element_text(size = 16, margin = margin(r = 20)), 
+        axis.title.x = element_text(size = 16, margin = margin(t = 20)),  
+        plot.title = element_text(size = 18, hjust = 0.5, face = "bold"),  
+        plot.margin = margin(t = 20, r = 20, b = 100, l = 100)  
+        
+      )
+    
+    ggsave(filename = file.path(mytempdir, fname), plot = plot, width = 20, height = 12, dpi = 100)
     return(file.path(mytempdir, fname))
   }
 
