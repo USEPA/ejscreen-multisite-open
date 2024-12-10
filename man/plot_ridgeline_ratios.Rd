@@ -7,9 +7,9 @@
 plot_ridgeline_ratios(ratio.to.us.d.bysite, shortlabels = NULL)
 }
 \arguments{
-\item{shortlabels}{names to use for plot - should be same length as named list ratio.to.us.d.overall}
+\item{ratio.to.us.d.bysite}{named list of a few ratios to plot (data.frame)}
 
-\item{ratio.to.us.d.overall}{named list of a few ratios to plot (data.frame)}
+\item{shortlabels}{names to use for plot - should be same length as named list ratio.to.us.d.overall}
 }
 \description{
 Make ridgeline plot of ratios of demographic score to its average

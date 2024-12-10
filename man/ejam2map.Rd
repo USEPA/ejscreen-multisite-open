@@ -11,6 +11,8 @@ ejam2map(ejamitout, radius = NULL, column_names = "ej", browse = FALSE)
 
 \item{radius}{radius in miles}
 
+\item{column_names}{can be "ej", passed to \code{\link[=mapfast]{mapfast()}}}
+
 \item{browse}{logical optional whether to open the web browser to view the map}
 }
 \value{

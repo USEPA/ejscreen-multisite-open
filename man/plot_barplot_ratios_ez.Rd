@@ -13,6 +13,21 @@ plot_barplot_ratios_ez(
   ...
 )
 }
+\arguments{
+\item{varnames}{vector of indicator names that are ratios to avg, like
+c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg)
+but could be c(names_d_ratio_to_state_avg , names_d_subgroups_ratio_to_state_avg)}
+
+\item{main}{title of plot - must change to note it vs. State if not comparing to US avg.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=ejam2barplot]{ejam2barplot}}
+  \describe{
+    \item{\code{ejamitout}}{like from \code{\link[=ejamit]{ejamit()}}}
+    \item{\code{sitenumber}}{default is all sites from ejamitout$results_overall, and
+if an integer, it is the site number to show from ejamitout$results_bysite}
+  }}
+}
 \description{
 Same as ejam2barplot() but ejam2barplot() handles a sitenumber parameter
 }

@@ -22,7 +22,7 @@
 #' @param ok2plot can set to FALSE to prevent plots from being attempted, while debugging
 #' @param analysis_title optional title passed from Shiny app to 'Notes' sheet
 #' @param buffer_desc optional description of buffer used in analysis, passed to 'Notes' sheet
-#' @param radius_miles If provided, miles buffer distance (from polygon or from point if circular buffers)
+#' @param radius_or_buffer_in_miles If provided, miles buffer distance (from polygon or from point if circular buffers)
 #' @param radius_or_buffer_description optional text saying if distance is radius or polygon buffer, passed to 'Notes' sheet  
 #' @param notes Text of additional notes to put in the notes tab, optional vector of character elements pasted in as one line each.
 #' 
@@ -1026,7 +1026,7 @@ vartype_cat2color_ejam <- function(vartype=raw, varcategory="other") {
 #' 
 #' Convert R variable name of indicator to appropriate color for header row in Excel
 #' @param varname things like us.avg.pctlowinc 
-#'
+#' @param varnameinfo must be left as default currently
 #' @return vector of colors
 #' @seealso [varinfo()] [varname2vartype_ejam()] [varname2varcategory_ejam()] [vartype_cat2color_ejam()]
 #' @export

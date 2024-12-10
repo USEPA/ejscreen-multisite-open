@@ -486,12 +486,11 @@ url_enviromapper <- function(lon, lat, as_html=FALSE, linktext, zoom=13) {
 ################################################### #################################################### #
 
 
-#' Get URLs of EnviroFacts API queries - DRAFT WORK IN PROGRESS
+#' Get URLs of EPA EnviroFacts API queries - DRAFT INCOMPLETE WORK IN PROGRESS
 #' 
 #' Get URL(s) to query and get data on facilities from Envirofacts, in XML,JSON,CSV, or EXCEL format
 #' 
-#' @details Lets you search a specific regulatory program database and filter by State, location, etc.
-#'
+#' @details 
 #'   see <https://www.epa.gov/enviro/web-services> and
 #'  
 #'   <https://www.epa.gov/enviro/envirofacts-data-service-api>
@@ -508,7 +507,7 @@ url_enviromapper <- function(lon, lat, as_html=FALSE, linktext, zoom=13) {
 #'   https://data.epa.gov/efservice/multisystem/minLatitude/35.465158/maxLatitude/52.912225/minLongitude/-104.387994/maxLongitude/-69.231744/naics_type/Beginning+with/naics_to/32611
 #'   https://data.epa.gov/efservice/multisystem/minLatitude/35.465158/maxLatitude/52.912225/minLongitude/-104.387994/maxLongitude/-69.231744/EXCEL
 #'   
-#' @param tablename such as tri_info 
+#' @param regid EPA-regulated facility registry identification (ID), vector
 #' @param as_html Whether to return as just the urls or as html hyperlinks to use in a DT::datatable() for example
 #' @param linktext used as text for hyperlinks, if supplied and as_html=TRUE
 #'

@@ -5,9 +5,13 @@
 #'
 #' @export
 #'
-shapefile2blockpoints <- function(...) {
+shapefile2blockpoints <- function(polys, addedbuffermiles = 0, blocksnearby = NULL,
+                                  dissolved = FALSE, safety_margin_ratio = 1.10, crs = 4269,
+                                  updateProgress = NULL) {
 
-  get_blockpoints_in_shape(...)
+  get_blockpoints_in_shape(polys = polys, addedbuffermiles = addedbuffermiles, blocksnearby = blocksnearby,
+                           dissolved = dissolved, safety_margin_ratio = safety_margin_ratio, crs = crs,
+                           updateProgress = updateProgress)
 }
 ############################################################# #
 
@@ -55,8 +59,8 @@ shapefile2blockpoints <- function(...) {
 #'
 #' @export
 #'
-get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL,
-                                     dissolved=FALSE, safety_margin_ratio=1.10, crs = 4269,
+get_blockpoints_in_shape <- function(polys, addedbuffermiles = 0, blocksnearby = NULL,
+                                     dissolved = FALSE, safety_margin_ratio = 1.10, crs = 4269,
                                      updateProgress = NULL) {
 
   ############################################################################################################### #

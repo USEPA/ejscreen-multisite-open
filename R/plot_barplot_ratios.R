@@ -66,6 +66,10 @@ ejam2barplot = function(ejamitout, varnames = c(names_d_ratio_to_avg , names_d_s
 ############################################################################################# #
 
 #' Same as ejam2barplot() but ejam2barplot() handles a sitenumber parameter
+#' 
+#' @inheritParams ejam2barplot
+#' @inheritDotParams ejam2barplot
+#' 
 #' @export
 #'
 plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),

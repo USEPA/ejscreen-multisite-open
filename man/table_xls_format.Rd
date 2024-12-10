@@ -79,6 +79,8 @@ This requires that bybg be provided as a parameter input to this function.}
 
 \item{buffer_desc}{optional description of buffer used in analysis, passed to 'Notes' sheet}
 
+\item{radius_or_buffer_in_miles}{If provided, miles buffer distance (from polygon or from point if circular buffers)}
+
 \item{radius_or_buffer_description}{optional text saying if distance is radius or polygon buffer, passed to 'Notes' sheet}
 
 \item{notes}{Text of additional notes to put in the notes tab, optional vector of character elements pasted in as one line each.}
@@ -113,8 +115,6 @@ the workbook will be saved locally at that path and name. Warning: it will overw
 \item{ejscreen_ejam_caveat}{optional text if you want to change this in the notes tab}
 
 \item{...}{other params passed along to \code{\link[openxlsx:writeData]{openxlsx::writeData()}}}
-
-\item{radius_miles}{If provided, miles buffer distance (from polygon or from point if circular buffers)}
 }
 \value{
 a workbook, ready to be saved in spreadsheet format, with tabs like "Overall" and "Each Site"
