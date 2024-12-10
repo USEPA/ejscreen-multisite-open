@@ -2318,12 +2318,11 @@ app_server <- function(input, output, session) {
                 leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
               }
             } else{
-              #Leaflet map wont render so itll just be a blank map, something to consider down the line
+              #Not counties or blockgroups, return empty map and warning
+              
+              warning('Cannot map FIPS types other than counties or blockgroups currently')
               leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
-              warning('cannot map FIPS types other than counties or blockgroups currently')
-              validate("cannot map FIPS types other than counties or blockgroups currently")
-              #Possible failsafe needed if fips is invalid? Will it get to this stage? Blank map returned
-
+            
             }
             
           
