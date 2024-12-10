@@ -7,6 +7,10 @@
 mapfastej_counties(
   mydf,
   colorvarname = "pctile.Demog.Index.Supp",
+  colorfills = c("yellow", "orange", "red"),
+  colorlabels = c(80, 90, 95),
+  colorbins = c(80, 90, 95),
+  colorpalette = c("yellow", "yellow", "orange", "red"),
   static_not_leaflet = FALSE,
   main = "Selected Counties",
   ...
@@ -15,7 +19,16 @@ mapfastej_counties(
 \arguments{
 \item{mydf}{something like  ejamit(fips = fips_counties_from_statename("Kentucky"), radius = 0)$results_bysite}
 
-\item{colorvarname}{colname of indicator in mydf that drives color-coding}
+\item{colorvarname}{colname of indicator in mydf that drives color-coding
+(or alternatively, colorvarname = "green" means a single specific color for all, like "green")}
+
+\item{colorfills}{= c('yellow', 'orange', 'red')}
+
+\item{colorlabels}{= c(80, 90, 95)}
+
+\item{colorbins}{=  c(80, 90, 95)}
+
+\item{colorpalette}{= c("yellow", "yellow", "orange", "red")}
 
 \item{static_not_leaflet}{set TRUE to use \code{\link[=map_shapes_plot]{map_shapes_plot()}} instead of \code{\link[=map_shapes_leaflet]{map_shapes_leaflet()}}}
 

@@ -2,11 +2,12 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{map_counties_in_state}
 \alias{map_counties_in_state}
-\title{Basic map of county outlines within specified state(s)}
+\title{Basic map of county outlines within specified state(s)
+Not used by shiny app}
 \usage{
 map_counties_in_state(
   ST = "DE",
-  colorcolumn = c("NAME", "POP_SQMI", "STATE_NAME")[1],
+  colorcolumn = c("pop", "NAME", "POP_SQMI", "STATE_NAME")[1],
   type = c("leaflet", "mapview")[1]
 )
 }
@@ -31,6 +32,7 @@ a map
 }
 \description{
 Basic map of county outlines within specified state(s)
+Not used by shiny app
 }
 \examples{
 \dontrun{
