@@ -14,11 +14,18 @@ plot_barplot_ratios_ez(
 )
 }
 \arguments{
+\item{out}{the list of tables that is the output of ejamit() or a related function}
+
 \item{varnames}{vector of indicator names that are ratios to avg, like
 c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg)
 but could be c(names_d_ratio_to_state_avg , names_d_subgroups_ratio_to_state_avg)}
 
 \item{main}{title of plot - must change to note it vs. State if not comparing to US avg.}
+
+\item{single_location}{set to TRUE if using row_index to view one site,
+set to FALSE to view overall results from out$results_overall}
+
+\item{row_index}{the number of the row to use from out$results_bysite}
 
 \item{...}{
   Arguments passed on to \code{\link[=ejam2barplot]{ejam2barplot}}

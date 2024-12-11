@@ -12,6 +12,7 @@
 #' @param varnames use defaults, or vector of names like "bgej" or use "all" to get all available
 #' @param repository repository name such as "USEPA/ejamdata"
 #' 
+#' @keywords internal
 #' @export
 #'
 download_latest_arrow_data <- function(

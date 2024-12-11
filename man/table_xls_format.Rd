@@ -25,6 +25,8 @@ table_xls_format(
   radius_or_buffer_description =
     "Miles radius of circular buffer (or distance used if buffering around polygons)",
   notes = NULL,
+  custom_tab = NULL,
+  custom_tab_name = "other",
   heatmap_colnames = NULL,
   heatmap_cuts = c(80, 90, 95),
   heatmap_colors = c("yellow", "orange", "red"),
@@ -84,6 +86,10 @@ This requires that bybg be provided as a parameter input to this function.}
 \item{radius_or_buffer_description}{optional text saying if distance is radius or polygon buffer, passed to 'Notes' sheet}
 
 \item{notes}{Text of additional notes to put in the notes tab, optional vector of character elements pasted in as one line each.}
+
+\item{custom_tab}{optional table to put in an extra tab}
+
+\item{custom_tab_name}{optional name of optional custom_tab}
 
 \item{heatmap_colnames}{optional vector of colnames to apply heatmap colors}
 

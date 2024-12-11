@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_dupenames_etc.R
 \name{dependencies_of_ejam}
 \alias{dependencies_of_ejam}
-\title{utility for developing package - recursive dependencies of a package
+\title{utility for developing package, see what pkgs it depends on, recursively (i.e., downstream ones too)
 Reminder of ways to check this is printed to console.}
 \usage{
 dependencies_of_ejam(
@@ -12,14 +12,14 @@ dependencies_of_ejam(
 )
 }
 \arguments{
-\item{localpkg}{"EJAM"}
+\item{localpkg}{"EJAM" or another installed package}
 
-\item{depth}{see deepdep package function deepdep()}
+\item{depth}{would be used if using the deepdep package and function}
 
-\item{ignores_grep}{see deepdep package function deepdep()}
+\item{ignores_grep}{would be used if using the deepdep package and function}
 }
 \description{
-utility for developing package - recursive dependencies of a package
+utility for developing package, see what pkgs it depends on, recursively (i.e., downstream ones too)
 Reminder of ways to check this is printed to console.
 }
 \keyword{internal}

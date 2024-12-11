@@ -2288,31 +2288,44 @@ app_server <- function(input, output, session) {
               labels = popup_labels),
             popupOptions = popupOptions(maxHeight = 200)
           )} else {
-            # FIPS   
-            popup_labels <- fixcolnames(namesnow = names(data_processed()$results_bysite), oldtype = 'r', newtype = 'shortlabel')
-            popup_labels[is.na(popup_labels)] <- names(data_processed()$results_bysite)[is.na(popup_labels)]
             
-            fips_shapes <- shapes_counties_from_countyfips(countyfips = data_processed()$results_bysite$ejam_uniq_id)
-            
-            if (!is.null(fips_shapes) && nrow(fips_shapes) > 0) {
-
-              leaflet(fips_shapes) %>%
-                addTiles() %>%
-                addPolygons(
-                  data = fips_shapes,
-                  color = "green",
-                  popup = popup_from_df(
-                    data_processed()$results_bysite %>%
+            req(data_uploaded())
+            FTYPES <- fipstype(data_uploaded())
+            if (all(FTYPES %in% "blockgroup") | (all(FTYPES %in% "county"))) {
+              # FIPS   
+              popup_labels <- fixcolnames(namesnow = names(data_processed()$results_bysite), oldtype = 'r', newtype = 'shortlabel')
+              popup_labels[is.na(popup_labels)] <- names(data_processed()$results_bysite)[is.na(popup_labels)]
+              
+              fips_shapes <- shapes_counties_from_countyfips(countyfips = data_processed()$results_bysite$ejam_uniq_id)
+              
+              if (!is.null(fips_shapes) && nrow(fips_shapes) > 0) {
+                
+                leaflet(fips_shapes) %>%
+                  addTiles() %>%
+                  addPolygons(
+                    data = fips_shapes,
+                    color = "green",
+                    popup = popup_from_df(
+                      data_processed()$results_bysite %>%
                       dplyr::mutate(dplyr::across(
                         dplyr::where(is.numeric), \(x) round(x, digits = 3))),
-                    labels = popup_labels
-                  ),
-                  popupOptions = popupOptions(maxHeight = 200)
-                )
-            } else {
-              #Possible failsafe needed if fips is invalid? Will it get to this stage? Blank map returned
+                      labels = popup_labels
+                    ),
+                    popupOptions = popupOptions(maxHeight = 200)
+                  )
+              } else {
+                #Possible failsafe needed if fips is invalid? Will it get to this stage? Blank map returned
+                leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+              }
+            } else{
+              #Not counties or blockgroups, return empty map and warning
+              
+              warning('Cannot map FIPS types other than counties or blockgroups currently')
               leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+            
             }
+            
+          
           }
     }
     
@@ -3180,6 +3193,8 @@ app_server <- function(input, output, session) {
           eachsite  = data_processed()$results_bysite |> dplyr::select(names( data_processed()$results_bysite)[keepcols2]),# needs ..  # 1 row per site
           longnames = data_processed()$longnames[           keepcols2], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows.
           
+          custom_tab = data_summarized()$cols,
+          custom_tab_name = "thresholds",
           
           # *** NOTE:  data_processed()$results_bybg_people  #considered not providing this to xlsx by default. It is huge and for expert users,
           # ***    but useful to create a plot of distance by group. Perhaps that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***

@@ -26,3 +26,4 @@ ejamdata_version.txt file).
 
 Relies on \code{\link[piggyback:pb_releases]{piggyback::pb_releases()}} to download data files from a specific release (version) of the package.
 }
+\keyword{internal}

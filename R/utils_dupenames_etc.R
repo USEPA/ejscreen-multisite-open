@@ -489,57 +489,62 @@ functions_in_pkg <- function(pkg, alphasort_table=FALSE, internal_included=TRUE,
 
 # recursive dependencies of a package ####
 
-#' utility for developing package - recursive dependencies of a package
+#' utility for developing package, see what pkgs it depends on, recursively (i.e., downstream ones too)
 #' Reminder of ways to check this is printed to console.
-#' @param localpkg "EJAM"
-#' @param depth see deepdep package function deepdep() 
-#' @param ignores_grep see deepdep package function deepdep() 
+#' 
+#' @param localpkg "EJAM" or another installed package
+#' 
+#' @param depth would be used if using the deepdep package and function
+#' @param ignores_grep would be used if using the deepdep package and function
 #' @return NULL
 #' 
 #' @keywords internal
 #' 
 dependencies_of_ejam <- function(localpkg = "EJAM", depth = 6, ignores_grep = "0912873410239478") {
   
-  #################### #
-  
-  cat(paste0("
-  
-  This may be useful if you have the deepdep package installed (not loaded by EJAM): 
-  
-sort(
-  unique( 
-    grep(
-      ignores_grep, 
-      deepdep", "::", "deepdep(
-        localpkg, 
-        local = TRUE, 
-        downloads = FALSE, 
-        depth = depth
-      )$name, 
-      value = TRUE, 
-      invert = TRUE)
-  )
-)  
-  
-      "))
   #################### #  
   
   cat(paste0("
   
-  This may be useful:
+  # This may be useful to see dependencies of a package like EJAM:
   
-sort(packrat", ":::", "recursivePackageDependencies('EJAM', lib.loc = .libPaths(), ignores = NULL))
+x = sort(packrat", ":::", "recursivePackageDependencies('", 
+             localpkg,
+"', lib.loc = .libPaths(), ignores = NULL))
 
+x
       "))
+  
   #################### #
-  
-  cat("
-  
-  This would ignore other EJAM-prefixed package names:
-  
-dependencies_of_ejam(ignores_grep = 'EJAM' )
-
-      ")
+   
+#   cat(paste0("
+#   
+#   # or if you have the deepdep package installed (it is not required by EJAM)... 
+#   
+# y = sort(
+#   unique( 
+#     grep(
+#       '", ignores_grep, "', 
+#       deepdep", "::", "deepdep(
+#         '", localpkg, "', 
+#         local = TRUE, 
+#         downloads = FALSE, 
+#         depth = ", depth, "
+#       )$name, 
+#       value = TRUE, 
+#       invert = TRUE)
+#   )
+# )  
+#   
+#       "))
+#   
+#   #################### #
+#   
+#   cat("
+# 
+# setdiff(x,y)
+# setdiff(y,x)
+#       ")
   #################### #
   
   ## report all dependencies and downstream ones etc.
@@ -548,9 +553,9 @@ dependencies_of_ejam(ignores_grep = 'EJAM' )
   # y <- sort( packrat:::recursivePackageDependencies('EJAM', lib.loc = .libPaths(), ignores = NULL))
   # setdiff(y, x)
   # ## [1] "snow"  
-  ## for some reason this 1 package is identified as a dependency in source but not installed version of EJAM
+  ## for some reason this 1 package is identified as a dependency one way but not the other way
   
-  return(NULL)
+  invisible()
 }
 ##################################################################################### #
 
