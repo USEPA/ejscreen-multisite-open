@@ -14,7 +14,7 @@
 
 # default_hide_ejscreenapi_tab <- golem_opts$isPublic  # This doesn't seem used
 
-choices_for_type_of_site_category = if_else(
+choices_for_type_of_site_category = ifelse(
   isTruthy(golem_opts$isPublic),
   c('by Industry (NAICS) Code' = 'NAICS'),
   c(
@@ -41,6 +41,6 @@ choices_for_type_of_site_upload <- ifelse(
   )
 )
 
-.app_title <-  if_else(isTruthy(golem_opts$isPublic), "EJScreen Multisite", "EJAM")
+.app_title <-  ifelse(isTruthy(golem_opts$isPublic), "EJScreen Multisite", "EJAM")
 
-.community_report_title <- if_else(isTruthy(golem_opts$isPublic), "EJScreen-EJAM Multisite Report", "EJAM Multisite Report")
+.community_report_title <- ifelse(isTruthy(golem_opts$isPublic), "EJScreen-EJAM Multisite Report", "EJAM Multisite Report")
