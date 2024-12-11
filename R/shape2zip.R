@@ -1,35 +1,34 @@
 
 
-#############################################################################
-
-### fix the draft of shape2zip() 
-
-# ## ***  fix this and/or other functions so that this will work
-# ## even if user provides a file name with .shp.zip in it
-# 
-# shptest = shapes_from_fips(fips = name2fips(c('tucson,az', 'tempe, AZ')))
-# 
-# testfilename1 = shape2zip(shp = shptest, file = './testjunk.shp.zip')
-# zip::zip_list(testfilename1)
-# shptest1 = shapefile_from_any(testfilename1)
-# 
-# testfilename2 = shape2zip(shp = shptest, file = './testjunk.zip')
-# zip::zip_list(testfilename2)
-# shptest2 = shapefile_from_any(testfilename2)
-
-#############################################################################
-
-
-shape2zip <- function(shp, file = file.path(".", "shapefile.zip")) {
-  
-  
-  ## example/ test
-  # shp = shapes_from_fips(fips = name2fips(c('tucson,az', 'tempe, AZ')))
-  # file = '~/../Downloads/shapefile1.zip'
+#' Save spatial data.frame as shapefile.zip
+#'
+#' @param shp a spatial data.frame as from [shapefile_from_any()] or [sf::st_read()]
+#' @param file full path to and name of the .zip file to create
+#'
+#' @return normalized path of the cleaned up file param (path and name of .zip)
+#' @examples
+#' # shp <- shapes_from_fips(fips = name2fips(c('tucson,az', 'tempe, AZ')))
+#' shp <- testshapes_2
+#' \dontrun{
+#' fname <- file.path(tempdir(), "myfile.zip")
+#' fpath <- shape2zip(shp, fname)
+#' file.exists(fpath)
+#' zip::zip_list(fpath)
+#' # read it back in
+#' shp2 <- shapefile_from_any(fpath)
+#' }
+#' 
+#' @export
+#'
+shape2zip <- function(shp, file = "shapefile.zip") {
   
   folder = dirname(file)
   fname = basename(file)
   fname_noext <- gsub( paste0("\\.", tools::file_ext(fname), "$"), "", fname) 
+  if (tools::file_ext(fname_noext) == "shp") {
+    warning("file name cannot end in x.shp.zip for example, so just x.zip will be used")
+    fname_noext <- gsub(".shp$", "", fname_noext)
+  } 
   fname.zip = paste0(fname_noext, '.zip')
   fname.shp = paste0(fname_noext, '.shp')
   fnames.all = paste0(fname_noext, c(".shp", '.dbf', '.prj', '.shx'))
@@ -58,6 +57,10 @@ shape2zip <- function(shp, file = file.path(".", "shapefile.zip")) {
   # unzip from tempdir to folder specified by parameter.
   # -D should prevent storing Directory info, 
   # -j is supposed to use no path info so files are all in root of .zip and there are not folders inside the .zip
+  
+  zipfullpath <- gsub('\\\\', '/', zipfullpath) # R format using / not \\, so user could copy paste what results from cat(zipfullpath) 
   if (!file.exists(zipfullpath)) {warning('failed to create file at ', zipfullpath)} else {cat('saved', zipfullpath, '\n')}
   return(zipfullpath)
 }
+############################################################# #
+
