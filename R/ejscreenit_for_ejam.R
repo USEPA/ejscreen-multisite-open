@@ -26,6 +26,7 @@ ejscreenit_for_ejam <- function(sitepoints, radius=3,
                                 namestr = '',
                                 nosave = TRUE,
                                 nosee = TRUE,
+                                fillmissingcolumns = FALSE,
                                 ...) {
 
   if (!is.null(shapefile)) {warning('shapefile not implemented yet')}

@@ -322,6 +322,7 @@ reference:
 - title: "Test Data"
 - subtitle: "Examples of Inputs (Points, etc.)"
   contents:
+  - testshapes_2
   - testpoints_n
   - testpoints_5
   - testpoints_10
