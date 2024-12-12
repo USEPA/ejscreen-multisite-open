@@ -105,7 +105,7 @@ using the normal name and a synonym name, as with TOTALPOP and "totalPop"
   
   x <- testoutput_ejscreenapi_plus_5; names(x) <- fixcolnames(names(x), "r", "long")
   # x <- ejscreenapi_plus(pts,              radius = myradius, usewhichnames = "long")
-  # x <- ejscreenapi_plus(pts$lon, pts$lat, radius = myradius, usewhichnames = "long")
+  # x <- ejscreenapi_plus(x = pts$lon, y = pts$lat, radius = myradius, usewhichnames = "long")
   # x <- ejscreenapi_plus(pts,              radius = myradius, usewhichnames = "long")
   
   ## view results

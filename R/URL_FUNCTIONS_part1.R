@@ -54,6 +54,10 @@
 #'
 urls_clusters_and_sort_cols <- function(results_table) {
   
+  if (is.data.table(results_table)) {
+    setDF(results_table)
+    on.exit(setDT(results_table))
+  }
   ########################################### #  
   # Add columns with hyperlinks to site reports
   # 
