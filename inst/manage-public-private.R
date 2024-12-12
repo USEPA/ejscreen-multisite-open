@@ -15,7 +15,7 @@
 # default_hide_ejscreenapi_tab <- golem_opts$isPublic  # This doesn't seem used
 
 choices_for_type_of_site_category = ifelse(
-  isTruthy(golem_opts$isPublic),
+  isTRUE(golem_opts$isPublic),
   c('by Industry (NAICS) Code' = 'NAICS'),
   c(
     'by Industry (NAICS) Code' = 'NAICS',
@@ -26,7 +26,7 @@ choices_for_type_of_site_category = ifelse(
 )
 
 choices_for_type_of_site_upload <- ifelse(
-  isTruthy(golem_opts$isPublic),
+  isTRUE(golem_opts$isPublic),
   c(
     'Latitude/Longitude file upload'                = 'latlon',
     'EPA Facility IDs (FRS Identifiers)'            = 'FRS',
@@ -41,6 +41,6 @@ choices_for_type_of_site_upload <- ifelse(
   )
 )
 
-.app_title <-  ifelse(isTruthy(golem_opts$isPublic), "EJScreen Multisite", "EJAM")
+.app_title <-  ifelse(isTRUE(golem_opts$isPublic), "EJScreen Multisite", "EJAM")
 
-.community_report_title <- ifelse(isTruthy(golem_opts$isPublic), "EJScreen-EJAM Multisite Report", "EJAM Multisite Report")
+.community_report_title <- ifelse(isTRUE(golem_opts$isPublic), "EJScreen-EJAM Multisite Report", "EJAM Multisite Report")

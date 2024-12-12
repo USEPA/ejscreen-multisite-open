@@ -108,7 +108,7 @@ main_shinytest <- function(data_type) {
     
     ## DETAILS > PLOT RANGES (HISTO) ####
     
-    if (!isTruthy(golem_opts$isPublic)) {
+    if (!isTRUE(golem_opts$isPublic)) {
       
       print("going to plot_range details subtab")
       app$set_inputs(details_subtabs = "Plot Full Range of Scores")
