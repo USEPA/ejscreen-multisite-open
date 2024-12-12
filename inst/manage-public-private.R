@@ -14,24 +14,24 @@
 
 # default_hide_ejscreenapi_tab <- golem_opts$isPublic  # This doesn't seem used
 
-choices_for_type_of_site_category = ifelse(
-  isTRUE(golem_opts$isPublic),
-  c('by Industry (NAICS) Code' = 'NAICS'),
+choices_for_type_of_site_category = if (isTRUE(golem_opts$isPublic)) {
+  c('by Industry (NAICS) Code' = 'NAICS')
+} else {
   c(
     'by Industry (NAICS) Code' = 'NAICS',
     'by Industry (SIC) Code'   = 'SIC',
     'by EPA Program'           = 'EPA_PROGRAM',
     'by MACT subpart'          = 'MACT'
   )
-)
+}
 
-choices_for_type_of_site_upload <- ifelse(
-  isTRUE(golem_opts$isPublic),
+choices_for_type_of_site_upload <- if (isTRUE(golem_opts$isPublic)) {
   c(
     'Latitude/Longitude file upload'                = 'latlon',
     'EPA Facility IDs (FRS Identifiers)'            = 'FRS',
     'Shapefile of polygons'                         = 'SHP'
-  ),
+  )
+} else {
   c(
     'Latitude/Longitude file upload'               = 'latlon',
     'EPA Facility ID (FRS Identifiers)'            = 'FRS',
@@ -39,7 +39,7 @@ choices_for_type_of_site_upload <- ifelse(
     'FIPS Codes'                                   = 'FIPS',
     'Shapefile of polygons'                        = 'SHP'
   )
-)
+}
 
 .app_title <-  ifelse(isTRUE(golem_opts$isPublic), "EJScreen Multisite", "EJAM")
 
