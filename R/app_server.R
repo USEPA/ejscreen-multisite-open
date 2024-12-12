@@ -2414,7 +2414,7 @@ app_server <- function(input, output, session) {
           data_processed(),
           sitenumber = selected_row,
           varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
-          main = "Demographics at the Analyzed Location Compared to State Averages"
+          main = "Demographics at the Analyzed Location \n Compared to State Averages"
         )
       } else {
         # No specific location selected, use a default plot setup
@@ -2450,7 +2450,7 @@ app_server <- function(input, output, session) {
         plot_barplot_ratios_ez(
           out = data_processed(),
           varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),
-          main = "Demographics at the Analyzed Location Compared to US Overall",
+          main = "Demographics at the Analyzed Location \n Compared to US Overall",
           single_location = TRUE,
           row_index = selected_row
         )
