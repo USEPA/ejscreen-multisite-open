@@ -40,6 +40,11 @@ plot_distance_mean_by_group <- function(results_bybg_people,
                                         demogvarname=NULL, # namez$d, namez$d_subgroups),
                                         demoglabel=fixcolnames(demogvarname,"r","shortlabel"),
                                         graph=TRUE, returnwhat="table") {
+  
+  if (all(is.na(results_bybg_people$radius.miles))) { #Fips code ejam outputs do not have radius.miles, so check this to see if fips input. 
+    warning("plot_distance_mean_by_group does not work with NA distances This includes outputs from ejamit with fips inputs")
+    return(NA)
+  }
 
   if (is.null(demoglabel) & is.null(demogvarname)) {
     demoglabel <- fixcolnames(c(names_d, names_d_subgroups), oldtype = 'r', newtype = 'shortlabel')
@@ -126,11 +131,12 @@ plot_distance_mean_by_group <- function(results_bybg_people,
         axis.title.y = element_text(size = 16, margin = margin(r = 20)), 
         axis.title.x = element_text(size = 16, margin = margin(t = 20)),  
         plot.title = element_text(size = 18, hjust = 0.5, face = "bold"),  
-        plot.margin = margin(t = 20, r = 20, b = 100, l = 100)  
-        
+        plot.margin = margin(t = 20, r = 20, b = 100, l = 100)    
       )
     
     ggsave(filename = file.path(mytempdir, fname), plot = plot, width = 20, height = 12, dpi = 100)
+    
+    
     return(file.path(mytempdir, fname))
   }
 

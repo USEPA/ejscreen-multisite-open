@@ -8,6 +8,8 @@ varname2color_ejam(varname, varnameinfo)
 }
 \arguments{
 \item{varname}{things like us.avg.pctlowinc}
+
+\item{varnameinfo}{must be left as default currently}
 }
 \value{
 vector of colors

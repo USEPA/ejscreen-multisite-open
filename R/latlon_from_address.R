@@ -42,8 +42,11 @@
 #' address_from_table(test_address_table)
 #'
 #' ## fname <- system.file("testdata/address/street_address_9.xlsx", package = "EJAM")
-#' ## pts <- address_from_table(fname)
-#'
+#' ## test_addresses_9b <- address_from_table(fname)
+#' \dontrun{
+#' 
+#' # This requires first attaching the AOI package.
+#' 
 #' pts <- latlon_from_address(test_addresses_9[1:2])
 #' ## out <- ejamit(pts, radius = 1)
 #' ## ejam2report(out)
@@ -52,7 +55,7 @@
 #' latlon_from_address_table(test_address_table_withfull)
 #' ## *** NOTE IT FAILS IF A COLUMN WITH STREET NAME ONLY IS CALLED "address"
 #' ##   instead of that storing the full address.
-#'
+#' }
 #' fixcolnames_infer(currentnames = test_address_parts1)
 #' fixcolnames_infer(currentnames = names(test_address_table))
 #'

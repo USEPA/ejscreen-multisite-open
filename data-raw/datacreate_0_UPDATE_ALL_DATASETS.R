@@ -615,6 +615,12 @@ system.time({
 # rstudioapi::documentOpen("./data-raw/datacreate_testpoints_testoutputs.R")
 source_maybe("datacreate_testpoints_testoutputs.R")
 
+ ######################################### #
+ ### datacreate_testshapes_2.R ####
+ # rstudioapi::documentOpen("./data-raw/datacreate_testshapes_2.R")
+ source_maybe("datacreate_testshapes_2.R")
+ 
+ 
 # ~------------------------------------------- ####
 ## related to ejscreenapi  ####
 ######################################### #
@@ -886,5 +892,5 @@ loadall()
 # DOCUMENTATION WEBSITE UPDATE #### 
 cat("\n\n You may want to use 'datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R' now \n\n")
 #  rstudioapi::documentOpen("./data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R")
-source_maybe("./data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R")
+source_maybe("datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R")
 ########################################## ######################################### # 

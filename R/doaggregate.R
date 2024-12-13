@@ -205,10 +205,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         warning('Values found in sites2blocks$distance were not but must be numeric - doaggregate() will treat them as zero values')
         radius <- 0
       } else {
-        warning('radius passed to doaggregate() must be a single number, in miles, at least 0, but was not, so now
-                inferring radius based on sites2blocks distances.')
+        warning('radius passed to doaggregate() must be a single number, in miles, at least 0, but was not, so
+                inferred radius =', radius, 'miles, based on sites2blocks distances found.')
         radius <- radius_inferred(sites2blocks)
-        message('Inferring approximate radius is ', radius, ' miles, based on distances found.')
       }
     }
     if (radius >= 1.5 * max(sites2blocks$distance)) {
@@ -767,15 +766,17 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   if (!showdrinkingwater) {
     print(results_overall[ , .( drinking)])
     print(results_bysite[ , .(ejam_uniq_id,  drinking)])
-    results_overall$drinking <- NA
-    results_bysite$drinking <- NA    
+    results_overall$drinking <- as.numeric(NA)
+    results_bysite$drinking <- as.numeric(NA)    
   }
   if (!showpctowned) {
   print(results_overall[ , .(pctownedunits )])
   print(results_bysite[ , .(ejam_uniq_id, pctownedunits)])
-  results_overall$pctownedunits <- NA
-  results_bysite$pctownedunits <- NA
-}
+  results_overall$pctownedunits <- as.numeric(NA)
+  results_bysite$pctownedunits <- as.numeric(NA)
+  }
+  
+
   ############################################### #
   ##     later, for results_overall, will calc state pctiles once we have them for each site
   
@@ -1176,7 +1177,11 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   results_overall$REGION <- NA
   results_overall$ejam_uniq_id <- NA  ## adds blank ejam_uniq_id column to results_overall (no longer tied to include_ejindexes)
   results_overall$in_how_many_states <- length(unique(na.omit(results_bysite$ST)))
+  #Set names in names_d_language that are in blockgroupstats to NA
   
+  names_d_language_blockgroupstats_intersect <- intersect(names_d_language,colnames(blockgroupstats))
+  results_overall[, names_d_language_blockgroupstats_intersect] <- NA
+  results_bysite[, names_d_language_blockgroupstats_intersect] <- NA
   # results_bybg_people$ST is created from sites2bgs_plusblockgroupdata_bysite$ST and ST is already in that table 
   # since ST was joined from blockgroupstats around line 569, for each bg, but that is not always 1 state for a given site.
   # sites2bgs_plusblockgroupdata_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  # same as the very slightly slower... fips2statename(fips_state_from_state_abbrev(ST))
@@ -1763,6 +1768,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # to avoid showing 4 versions of Demog.Index raw unitless.
   ######################## #
   
+
   # COLUMNS RENAME ####
   
   longnames <- fixcolnames(names(results_overall), oldtype = 'r', newtype = 'long')
@@ -1790,7 +1796,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     # blockcount_overall = blockcount_overall, # note already also in results_overall as a column now, so we dont need to duplicate it here
     # bgcount_overall = bgcount_overall        # note already also in results_overall as a column now, so we dont need to duplicate it here
   )
-  
+
   ########################### #
   
   # Show _overall in console, _bysite in viewer pane ####

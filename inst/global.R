@@ -250,8 +250,8 @@ default.an_threshgroup2 = "Supp-US-or-ST"
 
 # variable names of indicators compared to threshold
 ## newer way:
-default.an_threshnames1 = c(names_ej_pctile, names_ej_state_pctile)
-default.an_threshnames2 = c(names_ej_supp_pctile, names_ej_supp_state_pctile)
+default.an_threshnames1 = c(names_ej_pctile, names_ej_state_pctile) # regular in US or ST
+default.an_threshnames2 = c(names_ej_supp_pctile, names_ej_supp_state_pctile) # supplemental in US or ST
 ### threshnames = list(input$an_threshnames1, input$an_threshnames2)
 ### threshnames = list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)), # list(c(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)),  #list(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile),  # list(names(which(sapply(sitestats, class) != "character")))
 ## older way:
@@ -259,8 +259,8 @@ default.an_threshnames2 = c(names_ej_supp_pctile, names_ej_supp_state_pctile)
 
 # what threshold to compare to
 ## newer way:
-default.an_thresh_comp1 = 90
-default.an_thresh_comp2 = 90
+default.an_thresh_comp1 = 80 # regular
+default.an_thresh_comp2 = 80 # supplemental
 ### thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2)
 ### thresholds   = list(90, 90) # percentile threshold(s) to compare to like to 90th
 ## older way:

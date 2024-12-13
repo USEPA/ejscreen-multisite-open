@@ -419,6 +419,7 @@ generate_report_footnotes <- function(
 #'
 generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny = FALSE, 
                                  report_title = .community_report_title) {
+
   
   if (in_shiny) {
     shift_hsb <- 630
@@ -563,6 +564,7 @@ report_residents_within_xyz <- function(text1 = 'Residents within ',
                                           'naics', 'sic', 'mact', 
                                           'epa_program_sel'
                                           )[1]
+
 ) {
   
   xmilesof <- report_xmilesof(radius, unitsingular = unitsingular)
@@ -591,7 +593,8 @@ report_residents_within_xyz <- function(text1 = 'Residents within ',
   } else if (sitetype == 'echo') {
     location_type <- " regulated facility"
 
-  # selected pulldown category ---------------------------------- -
+    
+    # selected pulldown category ---------------------------------- -
     
   } else if (sitetype == 'naics') {
     location_type <- " NAICS industry-specific site"
@@ -605,8 +608,9 @@ report_residents_within_xyz <- function(text1 = 'Residents within ',
   } else if (sitetype == 'epa_program_sel') {
     location_type <- " EPA program-specific site"
     
-  # misc / unknown ---------------------------------- -
 
+    # misc / unknown ---------------------------------- -
+    
   } else if (sitetype == sitetype_nullna) {
     # ok, use default filler
     location_type <- sitetype

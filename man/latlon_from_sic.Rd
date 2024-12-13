@@ -11,7 +11,7 @@ latlon_from_sic(sic, id_only = FALSE)
 \item{sic}{a vector of SIC codes, or
 a data.table with column named code, as with output of \code{\link[=sic_from_any]{sic_from_any()}}}
 
-\item{d_only}{logical optional, set TRUE to get only the vector of REGISTRY_ID
+\item{id_only}{logical optional, set TRUE to get only the vector of REGISTRY_ID
 values back instead of a data.frame with lat,lon,SIC columns too.}
 }
 \value{

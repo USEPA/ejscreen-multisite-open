@@ -53,26 +53,26 @@ test_that("ejscreenit() still returns list with names identical to what it used 
     names(apinow_list2)   #  "table" "map"   "plot" 
   )
 })
-test_that("ejscreenit() still returns a list that includes a table with names identical to the one it used to return (saved as testoutput_ejscreenit_10pts_1miles$table)", {
+test_that("ejscreenit() output still has table w same colnames as before (testoutput_ejscreenit_10pts_1miles$table)", {
   expect_identical(
     names(apiref),
     names(apinow)
   )
 })
-test_that("ejscreenit() still returns a list that includes a table with column classes identical to the ones it used to return (saved as testoutput_ejscreenit_10pts_1miles$table)", {
+test_that("ejscreenit() output still has table w same col CLASSES as before (testoutput_ejscreenit_10pts_1miles$table)", {
   expect_identical(
     sapply(apiref, class),
     sapply(apinow, class),ignore_attr = TRUE
   )
   # all.equal(apiref, apinow)
 })
-test_that("ejscreenit() still returns identical table contents to what it used to", {
+test_that("ejscreenit() output still returns same table contents as before", {
   expect_identical(
     apiref, 
     apinow, ignore_attr = TRUE
   )
 })
-test_that('ejscreenit() does not crash, for 2 points, x=pts; list of 3 outputs of correct class. table right NROW', {
+test_that('ejscreenit() doesnt crash for 2 points, x=pts; list of 3 outputs of correct class. table right NROW', {
   expect_no_error({
     suppressWarnings(
       suppressMessages({

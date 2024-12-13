@@ -78,7 +78,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
   # so try to accomodate that here if user provided output of ejscreenit() or long names in general
   # popup_from_ejscreen() needs to flexibly allow long format names as input.
   # ejscreenit() and app_server already handle this issue by renaming to rnames before calling popup_from_ejscreen()
-  
+
   ######################################################### #
   
   # popup text ####
@@ -94,7 +94,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     }
     
     mypop <- popup_from_ejscreen(sf::st_drop_geometry(mydf))
-    
+
   } else if (column_names[1] == 'all') {
     mypop <- popup_from_df(sf::st_drop_geometry(mydf))
   } else {

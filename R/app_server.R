@@ -348,113 +348,97 @@ app_server <- function(input, output, session) {
   num_valid_pts_uploaded <- reactiveValues('SHP' = 0)
   
   data_up_shp <- reactive({
-    ##
+
     req(input$ss_upload_shp)
     infiles <- input$ss_upload_shp$datapath # get path and temp (not original) filename of the uploaded file
     print(infiles)
     
-    ####### SHOULD REPLACE WITH CODE IN NEW FUNCTIONS that avoid saving uploaded shapefiles locally on server LIKE shapefile_from_filepaths() ***
-    #
-    if ("working_HERE?" == "working_NOT_IN_SHINY_ONLY") { # new way. works outside shiny, at least.
+    if (use_shapefile_from_any) { # newer way
       
-      if (!shapefile_filepaths_valid(filepaths = infiles)) { # done by shapefile_from_filepaths() too but this allows shiny validate()
-        disable_buttons[['SHP']] <- TRUE
-        validate('Not all required file extensions found.')
-      }
-      shp <- shapefile_from_filepaths(infiles, cleanit = FALSE) # cleanit = FALSE allows shiny to handle that with messages
-      # numna <- nrow(shp[!sf::st_is_valid(shp),])
-      numna <- nrow(shp[!sf::st_is_valid(shp) | sf::st_is_empty(shp), ]) # now counts and removes polygons that are not valid but also if "empty"
-      invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
-      shp <- shapefile_clean(shp) # uses default crs = 4269;  drops invalid rows or return NULL if none valid  # shp <- sf::st_transform(shp, crs = 4269) # done by shapefile_clean()
-      shp$valid <- !sf::st_is_empty(shp)
+      shp <- shapefile_from_any(infiles, cleanit = FALSE)
       
-      #shp[!sf::st_is_empty(shp), ] # *** remove this if shapefile_clean() will do it
+      if (!is.null(attr(shp, "disable_buttons_SHP")))        {disable_buttons[['SHP']] <- attr(shp, "disable_buttons_SHP")}
+      if (!is.null(attr(shp, "num_valid_pts_uploaded_SHP"))) {num_valid_pts_uploaded[['SHP']] <- attr(shp, "num_valid_pts_uploaded_SHP")}
+      if (!is.null(attr(shp, "invalid_alert_SHP")))          {invalid_alert[['SHP']] <- attr(shp, "invalid_alert_SHP")}
+      if (!is.null(attr(shp, "an_map_text_shp")))            {an_map_text[['SHP']] <- attr(shp, "an_map_text_shp")}
       
-      #shp <- shp[!sf::st_is_empty(shp), ] # *** remove this if shapefile_clean() will do it
-      if (is.null(shp)) {
-        invalid_alert[['SHP']] <- 0 # hides the invalid site warning
-        an_map_text_shp(HTML(NULL)) # hides the count of uploaded shapes
-        disable_buttons[['SHP']] <- TRUE
-        shiny::validate('No shapes found in file uploaded.')
-      }
-      disable_buttons[['SHP']] <- FALSE
-      
-      
-      shp <- cbind(ejam_uniq_id = 1:nrow(shp), shp)
-      class(shp) <- c(class(shp), 'data.table')
-      shp
-      ####### #    #######     ####### #
     } else {
       
       # older way
       
+      # detect type of file(s) specified, and read it
       infile_ext <- tools::file_ext(infiles)
-      
-      if ((!all(c('shp','shx','dbf','prj') %in% infile_ext)) & (all(!(c('zip') %in% infile_ext)))) {
+      if (!all(c('shp','shx','dbf','prj') %in% infile_ext) && !('zip' %in% infile_ext) && !('json' %in% infile_ext)) {
+        # cant read file type specified ____________________________________
         disable_buttons[['SHP']] <- TRUE
         shiny::validate('Not all required file extensions found.')
       }
-      if (length(infile_ext) == 1 & any(grepl("zip",infile_ext))) {
+      if (length(infile_ext) == 1 & any(grepl("json", infile_ext))) {
+        # read json file ____________________________________
+        shp <- shapefile_from_json(infiles)
         
-        #read in zip file
-        shp <- shapefile_from_zip(infiles)
-        
-        
-        #Standard shapefile upload with temp directory upload
-      }else{
-        dir <- unique(dirname(infiles)) # get folder (a temp one created by shiny for the uploaded file)
-        outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path\name from temp dir plus original filename of file selected by user to upload
-        name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # ??? get filename minus extension, of 1 file selected by user to upload
-        purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
-        
-        shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
-        
-        
+      } else {
+        if (length(infile_ext) == 1 & any(grepl("zip", infile_ext))) {
+          # read zip file____________________________________
+          shp <- shapefile_from_zip(infiles)
+          
+        } else {
+          # read .shp etc.____________________________________
+          dir <- unique(dirname(infiles)) # get folder (a temp one created by shiny for the uploaded file)
+          outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path\name from temp dir plus original filename of file selected by user to upload
+          name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # ??? get filename minus extension, of 1 file selected by user to upload
+          purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
+          shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+        }
       }
-      
-      #if NULL is return from shapefile_xyz, present message in app
+ 
+      # if shp is null, present message in app
       if (is.null(shp)) {
-        disable_buttons[['SHP']] <- TRUE
-        shiny::validate("Uploaded file should contain the following file extensions: shp, shx, dbf, prj")
+        disable_buttons[['SHP']] <- TRUE                                # a reactiveValues object
+        shiny::validate("Uploaded file should contain the following file extensions: shp,shx,dbf,prj or json or zip")
       }
       
-      #if polygon contains point features, present message in app
+      # if shp contains point features, present message in app
       if (any(sf::st_geometry_type(shp) == "POINT")) {
-        disable_buttons[['SHP']] <- TRUE
+        disable_buttons[['SHP']] <- TRUE                                # a reactiveValues object
         shiny::validate("Shape file must be of polygon geometry.")
       }
       
+      # Drop Z and/or M dimensions from feature geometries, resetting classes appropriately
       shp <- sf::st_zm(shp)
       
-      # standardize shapefile geometry (not always stardard variable name)
-      if (any(grepl("sfc",lapply(shp,class)))) {
-        colnames(shp)[grepl("sfc",lapply(shp,class))] <- "geometry"
+      # standardize colname to "geometry" since standard name not always seen. Can be "Shape" for example: shp <- shapefile_from_any(system.file('testdata/shapes/portland.gdb.zip', package = "EJAM"))  
+      if (any(grepl("sfc", lapply(shp, class)))) {
+        colnames(shp)[grepl("sfc", lapply(shp, class))] <- "geometry"
         st_geometry(shp) <- "geometry"
       }
+      
+      # check if shp is valid, and
+      # add "valid" and "invalid_msg" columns re invalid rows/polygons
       
       if (nrow(shp) > 0) {
         ## terra provides faster valid check than sf
         shp_valid_check <- terra::is.valid(terra::vect(shp), messages = T)
         shp_is_valid <- shp_valid_check$valid
         numna <- sum(!shp_is_valid)
-        num_valid_pts_uploaded[['SHP']] <- length(shp_is_valid) - sum(!shp_is_valid)
-        invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
-        #shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
+        num_valid_pts_uploaded[['SHP']] <- length(shp_is_valid) - sum(!shp_is_valid)    # a reactiveValues object
+        invalid_alert[['SHP']] <- numna                                                 # a reactiveValues object 
+        #shp_valid <- shp[sf::st_is_valid(shp),] # old way to check which shapes valid 
         shp_valid <- dplyr::mutate(shp, siteid = dplyr::row_number())
         shp_proj <- sf::st_transform(shp_valid,crs = 4269)
       } else {
-        invalid_alert[['SHP']] <- 0 # hides the invalid site warning
-        an_map_text_shp(HTML(NULL)) # hides the count of uploaded sites/shapes
-        disable_buttons[['SHP']] <- TRUE
+        # zero polygons found
+        invalid_alert[['SHP']] <- 0  # hides invalid site warning                       # a reactiveValues object
+        an_map_text_shp(HTML(NULL))  # hides the count of uploaded sites/shapes         # a reactiveValues object
+        disable_buttons[['SHP']] <- TRUE                                                # a reactiveValues object
         ## if not matched, return this message
         shiny::validate('No shapes found in file uploaded.')
       }
-      disable_buttons[['SHP']] <- FALSE
+      disable_buttons[['SHP']] <- FALSE                                                 # a reactiveValues object
       shp_proj$valid <- shp_is_valid
-      shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)
+      shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)   #  UNIQUE ID HERE
       shp_proj$invalid_msg <- NA
       shp_proj$invalid_msg[shp_proj$valid == F] <- shp_valid_check$reason[shp_proj$valid == F]
-      
       shp_proj$invalid_msg[is.na(shp_proj$geometry)] <- 'bad geometry'
       class(shp_proj) <- c(class(shp_proj), 'data.table')
       shp_proj
@@ -466,7 +450,6 @@ app_server <- function(input, output, session) {
   
   ## *** note: repeated file reading code below could be replaced by  latlon_from_anything() ####
   #  ext <- latlon_from_anything(input$ss_upload_latlon$datapath)
-  
   
   ## reactive: latlon is typed in on-screen via MODULE *** ####
   # see also  EJAM/R/mod_dataentry_EXAMPLE.R
@@ -1780,7 +1763,7 @@ app_server <- function(input, output, session) {
                     # called_by_ejamit = TRUE, # not sure this is needed or works here
                     testing = input$testing,
                     
-                    thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
+                    thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90), # or 80,80
                     threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
                     threshgroups = list(sanitized_an_threshgroup1(), sanitized_an_threshgroup2()) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
@@ -1816,7 +1799,7 @@ app_server <- function(input, output, session) {
         
         shp_valid <- data_uploaded()[data_uploaded()$valid == T, ] # *** remove this if shapefile_clean() will do it?
         rad_buff <- sanitized_bt_rad_buff()
-        
+
         if (!is.na(rad_buff) && rad_buff > 0) {
           #if (!silentinteractive) {
           cat('Adding buffer around each polygon.\n')
@@ -1848,7 +1831,6 @@ app_server <- function(input, output, session) {
         
         ## note which places dropped by get_blockpoints_in_shape() as invalid? none?
         
-        
         ## close getblocks progress bar
         progress_getblocks_shp$close()
       }
@@ -1873,6 +1855,7 @@ app_server <- function(input, output, session) {
         }
         
         sites2blocks <- getblocksnearby(
+          
           sitepoints = d_upload,                         ## already removed invalid latlons from d_upload
           radius = sanitized_bt_rad_buff(),
           quadtree = localtree,
@@ -1916,6 +1899,7 @@ app_server <- function(input, output, session) {
         # 2) **EJAM::doaggregate()** ####
         
         out <- suppressWarnings(
+          
           doaggregate(
             sites2blocks = sites2blocks,
             sites2states_or_latlon = d_upload,                        # already removed invalids
@@ -1933,11 +1917,12 @@ app_server <- function(input, output, session) {
           )
         )
         
-        ## note which places dropped by doaggregate() as invalid
-        dup <- data_uploaded() # includes invalid ones too
+        ## >>add "invalid_msg" for any missing after doaggregate() as invalid ####
+        dup <- data_uploaded() # still includes invalid ones too!
         dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
-        dup$invalid_msg[!(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
-        data_uploaded <- dup
+
+        dup$invalid_msg[!(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'dropped from doaggregate'
+        data_uploaded <- dup  # odd syntax, but this replaced the reactive with the modified version of the reactive?
         
         ## stop and return NULL if no valid sites left after doaggregate
         if(all(dup$valid == FALSE)){
@@ -1954,12 +1939,22 @@ app_server <- function(input, output, session) {
         # ideally from ST column,
         # second from fips of block with smallest distance to site,
         # third from lat,lon of sitepoints intersected with shapefile of state bounds
+
         
         ## close doaggregate progress bar
         progress_doagg$close()
         
         ################################################################ #
         
+
+        ## >>add "invalid_msg" for any dropped during getblocksnearby but not doaggregate  ####
+        dup <- data_uploaded()
+        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
+        dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
+        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
+        dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
+        
+
         ## Handle sites dropped during getblocksnearby or doaggregate steps
         # dup <- data_uploaded()
         # dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
@@ -1967,10 +1962,12 @@ app_server <- function(input, output, session) {
         # dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
         # dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
         # dup$invalid_msg[dup$valid & is.na(dup$ST)] <- 'Invalid State - no state %iles'
+
         if (submitted_upload_method() %in% c('MACT','FRS','latlon','EPA_PROGRAM_up',
                                              'EPA_PROGRAM_sel','NAICS','SIC')) {
           
-          ## merge valid and invalid places (to add those back into results, as mostly empty rows; but already done above for FIPS case)
+          ## >>merge "valid" + invalid sites  ####
+          # (to add those back into results, as mostly empty rows; but already done above for FIPS case)
           
           out$results_bysite <- merge(dup[, .(ejam_uniq_id, valid, invalid_msg)],
                                       out$results_bysite,
@@ -2282,7 +2279,6 @@ app_server <- function(input, output, session) {
       
       if (!is.na(rad_buff) && rad_buff > 0) {
         d_uploads <- sf::st_buffer(d_merge[d_merge$valid == T, ] , # was "ESRI:102005" but want 4269
-                                   
                                    dist = units::set_units(rad_buff, "mi"))
         leaflet(d_uploads) %>%  addTiles()  %>%
           addPolygons(data = d_uploads, color = circle_color,
@@ -2312,11 +2308,9 @@ app_server <- function(input, output, session) {
           #options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>%
           addTiles()  %>%
           addCircles(
-            radius = submitted_radius_val() * meters_per_mile,#1 * meters_per_mile,
+            radius = submitted_radius_val() * meters_per_mile,
             color = circle_color, fillColor = circle_color,
             fill = TRUE, weight = input$circleweight_in,
-            #group = 'circles',
-            #popup = popup_from_any(
             popup = popup_from_df(
               data_processed()$results_bysite %>%
                 dplyr::mutate(dplyr::across(
@@ -2324,31 +2318,44 @@ app_server <- function(input, output, session) {
               labels = popup_labels),
             popupOptions = popupOptions(maxHeight = 200)
           )} else {
-            # FIPS   
-            popup_labels <- fixcolnames(namesnow = names(data_processed()$results_bysite), oldtype = 'r', newtype = 'shortlabel')
-            popup_labels[is.na(popup_labels)] <- names(data_processed()$results_bysite)[is.na(popup_labels)]
             
-            fips_shapes <- shapes_counties_from_countyfips(countyfips = data_processed()$results_bysite$ejam_uniq_id)
-            
-            if (!is.null(fips_shapes) && nrow(fips_shapes) > 0) {
+            req(data_uploaded())
+            FTYPES <- fipstype(data_uploaded())
+            if (all(FTYPES %in% "blockgroup") | (all(FTYPES %in% "county"))) {
+              # FIPS   
+              popup_labels <- fixcolnames(namesnow = names(data_processed()$results_bysite), oldtype = 'r', newtype = 'shortlabel')
+              popup_labels[is.na(popup_labels)] <- names(data_processed()$results_bysite)[is.na(popup_labels)]
               
-              leaflet(fips_shapes) %>%
-                addTiles() %>%
-                addPolygons(
-                  data = fips_shapes,
-                  color = "green",
-                  popup = popup_from_df(
-                    data_processed()$results_bysite %>%
+              fips_shapes <- shapes_counties_from_countyfips(countyfips = data_processed()$results_bysite$ejam_uniq_id)
+              
+              if (!is.null(fips_shapes) && nrow(fips_shapes) > 0) {
+                
+                leaflet(fips_shapes) %>%
+                  addTiles() %>%
+                  addPolygons(
+                    data = fips_shapes,
+                    color = "green",
+                    popup = popup_from_df(
+                      data_processed()$results_bysite %>%
                       dplyr::mutate(dplyr::across(
                         dplyr::where(is.numeric), \(x) round(x, digits = 3))),
-                    labels = popup_labels
-                  ),
-                  popupOptions = popupOptions(maxHeight = 200)
-                )
-            } else {
-              #Possible failsafe needed if fips is invalid? Will it get to this stage? Blank map returned
+                      labels = popup_labels
+                    ),
+                    popupOptions = popupOptions(maxHeight = 200)
+                  )
+              } else {
+                #Possible failsafe needed if fips is invalid? Will it get to this stage? Blank map returned
+                leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+              }
+            } else{
+              #Not counties or blockgroups, return empty map and warning
+              
+              warning('Cannot map FIPS types other than counties or blockgroups currently')
               leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+            
             }
+            
+          
           }
     }
     
@@ -2356,7 +2363,6 @@ app_server <- function(input, output, session) {
   
   ## output: summary report map
   output$quick_view_map <- leaflet::renderLeaflet({
-    #req(data_uploaded())
     
     ## use separate report map
     report_map()
@@ -2373,7 +2379,7 @@ app_server <- function(input, output, session) {
   #   is_clustered()
   #   #input$radius_units
   # }, {
-  
+
   observe({
     # req(data_uploaded())
     ## This statement needed to ensure map stops if too many points uploaded
@@ -2385,36 +2391,21 @@ app_server <- function(input, output, session) {
     if (current_upload_method() == "SHP") {
       if (!is.na(rad_buff) && rad_buff > 0) {
         shp_valid <- data_uploaded()[data_uploaded()$valid == T, ] # *** remove this if shapefile_clean() will do it
-        
         d_uploads <- sf::st_buffer(shp_valid, # was "ESRI:102005" but want 4269
                                    dist = units::set_units(rad_buff, "mi"))
         leafletProxy(mapId = 'an_leaf_map', session) %>%
           addPolygons(data = d_uploads, color = "red")
       }
-      #d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial')
       d_uploads <- data_uploaded() %>%
         dplyr::select(-valid, -invalid_msg) %>%
-        sf::st_zm() %>% as('Spatial')
-      
+        sf::st_zm() %>% as('Spatial') # st_zm() was already done?
       leafletProxy(mapId = 'an_leaf_map', session) %>%
-        # addPolygons(data = d_uploadb, color = "red") %>%
         addPolygons(data = d_uploads,
                     popup = popup_from_df(d_uploads %>% sf::st_drop_geometry()),
                     popupOptions = popupOptions(maxHeight = 200))
-      #leafletProxy(mapId = 'an_leaf_map', session, data = d_uploads) %>% addPolygons()
-      
-    } else # if (input$circle_type == 'circles') {
+    } else 
       
       if (current_upload_method() == 'FIPS') {
-        # see
-        ## initial map code - this plots convex hull polygons of blockpoints, not actual shapes though
-        # fips_sf <- sf::st_as_sf(data_uploaded(), coords = c('lon','lat')) %>%
-        #   dplyr::group_by(ejam_uniq_id) %>%
-        #   dplyr::summarize(geometry = sf::st_combine(geometry)) %>%
-        #   sf::st_convex_hull() %>%
-        #   sf::st_cast('POLYGON')  %>% as('Spatial')
-        #
-        # leafletProxy(mapId = 'an_leaf_map', session, data = fips_sf) %>% addPolygons()
         
         leafletProxy(mapId = 'an_leaf_map', session) %>%
           map_shapes_leaflet_proxy(shapes = shapes_counties_from_countyfips(countyfips = data_uploaded()))
@@ -2423,27 +2414,9 @@ app_server <- function(input, output, session) {
         
         d_upload <- data_uploaded()
         base_color      <- '#000080'
-        # cluster_color   <- 'red'
-        #req(sanitized_bt_rad_buff())
-        
-        ## convert units to miles for circle size
-        # if (input$radius_units == 'kilometers') {
-        #   rad <- sanitized_bt_rad_buff() * meters_per_mile * 0.62137119
-        # } else {
-        # rad <- sanitized_bt_rad_buff() * meters_per_mile
-        #}
-        
-        #if (input$an_map_clusters == TRUE) {
-        ## compare latlons using is_clustered() reactive
-        #circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
-        #} else {
         circle_color <- base_color
-        #}
-        
-        #popup_vec = popup_from_any(d_upload)
         popup_vec = popup_from_df(d_upload %>%
                                     dplyr::select(-valid, -invalid_msg))
-        
         suppressMessages(
           leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
             map_facilities_proxy(rad = sanitized_bt_rad_buff(),
@@ -2949,8 +2922,8 @@ app_server <- function(input, output, session) {
     
     tableheadnames <- c('Site ID', 'Invalid Reason','Est. Population', 'Barplot Report',  # should confirm that Barplot/Community Report belongs here
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report',
-                        fixcolnames(c(names_d, names_d_subgroups, names_e), 'r', 'shortlabel')) # is this right?
-    ejcols          <- c(names_ej,          names_ej_state,          names_ej_supp,          names_ej_supp_state)
+                        fixcolnames(c(names_d, names_d_subgroups, names_e), 'r', 'shortlabel'))
+    ejcols          <- c(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)
     ejcols_short <- fixcolnames(ejcols, 'r', 'shortlabel')
     which_ejcols_here <- which(ejcols %in% names(data_processed()$results_bysite)  )
     cols_to_select <- c(cols_to_select, ejcols[         which_ejcols_here] )
@@ -3233,7 +3206,7 @@ app_server <- function(input, output, session) {
         }
         
         #remove hyperlinks from excel output if shapefile is current_upload_method() - Temporary
-        if(current_upload_method() == "SHP"){
+        if (current_upload_method() == "SHP") {
           hyperlink_columns <- NULL
         }else{
           hyperlink_columns <- c("EJScreen Report", "EJScreen Map" ,'ECHO report')
@@ -3250,12 +3223,14 @@ app_server <- function(input, output, session) {
           eachsite  = data_processed()$results_bysite |> dplyr::select(names( data_processed()$results_bysite)[keepcols2]),# needs ..  # 1 row per site
           longnames = data_processed()$longnames[           keepcols2], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows.
           
+          custom_tab = data_summarized()$cols,
+          custom_tab_name = "thresholds",
           
           # *** NOTE:  data_processed()$results_bybg_people  #considered not providing this to xlsx by default. It is huge and for expert users,
           # ***    but useful to create a plot of distance by group. Perhaps that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***
           
-          mapadd = TRUE,
-          report_map = report_map(),
+          mapadd = FALSE,
+          report_map = NULL,
           community_reportadd = TRUE,
           community_image = html_content,
           

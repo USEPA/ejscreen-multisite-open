@@ -3,8 +3,15 @@ cat("\n") # because can't suppress some info being printed to console.
 
 # test cases/ examples
 ########################################################################## # 
+# IF FILE PROVIDED, DONT ASK USER TO CONFIRM
+# IF FOLDER PROVIDED, DONT ASK USER TO CONFIRM
+# IF FILE NOT PROVIDED, DOES NOT ASK TO CONFIRM THE DEFAULT FILENAME IS OK 
+# IF FOLDER NOT PROVIDED... IT ASKS TO CONFIRM THE DEFAULT FOLDER IS OK IF INTERACTIVE, SO SKIP THAT case IN THESE TESTS.
 
-# no prompt if fname is specified: ####
+########################################################################## # 
+
+# no prompt if folder is specified, or if save=F    
+
 
 
 test_that("ejam2shapefile ok if save=F", {
@@ -38,7 +45,7 @@ test_that("ejam2shapefile ok if folder=tempdir()", {
     suppressWarnings({
       suppressMessages({
         junk = capture_output({
-          
+   
           # make the test data smaller to try to speed it up
           tout = list(results_bysite = testoutput_ejamit_10pts_1miles$results_bysite[1:2, ])
           x = ejam2shapefile(tout, folder = tempdir())
@@ -93,7 +100,13 @@ test_that("ejam2shapefile ok if folder and fname both specified", {
 })
 
 ########################################################################## # 
-# 
+ 
+
+# *** if interactive it normally tries to prompt for shapefile folder in some cases  ####
+
+## not really using these tests of interactive mode so just comment them out.
+
+
 # if (interactive() & !exists("noquestions")) {
 #   if ( askYesNo("run tests where you have to interactively specify a folder for shapefiles?")) {
 #     noquestions = FALSE
@@ -105,10 +118,6 @@ test_that("ejam2shapefile ok if folder and fname both specified", {
 # }
 
 # noquestions = TRUE
-
-# *** if interactive it normally tries to prompt for shapefile folder in some cases  ####
-
-## not really using these tests of interactive mode so just comment them out.
 
 # 
 # test_that("ejam2shapefile ok if save=T", {
@@ -181,5 +190,4 @@ test_that("ejam2shapefile ok if folder and fname both specified", {
 #   expect_equal(NROW(shp), 10)
 # })
 # ########################################################################## # 
-
-
+   

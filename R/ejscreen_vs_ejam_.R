@@ -480,6 +480,8 @@ ejscreen_vs_ejam_summary <- function(vs = NULL,
   sites.agree.rounded      <- colSums(z$same_shown, na.rm = na.rm) # only counts if valid
   sites.agree.round0       <- colSums(z$same_round0, na.rm = na.rm)
   sites.agree.within.tol   <- colSums(z$abspctdiff < tol, na.rm = TRUE)
+  sites.agree.rounded.or.within.tol <- colSum(z$same_shown | z$abspctdiff < tol, na.rm = na.rm)
+  sites.agree.round0.or.within.tol  <- colSum(z$same_round0 | z$abspctdiff < tol, na.rm = na.rm)
   
   pct_agree = data.frame(
     
@@ -493,10 +495,14 @@ ejscreen_vs_ejam_summary <- function(vs = NULL,
     sites.agree.rounded    = sites.agree.rounded,
     sites.agree.round0     = sites.agree.round0,
     sites.agree.within.tol = sites.agree.within.tol,
+    sites.agree.rounded.or.within.tol = sites.agree.rounded.or.within.tol,
+    sites.agree.round0.or.within.tol  = sites.agree.round0.or.within.tol,
     
     pct.of.sites.agree.rounded    = round(100 * sites.agree.rounded    / sites.with.data.both, 1),
     pct.of.sites.agree.round0     = round(100 * sites.agree.round0     / sites.with.data.both, 1),
     pct.of.sites.agree.within.tol = round(100 * sites.agree.within.tol / sites.with.data.both, 1), 
+    pct.of.sites.agree.rounded.or.within.tol = round(100 * sites.agree.rounded.or.within.tol / sites.with.data.both, 1),
+    pct.of.sites.agree.round0.or.within.tol  = round(100 * sites.agree.round0.or.within.tol  / sites.with.data.both, 1), 
     # test/check NA handling there ***
     
     median.abs.diff       =  apply(z$absdiff,   MARGIN = 2, FUN = median, na.rm = TRUE),
@@ -583,7 +589,9 @@ ejscreen_vs_ejam_summary_byvarlist = function(vs = NULL, vsum = NULL, myvars = c
   }
   vsum = vsum[vsum$sites.with.data.both > 0, ]
   
-  x = vsum[, c("varlist", "indicator", "pct.of.sites.agree.round0", "pct.of.sites.agree.within.tol", "max.abs.diff")]
+  x = vsum[, c("varlist", "indicator", 
+               "pct.of.sites.agree.round0", "pct.of.sites.agree.within.tol", "pct.of.sites.agree.round0.or.within.tol",
+               "max.abs.diff")]
   
   # group the types of variables into larger groups than names_d, for example
   
@@ -621,9 +629,10 @@ ejscreen_vs_ejam_summary_byvarlist = function(vs = NULL, vsum = NULL, myvars = c
     # skip, actually
     if (names(vl)[i] %in% c("COUNTS", "RATIOS")) {next}
     
-    x = x[order(x$varlist, x$pct.of.sites.agree.within.tol), ]
+    x = x[order(x$varlist, x$pct.of.sites.agree.round0.or.within.tol), ]
     x$pct.of.sites.agree.within.tol = round(x$pct.of.sites.agree.within.tol, 0)
     x$pct.of.sites.agree.round0 = round(x$pct.of.sites.agree.round0, 0)
+    x$pct.of.sites.agree.round0.or.within.tol = round(x$pct.of.sites.agree.round0.or.within.tol, 0)
     x$max.abs.diff = round(x$max.abs.diff, 1)
     
     cat("INDICATORS GROUPING:  ", names(vl)[i], "\n\n")
