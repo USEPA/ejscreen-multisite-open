@@ -1,18 +1,23 @@
 # These are the items that are toggled depending on whether the version is Public or Private
 # if run_app(isPublic = TRUE), then it's Public
-# In all cases, items are hidden when isPublic = TRUE and are toggled in app_server.R, unless otherwise specified
+# Most items toggled in app_server.R, unless otherwise specified
 
 # About tab
-
-# Plot Barplots tab - Public (show), Private (hide)
+default_hide_about_tab <- isTRUE(golem_opts$isPublic)
 
 # Histograms tab
+default_hide_plot_histo_tab <- isTRUE(golem_opts$isPublic)
 
 # Advanced settings
+default_hide_advanced_settings <- isTRUE(golem_opts$isPublic)
 
 # Written Report
+default_hide_written_report <- TRUE
 
-# default_hide_ejscreenapi_tab <- golem_opts$isPublic  # This doesn't seem used
+# Barplots - Plot Average Scores
+default_hide_plot_barplots_tab <- FALSE
+
+# default_hide_ejscreenapi_tab <- isTRUE(golem_opts$isPublic)  # This doesn't seem used
 
 choices_for_type_of_site_category = if (isTRUE(golem_opts$isPublic)) {
   c('by Industry (NAICS) Code' = 'NAICS')
