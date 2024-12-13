@@ -94,6 +94,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   if (is.null(ejscreen_ejam_caveat)) {
     ejscreen_ejam_caveat <- "Some numbers as shown on the EJScreen report for a single location will in some cases appear very slightly different than in EJScreen's multisite reports. All numbers shown in both types of reports are estimates, and any differences are well within the range of uncertainty inherent in the American Community Survey data as used in EJScreen. Slight differences are inherent in very quickly calculating results for multiple locations."
   }
+  
+  color_legend <- "Yellow: 1-2x average of the column. \nOrange: 2-3x average of the column.  \nRed: at least 3x average of the column."
   ###################  #   ###################  #   ###################  #   ###################  # 
   
   # HANDLE ERRORS ETC. ####
@@ -385,6 +387,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     "Population at x% of sites" =  popshare_p_lives_at_what_pct(eachsite$pop, p = 0.50, astext = TRUE),
     "Population at N sites" = popshare_at_top_n(eachsite$pop, c(1, 5, 10), astext = TRUE),
     "Note on site-specific estimates" = ejscreen_ejam_caveat,
+    "Color Legend for highlighted cells" = color_legend,
     
     check.names = FALSE
   )
