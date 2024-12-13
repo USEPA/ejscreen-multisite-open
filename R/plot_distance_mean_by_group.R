@@ -131,8 +131,7 @@ plot_distance_mean_by_group <- function(results_bybg_people,
         axis.title.y = element_text(size = 16, margin = margin(r = 20)), 
         axis.title.x = element_text(size = 16, margin = margin(t = 20)),  
         plot.title = element_text(size = 18, hjust = 0.5, face = "bold"),  
-        plot.margin = margin(t = 20, r = 20, b = 100, l = 100)  
-      
+        plot.margin = margin(t = 20, r = 20, b = 100, l = 100)    
       )
     
     ggsave(filename = file.path(mytempdir, fname), plot = plot, width = 20, height = 12, dpi = 100)

@@ -152,7 +152,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
                         infer_sitepoints=FALSE,
                         called_by_ejamit=FALSE, updateProgress = NULL,
                         silentinteractive=TRUE, testing=FALSE,
-                        showdrinkingwater = TRUE,
+                        showdrinkingwater = FALSE,
                         showpctowned = FALSE,
                         ...) {
   
