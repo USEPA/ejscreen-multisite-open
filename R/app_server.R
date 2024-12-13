@@ -2078,6 +2078,12 @@ app_server <- function(input, output, session) {
     }
     ## update overall progress bar
     progress_all$inc(1/3, message = 'Done processing! Loading results now', detail = NULL)
+    num_invalid_sites <- NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == F,])
+    
+    if (num_invalid_sites > 0) {
+      showNotification(paste(num_invalid_sites, " sites were excluded from the Community Report results. Refer to the 'Invalid Reason' column in the details panel for more information."), 
+                       type = "warning", duration = 7)
+    }
     
     # assign batch.summarize output to data_summarized reactive ### #
     data_summarized(outsum)
