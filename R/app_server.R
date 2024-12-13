@@ -190,13 +190,13 @@ app_server <- function(input, output, session) {
     hideTab(inputId = 'all_tabs', target = 'About') 
   }
   ## hide vs show WRITTEN REPORT tab ---------------------- #   ***
-  if (isTRUE(golem_opts$isPublic)) {
+  #if (isTRUE(golem_opts$isPublic)) {
     hideTab(inputId = 'results_tabs', target = 'Written Report') 
-  }
+  #}
   ## hide vs show BARPLOTS tab  ---------------------- #   ***
-  if (!isTRUE(golem_opts$isPublic)) {
-    hideTab(inputId = 'details_subtabs', target = 'Plot Average Scores')
-  }
+  #if (!isTRUE(golem_opts$isPublic)) {
+  #  hideTab(inputId = 'details_subtabs', target = 'Plot Average Scores')
+  #}
   ## hide vs show HISTOGRAMS tab  ---------------------- #   ***
   if (isTRUE(golem_opts$isPublic)) {
     hideTab(inputId = 'details_subtabs', target = 'Plot Full Range of Scores')
