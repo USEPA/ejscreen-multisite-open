@@ -404,6 +404,24 @@ blockgroupstats[, c( names_d_languageli, names_d_languageli_count, 'hhlds', 'lan
 
 recalculate_names_d_languageli(blockgroupstats)
 
+## re-aggregate "languages spoken at home" columns using tract-level sums
+blockgroupstats <- blockgroupstats_old %>% mutate(tract=substr(bgfips,1,11))  %>% group_by(tract) %>% 
+  mutate(
+    lan_spanish = sum(lan_spanish),
+    lan_nonenglish = sum(lan_nonenglish),
+    lan_universe = sum(lan_universe),
+    lan_ie = sum(lan_ie),
+    lan_api = sum(lan_api),
+    lan_other = sum(lan_other),
+    pctlan_spanish = ifelse(lan_universe==0, 0,sum(lan_spanish)/sum(lan_universe)),
+    pctlan_nonenglish = ifelse(lan_universe==0,0,sum(lan_nonenglish)/sum(lan_universe)),
+    pctlan_ie = ifelse(lan_universe==0,0,sum(lan_ie)/sum(lan_universe)),
+    pctlan_api = ifelse(lan_universe==0,0,sum(lan_api)/sum(lan_universe)),
+    pctlan_other = ifelse(lan_universe==0,0,sum(lan_other)/sum(lan_universe))
+  ) %>% ungroup() %>% select(-tract)
+blockgroupstats <- blockgroupstats %>% as.data.table()
+
+
 # that fixes it using data.table by reference
 
 ## confirmed percentages are all 0-1 now
