@@ -194,6 +194,11 @@ app_server <- function(input, output, session) {
     hideTab(inputId = 'results_tabs', target = 'Written Report') 
   }
  
+  ## hide vs show BARPLOTS tab  ---------------------- #   ***
+  if (default_hide_plot_barplots_tab) {
+    hideTab(inputId = 'details_subtabs', target = 'Plot Average Scores')
+  }
+    
   ## hide vs show HISTOGRAMS tab  ---------------------- #   ***
   if (default_hide_plot_histo_tab) {
     hideTab(inputId = 'details_subtabs', target = 'Plot Full Range of Scores')

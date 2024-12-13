@@ -14,7 +14,10 @@ default_hide_advanced_settings <- isTRUE(golem_opts$isPublic)
 # Written Report
 default_hide_written_report <- TRUE
 
-# default_hide_ejscreenapi_tab <- golem_opts$isPublic  # This doesn't seem used
+# Barplots - Plot Average Scores
+default_hide_plot_barplots_tab <- FALSE
+
+# default_hide_ejscreenapi_tab <- isTRUE(golem_opts$isPublic)  # This doesn't seem used
 
 choices_for_type_of_site_category = if (isTRUE(golem_opts$isPublic)) {
   c('by Industry (NAICS) Code' = 'NAICS')
