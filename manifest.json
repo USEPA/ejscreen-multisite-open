@@ -82,8 +82,8 @@
         "Description": "Web app and R tools to easily summarize\n    demographics and environmental indicators\n    for residents in or near a large number of areas or specific sites.\n    Sites can be specified in a variety of ways - coordinates, facility IDs,\n    type of facility, shapefile, or Census areas.\n    Very fast identification of nearby blocks and distances, and \n    aggregation of indicators within each distance by site and overall.\n    EJScreen indicators are included.",
         "URL": "https://usepa.github.io/EJAM, https://github.com/USEPA/EJAM",
         "Depends": "R (>= 2.10)",
-        "Imports": "arrow,\nattempt,\ncollapse,\nconfig (>= 0.3.1),\ndata.table,\nDBI,\ndesc,\ndoSNOW,\ndplyr,\nDT,\nforeach,\nggplot2,\nggridges,\nglue,\ngolem (>= 0.3.3),\nhrbrthemes,\nhtmltools,\nleaflet,\nmagrittr,\nmethods,\nopenxlsx,\npdist,\npins,\npkgload,\nreadxl,\nrhandsontable,\nrmarkdown,\nRMySQL,\nSearchTrees,\nshinydisconnect,\nsf,\nshiny (>= 1.7.2),\nshinycssloaders,\nshinyjs,\nsp,\ntidyr,\ntidyverse,\nviridis,\nwebshot",
-        "Suggests": "knitr,\nspelling,\ntestthat (>= 3.0.0),\nAOI,\ndatasets,\nfipio,\nhtmlwidgets,\njsonlite,\nleaflet.extras,\nleaflet.extras2,\nmapview,\nrnaturalearth,\nrvest,\nterra,\ntidygeocoder,\nunits",
+        "Imports": "arrow,\nattempt,\ncollapse,\nconfig (>= 0.3.1),\ndata.table,\nDBI,\ndesc,\ndoSNOW,\ndplyr,\nDT,\nforeach,\nggplot2,\nggridges,\nglue,\ngolem (>= 0.3.3),\nhrbrthemes,\nhtmltools,\nleaflet,\nmagrittr,\nmethods,\nopenxlsx,\npdist,\npins,\npiggyback,\npkgload,\nreadxl,\nrhandsontable,\nrmarkdown,\nRMySQL,\nSearchTrees,\nshinydisconnect,\nsf,\nshiny (>= 1.7.2),\nshinycssloaders,\nshinyjs,\nsp,\ntidyr,\ntidyverse,\nviridis,\nwebshot",
+        "Suggests": "knitr,\nspelling,\ntestthat (>= 3.0.0),\nAOI,\nbeepr,\ndatasets,\nfipio,\nhtmlwidgets,\njsonlite,\nleaflet.extras,\nleaflet.extras2,\nmapview,\nrnaturalearth,\nrvest,\nterra,\ntidygeocoder,\nunits",
         "Remotes": "mikejohnson51/AOI",
         "Config/testthat/edition": "3",
         "Encoding": "UTF-8",
@@ -103,12 +103,12 @@
         "RemoteRepo": "EJAM",
         "RemoteUsername": "USEPA",
         "RemoteRef": "PUBLIC-EJSCREEN",
-        "RemoteSha": "24ab61f44dc7632bd0fff72e5c8af947349498db",
+        "RemoteSha": "58719ee74d9b5e1cdd96e37c2e3eabea95febfff",
         "GithubRepo": "EJAM",
         "GithubUsername": "USEPA",
         "GithubRef": "PUBLIC-EJSCREEN",
-        "GithubSHA1": "24ab61f44dc7632bd0fff72e5c8af947349498db",
-        "Built": "R 4.4.1; ; 2024-12-11 16:10:08 UTC; unix"
+        "GithubSHA1": "58719ee74d9b5e1cdd96e37c2e3eabea95febfff",
+        "Built": "R 4.4.1; ; 2024-12-13 22:10:19 UTC; unix"
       }
     },
     "KernSmooth": {
@@ -3860,6 +3860,43 @@
         "Built": "R 4.4.1; x86_64-pc-linux-gnu; 2024-07-25 14:08:41 UTC; unix"
       }
     },
+    "piggyback": {
+      "Source": "github",
+      "Repository": null,
+      "description": {
+        "Package": "piggyback",
+        "Version": "0.1.5.9005",
+        "Title": "Managing Larger Data on a GitHub Repository",
+        "Description": "Helps store files as GitHub release assets, which is a convenient \n  way for large/binary data files to piggyback onto public and private GitHub \n  repositories. Includes functions for file downloads, uploads, and managing \n  releases via the GitHub API.",
+        "Authors@R": "c(person(\"Carl\", \"Boettiger\", \n                    email = \"cboettig@gmail.com\", \n                    role = c(\"aut\", \"cre\", \"cph\"),\n                    comment = c(ORCID = \"0000-0002-1642-628X\")),\n             person(\"Tan\", \"Ho\",\n                    role = c(\"aut\"),\n                    comment = c(ORCID = \"0000-0001-8388-5155\")),\n             person(\"Mark\", \"Padgham\", \n                     role = c(\"ctb\"),\n                     comment = c(ORCID = \"0000-0003-2172-5265\")),\n             person(c('Jeffrey', 'O'), 'Hanson',\n                    role = c(\"ctb\"),\n                    comment = c(ORCID = \"0000-0002-4716-6134\")),\n             person(\"Kevin\", 'Kuo',\n                    role = c(\"ctb\"),\n                    comment = c(ORCID = \"0000-0001-7803-7901\"))\n                    )",
+        "URL": "https://docs.ropensci.org/piggyback/,\nhttps://github.com/ropensci/piggyback",
+        "BugReports": "https://github.com/ropensci/piggyback/issues",
+        "License": "GPL-3",
+        "Encoding": "UTF-8",
+        "ByteCompile": "true",
+        "Imports": "cli, glue, gh, httr, jsonlite, fs, memoise, rlang",
+        "Suggests": "arrow, spelling, readr, covr, testthat, knitr, rmarkdown,\ngert, withr, magrittr",
+        "VignetteBuilder": "knitr",
+        "RoxygenNote": "7.2.3",
+        "Roxygen": "list(markdown = TRUE)",
+        "Language": "en-US",
+        "RemoteType": "github",
+        "RemoteHost": "api.github.com",
+        "RemoteRepo": "piggyback",
+        "RemoteUsername": "ropensci",
+        "RemoteRef": "HEAD",
+        "RemoteSha": "45dca07c5586c9e8075ddfa0a8970d72f26deabb",
+        "GithubRepo": "piggyback",
+        "GithubUsername": "ropensci",
+        "GithubRef": "HEAD",
+        "GithubSHA1": "45dca07c5586c9e8075ddfa0a8970d72f26deabb",
+        "NeedsCompilation": "no",
+        "Packaged": "2024-11-22 17:15:14 UTC; furmanm",
+        "Author": "Carl Boettiger [aut, cre, cph]\n    (<https://orcid.org/0000-0002-1642-628X>),\n  Tan Ho [aut] (<https://orcid.org/0000-0001-8388-5155>),\n  Mark Padgham [ctb] (<https://orcid.org/0000-0003-2172-5265>),\n  Jeffrey O Hanson [ctb] (<https://orcid.org/0000-0002-4716-6134>),\n  Kevin Kuo [ctb] (<https://orcid.org/0000-0001-7803-7901>)",
+        "Maintainer": "Carl Boettiger <cboettig@gmail.com>",
+        "Built": "R 4.4.1; ; 2024-11-22 17:15:14 UTC; unix"
+      }
+    },
     "pillar": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -5356,8 +5393,8 @@
         "Package": "terra",
         "Type": "Package",
         "Title": "Spatial Data Analysis",
-        "Version": "1.7-83",
-        "Date": "2024-10-13",
+        "Version": "1.8-5",
+        "Date": "2024-12-11",
         "Depends": "R (>= 3.5.0)",
         "Suggests": "parallel, tinytest, ncdf4, sf (>= 0.9-8), deldir, XML,\nleaflet (>= 2.2.1), htmlwidgets",
         "LinkingTo": "Rcpp",
@@ -5373,11 +5410,11 @@
         "LazyLoad": "yes",
         "Authors@R": "c(\n\tperson(\"Robert J.\", \"Hijmans\", role = c(\"cre\", \"aut\"),  \n\t\t\temail = \"r.hijmans@gmail.com\", comment = c(ORCID = \"0000-0001-5872-2872\")),\n    person(\"Roger\", \"Bivand\",  role = \"ctb\", comment = c(ORCID = \"0000-0003-2392-6140\")),\n    person(\"Emanuele\", \"Cordano\", role=\"ctb\",comment = c(ORCID=  \"0000-0002-3508-5898\")),\n    person(\"Krzysztof\", \"Dyba\",  role = \"ctb\", comment = c(ORCID = \"0000-0002-8614-3816\")),\n    person(\"Edzer\", \"Pebesma\", role = \"ctb\", comment = c(ORCID = \"0000-0001-8049-7069\")),\n    person(\"Michael D.\", \"Sumner\", role = \"ctb\"))",
         "NeedsCompilation": "yes",
-        "Packaged": "2024-10-14 03:04:42 UTC; rhijm",
+        "Packaged": "2024-12-11 16:36:44 UTC; rhijm",
         "Author": "Robert J. Hijmans [cre, aut] (<https://orcid.org/0000-0001-5872-2872>),\n  Roger Bivand [ctb] (<https://orcid.org/0000-0003-2392-6140>),\n  Emanuele Cordano [ctb] (<https://orcid.org/0000-0002-3508-5898>),\n  Krzysztof Dyba [ctb] (<https://orcid.org/0000-0002-8614-3816>),\n  Edzer Pebesma [ctb] (<https://orcid.org/0000-0001-8049-7069>),\n  Michael D. Sumner [ctb]",
         "Repository": "CRAN",
-        "Date/Publication": "2024-10-14 12:10:06 UTC",
-        "Built": "R 4.4.1; x86_64-pc-linux-gnu; 2024-10-15 21:53:45 UTC; unix"
+        "Date/Publication": "2024-12-12 10:00:02 UTC",
+        "Built": "R 4.4.1; x86_64-pc-linux-gnu; 2024-12-13 13:31:49 UTC; unix"
       }
     },
     "textshaping": {
@@ -6229,13 +6266,13 @@
   },
   "files": {
     "_pkgdown.yml": {
-      "checksum": "24c8f836d3d2ce25f179754188241765"
+      "checksum": "250e0839f1b3851bfcb3dc112fbe7d25"
     },
     ".Rbuildignore": {
       "checksum": "87f9d4ec0ffedff42d9aa1a7e04c6c96"
     },
     "app.R": {
-      "checksum": "e8c697097dab6be6e25801b92e926429"
+      "checksum": "e891d0629521d8ef94ed0de8cdbcc3de"
     },
     "CONTRIBUTING.md": {
       "checksum": "b5bc57c2a0976b4bb0bb738f3c2a7c47"
@@ -6250,7 +6287,7 @@
       "checksum": "d29a0eaf58d83d8ee271ab39dfec0a99"
     },
     "data/blockgroupstats.rda": {
-      "checksum": "3edcaac351a4e26384dde33755c59620"
+      "checksum": "5cd75dde6453ec3ae197e7abf9eabfd2"
     },
     "data/censusplaces.rda": {
       "checksum": "6be4166748fbe77076c73604d79796aa"
@@ -6261,11 +6298,14 @@
     "data/default_points_shown_at_startup.rda": {
       "checksum": "6ac102a680709228f099e361321f51fa"
     },
+    "data/ejamdata_version.txt": {
+      "checksum": "ebcc5bfb83d7f7dfd76a0db8fc0f7326"
+    },
     "data/ejampackages.rda": {
       "checksum": "9926f001fa862facf6d1bcff58de841c"
     },
     "data/ejscreenRESTbroker2table_na_filler.rda": {
-      "checksum": "18c9e74072aa8e81630fa8caf9e679b4"
+      "checksum": "71300cb60e6a59cd02a63f3c873fc460"
     },
     "data/epa_programs_defined.rda": {
       "checksum": "49ac2bf16e63b939012a1750b446f8fc"
@@ -6673,25 +6713,25 @@
       "checksum": "66bd264654bd4688262cec75b9708ca9"
     },
     "data/testoutput_ejscreenapi_1pts_1miles.rda": {
-      "checksum": "1e5ac0219230bd2d923b97e740a7abc8"
+      "checksum": "fc3ff12c949532b2eb47005b52a09877"
     },
     "data/testoutput_ejscreenapi_plus_5.rda": {
-      "checksum": "3bdd9043c0278c2deafe55cf9295505b"
+      "checksum": "095eb2965849ceb263b59c9e037c9ca2"
     },
     "data/testoutput_ejscreenit_10pts_1miles.rda": {
       "checksum": "fc8fe30a8cb070ba101792846c44ca49"
     },
     "data/testoutput_ejscreenit_5.rda": {
-      "checksum": "8abceabeeaf18db974b809f0d482957d"
+      "checksum": "4ee9433130005532d2877c068dcbaf81"
     },
     "data/testoutput_ejscreenit_50.rda": {
-      "checksum": "692205db9b73aada29df63d3f7792a46"
+      "checksum": "7d42222b16071d5075d324a657e9a35f"
     },
     "data/testoutput_ejscreenit_500.rda": {
-      "checksum": "a39de56c50a2afbee456673b8dc6ed2c"
+      "checksum": "31f6fe9842825e083f353d27a6218465"
     },
     "data/testoutput_ejscreenRESTbroker_1pts_1miles.rda": {
-      "checksum": "4cb7bee33fb2613b2375d281bf4c6afa"
+      "checksum": "1c5fd9b3266b6144719fc7baed7137df"
     },
     "data/testoutput_getblocksnearby_1000pts_1miles.rda": {
       "checksum": "238a80dc28aace07f1d090e76332eace"
@@ -6732,6 +6772,9 @@
     "data/testpoints_overlap3.rda": {
       "checksum": "b31d2866f4459e7b4a17e11859d3662b"
     },
+    "data/testshapes_2.rda": {
+      "checksum": "de3364819d30b8428407300d3d3c8fc1"
+    },
     "data/usastats.rda": {
       "checksum": "19b53616e9a697b7348f8750020a3005"
     },
@@ -6739,7 +6782,7 @@
       "checksum": "856a769018eb2fdf585f98ed1e17c1b8"
     },
     "DESCRIPTION": {
-      "checksum": "e5c049d32f354ac81191cb85213dac44"
+      "checksum": "efe35e379fd16c9f73ebe355150ef000"
     },
     "inst/000_ALL_THIS_GETS_MOVED_TO_ROOT_FOLDER_OF_INSTALLED_PKG.R": {
       "checksum": "b331baf7030e2af9fcfb98b562e207b2"
@@ -6826,13 +6869,16 @@
       "checksum": "f5ca795fcfd2ae1843deb436b4dc86d0"
     },
     "inst/global.R": {
-      "checksum": "2ee7992cac3744fd7057d33e45695a7e"
+      "checksum": "f55e8fb195dcf886c096aeefb4232a97"
     },
     "inst/golem-config.yml": {
       "checksum": "2f23fcfb2bb38dff71f229a4d419f7ba"
     },
     "inst/LICENSE.md": {
       "checksum": "837bbf3a3d49324a4e651d3291ea7eb7"
+    },
+    "inst/manage-public-private.R": {
+      "checksum": "a380b2b1e5cc1cf2e6cb2da9122e397e"
     },
     "inst/pkgdown.yml": {
       "checksum": "36f5e0b3a38885b306aba0edc1c32743"
@@ -7320,6 +7366,9 @@
     "inst/testdata/shapes/stations.zip": {
       "checksum": "5b9d65e088cc3c1f357be4d59fc700c5"
     },
+    "inst/testdata/shapes/testshapes_2.zip": {
+      "checksum": "accca7aaeeca4d3f34afcfe68b4a7ea6"
+    },
     "inst/WORDLIST": {
       "checksum": "95657d0516a41f929ca8e36d55f95d93"
     },
@@ -7513,7 +7562,7 @@
       "checksum": "b8e41ff8d665f087e3214b05a1b20321"
     },
     "man/dependencies_of_ejam.Rd": {
-      "checksum": "5ccb8125471d9f178c7539420ef3bd9d"
+      "checksum": "124985485dbcd28041b89e8237b11a07"
     },
     "man/distance_by_group_by_site.Rd": {
       "checksum": "fdd3a267b0bcd9db35c8f91c5d1c0d5f"
@@ -7576,7 +7625,7 @@
       "checksum": "013b72268cc0147156450389e26a21f0"
     },
     "man/ejam2map.Rd": {
-      "checksum": "2c6194e3aff229be91a1eb457314ad5f"
+      "checksum": "78ac55711127c215e8635662c8649aea"
     },
     "man/ejam2means.Rd": {
       "checksum": "e9171321b521075b8d40448b13a298a7"
@@ -7591,7 +7640,7 @@
       "checksum": "7fdeb4d71a7a0f7dbd35e53c75056d8d"
     },
     "man/ejam2shapefile.Rd": {
-      "checksum": "d4c55a28dd15719d3c513dca76a40fb3"
+      "checksum": "b467d5e3fef4ad5fae6711c292777af2"
     },
     "man/ejam2table_tall.Rd": {
       "checksum": "a10a48f39d683a73d733cfdd129fccee"
@@ -7612,7 +7661,7 @@
       "checksum": "cf0a536549c8a432caf02390ffa449fa"
     },
     "man/ejamit.Rd": {
-      "checksum": "ee20c7e798129849f70532b378fc9b07"
+      "checksum": "38eaf078d3edd9dbf44d81ee127b3682"
     },
     "man/ejampackages.Rd": {
       "checksum": "35c88594ed9f81cb74b89946dea2f0bf"
@@ -7657,7 +7706,7 @@
       "checksum": "2a409824fcfb49ccc58f0a7756374d39"
     },
     "man/ejscreenapi_plus.Rd": {
-      "checksum": "c9ca41dddda70ba5c79a08f19bc59147"
+      "checksum": "025ea7633f574897cba5973a5a5cbbf3"
     },
     "man/ejscreenapi.Rd": {
       "checksum": "c27ebed83120d92eb80763cd0e8aec75"
@@ -7669,7 +7718,7 @@
       "checksum": "7032e16f16e2ad5ffe4b2739c8946ae8"
     },
     "man/ejscreenit_for_ejam.Rd": {
-      "checksum": "3e87c62ec47ee3d0fe572064daf73498"
+      "checksum": "0fdbf5d8cd0c7a878e037070d6a2d4ee"
     },
     "man/ejscreenit_see_table.Rd": {
       "checksum": "d5186fb3ab1f39e56193e6ff01b0d2b3"
@@ -7981,22 +8030,22 @@
       "checksum": "f4c089953df8865cda60e28e73e5febf"
     },
     "man/latlon_any_format.Rd": {
-      "checksum": "4a51de0f52f153d77c4da21d75dbb8c6"
+      "checksum": "807f93b385e5051eed871c8652618540"
     },
     "man/latlon_as.numeric.Rd": {
       "checksum": "581af55b0fd6cf168bcc3661ab445f4e"
     },
     "man/latlon_df_clean.Rd": {
-      "checksum": "bf97e97f69ecc6b9bd5378f31b796c29"
+      "checksum": "1cf9b8569397e09ff3e37e5496a14670"
     },
     "man/latlon_from_address_table.Rd": {
-      "checksum": "12620e9670d3827e333c03a0b4509583"
+      "checksum": "602247e764e583ab548a3d72acbe26fc"
     },
     "man/latlon_from_address.Rd": {
       "checksum": "4e154740f429c2f58cc30b775cab3e58"
     },
     "man/latlon_from_anything.Rd": {
-      "checksum": "ea3a0c8f8e65fbc252c4f159ccb3c009"
+      "checksum": "1388379ebb426aacb9c3b5a51022f12c"
     },
     "man/latlon_from_mactsubpart.Rd": {
       "checksum": "0ba407c0703cc6bbfc3b0feb5a1c514e"
@@ -8017,7 +8066,7 @@
       "checksum": "9d3b7200486cc0f0ccfe45e25b88ab72"
     },
     "man/latlon_from_sic.Rd": {
-      "checksum": "444754ba8fcd96d4434e88c976532f0d"
+      "checksum": "2bb696fc82756c645d7f61d2fa5a7ad5"
     },
     "man/latlon_from_vectorofcsvpairs.Rd": {
       "checksum": "fac5ab727da5c7a22bc0e3964eb26dac"
@@ -8038,7 +8087,7 @@
       "checksum": "89ac5bbd5a0e1521da6e20b38ec71565"
     },
     "man/latlon_is.valid.Rd": {
-      "checksum": "72a08cb097d75534007409e6a7b84a94"
+      "checksum": "ebb60301bf4405e2effcd469ed549840"
     },
     "man/latlon_join_on_blockid.Rd": {
       "checksum": "1fad3706e3a67bbabb494d430aab918d"
@@ -8488,7 +8537,7 @@
       "checksum": "d393466129865b0af504238a31cbe54c"
     },
     "man/plot_barplot_ratios_ez.Rd": {
-      "checksum": "ac9ad2a8397b69a75d468a85a61ab59b"
+      "checksum": "0ee9f88cee6b71c103754eb37c1cad2c"
     },
     "man/plot_barplot_ratios.Rd": {
       "checksum": "bb4e66bdc6fa57d609aec9744284362c"
@@ -8527,10 +8576,10 @@
       "checksum": "a1d7d72c2f828d1c13957d08b3fe3915"
     },
     "man/plot_ridgeline_ratios_ez.Rd": {
-      "checksum": "52150e448ac69c8173e9798ec33abb23"
+      "checksum": "010554479f86f2afbe4b4de76056fb2a"
     },
     "man/plot_ridgeline_ratios.Rd": {
-      "checksum": "3e4763a277618567b3b4771fbd248205"
+      "checksum": "9405956e436425812b49163b486345dc"
     },
     "man/plot_vs_us.Rd": {
       "checksum": "043708989e24bb97a94730129eb13925"
@@ -8581,7 +8630,7 @@
       "checksum": "7b586e635a8966ef146e743f56656690"
     },
     "man/radiobox.Rd": {
-      "checksum": "44bf0336e6d8e78e0594c4b9ddf20528"
+      "checksum": "b4c4852b4ee28b032a82813da93ca632"
     },
     "man/radius_inferred.Rd": {
       "checksum": "2196df0fa3ab1b619ffa01f260b1752c"
@@ -8619,8 +8668,11 @@
     "man/shape_buffered_from_shapefile.Rd": {
       "checksum": "f7bc46c38e8ef819519fd340534c1956"
     },
+    "man/shape2zip.Rd": {
+      "checksum": "fd0096e2d191bf7695d97b98196a598f"
+    },
     "man/shapefile_clean.Rd": {
-      "checksum": "c1bcf21848ec8d8b356337e94b8416ba"
+      "checksum": "1344e97f916feaf4aa857bdfbf1d0e7c"
     },
     "man/shapefile_filepaths_from_folder.Rd": {
       "checksum": "a9084f905d29318934222c31c9f65cca"
@@ -8632,7 +8684,7 @@
       "checksum": "6eb0e2859dc80c3b39cb2ffde7acff14"
     },
     "man/shapefile_from_any.Rd": {
-      "checksum": "f6d42bf53a458f42bf80eaa786e29492"
+      "checksum": "80f33c74227a274bcd700cd9cd7a4689"
     },
     "man/shapefile_from_filepaths.Rd": {
       "checksum": "0443aa5e85a3df79e9d5be140fffd8d7"
@@ -8647,7 +8699,7 @@
       "checksum": "2b68ef34840c2e8af5161235bc136e91"
     },
     "man/shapefile_from_json.Rd": {
-      "checksum": "b2441255da58254f28973b2a2b7d34a1"
+      "checksum": "7f910f044f63f41d5a9b21940cc9b30f"
     },
     "man/shapefile_from_sitepoints.Rd": {
       "checksum": "d80c10b232dcdde58fbd2390d877561f"
@@ -8656,10 +8708,13 @@
       "checksum": "e053ef2f9bc8911fe193f20b9e6ce260"
     },
     "man/shapefile2blockpoints.Rd": {
-      "checksum": "bb0cf3e3a7ee857ae1e2cc1997d72472"
+      "checksum": "5f241139a5ecf65804628d52c26ccb76"
     },
     "man/shapefile2latlon.Rd": {
       "checksum": "197e6a1e9607bab52577a0c4338a8eaf"
+    },
+    "man/shapefix.Rd": {
+      "checksum": "9f377699525c3b62a175307d99149808"
     },
     "man/shapes_blockgroups_from_bgfips.Rd": {
       "checksum": "40abc141704818ee303f53f3d8f80982"
@@ -8701,10 +8756,10 @@
       "checksum": "45d7b99da80e83d751cf44dcf1b6dc3f"
     },
     "man/sitepoints_from_any.Rd": {
-      "checksum": "07c3dd05abea17de73681763f08f1f85"
+      "checksum": "269695031bfc7564eab37902a30b6ac7"
     },
     "man/sitepoints_from_anything.Rd": {
-      "checksum": "8d6848c0b5f0ba563829f41fbde87072"
+      "checksum": "d3fbac1fd6afded5f6dc8469b694b0de"
     },
     "man/speedmessage.Rd": {
       "checksum": "21c80a7026a6d4dd8c497cddb4add749"
@@ -8776,7 +8831,7 @@
       "checksum": "c8953019cb391c3bc4b095ed6d8c9aa8"
     },
     "man/statestats_querye.Rd": {
-      "checksum": "a8b666451f5baab164e26505a0618023"
+      "checksum": "9bfd098e3866fd1f73b03aef8e0cd96f"
     },
     "man/statestats.Rd": {
       "checksum": "4771e5d3a5afc49b1caf2cc2b9e769b9"
@@ -8827,13 +8882,13 @@
       "checksum": "f4b9902f2fa20e1a72aab847f5ad6b7f"
     },
     "man/table_xls_format.Rd": {
-      "checksum": "f44cea912b1c14d1a98af8a263b01486"
+      "checksum": "4c3b3e35d2339308b72d2735b52c09b5"
     },
     "man/table_xls_from_ejam.Rd": {
       "checksum": "302c59a3a5fad0ed93727d9c7939cf67"
     },
     "man/table4gt_from_scorevectors.Rd": {
-      "checksum": "0b5e832ee94a5115ef435bd2173f19a7"
+      "checksum": "b70e453966d195ccff363b8493c51522"
     },
     "man/tablefixed.Rd": {
       "checksum": "356e1bc97f58fb506d421c85cba98b68"
@@ -8846,6 +8901,12 @@
     },
     "man/test_xtrac.Rd": {
       "checksum": "1a78d826817bf715cffeedc89f6f4c69"
+    },
+    "man/testdata.Rd": {
+      "checksum": "6b78544fac3cc4cdb9d0b6374c2e0dde"
+    },
+    "man/testdatafolder.Rd": {
+      "checksum": "717e2011f19c42b3141d2c54a4b90efe"
     },
     "man/testids_program_sys_id.Rd": {
       "checksum": "a855b29be9c91ade30e6a194f6832a25"
@@ -8875,7 +8936,7 @@
       "checksum": "f39f4a34d482451a9f40a0aa86cb91ab"
     },
     "man/testoutput_ejscreenapi_plus_5.Rd": {
-      "checksum": "e92462f0ef93eb440e43c49b5b5dfa17"
+      "checksum": "6da9c0af560bba2dc2a92b1d457c4de2"
     },
     "man/testoutput_ejscreenit_10pts_1miles.Rd": {
       "checksum": "208ac5d773d6a4400a7704459af09132"
@@ -8934,6 +8995,9 @@
     "man/testpoints_overlap3.Rd": {
       "checksum": "d39b0307f83f8f92af0580376d97a87b"
     },
+    "man/testshapes_2.Rd": {
+      "checksum": "a53dfa4906e35cdc3cead39ad3fd5c47"
+    },
     "man/unshared.Rd": {
       "checksum": "53b31e07726d0673a4703541a981df35"
     },
@@ -8959,7 +9023,7 @@
       "checksum": "cb49d7ddb4e218e286208ccf7c735c94"
     },
     "man/url_envirofacts_data.Rd": {
-      "checksum": "6e9943a4181c125b3788bfb3df4ba7ca"
+      "checksum": "b97d5a9c27ccacb0a0f8a6f8bbb93079"
     },
     "man/url_enviromapper.Rd": {
       "checksum": "3b04e1a17bf95fc63ce6712899c0db9f"
@@ -9013,7 +9077,7 @@
       "checksum": "431e7af7674a199071dd1b6fca7b0c68"
     },
     "man/varname2color_ejam.Rd": {
-      "checksum": "ae1a43f7afaae0bf58d1d5c1b0859089"
+      "checksum": "0798f4343d896b2b3f5ff13f2616ae76"
     },
     "man/varname2varcategory_ejam.Rd": {
       "checksum": "3948127035a0e1cee24c639daa2b773c"
@@ -9040,7 +9104,7 @@
       "checksum": "b007c6a74f6085c8ecda2eb81115e8c5"
     },
     "NAMESPACE": {
-      "checksum": "d3910f0129cced5f2e7c785de3791115"
+      "checksum": "f2819f986dacfe56fb47dc1a28ca59f1"
     },
     "NEWS.md": {
       "checksum": "c70be4f2e44f18bec6fbec5e89b79daf"
@@ -9076,10 +9140,10 @@
       "checksum": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "R/0_run_app.R": {
-      "checksum": "8e0846e852198ed225bc9d54005fc198"
+      "checksum": "cbccb827535a710a980499ee6c5355b3"
     },
     "R/aaa_onAttach.R": {
-      "checksum": "2c1b51a365664450e96fe741f5ee2d4c"
+      "checksum": "df41835f741a0342d960cb81174a0ff7"
     },
     "R/acs_bybg.R": {
       "checksum": "d6124e4c49d6aef99eeffb8b136cdfa8"
@@ -9100,13 +9164,13 @@
       "checksum": "c50089f5dd28603e6f80d26660a70bfa"
     },
     "R/app_server.R": {
-      "checksum": "92d43ae78458436d060d5687d9d73dea"
+      "checksum": "db047a080158465738df3c2a847b3e26"
     },
     "R/app_ui_EJAMejscreenapi.R": {
       "checksum": "57618042e645344c7247ad88429c033d"
     },
     "R/app_ui.R": {
-      "checksum": "0515858a76bbbcdba2512ceed93d0bd4"
+      "checksum": "945b4443eed5c7f23437f3a233e7a2db"
     },
     "R/batch.summarize.helpers.R": {
       "checksum": "3fa2b494d2b11cd71fc5c39195cdbe4f"
@@ -9136,7 +9200,7 @@
       "checksum": "19d5f4dd713ad2fa5d485771f2fe5a8d"
     },
     "R/community_report_helper_funs.R": {
-      "checksum": "99d511e2f752393ab158ec2e05746d53"
+      "checksum": "d5d57aeee5fea1492711a2de9f1bf737"
     },
     "R/convert_units.R": {
       "checksum": "b176cd20ac42181f3a81b130554c236a"
@@ -9598,7 +9662,7 @@
       "checksum": "6f1b725cb2c38cce08b192135963efec"
     },
     "R/data_testoutput_ejscreenapi_1pts_1miles.R": {
-      "checksum": "1465bf3dfeab40789aeb39e03d39ed7d"
+      "checksum": "9b4198610bee5a938c21c8862bf17b06"
     },
     "R/data_testoutput_ejscreenapi_plus_5.R": {
       "checksum": "11bf19eeac75f4bc975c4a3af5d744f9"
@@ -9616,7 +9680,7 @@
       "checksum": "f0b25e5a626a9184603f9355e41c7842"
     },
     "R/data_testoutput_ejscreenRESTbroker_1pts_1miles.R": {
-      "checksum": "246bb36778715d9d3432d66dbf1bce26"
+      "checksum": "cd36ac10fd76cedfd7f59a2e74e3804c"
     },
     "R/data_testoutput_getblocksnearby_1000pts_1miles.R": {
       "checksum": "a5a33d66bf29df29182d9c33a272b92a"
@@ -9656,6 +9720,9 @@
     },
     "R/data_testpoints_overlap3.R": {
       "checksum": "ddf3d237428333f0eb82921bfce589ee"
+    },
+    "R/data_testshapes_2.R": {
+      "checksum": "f7f1e7b09c3cf3db91f2fb70ee9acec8"
     },
     "R/data_usastats.R": {
       "checksum": "5dcce95b71ad9bfbb8a10880f964d9fe"
@@ -9706,7 +9773,7 @@
       "checksum": "d8c7c21d795a1c7ffc1a80ae152fc5b9"
     },
     "R/doaggregate.R": {
-      "checksum": "9dec1c12476ce5f89b037aeb29fe1bd9"
+      "checksum": "4df84e91bafd9b427888445dab174fc5"
     },
     "R/echo_colids_from_num_name_group.R": {
       "checksum": "0c40db05ced2ff5524d50ac48068e2ab"
@@ -9721,7 +9788,7 @@
       "checksum": "ca7a9fa9e599f9275140be90d7249ece"
     },
     "R/ejam2map.R": {
-      "checksum": "fa6287f609aa54b94520a4f0c82a66b0"
+      "checksum": "d7d9b2d5099b9db7401769fa5184fb48"
     },
     "R/ejam2means.R": {
       "checksum": "db9eeebfd3efc527d50511ae93854f4f"
@@ -9733,7 +9800,7 @@
       "checksum": "e0f02114bd36ee93fa31a31ef28c0646"
     },
     "R/ejam2shapefile.R": {
-      "checksum": "6a403b8050ae537cb2be312f93480cc3"
+      "checksum": "c89334710390a37b85b0a18cfc331126"
     },
     "R/ejam2table_tall.R": {
       "checksum": "f6e85dc6286f2faffe8b7f8a45de4aa3"
@@ -9745,19 +9812,22 @@
       "checksum": "26289d7a5e4f86fcaa59b28b09a830c5"
     },
     "R/ejamit_compare_types_of_places.R": {
-      "checksum": "3b8466c7e309317daa501da8dc84268a"
+      "checksum": "57c546decb0eaf6a39d2d03e395b3c42"
+    },
+    "R/ejamit_sitetype_check.R": {
+      "checksum": "d4ec9f48be4537654136a25a7337dcef"
     },
     "R/ejamit_sitetype_from_.R": {
       "checksum": "72f426ad512feb8543c8b9e8d6b83c15"
     },
     "R/ejamit.R": {
-      "checksum": "1e9c6867c51575204805368ef1be609d"
+      "checksum": "d4159d45cf5638e38a083751b1cc6d8f"
     },
     "R/ejscreen_vs_ejam_.R": {
-      "checksum": "45580c2ba1e925c2d96c1363f350db79"
+      "checksum": "5926fde86f4b7d44976aa8ffea30bce8"
     },
     "R/ejscreenapi_plus.R": {
-      "checksum": "4472b66af7f99c57b95007ca15e84160"
+      "checksum": "d4855c9e5487453bf1d7d3b06d2bf196"
     },
     "R/ejscreenapi.R": {
       "checksum": "3007ed79aebd7068eff3cf2037431898"
@@ -9766,13 +9836,13 @@
       "checksum": "6d0392df91feaf16c2da3fbf8a2cd65a"
     },
     "R/ejscreenit_for_ejam.R": {
-      "checksum": "2b9496f48b158d36136d45c04027960c"
+      "checksum": "5c37c24f2af62ee05fd1f31e868f02ab"
     },
     "R/ejscreenit_see_table.R": {
       "checksum": "01d2ba85d4458d89e77b446654dac01e"
     },
     "R/ejscreenit.R": {
-      "checksum": "7c5df437f33ba283f22a47fccae75121"
+      "checksum": "09c55c6e0b9f8c3efabeb130dfdc99f6"
     },
     "R/ejscreenRESTbroker.R": {
       "checksum": "38449b24cadefeca3ae2e6504fc01c66"
@@ -9862,7 +9932,7 @@
       "checksum": "400024571f9eae3e654f693f2d891cec"
     },
     "R/get_blockpoints_in_shape.R": {
-      "checksum": "f1a00c4edd7c38f6ead73a0155aea23e"
+      "checksum": "2844fa63f29ca0fb4b15029fbdc862d5"
     },
     "R/getblocks_diagnostics.R": {
       "checksum": "863332ce61bc1973be16740429bc9829"
@@ -9907,13 +9977,13 @@
       "checksum": "d95024c5dfe0c21b9e45209bc9677c6a"
     },
     "R/latlon_df_clean.R": {
-      "checksum": "612543920795860739970ac745a7e784"
+      "checksum": "fc3eea1a1e8a6db89e07efe168234751"
     },
     "R/latlon_from_address.R": {
-      "checksum": "0ace0f65eafd57cf9789851b70ae3532"
+      "checksum": "355f606a05a5f078d6dc5468e070c463"
     },
     "R/latlon_from_anything.R": {
-      "checksum": "e625694c0cb0aa23526df211c9e176c5"
+      "checksum": "d6362938395c759fbafc20227c21a9b3"
     },
     "R/latlon_from_mactsubpart.R": {
       "checksum": "d8f7aacd681143619c943ca98821772f"
@@ -9943,7 +10013,7 @@
       "checksum": "4c0fe4dd53984ac41068c672f745b352"
     },
     "R/latlon_is.valid.R": {
-      "checksum": "02283930ccbf39fd829b9a3171187dda"
+      "checksum": "aaa9b4d810ae5a66f3f27c9f7a373732"
     },
     "R/latlon_join_on_blockid.R": {
       "checksum": "153a4deaa1c9474b9a7f8c55428ec195"
@@ -9955,13 +10025,13 @@
       "checksum": "ec0ccdc91853e091d20b55a91aadec05"
     },
     "R/mapfast.R": {
-      "checksum": "def27266e0df97757f667219e40219be"
+      "checksum": "8dde28c927deb3cc3a4d037d4028f932"
     },
     "R/metadata_mapping.R": {
       "checksum": "4f017fb6f339cac74522f9f1f89979b6"
     },
     "R/mod_fips_picker-DRAFT.R": {
-      "checksum": "bd67d28a2dff3b17a756a63f20ded36f"
+      "checksum": "7480ccce626bd088176db1c2c970147f"
     },
     "R/mod_get_shape_from_upload-DRAFT.R": {
       "checksum": "199e5a5acd71985a35123d35261eafad"
@@ -10006,7 +10076,7 @@
       "checksum": "541faa44f700798057a3a4191089b996"
     },
     "R/plot_barplot_ratios.R": {
-      "checksum": "4080ec9dd589aa65c3b168a3ffe69c4c"
+      "checksum": "d18289ad1fa69628586bb2dde35c8f04"
     },
     "R/plot_boxplot_pctiles.R": {
       "checksum": "0852b61b537f47b5523ac82370c4607c"
@@ -10024,13 +10094,13 @@
       "checksum": "156a7ad38b1e20e468696595262af39d"
     },
     "R/plot_distance_mean_by_group.R": {
-      "checksum": "784130fc56cff424acbb31e608e8dd93"
+      "checksum": "4c341e895807e9c0a4ce2a490bfc9edf"
     },
     "R/plot_lorenz_popcount_by_site - DRAFT.R": {
       "checksum": "03b16cebaf4a563dabc6db6e6901face"
     },
     "R/plot_ridgeline_ratios.R": {
-      "checksum": "07d38bd7566938dc9da4f7768c21b018"
+      "checksum": "9c9c825c43feee84b5789f817bb7f35d"
     },
     "R/plotblocksnearby.R": {
       "checksum": "77948bc3c1df2bdcb1416c507919a6dc"
@@ -10065,8 +10135,14 @@
     "R/read_csv_or_xl.R": {
       "checksum": "91899ed47af7fcc4808be3fa0ff8f15e"
     },
+    "R/shape2zip.R": {
+      "checksum": "e1739894123b374bd0b2239fe89a8a08"
+    },
     "R/shapefile_xyz.R": {
-      "checksum": "2febbe0d4732fcb2863a8256112808da"
+      "checksum": "075626fa96263580e1c25a2ce94f4a97"
+    },
+    "R/shapefix.R": {
+      "checksum": "9e052cc1a1ce54fd30011c45fa8a728f"
     },
     "R/shapes_from_fips.R": {
       "checksum": "2c1d2b0c5cfab8f63875b40895a8dbc0"
@@ -10075,10 +10151,10 @@
       "checksum": "e43705f247389ec58de84d6dbf62e792"
     },
     "R/sic_xyz.R": {
-      "checksum": "ca4ecd96d174288557097b03d2cc29f9"
+      "checksum": "d0f1c3451d996281fd048b45688dccf9"
     },
     "R/sitepoints_from_any.R": {
-      "checksum": "dc2420c161fb398692307b5c644f89c1"
+      "checksum": "58c27d501491418fd1c0e7985ae0e9bc"
     },
     "R/speedreport.R": {
       "checksum": "7418c654777ca1db870fec5df547cabd"
@@ -10096,10 +10172,10 @@
       "checksum": "5a8f61ed2f640163b65a36db8a3f4927"
     },
     "R/statestats_query.R": {
-      "checksum": "2895ae524de3e7f62ab3f45cf4f1ef1e"
+      "checksum": "d35e1703ae7d2c394e7101aeb738664a"
     },
     "R/table_gt_.R": {
-      "checksum": "deec33fe17ae71ae6a80dd55451f3e8c"
+      "checksum": "a92991d60cb54dba80be9b80fe0fb41d"
     },
     "R/table_order_variables.R": {
       "checksum": "56aee9d41c06b46b9737224cdf9d7c10"
@@ -10117,16 +10193,16 @@
       "checksum": "0cbaaa7748cdc9d963d1acdbec339a56"
     },
     "R/table_x100.R": {
-      "checksum": "4c5222f37a1523a7e2df57ded728615f"
+      "checksum": "62e1446a35d9c4f1a28f3e1b607a42e0"
     },
     "R/table_xls_format.R": {
-      "checksum": "f94e39f625c0fea2839b3050340518e3"
+      "checksum": "7135b0f14bf079661df27b8415870b80"
     },
     "R/table_xls_formatting_api.R": {
       "checksum": "16768ad32890e08e2fc7b13adb11f656"
     },
     "R/table_xls_from_ejam.R": {
-      "checksum": "1ddc4527ca5a201dc669f351d4c0135f"
+      "checksum": "903e7560c35f28ff686e046476fb6e19"
     },
     "R/table_xls_varname2color.R": {
       "checksum": "d6e8134dfd85eaf9d35d93d4d972d01d"
@@ -10134,11 +10210,14 @@
     "R/tablefixed.R": {
       "checksum": "35ed6c21740214f7343270e6ca9ea08f"
     },
+    "R/testdata.R": {
+      "checksum": "a01c63f7a87600a3211bbd7cbba88702"
+    },
     "R/testpoints_n.R": {
       "checksum": "5d5282aaf62ba61ec8feaf4800955077"
     },
     "R/URL_FUNCTIONS_part1.R": {
-      "checksum": "f75b3e1c8e0306d29639d951ca83ae8a"
+      "checksum": "5e1e879ceb531cb3c9f7e20a1b5da271"
     },
     "R/URL_FUNCTIONS_part2.R": {
       "checksum": "0b8d9c9e7f787fd5033a30390c53ea96"
@@ -10165,7 +10244,7 @@
       "checksum": "95e97ccd8e52499e048ad3e44dc7cfbe"
     },
     "R/utils_dupenames_etc.R": {
-      "checksum": "7594a8925ee7f829355ebdac7410e030"
+      "checksum": "085496bf329dcf3e744c6b7c7c7f10b5"
     },
     "R/utils_global_or_param.R": {
       "checksum": "d752e01877e39447f07e3c2b8f863bf3"
@@ -10213,7 +10292,7 @@
       "checksum": "cd6b6aea68e80c711f6046b1ca405a13"
     },
     "R/utils_radiobox.R": {
-      "checksum": "02f7b259b41efe3d055b5eae1496cc51"
+      "checksum": "d36ee8e600489336ffba5e65f8b7b961"
     },
     "R/utils_rmost.R": {
       "checksum": "9008b07246915b5e6d57181c171e3693"
@@ -10225,10 +10304,10 @@
       "checksum": "f654481df40c51a6371a825a26ddc8b1"
     },
     "R/utils_source_this_codetext.R": {
-      "checksum": "d9df8a267e71065f53e197a35a115332"
+      "checksum": "603ec3f90cd608252f56fb14dbde625c"
     },
     "R/utils_speedtest.R": {
-      "checksum": "4bffcf19004bc372219d62954ac4f71c"
+      "checksum": "e9a572e73c13d0fdd506011a80566154"
     },
     "R/utils_structure.of.output.list.R": {
       "checksum": "98b1d71734b6e931a76b5af36b0d2350"
