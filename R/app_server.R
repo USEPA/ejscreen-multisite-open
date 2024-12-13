@@ -174,7 +174,7 @@ app_server <- function(input, output, session) {
       showTab(inputId =  "all_tabs", target = 'Advanced Settings')
     }
   } else {
-    if (default_hide_advanced_settings) {
+    if (isTRUE(golem_opts$isPublic)) {
       hideTab(inputId = 'all_tabs', target = 'Advanced Settings')
     }
   }
@@ -186,19 +186,19 @@ app_server <- function(input, output, session) {
                {hideTab(inputId = 'all_tabs', target = 'Advanced Settings')})
   
   ## hide vs show ABOUT tab  ---------------------- #   ***
-  if (default_hide_about_tab) {
+  if (isTRUE(golem_opts$isPublic)) {
     hideTab(inputId = 'all_tabs', target = 'About') 
   }
   ## hide vs show WRITTEN REPORT tab ---------------------- #   ***
-  if (default_hide_written_report) {
+  if (isTRUE(golem_opts$isPublic)) {
     hideTab(inputId = 'results_tabs', target = 'Written Report') 
   }
   ## hide vs show BARPLOTS tab  ---------------------- #   ***
-  if (default_hide_plot_barplots_tab) {
+  if (!isTRUE(golem_opts$isPublic)) {
     hideTab(inputId = 'details_subtabs', target = 'Plot Average Scores')
   }
   ## hide vs show HISTOGRAMS tab  ---------------------- #   ***
-  if (default_hide_plot_histo_tab) {
+  if (isTRUE(golem_opts$isPublic)) {
     hideTab(inputId = 'details_subtabs', target = 'Plot Full Range of Scores')
   }
   

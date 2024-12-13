@@ -43,6 +43,12 @@ run_app      <- function(
     uiPattern = "/",
     ...
 ) {
+  # Assign golem_opts to the global environment
+  assign("golem_opts", list(...), envir = globalenv())
+  
+  # sets switches controlling what is displayed in public version based on passed isPublic parameter
+  source(system.file("manage-public-private.R", package = "EJAM")) 
+  
   # temporary workaround, see https://github.com/ThinkR-open/golem/issues/6
   source(system.file("global.R", package = "EJAM")) # source('./inst/global1.R') # uses latest source version if devtools::load_all() has been done.
 

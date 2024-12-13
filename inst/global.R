@@ -60,38 +60,6 @@ show_full_header_footer <- FALSE
 # whichip <- ips[4]
 
 ######################################################## #
-# Tabs hidden / shown ####
-
-default_hide_about_tab <- TRUE 
-default_hide_plot_barplots_tab <- FALSE
-default_hide_plot_histo_tab <- TRUE
-default_hide_advanced_settings <- TRUE
-default_hide_written_report <- TRUE  # May be just commented out
-default_hide_ejscreenapi_tab <- TRUE  # May be just commented out
-
-######################################################## #
-# Options for Site Selection Methods ####
-
-choices_for_type_of_site_upload <- c(
-  'Latitude/Longitude file upload'                = 'latlon',
-  'EPA Facility IDs (FRS Identifiers)'            = 'FRS',
-  # 'EPA Program IDs'                               = 'EPA_PROGRAM',
-  # 'Census FIPS Codes (e.g., Counties or Cities)'  = 'FIPS',
-  'Shapefile of polygons'                         = 'SHP'
-)
-# , selected = 'latlon'   # would set initial value but default is 1st in list
-
-choices_for_type_of_site_category <- c(
-  'by Industry (NAICS) Code' = 'NAICS'
-  # ,
-  # 'by Industry (SIC) Code'   = 'SIC'
-  # ,
-  # 'by EPA Program'           = 'EPA_PROGRAM'
-  # ,
-  # 'by MACT subpart'          = 'MACT'
-)
-
-######################################################## #
 # Options in site point or file uploads, radius  ####
 
 ## Limits on # of points etc. ####
@@ -578,7 +546,7 @@ html_header_fmt <- tagList(
     # AND BELOW IN SHORT VERSION OF HEADER
     
     # tags$title('EJAM | US EPA'),
-    tags$meta(name = "application-name", content = "EJScreen Multisite"),
+    tags$meta(name = "application-name", content = .app_title),
     
     ## EPA FAVICONS - but can be specified in (and this would conflict with) golem_add_external_resources() within app_ui.R ####
     
