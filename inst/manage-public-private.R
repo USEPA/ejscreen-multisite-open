@@ -48,4 +48,4 @@ choices_for_type_of_site_upload <- if (isTRUE(golem_opts$isPublic)) {
 
 .app_title <-  ifelse(isTRUE(golem_opts$isPublic), "EJScreen Multisite", "EJAM")
 
-.community_report_title <- ifelse(isTRUE(golem_opts$isPublic), "EJScreen-EJAM Multisite Report", "EJAM Multisite Report")
+.community_report_title <- ifelse(isTRUE(golem_opts$isPublic), "EJScreen Multisite Report", "EJAM Multisite Report")
