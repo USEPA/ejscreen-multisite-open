@@ -643,7 +643,7 @@ html_header_fmt <- tagList(
         
           <span style="font-size: 17pt; font-weight:700; font-family:Arial";>',
                 
-                .app_title,   # EJScreen Multisite Tool (version 2.3)  
+                .app_title_and_version,   # EJScreen Multisite Tool (version 2.3)  
                 
                 '</span>
                                                         
