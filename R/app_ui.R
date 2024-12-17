@@ -340,11 +340,7 @@ app_ui  <- function(request) {
                             tags$ul(
                               # tags$li('Required columns: program, pgm_sys_id'),
                               tags$li(tags$a(href = 'https://www.naics.com/search', target = '_blank', 
-                                             'More about NAICS codes from naics.com')),
-                              tags$li(tags$a(href = 'https://www.epa.gov/frs/frs-query#industrial', target = '_blank', 
-                                             'EPA Facility Industrial Classification Search tool'))
-                              # tags$li(tags$a(href = 'https://www.census.gov/naics/', target = '_blank', 
-                              #                'More about NAICS codes from Census'))
+                                             'More about NAICS codes from naics.com'))
                             )
                           ), # end conditional panel
                           ################################################################# #
