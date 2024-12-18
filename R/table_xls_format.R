@@ -91,6 +91,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                              ejscreen_ejam_caveat = NULL,
                              ...) {
   
+  ## check for PhantomJS installation
+  if(!webshot::is_phantomjs_installed()){
+    webshot::install_phantomjs()
+  }
+  
   if (is.null(ejscreen_ejam_caveat)) {
     ejscreen_ejam_caveat <- "Some numbers as shown on the EJScreen report for a single location will in some cases appear very slightly different than in EJScreen's multisite reports. All numbers shown in both types of reports are estimates, and any differences are well within the range of uncertainty inherent in the American Community Survey data as used in EJScreen. Slight differences are inherent in very quickly calculating results for multiple locations."
   }
@@ -327,10 +332,28 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
     }
     Sys.setenv(OPENSSL_CONF="/dev/null")
-    webshot::webshot(mypath, file = file.path(mytempdir, "map1.png"), cliprect = "viewport")
-    if (testing) cat(file.path(mytempdir, "map1.png"), '\n')
-    openxlsx::insertImage(wb, sheet = 'map', file = file.path(mytempdir, 'map1.png'),
-                          width = 9, height = 7)
+    map_file <- file.path(mytempdir, "map1.png")
+    tryCatch({
+      webshot::webshot(mypath, file = map_file, cliprect = "viewport")
+    }, error = function(e) {
+      message("Error converting HTML to PNG:", e$message)
+      # Handle the error (e.g., fallback mechanism, logging, etc.)
+    })
+    if (testing) cat(map_file, '\n')
+    # Insert image into workbook
+    if (file.exists(map_file)) {
+      tryCatch({
+        # height and width are static, need to be updated if content on map changes
+        openxlsx::insertImage(wb, sheet = 'map', file = map_file,
+                              width = 9, height = 7)
+      }, error = function(e) {
+        message("Error inserting image into Excel:", e$message)
+        # Handle the error (e.g., fallback mechanism, logging, etc.)
+      })
+    } else {
+      message("PNG file not found or could not be generated.")
+    }
+    
   }
   
   
@@ -399,6 +422,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     openxlsx::writeData(    wb, sheet = 'notes', x = notes_usertext, rowNames = FALSE, colNames = FALSE, startRow = NROW(notes_df) + 3)
     openxlsx::addStyle(     wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), cols = 1,  style = openxlsx::createStyle(wrapText = TRUE), stack = TRUE)
   } else {usernoterows <- 0}
+  
   openxlsx::setRowHeights(wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), heights = 50)
   # Row height for "Note on site-specific estimates"
   openxlsx::setRowHeights(wb, sheet = 'notes', rows = 8, heights = 91)
@@ -546,7 +570,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       # not sure it has to be in a loop actually but only 2 or 3 columns to loop over
       namedvector <- as.vector(eachsite[ , hyperlink_colnames[i]])
       namedvector[namedvector == 'N/A'] <- NA
-      class(namedvector) <- "hyperlink"
+      class(namedvector) <- "hyperlink"   ## also could use the funtion namedvector <- url_xl_style(namedvector, paste(hyperlink_text[i], 1:(NROW(eachsite)))) that would just add the class and names as done here.
       names(namedvector) <- paste(hyperlink_text[i], 1:(NROW(eachsite))) # NOT NROW + 1 HERE !  # to use e.g., "EJScreen Report 1" 
       ## write to the worksheet the revised URL
       openxlsx::writeData(wb, sheet = 'Each Site',

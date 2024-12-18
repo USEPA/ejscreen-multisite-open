@@ -269,15 +269,14 @@ if (params$testmode) {
 
 ## Estimating locations and population counts of residents
 
-EPA's EJAM (Environmental Justice Analysis Multisite) tool was used to
-develop this analysis. EPA's [EJAM
-tool](https://usepa.github.io/EJAM/index.html "Environmental Justice Analysis Multisite (EJAM) tool")
+EPA's EJScreen Multisite tool was used to develop this analysis. EPA's [EJAM
+tool](https://usepa.github.io/EJAM/index.html "EJScreen Multisite tool")
 is a user-friendly web app that can summarize demographics and
 environmental conditions for any list of places in the nation.
 
 ### Spatial resolution of data
 
-The analysis used EPA's EJAM tool and EJScreen version
+The analysis used EPA's EJScreen multisite tool version
 `r params$ejscreen_version` with demographic data based on the Census
 Bureau's `r params$acs_version` American Community Survey (ACS) 5-year
 summary file, and the corresponding version of Decennial Census

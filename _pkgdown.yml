@@ -126,6 +126,7 @@ reference:
 - subtitle: "EPA Programs"
   contents:
   - epa_programs
+  - epa_programs_defined
   - latlon_from_program
   - frsprogramcodes
   - frs_from_program

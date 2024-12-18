@@ -72,6 +72,7 @@ metadata_mapping <- list(
   mact_table = list(), ##########  just the date it was updated is what matters for this
   frs_by_mact =	list(), ##########  just the date it was updated is what matters for this
   epa_programs = list(), ##########  just the date it was updated is what matters for this
+  epa_programs_defined = list(), 
   
   frsprogramcodes  = list(), ##########  just the date it was updated is what matters for this
 
