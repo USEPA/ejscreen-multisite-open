@@ -659,11 +659,12 @@ html_header_fmt <- tagList(
       # could adjust which of the links here get shown in the header, depending on  isTRUE(golem_opts$isPublic)           
 ' 
         <td valign="bottom" align="right";  style="line-height:34px; padding: 0px;>
+                border-bottom-color: #ffffff; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #ffffff";>
           <span id="homelinks">
             <a href="https://www.epa.gov/ejscreen" alt="Go to EJScreen home page" title="Go to EJScreen home page" target="_blank">EJScreen Website</a> | 
             <a href="https://ejscreen.epa.gov/mapper/" alt="Go to EJScreen mapper"    title="Go to EJScreen mapper" target="_blank">EJScreen Mapper</a> | 
             <a href="https://www.epa.gov/ejscreen/overview-socioeconomic-indicators-ejscreen" alt="Go to EJScreen glossary page" title="Go to EJScreen glossary page" target="_blank">Glossary</a> | 
-    <!--    <a href="www/ejscreen-multisite-help.pdf" alt="Go to help page" title="Go to help page" target="_blank">Help</a> |   --> 
+            <a href="ejscreen-multisite-help-2025-01.pdf" alt="Go to help document" title="Go to help document" target="_blank">Help</a> | 
             <a href="mailto:ENVIROMAIL_GROUP@epa.gov?subject=EJScreen%20Multisite%20Tool%20Question" id="emailLink" alt="Contact Us" title="Contact Us">Contact Us</a>
           </span>&nbsp;&nbsp;
         </td>
