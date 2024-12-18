@@ -224,7 +224,9 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     # 3.) Percentile indices are applied to the bin values vector in step 1 to assign the appropriate percentile value to vector selection
     unique_vlookup <- c(unique(myvector_lookup),Inf) #add Inf to coerce N-1 to N
     nondupe_interval <- findInterval(myvector_selection, unique_vlookup, all.inside = TRUE)
-    nondupvec <- which(!duplicated(myvector_lookup,fromLast = TRUE))
+    #nondupvec <- which(!duplicated(myvector_lookup,fromLast = TRUE))
+    nondupvec <- which(!duplicated(myvector_lookup,fromLast = FALSE))
+
     whichinterval[zone == z] <- nondupvec[nondupe_interval]
     # WARN if raw score < PCTILE 0, in lookup ! ####
     # WARN if a raw value < minimum raw value listed in lookup table (which should be percentile zero). Why would that table lack the actual minimum? when created it should have recorded the min of each indic in each zone as the 0 pctile for that indic in that zone.

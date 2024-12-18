@@ -87,7 +87,7 @@ ejscreen_vs_ejam <- function(latlon, radius = 3,
                              x100fix = TRUE, 
                              x100varnames = names_pct_as_fraction_ejamit,
                              showdrinkingwater = TRUE,
-                             showpctowned = FALSE,
+                             showpctowned = TRUE,
                              ...) {
   
   # if you set save_ejscreen_output to F, FALSE, NULL those all get treated as NULL. if set to T or TRUE, use default file name

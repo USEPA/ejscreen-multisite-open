@@ -190,7 +190,7 @@ ejamit <- function(sitepoints,
                    called_by_ejamit = TRUE,
                    testing = FALSE,
                    showdrinkingwater = TRUE,
-                   showpctowned = FALSE,
+                   showpctowned = TRUE,
                    ...
 ) {
 

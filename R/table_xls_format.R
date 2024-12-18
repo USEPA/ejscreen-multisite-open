@@ -570,7 +570,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       # not sure it has to be in a loop actually but only 2 or 3 columns to loop over
       namedvector <- as.vector(eachsite[ , hyperlink_colnames[i]])
       namedvector[namedvector == 'N/A'] <- NA
-      class(namedvector) <- "hyperlink"
+      class(namedvector) <- "hyperlink"   ## also could use the funtion namedvector <- url_xl_style(namedvector, paste(hyperlink_text[i], 1:(NROW(eachsite)))) that would just add the class and names as done here.
       names(namedvector) <- paste(hyperlink_text[i], 1:(NROW(eachsite))) # NOT NROW + 1 HERE !  # to use e.g., "EJScreen Report 1" 
       ## write to the worksheet the revised URL
       openxlsx::writeData(wb, sheet = 'Each Site',
