@@ -2,6 +2,8 @@
 # if run_app(isPublic = TRUE), then it's Public
 # Most items toggled in app_server.R, unless otherwise specified
 
+# note that manage-public-private.R is sourced prior to global.R being source, by run_app()
+
 # About tab
 default_hide_about_tab <- isTRUE(golem_opts$isPublic)
 
@@ -17,7 +19,7 @@ default_hide_written_report <- TRUE
 # Barplots - Plot Average Scores
 default_hide_plot_barplots_tab <- FALSE
 
-# default_hide_ejscreenapi_tab <- isTRUE(golem_opts$isPublic)  # This doesn't seem used
+default_hide_ejscreenapi_tab <- isTRUE(golem_opts$isPublic)  # not yet used
 
 choices_for_type_of_site_category = if (isTRUE(golem_opts$isPublic)) {
   c('by Industry (NAICS) Code' = 'NAICS')
@@ -46,6 +48,23 @@ choices_for_type_of_site_upload <- if (isTRUE(golem_opts$isPublic)) {
   )
 }
 
-.app_title <-  ifelse(isTRUE(golem_opts$isPublic), "EJScreen Multisite", "EJAM")
+## app title & version   ###########################################
+# note that manage-public-private.R is sourced prior to global.R being source, by run_app()
+# but global.R and manage-public-private.R both need to know version info so this is done in both:
+desc <- desc::desc(file = "DESCRIPTION")
+ejam_app_version  <- desc$get("Version")
+## trim version number to Major.Minor
+ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ejam_app_version)[[1]][2] - 1)
 
-.community_report_title <- ifelse(isTRUE(golem_opts$isPublic), "EJScreen Multisite Report", "EJAM Multisite Report")
+.app_title <-  ifelse(isTRUE(golem_opts$isPublic), 
+                      "EJScreen Multisite Tool", 
+                      "EJAM"
+)
+.app_title_and_version <-  ifelse(isTRUE(golem_opts$isPublic), 
+                                  paste0(.app_title, " (Version ", ejam_app_version, ")"),
+                                  paste0(.app_title, " (Version ", ejam_app_version, ")")
+)
+.community_report_title <- ifelse(isTRUE(golem_opts$isPublic), 
+                                  "EJScreen Multisite Report", 
+                                  "EJAM Multisite Report"
+)

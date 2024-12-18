@@ -20,7 +20,9 @@
 #'   )
 #'   ```
 #'   This uses an internal function global_or_param()
-#'   
+#' @details
+#' run_app( isPublic = TRUE ) will launch the public-facing version.
+#' 
 #' @inheritParams shiny::shinyApp
 #' @return An object that represents the app. Printing the object or passing it to [runApp()] will run the app.
 #' @seealso [app_run_EJAM()]
