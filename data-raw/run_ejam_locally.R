@@ -21,6 +21,9 @@ devtools::load_all()
 source('R/app_config.R')
 source('R/app_ui.R')
 source('R/app_server.R')
+
+assign("golem_opts", list(isPublic = TRUE), envir = globalenv())
+source('inst/manage-public-private.R')
 source('inst/global.R')
 
 ## launch local version of Shiny app

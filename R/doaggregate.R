@@ -153,7 +153,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
                         called_by_ejamit=FALSE, updateProgress = NULL,
                         silentinteractive=TRUE, testing=FALSE,
                         showdrinkingwater = TRUE,
-                        showpctowned = FALSE,
+                        showpctowned = TRUE,
                         ...) {
   
   ###################################################### #

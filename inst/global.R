@@ -27,8 +27,7 @@ library(shiny)
 bookmarking_allowed <- TRUE  # https://mastering-shiny.org/action-bookmark.html
 if (bookmarking_allowed) {enableBookmarking(store = "url")}
 
-default_hide_advanced_settings <- TRUE
-default_hide_written_report <- TRUE
+
 default_testing        <- FALSE
 default_shiny.testmode <- FALSE  # If TRUE, then various features for testing Shiny applications are enabled.
 default_print_uploaded_points_to_log <- TRUE
@@ -47,7 +46,7 @@ options(spinner.color = "#005ea2", spinner.type = 4)
 desc <- desc::desc(file = "DESCRIPTION")
 ejam_app_version  <- desc$get("Version")
 ## trim version number to Major.Minor
-ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ejam_app_version)[[1]][2]-1)
+ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ejam_app_version)[[1]][2] - 1)
 
 acs_version_global = desc$get("ACSVersion")#as.vector(metadata_mapping$blockgroupstats[['acs_version']]) # "2017-2021"
 ejscreen_version_global = desc$get("EJScreenVersion")#as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']])
@@ -326,9 +325,9 @@ escape_html <- function(text) {
 intro_text <- tagList(
   # tags$p("For more information about EJAM:"),
   h2( a(href = "https://usepa.github.io/EJAM/articles/0_whatis.html",
-        "What is EJAM?", 
+        "What is EJScreen's EJAM tool?", 
         target = "_blank", rel = "noreferrer noopener") ),
-  p("EJAM is a tool developed by the United States Environmental Protection Agency (US EPA) that makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using this tool is like getting a typical EJScreen report, but for hundreds or thousands of places, all at the same time."),
+  p("EJScreen's multisite tool (EJAM) is a tool developed by the United States Environmental Protection Agency (US EPA) that makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using this tool is like getting a typical EJScreen report, but for hundreds or thousands of places, all at the same time."),
   p("This provides interactive results and a formatted, ready-to-share report with tables, graphics, and a map. The report can provide EJ-related information about people who live in communities near any of the industrial facilities on a list, for example."),
   br(),
   br()
@@ -463,13 +462,13 @@ fips_help_msg <- paste0('
   <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
   <label class="control-label" for="selectFrom1">
   <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit),',
-  # ' Census Designated Place (CDP) like city or township (6-digit or 7-digit),',   # uncomment this when ready ***
-  ' Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).</p>
+                        # ' Census Designated Place (CDP) like city or township (6-digit or 7-digit),',   # uncomment this when ready ***
+                        ' Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).</p>
   <p>The file should contain at least one column, FIPS, with the fips codes. ',
-  'It will also work with the following aliases: ',
-  'fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
+                        'It will also work with the following aliases: ',
+                        'fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
   ',
-  'There can be other columns like an ID column that should be unique (no duplicates),
+                        'There can be other columns like an ID column that should be unique (no duplicates),
   and each record should be separated by a carriage return.</p>
   <p>The file could be formatted as follows, for example: </p>
   </label>
@@ -542,10 +541,12 @@ html_header_fmt <- tagList(
     tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
     tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
     
-    ## APP TITLE could be defined here, or if using golem package, in golem_add_external_resources() within app_ui.R ####
-    #
+    ## >> APP TITLE could be defined here ####
+    # AND in golem_add_external_resources() IN app_ui.R,  
+    # AND BELOW IN SHORT VERSION OF HEADER
+    
     # tags$title('EJAM | US EPA'),
-    tags$meta(name = "application-name", content = "EJAM"),
+    tags$meta(name = "application-name", content = .app_title),
     
     ## EPA FAVICONS - but can be specified in (and this would conflict with) golem_add_external_resources() within app_ui.R ####
     
@@ -604,17 +605,18 @@ html_header_fmt <- tagList(
     ))
   ), 
   
-  ### Body tag and Site Header ####
+
+  ### >> APP TITLE in Header/ Body tag ####
 
   tags$body(
     class = "path-themes not-front has-wide-template", id = "top",
     tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds.min.js')
+    
+  ),    
   
-    ),    
- 
-######################################################################## #
+  ######################################################################## #
   if (!show_full_header_footer) {
-HTML('
+    HTML('
      <div class="container-fluid" style="border-spacing: 0; margin: 0; padding-bottom: 0; border: 0;
      border-right-width: 0px; font-size:24px; ";>
   
@@ -634,7 +636,11 @@ HTML('
 
         <td valign="bottom" style="line-height:34px; padding: 0px; border-bottom-color: #ffffff; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #ffffff";>
           <span style="font-size: 17pt; font-weight:700; font-family:Arial";>EJScreen</span>
-          <span style="font-size: 10pt; font-weight:700;";>&nbsp;&nbsp;Environmental Justice Analysis Multisite (EJAM) Tool (Version 2.3)</span>
+<span style="font-size: 10pt; font-weight:700;";>
+
+&nbsp;&nbsp;EJ Analysis Multisite Tool (version 2.3)
+
+</span>
         </td>
 <!--        
         <td valign="middle" align="right">
@@ -654,25 +660,25 @@ HTML('
   
 </div>
      ',
-  
-  ########################################################################## #
-  
-  ### Contact Us - Header ####
-  
-  #HTML(
-    '<div class="l-page  has-footer" style="padding-top:0">
+         
+         ########################################################################## #
+         
+         ### Contact Us - Header ####
+         
+         #HTML(
+         '<div class="l-page  has-footer" style="padding-top:0">
         <div class="l-constrain">
         
 
           
           
  '
-  )
-
-} else {
-  # To display the full header, html_header_fmt can be set to NULL or an empty tagList
-  HTML(
-    '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
+    )
+    
+  } else {
+    # To display the full header, html_header_fmt can be set to NULL or an empty tagList
+    HTML(
+      '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
             <a id="skip-to-main" href="#main" class="skiplinks__link visually-hidden focusable">Skip to main content</a>
          </div>
 
@@ -810,22 +816,22 @@ HTML('
 
 
           <main id="main" class="main" role="main" tabindex="-1">'
+      
+      #)    ,   #   comment  out when excluding html below
+      
+    ) # END OF   html_header_fmt()
+    ########################################################################## #
     
-  #)    ,   #   comment  out when excluding html below
-  
-  ) # END OF   html_header_fmt()
-  ########################################################################## #
-  
-}
+  }
 )
 
 
 html_footer_fmt <- tagList(
   if (!show_full_header_footer) {
-  ### Contact Us - Footer ####
-  # 
-  HTML(
-    ' 
+    ### Contact Us - Footer ####
+    # 
+    HTML(
+      ' 
       </div>
       
       <div class="l-page__footer">
@@ -833,7 +839,7 @@ html_footer_fmt <- tagList(
       </div>
       
     </div>'
-  )
+    )
   } else {
     ### Site Footer ####
     HTML(
@@ -1009,8 +1015,8 @@ html_footer_fmt <- tagList(
         </svg>
       </a>'
     )
-    }
+  }
   # ,
   # 
-
+  
 )
