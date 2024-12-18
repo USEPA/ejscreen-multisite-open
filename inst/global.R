@@ -664,7 +664,7 @@ html_header_fmt <- tagList(
             <a href="https://www.epa.gov/ejscreen" alt="Go to EJScreen home page" title="Go to EJScreen home page" target="_blank">EJScreen Website</a> | 
             <a href="https://ejscreen.epa.gov/mapper/" alt="Go to EJScreen mapper"    title="Go to EJScreen mapper" target="_blank">EJScreen Mapper</a> | 
             <a href="https://www.epa.gov/ejscreen/overview-socioeconomic-indicators-ejscreen" alt="Go to EJScreen glossary page" title="Go to EJScreen glossary page" target="_blank">Glossary</a> | 
-            <a href="ejscreen-multisite-help-2025-01.pdf" alt="Go to help document" title="Go to help document" target="_blank">Help</a> | 
+            <a href="www/ejscreen-multisite-help-2025-01.pdf" alt="Go to help document" title="Go to help document" target="_blank">Help</a> | 
             <a href="mailto:ENVIROMAIL_GROUP@epa.gov?subject=EJScreen%20Multisite%20Tool%20Question" id="emailLink" alt="Contact Us" title="Contact Us">Contact Us</a>
           </span>&nbsp;&nbsp;
         </td>
