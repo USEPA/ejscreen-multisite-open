@@ -22,7 +22,7 @@ doaggregate(
   silentinteractive = TRUE,
   testing = FALSE,
   showdrinkingwater = TRUE,
-  showpctowned = FALSE,
+  showpctowned = TRUE,
   ...
 )
 }

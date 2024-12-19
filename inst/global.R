@@ -641,11 +641,18 @@ html_header_fmt <- tagList(
         border-bottom-color: #ffffff; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #ffffff";
         vertical-align: bottom;>
         
-          <span style="font-size: 17pt; font-weight:700; font-family:Arial";>',
+                <span style="font-size: 17pt; font-weight:700; font-family:Arial";>',   # large font for app title
                 
-                .app_title_and_version,   # see manage-public-private.R
+                .app_title,   # see manage-public-private.R
                 
-                '</span>
+                '</span>',
+                
+                '<span style="font-size: 10pt; font-weight:700; font-family:Arial";>',  # smaller font for version info
+                
+                .app_version_headertext,  # see manage-public-private.R, e.g., " (Version 2.3)" 
+                
+                '</span>',
+                '
                                                         
 <!-- 
 <span style="font-size: 10pt; font-weight:700;";>
@@ -658,7 +665,7 @@ html_header_fmt <- tagList(
       ### > links ####         
       # could adjust which of the links here get shown in the header, depending on  isTRUE(golem_opts$isPublic)           
 ' 
-        <td valign="bottom" align="right";  style="line-height:34px; padding: 0px;>
+        <td valign="bottom" align="right";  style="line-height:34px; padding: 0px;
                 border-bottom-color: #ffffff; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #ffffff";>
           <span id="homelinks">
             <a href="https://www.epa.gov/ejscreen" alt="Go to EJScreen home page" title="Go to EJScreen home page" target="_blank">EJScreen Website</a> | 

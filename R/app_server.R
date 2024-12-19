@@ -166,6 +166,10 @@ app_server <- function(input, output, session) {
   })
   ##    --------------------------  TABS to show/hide    -------------------------- -
   
+  ## start app without showing Results since no analysis done yet
+  hideTab(inputId = 'all_tabs', target = 'See Results')
+  ## note the app will show and select the results tab once results are finished processing
+  
   ## hide vs show ADVANCED tab at start  ---------------------- #   ***
   
   if (!is.null(get_golem_options('advanced'))) { # option provided to run_app()
@@ -2125,6 +2129,7 @@ app_server <- function(input, output, session) {
     
     ## switch tabs and jump to top of screen
     shinyjs::js$toTop();
+    showTab(session = session, inputId = 'all_tabs', target = 'See Results') # in case was hidden because app had just launched
     updateTabsetPanel(session, inputId = "all_tabs",     selected = "See Results")
     updateTabsetPanel(session, inputId = 'results_tabs', selected = 'Community Report')
   })  # end of observeEvent based on Start analysis button called input$bt_get_results

@@ -9,7 +9,7 @@
 
 ## reinstall package from deploy-posit branch (needed for manifest)
 # devtools::install_github('USEPA/EJAM', ref = 'PUBLIC-EJSCREEN') # if needed
-devtools::install_github(repo = 'USEPA/EJAM', ref = 'PUBLIC-EJSCREEN', 
+devtools::install_github(repo = 'USEPA/EJAM', ref = 'PUBLIC-EJSCREEN', build_vignettes = FALSE,
                          build = FALSE, upgrade = "never")
 
 ## list files in EJAM root directory
