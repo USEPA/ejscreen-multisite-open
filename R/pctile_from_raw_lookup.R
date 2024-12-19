@@ -227,7 +227,21 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
 
     #nondupvec <- which(!duplicated(myvector_lookup,fromLast = FALSE))
     nondupvec <- which(!duplicated(myvector_lookup,fromLast = TRUE))
+    
+    ## get list of duplicated values (ties)
+    dupvals <- unique(myvector_lookup[which(duplicated(myvector_lookup,fromLast = TRUE))])
+   
     whichinterval[zone == z] <- nondupvec[nondupe_interval]
+    
+    ## check if any inputted values match tied
+    if(any(dupvals %in% myvector_selection)){
+     
+      for(d in dupvals){
+        ## if they match a tied value, assign lowest of tied percentiles
+        whichinterval[zone == z][myvector_selection == d] <- min(which(myvector_lookup == d))
+      }
+    }
+   
     # WARN if raw score < PCTILE 0, in lookup ! ####
     # WARN if a raw value < minimum raw value listed in lookup table (which should be percentile zero). Why would that table lack the actual minimum? when created it should have recorded the min of each indic in each zone as the 0 pctile for that indic in that zone.
     # *** COULD IT BE THAT UNITS ARE MISMATCHED?  e.g., QUERY IS FOR RAW VALUE OF 0.35 (FRACTION OF 1) BUT LOOKUP TABLE USES RAW VALUES LIKE 35 (PERCENT. FRACTION OF 100) ?
@@ -247,8 +261,9 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     #set percentile to zero if myvector_selection <= 0
     percentiles_reported[zone == z][myvector_selection <= 0] <- 0
     # set first nonzero percentile to second value
-    percentiles_reported[zone == z][(myvector_selection > 0 & myvector_selection < unique_vlookup[1])] <- nondupvec[2]-1
 
+   #percentiles_reported[zone == z][(myvector_selection > 0 & myvector_selection < unique_vlookup[1])] <- nondupvec[2]-1
+    #percentiles_reported[zone == z][(myvector_selection > 0 & myvector_selection < unique_vlookup[2])] <- high_pctiles_tied_with_min[[z]][[varname.in.lookup.table]]#nondupvec[2]-1
   } # end of loop over zones ####
 
   return(percentiles_reported)
