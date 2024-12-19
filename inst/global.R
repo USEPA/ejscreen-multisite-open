@@ -658,7 +658,7 @@ html_header_fmt <- tagList(
       ### > links ####         
       # could adjust which of the links here get shown in the header, depending on  isTRUE(golem_opts$isPublic)           
 ' 
-        <td valign="bottom" align="right";  style="line-height:34px; padding: 0px;>
+        <td valign="bottom" align="right";  style="line-height:34px; padding: 0px;
                 border-bottom-color: #ffffff; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #ffffff";>
           <span id="homelinks">
             <a href="https://www.epa.gov/ejscreen" alt="Go to EJScreen home page" title="Go to EJScreen home page" target="_blank">EJScreen Website</a> | 
