@@ -103,12 +103,12 @@
         "RemoteRepo": "EJAM",
         "RemoteUsername": "USEPA",
         "RemoteRef": "PUBLIC-EJSCREEN",
-        "RemoteSha": "017f1213455ec686593257b614719c6aca0baa3e",
+        "RemoteSha": "27f92ba5b1b825166bced48b508638bfe9961233",
         "GithubRepo": "EJAM",
         "GithubUsername": "USEPA",
         "GithubRef": "PUBLIC-EJSCREEN",
-        "GithubSHA1": "017f1213455ec686593257b614719c6aca0baa3e",
-        "Built": "R 4.4.1; ; 2024-12-19 01:49:56 UTC; windows"
+        "GithubSHA1": "27f92ba5b1b825166bced48b508638bfe9961233",
+        "Built": "R 4.4.1; ; 2024-12-19 02:56:16 UTC; windows"
       }
     },
     "KernSmooth": {
@@ -6960,7 +6960,7 @@
       "checksum": "0a69eb90c876ad93f274952f8d4ee451"
     },
     "inst/global.R": {
-      "checksum": "3da8d9897201ea1afae23586fe712b76"
+      "checksum": "ef9114d25f15767fee68f1b0b9776b41"
     },
     "inst/global_EJAMejscreenapi.R": {
       "checksum": "f5ca795fcfd2ae1843deb436b4dc86d0"
@@ -6972,7 +6972,7 @@
       "checksum": "837bbf3a3d49324a4e651d3291ea7eb7"
     },
     "inst/manage-public-private.R": {
-      "checksum": "31d4e5d26ee1b84c823fa5f55407474d"
+      "checksum": "2ff2cd91d7b3934732338e5e4683de82"
     },
     "inst/pkgdown.yml": {
       "checksum": "36f5e0b3a38885b306aba0edc1c32743"
@@ -9255,7 +9255,7 @@
       "checksum": "6a5bd525ee27ee219c3b260e8add44c3"
     },
     "R/app_server.R": {
-      "checksum": "2d7cbb764768db7a7f027a4edcbcad97"
+      "checksum": "9fd3482c688b4745f883992bb01ab2fe"
     },
     "R/app_server_EJAMejscreenapi.R": {
       "checksum": "c50089f5dd28603e6f80d26660a70bfa"
