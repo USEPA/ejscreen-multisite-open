@@ -27,7 +27,8 @@
 
 #' Read shapefile from any file or folder (trying to infer the format)
 #'
-#' @param path path of file(s) that is/are .gdb, .zip, .shp etc., or folder
+#' @param path path of file(s) that is/are .gdb, .zip, .shp, 
+#'   .geojson, .json, etc., or folder
 #'
 #'   - If .zip or folder that has more than one shapefile in it,
 #'     cannot be read by this function,
@@ -51,13 +52,15 @@
 #'   - If vector of .shp, .shx, .dbf, and .prj file names
 #'     (that may include paths), reads with [shapefile_from_filepaths()]
 #'
+#'   - If .json or .geojson, reads with [shapefile_from_json()]
+#'     
 #' @param cleanit set to FALSE if you want to skip validation and dropping invalid rows
 #' @param crs passed to shapefile_from_filepaths() etc. and
 #'    default is crs = 4269 or Geodetic CRS NAD83
 #' @param layer optional layer name passed to [sf::st_read()]
 #' @param ... passed to [sf::st_read()]
 #' 
-#' @return a shapefile object using [sf::st_read()]
+#' @return a simple feature [sf::sf] class object using [sf::st_read()]
 #' @seealso [shapefile_from_folder()]
 #'
 #' @export
@@ -66,14 +69,15 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
   
   # test cases:  see unit tests file
   
-  # if already a shapefile object, just return it as-is but use cleanit and crs (and layer??)
+  # if already a sf object, just return it as-is but use cleanit and crs (and layer??)
   if ("sf" %in% class(path)) {
     if (cleanit) {
       path <- shapefile_clean(path, crs = crs)  # includes st_transform(path, crs)
     } else {
       path <- sf::st_transform(path, crs = crs)
     }
-    return(path)
+    # path = shapefix(path) # also do here?
+    return(path) # input param called "path" actually was already a spatial object so just return it
   }
   
   # if path invalid/not provided, ask RStudio user to specify a file or folder
@@ -81,9 +85,18 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
     if (interactive() && !shiny::isRunning()) {
       
       # This lets RStudio user point to file OR folder
-      path <- rstudioapi::selectFile(caption = "Select a file (zip, shp, dbf, json, etc.) [or Cancel to specify a whole folder]", path = getwd(), existing = TRUE)
+      path <- rstudioapi::selectFile(caption = "Select a file (zip, shp, dbf, geojson, etc.) [or Cancel to specify a whole folder]", path = getwd(), existing = TRUE)
       if (is.null(path)) {
         path <- rstudioapi::selectDirectory(caption = "Select Folder", path = getwd())
+      }
+      if (any(is.null(path)) || any(is.na(path)) || any(length(path)) == 0 || any(!is.character(path)) || !is.atomic(path)) {
+        # if they clicked Cancel or something else went wrong
+        if (shiny::isRunning()) {
+          warning("need to specify valid path")
+          return(NULL)
+        } else {
+          stop("need to specify valid path")
+        }
       }
       
     } else {
@@ -97,51 +110,67 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
   }
   
   if (length(path) == 1) {
-    
+    x <- NULL
     if (file.exists(path)) {
+      
+      if (!(tolower(tools::file_ext(path)) %in% c("shp", "gdb", "zip", "geojson", "json"))) {
+        warning("If single path provided, it should be a .shp, .gdb, .zip, .geojson, .json, or .kml file, or a folder")
+      } # but maybe st_read() will figure it out anyway?
+      
       # true if like testdata/shapes/portland.gdb 
       if (tolower(tools::file_ext(path)) == "gdb") {
-        return(shapefile_from_gdb(path, ...))                    # DOES NOT ALLOW FOR USING cleanit or crs here so far ***
+        x = (shapefile_from_gdb(path, ...))                    # DOES NOT ALLOW FOR USING cleanit or crs here so far ***
       }
       if (tolower(tools::file_ext(path)) == "zip") {
-        return(shapefile_from_zip(path, cleanit = cleanit, crs = crs, ...))
+        x = (shapefile_from_zip(path, cleanit = cleanit, crs = crs, ...))
       }
-      if (tolower(tools::file_ext(path)) == "json") {
-        return(shapefile_from_json(path, cleanit = cleanit, crs = crs, ...))
+      if (tolower(tools::file_ext(path)) %in% c("json", "geojson")) {
+        x = (shapefile_from_json(path, cleanit = cleanit, crs = crs, ...))
       }
       if (tolower(tools::file_ext(path)) == "shp") {
-        return(sf::st_read(path, ...))
+        x = (sf::st_read(path, ...))
       }
-      return(shapefile_from_folder(folder = path, cleanit = cleanit, crs = crs, ...))
+      if (is.null(x)) {
+        x = try(shapefile_from_folder(folder = path, cleanit = cleanit, crs = crs, ...))
+      }
+      if (is.null(x) || inherits(x, "try-error")) {
+        # try one more option
+        # st_read() will guess at format from file extension, like .shp, etc.  see https://r-spatial.github.io/sf/articles/sf2.html
+        x <- try(sf::st_read(path, layer = layer, ...))
+      }
+      
+    } else {
+      # !file.exists(path)  Not sure this case can work
+      # st_read() will guess at format from file extension, like .shp, etc.  see https://r-spatial.github.io/sf/articles/sf2.html
+      x <- try(sf::st_read(path, layer = layer, ...))
     }
-    
-    ## st_read() should be able to handle .shp and some others
-    # if (tolower(tools::file_ext(path)) %in% c("shp", "dbf")) {
-    #   return(shapefile_from_filepaths(path, cleanit = cleanit, crs = crs, ...))
-    # }
-    # otherwise may be shp?, json or geojson, or some invalid type
-    
-    # st_read() seems to guess at format from file extension, like .shp, etc.  see https://r-spatial.github.io/sf/articles/sf2.html
-    x <- sf::st_read(path, layer = layer, ...)
-    return(x)
-    # probably never get here, but in case...
-    if (!(tolower(tools::file_ext(path)) %in% c("shp", "gdb", "zip", "geojson", "json"))) {
-      warning("If single path provided, it must be a .shp, .gdb, .zip, .geojson, or .json file, or a folder")
+    if (is.null(x) || inherits(x, "try-error")) {
+      warning("Cannot read file. If single path provided, it must be a .shp, .gdb, .zip, .geojson, .json, or .kml file, or a folder")
       return(NULL)
     }
     
   } else {
     filepaths <- path
-    x <- shapefile_from_filepaths(filepaths, cleanit = cleanit, crs = crs, ...)
-    return(x)
+    x <- try(shapefile_from_filepaths(filepaths, cleanit = cleanit, crs = crs, ...))
+    if (is.null(x) || inherits(x, "try-error")) {
+      warning("Cannot read file(s).")
+      return(NULL)
+    }
+  }
+  if (is.null(x)) {
+    return(NULL)
+  } else {
+    return(
+      shapefix(x)
+    )
   }
 }
 ############################################################################################## #
 
 
-#' read .json shapefile data
+#' read .json or .geojson shapefile data
 #'
-#' @param path path and filename for .zip file
+#' @param path path and filename 
 #' @param cleanit optional, whether to use [shapefile_clean()]
 #' @param crs passed to [shapefile_from_filepaths()] etc. and
 #'    default is crs = 4269 or Geodetic CRS NAD83
@@ -607,7 +636,7 @@ shapefile_filepaths_validize <- function(filepaths) {
 ############################################################################################## #
 
 
-#' Drop invalid rows and warn if all invalid and add unique ID
+#' Drop invalid rows, warn if all invalid, add unique ID, transform (CRS)
 #'
 #' @param shp a shapefile object using sf::st_read()
 #' @param crs used in shp <- sf::st_transform(shp, crs = crs), default is crs = 4269 or Geodetic CRS NAD83
@@ -623,6 +652,7 @@ shapefile_clean <- function(shp, crs = 4269) {
   # add error checking ***
   
   if (nrow(shp) > 0) {
+    if ("ejam_uniq_id" %in% names(shp)) {warning("ejam_uniq_id columns was already in shp, but replacing it now!")}
     shp <- dplyr::mutate(shp, ejam_uniq_id = dplyr::row_number()) # number them before dropping invalid ones,
     #   so that original list can be mapped to results list more easily
     shp <- shp[sf::st_is_valid(shp),]          # determines valid shapes, to use those and drop the others
@@ -731,7 +761,7 @@ shape_buffered_from_shapefile_points <- function(shapefile_points, radius.miles,
 shapefile_from_sitepoints <- function(sitepoints, crs = 4269, ...) {
   
   # add error checking ***
-  
+  # latlon_infer()
   #data.table::setDF(sitepoints)
   shpcoord <- sf::st_as_sf(sitepoints, coords = c('lon', 'lat'), crs = crs, ...) #   want 4269
   return(shpcoord)

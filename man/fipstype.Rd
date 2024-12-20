@@ -2,7 +2,7 @@
 % Please edit documentation in R/FIPS_FUNCTIONS.R
 \name{fipstype}
 \alias{fipstype}
-\title{FIPS - Identify what type of Census geography is each FIPS code (block, county, etc.)}
+\title{FIPS - Identify what type of Census geography each FIPS code seems to be (block, county, etc.)}
 \usage{
 fipstype(fips)
 }
@@ -10,38 +10,33 @@ fipstype(fips)
 \item{fips}{vector of one or more Census FIPS with or without leading zeroes, as strings or numeric}
 }
 \value{
-vector of types: "block", "blockgroup", "tract", "county", or "state"
+vector of types: "block", "blockgroup", "tract", "city", "county", or "state"
 }
 \description{
-FIPS - Identify what type of Census geography is each FIPS code (block, county, etc.)
+FIPS - Identify what type of Census geography each FIPS code seems to be (block, county, etc.)
 }
 \details{
-Note a number of length 11 is an ambiguous case - might be a tract fips
-but might be a blockgroup fips with a missing leading zero.
+NOTE: Does NOT check if fips is a real fips. For that, use \code{\link[=fips_valid]{fips_valid()}}
+
+Note a number of length 11 is an ambiguous case this is able to resolve as
+either a complete tract fips or a blockgroup fips with a missing leading zero.
 }
 \examples{
- testfips <- c("1", "12", "123", "1234", "12345", "", NA, "words")
- fipstype(testfips)
- 
- testfips16 = c("1", "12", "123", "1234", "12345", "123456", "1234567", "12345678", "123456789",
-                "1234567890", "12345678901", "123456789012", "1234567890123", "12345678901234",
-                               "123456789012345", "1234567890123456")
- cbind(fipstype(testfips16), fips_lead_zero(testfips16), testfips16)
-
- fips_counties_from_statename(c("Connecticut", "Delaware") )
- # [1] "09001" "09003" "09005" "09007" "09009" "09011" "09013" "09015" "10001" "10003" "10005"
+ fips_counties_from_statename("Delaware")
  fipstype(9001)
  fipstype("10001")
- # note blockid2fips is a large file, but can be obtained via [dataload_from_pins()]
- \dontrun{
- fipsexamples <- c(
-   fips_state_from_statename("Alaska"),
-   fips_counties_from_state_abbrev("DE")[1],
-    substr(blockid2fips$blockfips[1],1,11),
-    blockgroupstats$bgfips[1],
-    blockid2fips$blockfips[1]
- )
- cbind(fipsexamples, type = fipstype(fipsexamples))
-}
+ 
+test_tract_missing0 =   4013116500   # 10 digits tract missing 0
+test_tract_good     = "04013116500"  # 11 digits full tract includes leading 0 !!!!!!!!!!
+test_bg_missing0    =   40131165002  # 11 digits blockgroup missing leading 0 !!!!!!!!!!
+test_bg_good        = "040131165002" # 12 digits full blockgroup
+
+fipstype(test_tract_missing0)
+fipstype(test_tract_good)
+fipstype(test_bg_missing0)
+fipstype(test_bg_good)
+
+fips_valid(test_tract_missing0)
+fips_valid(test_bg_missing0)
 
 }

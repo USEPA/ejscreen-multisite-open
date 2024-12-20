@@ -100,7 +100,8 @@ if (0 == 1) {  # collapsable list
          "datacreate_blockgroupstats2.32.R", "datacreate_blockgroupstats2.32_add_d_acs22columns.R",  "datacreate_blockgroupstats2.32_recalc_language.R",
          "datacreate_usastats2.32.R", "datacreate_usastats2.32_add_dsubgroups.R", "datacreate_avg.in.us.R", "datacreate_high_pctiles_tied_with_min.R", "datacreate_formulas.R", "datacreate_test_address_table.R", "datacreate_testpoints_testoutputs.R", 
          "datacreate_default_points_shown_at_startup.R", "datacreate_testpoints_5_50_500.R", "datacreate_ejscreenRESTbroker2table_na_filler.R", "datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R",
-         "datacreate_frs_.R", "datacreate_frs_by_mact.R", "datacreate_frs_by_sic.R", "datacreate_frsprogramcodes.R", "datacreate_epa_programs.R", "datacreate_testids_program_sys_id.R", "datacreate_testids_registry_id.R", "datacreate_naics_counts.R", "datacreate_naicstable.R", "datacreate_SIC.R", "datacreate_sic_counts.R", "datacreate_sictable.R", 
+         "datacreate_frs_.R", "datacreate_frs_by_mact.R", "datacreate_frs_by_sic.R", "datacreate_frsprogramcodes.R", "datacreate_epa_programs.R", 
+         "datacreate_epa_programs_defined.R", "datacreate_testids_program_sys_id.R", "datacreate_testids_registry_id.R", "datacreate_naics_counts.R", "datacreate_naicstable.R", "datacreate_SIC.R", "datacreate_sic_counts.R", "datacreate_sictable.R", 
          "datacreate_lat_alias.R", "datacreate_ejampackages.R", "datacreate_meters_per_mile.R"
   )
   setdiff(x, dir(rawdir, pattern = 'datacreate_') )   # confirm the organized list x is completely reflecting current actual files
@@ -295,6 +296,8 @@ loadall()
 ### this requires package called ejanalysis/census2020download, which is not on CRAN!
 
 # THIS TAKES A VERY LONG TIME:
+
+dataload_from_pins('bgid2fips')
 
 source_maybe('datacreate_blockwts.R', DOIT = FALSE) # script that can include metadata_add() and use_data()
 #    and be sure to obtain correct version either from census or directly from ejscreen team
@@ -596,8 +599,11 @@ system.time({
 
 # rstudioapi::navigateToFile("./tests/manual_nonalphabetical.R")
 # system.time({
-#   #    ABOUT 7 MINUTES TO RUN all TESTS (if large datasets had not yet been loaded)
+#   #    ABOUT 10-20 MINUTES TO RUN all TESTS (if large datasets had not yet been loaded)
    source("./tests/manual_nonalphabetical.R") # answering Yes to running ALL tests
+ biglist <- test_interactively(ask = askquestions)
+## but should do AFTER updating test data 
+
 # })
 
 ############################## # 
@@ -609,6 +615,12 @@ system.time({
 # rstudioapi::documentOpen("./data-raw/datacreate_testpoints_testoutputs.R")
 source_maybe("datacreate_testpoints_testoutputs.R")
 
+ ######################################### #
+ ### datacreate_testshapes_2.R ####
+ # rstudioapi::documentOpen("./data-raw/datacreate_testshapes_2.R")
+ source_maybe("datacreate_testshapes_2.R")
+ 
+ 
 # ~------------------------------------------- ####
 ## related to ejscreenapi  ####
 ######################################### #
@@ -634,7 +646,6 @@ document()
 
 devtools::install(quick = TRUE)
 
-
 ######################################### ########################################## #
 
 ######################################### #
@@ -655,7 +666,9 @@ warning("frs functions need cleanup here")
 
 #                            TO BE CHECKED/ REVISED HERE
 
+rmost() # ??
 
+loadall() # needed to enable frs functions below that need 
 
 
 
@@ -663,7 +676,7 @@ warning("frs functions need cleanup here")
 
 ### ? datacreate_frs_.R ####
 # rstudioapi::documentOpen('./data-raw/datacreate_frs_.R')            #  BUT SEE IF THIS HAS BEEN REVISED/ REPLACED  ***
-# THAT SCRIPT USES frs_update_datasets() to download data, create datasets for pkg, 
+# THAT SCRIPT USES EJAM:::frs_update_datasets() to download data, create datasets for pkg, 
 # and save them locally, and read them into memory.
 # That creates frs, frs_by_programid, frs_by_naics, frs_by_sic, frs_by_mact
 
@@ -675,15 +688,28 @@ source_maybe("datacreate_frs_.R", DOIT = FALSE, folder = rawdir)
 
 ### ? datacreate_frs_by_mact.R - is it redundant with frs_update_datasets() ?  SEE IF THIS HAS BEEN REPLACED ? ####
 # documentOpen('./data-raw/datacreate_frs_by_mact.R')   #  BUT SEE IF THIS HAS BEEN REPLACED  ***
-
+# Manually also need to save updated frsp .... [TRUNCATED] 
+# Error in eval(ei, envir) : object 'folder_save_as_arrow' not found
+# In addition: Warning messages:
+#   1: Expected 2 pieces. Missing pieces filled with `NA` in 941 rows [30455, 30457, 30496, 30497, 30527, 30561, 30607, 30669, 30682, 30696, 30777, 30806, 30833, 30848, 30855, 30870, 30981,
+#                                                                      31035, 31036, 31038, ...]. 
+# 2: In frs_make_naics_lookup(x = frs) : NAs introduced by coercion
+# 3: One or more parsing issues, call `problems()` on your data frame for details, e.g.:
+#   dat <- vroom(...)
+# problems(dat) 
 
 ### datacreate_frsprogramcodes.R ####
 # documentOpen('./data-raw/datacreate_frsprogramcodes.R') #
+## needs loaded metadata_add)() etc.
 source_maybe('datacreate_frsprogramcodes.R')
 
 ### datacreate_epa_programs.R ####
 # documentOpen('./data-raw/datacreate_epa_programs.R')    #
 source_maybe('datacreate_epa_programs.R')
+
+### datacreate_epa_programs_defined.R ####
+# documentOpen('./data-raw/datacreate_epa_programs_defined.R')    #
+source_maybe('datacreate_epa_programs_defined.R')
 
 ### datacreate_testids_program_sys_id.R ####
 # documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
@@ -707,19 +733,21 @@ warning("naics functions not here yet")
 
 
 
+######################################### ########################################## #
 
 
-
+stop('these need work...')
 
 
 # THESE BELOW JUST DO COUNTS BY CODE - they dont actually update the NAICS/SIC info from the FRS data 
 # (nor the names of industries by code that change maybe every 3 yrs for NAICS)
 
 ### datacreate_naics_counts.R ####
-# documentOpen('./data-raw/datacreate_naics_counts.R')    # script
+# documentOpen('./data-raw/datacreate_naics_counts.R')    # bad script
 source_maybe('datacreate_naics_counts.R')
+
 ### datacreate_naicstable.R ####
-# documentOpen('./data-raw/datacreate_naicstable.R')      # script. does date_saved_in_package & use_data
+# documentOpen('./data-raw/datacreate_naicstable.R')      #  #ok script. does date_saved_in_package & use_data
 source_maybe('datacreate_naicstable.R')
 
 ### datacreate_SIC.R ####
@@ -731,6 +759,7 @@ source_maybe('datacreate_sic_counts.R')
 ### datacreate_sictable.R ####
 # documentOpen('./data-raw/datacreate_sictable.R')
 source_maybe('datacreate_sictable.R')
+
 ######################################### ########################################## #
 
 # misc ####
@@ -854,7 +883,7 @@ x[,c("name", "created", "ejscreen_version")]
 
 rmost2()
 cat("Running load_all() but you may want to rebuild/install now \n")
-devtools::load_all()
+loadall()
 
 
 ######################################### #
@@ -863,5 +892,5 @@ devtools::load_all()
 # DOCUMENTATION WEBSITE UPDATE #### 
 cat("\n\n You may want to use 'datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R' now \n\n")
 #  rstudioapi::documentOpen("./data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R")
-source_maybe("./data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R")
+source_maybe("datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R")
 ########################################## ######################################### # 

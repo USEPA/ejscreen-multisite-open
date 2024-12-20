@@ -64,6 +64,7 @@ multiple locations compiled in one table.</p>
 <span>  maxradiusmiles <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  fips <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  shapefile <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  namestr <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  nosave <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  nosee <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  save_map <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -76,7 +77,7 @@ multiple locations compiled in one table.</p>
 <span>  calculate_ratios <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  nicenames <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  folder <span class="op">=</span> <span class="st">"."</span>,</span>
-<span>  getstateinfofromplacename <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  getstatefromplacename <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -113,6 +114,10 @@ prompted to select a file from a local drive.</p></li>
 
 <dt id="arg-shapefile">shapefile<a class="anchor" aria-label="anchor" href="#arg-shapefile"></a></dt>
 <dd><p>not implemented</p></dd>
+
+
+<dt id="arg-namestr">namestr<a class="anchor" aria-label="anchor" href="#arg-namestr"></a></dt>
+<dd><p>optional text</p></dd>
 
 
 <dt id="arg-nosave">nosave<a class="anchor" aria-label="anchor" href="#arg-nosave"></a></dt>
@@ -166,14 +171,14 @@ e.g.,  "Particulate Matter (PM 2.5 in ug/m3)" not "pm"</p></dd>
 Default is working directory.</p></dd>
 
 
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>passed to <code><a href="ejscreenapi_plus.html">ejscreenapi_plus()</a></code></p></dd>
-
-
 <dt id="arg-getstatefromplacename">getstatefromplacename<a class="anchor" aria-label="anchor" href="#arg-getstatefromplacename"></a></dt>
 <dd><p>set to FALSE if you need the exact output of API and
 TRUE if you want to try to extract ST abbrev and statename from the placename field,
 which is more likely to be correct than the stateAbbr and stateName fields in the API output.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>passed to <code><a href="ejscreenapi_plus.html">ejscreenapi_plus()</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -13,8 +13,8 @@
 # shapefile_filepaths_valid(testfilenameset_4)
 # shapefile_filepaths_validize(testfilename_shp_alone)
 
-# shapefile_clean(testshape)
-# shape_buffered_from_shapefile(testshape)
+# shapefile_clean(testshapes_2)
+# shape_buffered_from_shapefile(testshapes_2)
 
 # shape_buffered_from_shapefile_points(testshape_points)
 # shapefile2latlon(testshape_points)
@@ -37,6 +37,7 @@ testthat::test_that("test data files are available", {
     testfilenameset_4 <- shapefile_filepaths_validize(testfilename_shp_alone)
     junk <- capture.output({
     testshape        <- shapefile_from_folder(testfilename_dirshp)
+    # could also use  testshapes_2
     })
     testshape_points <- shapefile_from_sitepoints(testpoints_10) 
   })
@@ -248,7 +249,7 @@ testthat::test_that("shapefile_filepaths_validize(testfilename_shp_alone) not cr
 testthat::test_that("shapefile_clean(testshape) not crash", {
   testfilename_dirshp    <- system.file("testdata/shapes/portland_folder_shp", package = "EJAM")
   junk <- capture.output({
-  testshape <- shapefile_from_folder(testfilename_dirshp)
+  testshape <- testshapes_2 # shapefile_from_folder(testfilename_dirshp)
   })
   expect_no_error({suppressWarnings({
     JUNK <- shapefile_clean(testshape)
@@ -262,7 +263,7 @@ testthat::test_that("shapefile_clean(testshape) not crash", {
 testthat::test_that("shape_buffered_from_shapefile(testshape) not crash", {
   testfilename_dirshp    <- system.file("testdata/shapes/portland_folder_shp", package = "EJAM")
   junk <- capture.output({
-  testshape <- shapefile_from_folder(testfilename_dirshp)[c(1,3), ]
+  testshape <- testshapes_2 # shapefile_from_folder(testfilename_dirshp)[c(1,3), ]
   })
   expect_no_error({suppressWarnings({
     JUNK <- shape_buffered_from_shapefile(testshape, radius.miles = 0.5)

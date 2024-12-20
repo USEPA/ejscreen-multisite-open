@@ -7,7 +7,8 @@
 fips_state_from_state_abbrev(ST)
 }
 \arguments{
-\item{ST}{vector of state abbreviations like c("NY","GA"), ignores case}
+\item{ST}{vector of state abbreviations like c("NY","GA"), ignores case.
+Converts any statename to ST in case names were provided instead of ST.}
 }
 \value{
 vector of 2-digit state FIPS codes like c("10", "44", "44"),
@@ -17,6 +18,6 @@ same length as input, so including any duplicates
 FIPS - Get state fips for each state abbrev
 }
 \examples{
-fips_state_from_state_abbrev("DE", "DE", "RI")
+fips_state_from_state_abbrev(c("DE", "DE", "RI", 'new jersey'))
 
 }

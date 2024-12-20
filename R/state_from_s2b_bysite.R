@@ -20,9 +20,25 @@
 #'   from [getblocksnearby()] that has columns ejam_uniq_id and blockid and distance
 #' @seealso [state_from_blockid_table()] [state_per_site_for_doaggregate()]
 #' @return data.table with columns  ejam_uniq_id, ST 
-#' @export
-#'
+#' @details
+#' These two functions differ -- one gets the state info for each unique site, 
+#' and the other gets the state abbreviation of each unique block:
+#' Note: unexported function
+#' xx = state_from_s2b_bysite(testoutput_getblocksnearby_10pts_1miles)[]
+#' NROW(xx)
+#' [1] 10
+#' length(unique(testoutput_getblocksnearby_10pts_1miles$ejam_uniq_id))
+#' [1] 10
+#' 
+#' length(EJAM:::state_from_blockid_table(testoutput_getblocksnearby_10pts_1miles))
+#' [1] 1914
+#' NROW(testoutput_getblocksnearby_10pts_1miles)
+#' [1] 1914
+#'   
 #' @examples \dontrun{
+#' # unexported function
+#' table(state_from_blockid_table(testoutput_getblocksnearby_10pts_1miles))
+#' state_from_s2b_bysite(testoutput_getblocksnearby_10pts_1miles)[]
 #' 
 #'   x = getblocksnearby(pts, radius = 30)
 #'   y = state_from_s2b_bysite(x)
@@ -36,7 +52,9 @@
 #'   x$ST == y$FacState
 #'   }
 #'   state_from_s2b_bysite(testoutput_getblocksnearby_10pts_1miles) 
-#'   
+#' 
+#' @keywords internal
+#'
 state_from_s2b_bysite <- function(sites2blocks) {
 
   setDT(sites2blocks)
@@ -46,7 +64,7 @@ state_from_s2b_bysite <- function(sites2blocks) {
   }
   # sites2blocks <- getblocksnearby(testpoints_1000, radius = 3.1)
   
-  # s2st <- state_from_blockid_table(sites2blocks)  # compare
+  
   s2st <- blockgroupstats[sites2blocks, .(ejam_uniq_id, ST), on = "bgid"][ , .(st1 = ST[1], in_how_many_states = length(unique(ST))), by = "ejam_uniq_id"]
   setorder(s2st, ejam_uniq_id)
   

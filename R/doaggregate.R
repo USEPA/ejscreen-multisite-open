@@ -100,8 +100,8 @@
 #'   using a sum of counts, like, for example, the number of people for whom a
 #'   poverty ratio is known, the count of which is the exact denominator needed
 #'   to correctly calculate percent low income.
-#' @param popmeancols character vector of names of variables to aggregate within a buffer
-#'   using population weighted mean.
+#' @param wtdmeancols character vector of names of variables to aggregate within a buffer
+#'   using a population weighted mean or other type of weighted mean.
 #' @param calculatedcols character vector of names of variables to aggregate within a buffer
 #'   using formulas that have to be specified.
 #' @param subgroups_type Optional (uses default). Set this to
@@ -145,12 +145,15 @@
 #'
 doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
                         radius=NULL,
-                        countcols=NULL, wtdmeancols=NULL, calculatedcols=NULL, subgroups_type='nh',
+                        countcols=NULL, wtdmeancols=NULL, calculatedcols=NULL,
+                        subgroups_type='nh',
                         include_ejindexes=FALSE, calculate_ratios = TRUE,
                         extra_demog=TRUE, need_proximityscore=FALSE,
                         infer_sitepoints=FALSE,
                         called_by_ejamit=FALSE, updateProgress = NULL,
                         silentinteractive=TRUE, testing=FALSE,
+                        showdrinkingwater = TRUE,
+                        showpctowned = TRUE,
                         ...) {
   
   ###################################################### #
@@ -202,10 +205,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         warning('Values found in sites2blocks$distance were not but must be numeric - doaggregate() will treat them as zero values')
         radius <- 0
       } else {
-        warning('radius passed to doaggregate() must be a single number, in miles, at least 0, but was not, so now
-                inferring radius based on sites2blocks distances.')
+        warning('radius passed to doaggregate() must be a single number, in miles, at least 0, but was not, so
+                inferred radius =', radius, 'miles, based on sites2blocks distances found.')
         radius <- radius_inferred(sites2blocks)
-        message('Inferring approximate radius is ', radius, ' miles, based on distances found.')
       }
     }
     if (radius >= 1.5 * max(sites2blocks$distance)) {
@@ -761,11 +763,20 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   }
   ############################################### #
   ## >>> TEMPORARY PATCH UNTIL FORMULA FIXED - SEE ISSUE #498  https://github.com/USEPA/EJAM/issues/498 ####
-  results_overall$pctownedunits <- NA; results_bysite$pctownedunits <- NA
+  if (!showdrinkingwater) {
+    print(results_overall[ , .( drinking)])
+    print(results_bysite[ , .(ejam_uniq_id,  drinking)])
+    results_overall$drinking <- as.numeric(NA)
+    results_bysite$drinking <- as.numeric(NA)    
+  }
+  if (!showpctowned) {
+  print(results_overall[ , .(pctownedunits )])
+  print(results_bysite[ , .(ejam_uniq_id, pctownedunits)])
+  results_overall$pctownedunits <- as.numeric(NA)
+  results_bysite$pctownedunits <- as.numeric(NA)
+  }
   
-  results_overall$drinking <- NA; results_bysite$drinking <- NA
-  
-  
+
   ############################################### #
   ##     later, for results_overall, will calc state pctiles once we have them for each site
   
@@ -862,7 +873,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ##################################################### #
   # CALCULATE PERCENT DEMOGRAPHICS FROM SUMS OF COUNTS, via FORMULAS  [hardcoded here, for now]
   #
-  # but should do that using weighted means based on info on cbind(popmeancols,wtscols) 
+  # but should do that using weighted means 
   # as in EJAM/data-raw/datacreate_formulas.R
   # and/or
   # a list of formulas like formulas_all
@@ -1166,7 +1177,11 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   results_overall$REGION <- NA
   results_overall$ejam_uniq_id <- NA  ## adds blank ejam_uniq_id column to results_overall (no longer tied to include_ejindexes)
   results_overall$in_how_many_states <- length(unique(na.omit(results_bysite$ST)))
+  #Set names in names_d_language that are in blockgroupstats to NA
   
+  names_d_language_blockgroupstats_intersect <- intersect(names_d_language,colnames(blockgroupstats))
+  results_overall[, names_d_language_blockgroupstats_intersect] <- NA
+  results_bysite[, names_d_language_blockgroupstats_intersect] <- NA
   # results_bybg_people$ST is created from sites2bgs_plusblockgroupdata_bysite$ST and ST is already in that table 
   # since ST was joined from blockgroupstats around line 569, for each bg, but that is not always 1 state for a given site.
   # sites2bgs_plusblockgroupdata_bysite[, statename := stateinfo$statename[match(ST, stateinfo$ST)]]  # same as the very slightly slower... fips2statename(fips_state_from_state_abbrev(ST))
@@ -1186,15 +1201,46 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ##################################################### #
   
   # the ejscreen community report shows percentiles only for E,D,EJ, plus health,climate,criticalservice tables:
-  namelists <- intersect(c('names_health', 'names_climate', 'names_criticalservice'), unique(map_headernames$varlist))
-  varsneedpctiles <- unique(c(names_e,  names_d, subs, 
-                              namesbyvarlist(namelists)$rname
-  ) )
-  varsneedpctiles <- intersect(varsneedpctiles, names(results_bysite))
+  #Changed varsneedpctiles to dynamically source from map_headernames
+  subs_drop = switch(subgroups_type,
+                     alone    = "names_d_subgroups_nh",
+                     nh       = "names_d_subgroups_alone",
+                     both     = NULL,
+                     original = "names_d_subgroups_alone")
+
+  subs_list <- switch(subgroups_type,
+                      nh = "names_d_subgroups_nh",
+                      alone = "names_d_subgroups_alone",
+                      both = c("names_d_subgroups_alone", "names_d_subgroups_nh"),
+                      original = "names_d_subgroups")
   
+  namelists <- c('names_e','names_d',subs_list, 'names_health','names_climate')
+  varsneedpctiles <- map_headernames %>%
+    ## need to pull rows in same order of name lists
+    slice(unlist(sapply(namelists, function(a) which(map_headernames$varlist %in% a)))) %>% 
+    #filter(pctile. == 1,
+    filter( 
+          !(rname %in% c("Demog.Index.State", "Demog.Index.Supp.State"))) %>%
+    #select(topic_root_term) %>% 
+    distinct(rname) %>% pull(rname)
+  
+  if(is.null(subs_drop)){
+    
+  }else{
+    subs_drop <- namesbyvarlist(subs_drop)$rname
+    subs_drop <- setdiff(subs_drop, 'pcthisp')
+  }
+
+
+  varsneedpctiles <- intersect(varsneedpctiles, names(results_bysite))
+  varsneedpctiles <- setdiff(varsneedpctiles, subs_drop)
+
+
   varnames.us.pctile    <- paste0(      'pctile.', varsneedpctiles) # but EJ indexes do not follow that naming scheme and are handled with separate code
   varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles) # but EJ indexes do not follow that naming scheme and are handled with separate code
   
+
+
   # set up empty tables to store the percentiles we find
   us.pctile.cols_bysite     <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(us.pctile.cols_bysite)     <- varnames.us.pctile
   state.pctile.cols_bysite  <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(state.pctile.cols_bysite)  <- varnames.state.pctile
@@ -1208,20 +1254,35 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     
     myvar <- varsneedpctiles[i]
     
-    if ((myvar %in% names(usastats)) & (myvar %in% names(results_bysite)) & (myvar %in% names(results_overall))) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
-      us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
-        unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
-      us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
-        unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
-      # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
-    } else { # cannot find that variable in the percentiles lookup table
-      us.pctile.cols_bysite[    , varnames.us.pctile[[i]]] <- NA
-      us.pctile.cols_overall[   , varnames.us.pctile[[i]]] <- NA
+    ################################## #
+    ## alternatively, to add new column of percentiles directly to results tables:
+    add_pctiles_directly_not_merge <- FALSE
+    if (add_pctiles_directly_not_merge) {
+      results_bysite[, varnames.us.pctile[[i]]  := pctile_from_raw_lookup(
+        unlist(results_bysite[  , ..myvar]),
+        varname.in.lookup.table = myvar, lookup = usastats)]
+      results_bysite[, varnames.us.pctile[[i]]  := pctile_from_raw_lookup(
+        unlist(results_bysite[  , ..myvar]),
+        varname.in.lookup.table = myvar, lookup = usastats)]
+    } else {
+      
+      if ((myvar %in% names(usastats)) & (myvar %in% names(results_bysite)) & (myvar %in% names(results_overall))) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
+        us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
+          unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
+        us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
+          unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
+        # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
+      } else { # cannot find that variable in the percentiles lookup table
+        us.pctile.cols_bysite[    , varnames.us.pctile[[i]]] <- NA
+        us.pctile.cols_overall[   , varnames.us.pctile[[i]]] <- NA
+      }
+      
     }
+    ################################## #
     
     ################################## #
     #### >>>Demog.Index SPECIAL CASE:####
-
+    
     # state.pctile.Demog.Index <- 
     # percentile based on using the blockgroupstats$Demog.Index.State  value (myvar_to_use)
     #  but look in statestats$Demog.Index  column  
@@ -1257,10 +1318,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     }
     
   }
-  # Q: does this convert it from data.table to data.frame? I think not. xxx
   
-  results_overall <- cbind(results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
-  results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
+  if (add_pctiles_directly_not_merge) {
+    # already done
+  } else {
+    results_overall <- cbind(results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+    results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
+  }
   ##____________________________________________________  #  ##################################################### #
   
   #### EJ INDEX PERCENTILES ####
@@ -1313,11 +1377,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         
         us.pctile.cols_bysite[    , ejnames_pctile[i]]    <- pctile_from_raw_lookup(
           unlist( results_bysite[  , ..myvar]),
-          varname.in.lookup.table = myvar, lookup = usastats)
+          varname.in.lookup.table = myvar, lookup = usastats) 
         
         us.pctile.cols_overall[   , ejnames_pctile[i]]    <- pctile_from_raw_lookup(
           unlist(results_overall[  , ..myvar]),
-          varname.in.lookup.table = myvar, lookup = usastats)
+          varname.in.lookup.table = myvar, 
+          lookup = usastats)
         # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
       } else { # cannot find that variable in the percentiles lookup table
         # us.pctile.cols_bysite[    , ejnames_pctile[i]] <- NA
@@ -1327,7 +1392,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         
         ## check if state assignment is NA, only look for %iles if it is present
         state.pctile.cols_bysite[!is.na(results_bysite$ST) , ejnames_pctile[i]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
-          unlist(results_bysite[!is.na(results_bysite$ST)  , ..myvar_to_use]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST[!is.na(results_bysite$ST)]
+          unlist(results_bysite[!is.na(results_bysite$ST)  , ..myvar]),
+          varname.in.lookup.table = myvar, 
+          lookup = statestats, 
+          zone =  results_bysite$ST[!is.na(results_bysite$ST)]
         )
         state.pctile.cols_bysite[is.na(results_bysite$ST) , ejnames_pctile[i]] <- NA
         
@@ -1439,7 +1507,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   ############################################################################## #
   ### Nationwide  ####
-
+  
   avg.cols_overall <-   usastats[ usastats$PCTILE == "mean",  names_these] # not a data.table, or it would need to say  usastats[ PCTILE == "mean",  ..names_these]
   ## all.equal( as.vector(unlist(avg.cols_overall)), as.vector(unlist( data.frame(t( usastats_means(names_these, dig = 7)  ))  ) ) ) # TRUE, but that function is not any simpler for getting the means
   # rename the colnames to avg instead of just basic name
@@ -1700,6 +1768,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # to avoid showing 4 versions of Demog.Index raw unitless.
   ######################## #
   
+
   # COLUMNS RENAME ####
   
   longnames <- fixcolnames(names(results_overall), oldtype = 'r', newtype = 'long')
@@ -1727,7 +1796,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     # blockcount_overall = blockcount_overall, # note already also in results_overall as a column now, so we dont need to duplicate it here
     # bgcount_overall = bgcount_overall        # note already also in results_overall as a column now, so we dont need to duplicate it here
   )
-  
+
   ########################### #
   
   # Show _overall in console, _bysite in viewer pane ####

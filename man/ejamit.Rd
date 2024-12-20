@@ -23,7 +23,7 @@ ejamit(
   need_proximityscore = FALSE,
   infer_sitepoints = FALSE,
   need_blockwt = TRUE,
-  thresholds = list(90, 90),
+  thresholds = list(80, 80),
   threshnames = list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile,
     names_ej_supp_state_pctile)),
   threshgroups = list("EJ-US-or-ST", "Supp-US-or-ST"),
@@ -35,6 +35,8 @@ ejamit(
   silentinteractive = FALSE,
   called_by_ejamit = TRUE,
   testing = FALSE,
+  showdrinkingwater = TRUE,
+  showpctowned = TRUE,
   ...
 )
 }
@@ -67,7 +69,9 @@ It can be automatically created when the package is attached via the .onAttach()
 \item{fips}{optional FIPS code vector to provide if using FIPS instead of sitepoints to specify places to analyze,
 such as a list of US Counties or tracts. Passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
 
-\item{shapefile}{optional sf shapefile object or path to .zip, .gdb, or folder that has a shapefiles, to analyze polygons}
+\item{shapefile}{optional. A sf shapefile object or path to .zip, .gdb, or folder that has a shapefiles, to analyze polygons.
+If in RStudio you want it to interactively prompt you to pick a file,
+use shapefile=1 (otherwise it assumes you want to pick a latlon file).}
 
 \item{countcols}{character vector of names of variables to aggregate within a buffer using a sum of counts,
 like, for example, the number of people for whom a poverty ratio is known,
@@ -137,6 +141,7 @@ one row per ejam_uniq_id (i.e., each site analyzed), one column per indicator
 indicator across everyone within each demographic group.
 \item \strong{longnames}  descriptive long names for the indicators in the above outputs
 \item \strong{count_of_blocks_near_multiple_sites}  additional detail
+\item \strong{sitetype} indicates if analysis used latlon, fips, or shp
 }
 }
 \description{

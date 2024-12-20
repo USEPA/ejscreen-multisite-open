@@ -53,12 +53,9 @@ test_that('ejamit() output has names the same as it used to return, i.e. names(t
     names(v10),
     names(testoutput_ejamit_10pts_1miles)
   )
-  # [1] "results_overall"  "results_bysite"  "results_bybg_people"  "longnames"
-  # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  "formatted"
-  
   expect_equal(
     c("results_overall", "results_bysite", "results_bybg_people", "longnames",
-      "count_of_blocks_near_multiple_sites", "results_summarized", "formatted"),
+      "count_of_blocks_near_multiple_sites", "results_summarized", "formatted", "sitetype"),
     names(v10))
 })
 ################# #
@@ -87,7 +84,8 @@ test_that("ejamit() still returns results_bysite identical to expected numbers i
                 ejamoutnow <- ejamit(testpoints_10, radius = 1, quiet = T, silentinteractive = TRUE) # see setup.R - takes roughly 5-10 seconds
                 expect_identical(
                   ejamoutnow$results_bysite,
-                  testoutput_ejamit_10pts_1miles$results_bysite
+                  testoutput_ejamit_10pts_1miles$results_bysite,
+                  ignore_attr = T
                 )
                 # all.equal(    ejamoutnow$results_bysite,
                 #               testoutput_ejamit_10pts_1miles$results_bysite)

@@ -21,6 +21,8 @@ doaggregate(
   updateProgress = NULL,
   silentinteractive = TRUE,
   testing = FALSE,
+  showdrinkingwater = TRUE,
+  showpctowned = TRUE,
   ...
 )
 }
@@ -48,6 +50,9 @@ original radius analyzed by getblocksnearby().}
 using a sum of counts, like, for example, the number of people for whom a
 poverty ratio is known, the count of which is the exact denominator needed
 to correctly calculate percent low income.}
+
+\item{wtdmeancols}{character vector of names of variables to aggregate within a buffer
+using a population weighted mean or other type of weighted mean.}
 
 \item{calculatedcols}{character vector of names of variables to aggregate within a buffer
 using formulas that have to be specified.}
@@ -80,9 +85,6 @@ Set to FALSE to prevent long output showing in console in RStudio when in intera
 \item{testing}{used while testing this function}
 
 \item{...}{more to pass to another function? Not used currently.}
-
-\item{popmeancols}{character vector of names of variables to aggregate within a buffer
-using population weighted mean.}
 }
 \value{
 list with named elements:

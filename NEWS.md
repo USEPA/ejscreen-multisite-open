@@ -1,3 +1,13 @@
+# EJAM 2.32.0-EJScreen2.32 (November 2024)
+
+-   Added FIPS code functionality to handle over 40,000 Census Places such as cities and towns. Not yet in web app.
+-   Warnings if no internet connection, via new offline() internal function
+-   latlon_from_address() does better checks if it can do geocoding
+-   fips_bgs_in_fips() fixed, now returns NA for a 6-7 digit FIPS (city/CDP) since there are no simple child blockgroups that exactly and completely aggregate to cover a given CDP necessarily, and certainly not by just using the 7 digits of the city FIPS as if they were the first 7 of any BG FIPS.
+-   fips_place2placename() fixed, now returns NA not "NA, NA" for invalid 6-7 digit fips, and related functions will likewise.
+-   fips_valid() is exported
+-   Faster unit testing
+
 # EJAM 2.32.0-EJScreen2.32 (August-October 2024)
 
 -   Deployed updates 10/11/2024
@@ -6,7 +16,6 @@
 -   Improved and updated vignettes (articles) on documentation website (GitHub pages pkgdown site content) and README
 -   Improved and updated documentation of R packages in help files.
 -   Conducted validation analysis comparing EJAM and EJScreen results for proximity to 2,000 randomly selected FRS sites (3 mile radius).
-    - Identified possible problem in drinking water indicator, to be resolved.
     - Removed % owner occupied housing (pctownedunits) indicator pending clarifications/ corrections re: EJScreen calculation.
     - Confirmed the displayed demographic indicator values agree for well over 95% of locations, and the environmental indicator values also closely agree at the vast majority of sites. (Exceptions being the two noted above).
     - Updated percentile lookup logic to match the recent changes in EJScreen – some edge cases still in progress.
@@ -14,7 +23,6 @@
     - Improved logic that identifies which State a site is in.
     - Addressed issues in % pre 1960 lead paint indicator
     - Improved comparison/validation functions
--   Added FIPS code functionality (not yet in web app) to handle over 40,000 Census Places such as cities and towns.
 -   Improved file upload read-in validation.
 -   Corrected several unit tests and added new ones.
 -   Adopted shinytest2 to create shiny-based testing of the app, package, and GitHub merges.

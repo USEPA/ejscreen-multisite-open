@@ -5,24 +5,28 @@
 \title{EJAM/EJSCREEN comparisons - see results for 1 site after using ejscreen_vs_ejam()}
 \usage{
 ejscreen_vs_ejam_see1(
-  z,
+  vs,
   myvars = c("ejam_uniq_id", "pop", names_d),
   mysite = 1
 )
 }
 \arguments{
-\item{z}{output of ejscreen_vs_ejam() or ejscreen_vs()}
+\item{vs}{output of ejscreen_vs_ejam() or ejscreen_vs()}
 
-\item{myvars}{optional to check just a subset of the colnames found in z$EJAM and z$EJSCREEN,
-such as
+\item{myvars}{optional to check just a subset of the colnames found in vs$EJAM and vs$EJSCREEN,
+such as these possible values:
 
-myvars = colnames(z$EJAM) or
+myvars = "all"    # all the indicators in the output tables, i.e., colnames(vs$EJAM)
+
+myvars = "inboth" # just the ones in both (not NA values because EJAM or EJSCREEN did not report the indicator)
+
+myvars = "bad"    # just the ones in both where EJAM_shown and EJSCREEN_shown disagree
 
 myvars = c(names_d, names_d_subgroups) or
 
-myvars = grep("pctile", colnames(z$EJAM), value = T)}
+myvars = grep("pctile", colnames(vs$EJAM), value = T)}
 
-\item{mysite}{rownumber corresponding to site of interest, among 1:nrow(z$EJAM)}
+\item{mysite}{rownumber corresponding to site of interest, among 1:nrow(vs$EJAM)}
 }
 \value{
 a table showing one row per indicator, and columns like EJSCREEN, EJAM, ratio, etc.,
@@ -32,13 +36,13 @@ but see str() because it is a list in matrix form
 EJAM/EJSCREEN comparisons - see results for 1 site after using ejscreen_vs_ejam()
 }
 \details{
-see also ejscreen_vs_ejam_bysite() and ejscreen_vs_explain()
+see also ejscreen_vs_ejam_1var_bysite() and ejscreen_vs_explain()
 }
 \examples{
-  dontrun{
-  z <- ejscreen_vs_ejam(testpoints_10, radius = 3)
   mysite <- 9
-  ejscreen_vs_ejam_see1(z, mysite = mysite, myvars = colnames(z$EJAM))[!is.na(z$EJSCREEN[mysite, ]) , 1:2]
+  \dontrun{
+  vs <- ejscreen_vs_ejam(testpoints_10, radius = 3)
+  ejscreen_vs_ejam_see1(vs, mysite = mysite, myvars = colnames(vs$EJAM))[!is.na(vs$EJSCREEN[mysite, ]) , 1:2]
   }
 
 }

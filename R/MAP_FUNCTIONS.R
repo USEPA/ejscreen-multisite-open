@@ -249,7 +249,9 @@ map_counties_in_state <- function(ST = "DE", colorcolumn = c("NAME", "POP_SQMI",
 #' @param static_not_leaflet set TRUE to use [map_shapes_plot()] instead of [map_shapes_leaflet()]
 #' @param main title for map
 #' @param ... passed to map_shapes_plot() if relevant
+#' 
 #' @details THIS ASSUMES THAT mydf$ejam_unique_id is the county FIPS codes
+#' 
 #' @seealso [mapfastej()] [map_shapes_leaflet()]
 #' @return leaflet html widget (but if static_not_leaflet=T,
 #'   returns just shapes_counties_from_countyfips(mydf$ejam_uniq_id))
@@ -272,6 +274,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
   }
   
   mymapdata <- shapes_counties_from_countyfips(mydf$ejam_uniq_id)
+  
   setDT(mydf)
   ## see color-coding of one percentile variable:
   pal <- colorBin(palette = c("yellow","yellow", "orange", "red"), bins = 80:100)
@@ -469,142 +472,6 @@ map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenS
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Get Counties boundaries via API, to map them
-#'
-#' @details Used [sf::read_sf()], which is an alias for [sf::st_read()]
-#'   but with some modified default arguments.
-#'   read_sf is quiet by default/ does not print info about data source, and
-#'   read_sf returns an sf-tibble rather than an sf-data.frame
-#'   
-#'   Also note the tidycensus and tigris R packages.
-#'
-#' @param countyfips FIPS codes as 5-character strings (or numbers) in a vector
-#'   as from fips_counties_from_state_abbrev("DE")
-#' @param outFields can be "*" for all, or can be
-#'   just some variables like SQMI, POPULATION_2020, etc., or none
-#' @param myservice URL of feature service to get shapes from.
-#'   Only default was tested
-#'
-#' @return spatial object via [sf::st_read()]
-#'
-#' @export
-#'
-shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = c("NAME", "FIPS", "STATE_ABBR", "STATE_NAME", "POP_SQMI"), # "",
-                                            myservice = c(
-                                              "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Boundaries_2022/FeatureServer/2/query",
-                                              "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_and_States_with_PR/FeatureServer/0/query",
-                                              "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/EJScreen_2_22_US_Percentiles_Tracts/FeatureServer/query")[1]
-) {
-  # for a vector of  FIPS, use arcgis API to obtain map boundaries of just those census units
-  
-  if (length(outFields) > 1) {
-    outFields <- paste0(outFields, collapse = ",")
-  }
-  # outFields values: 
-  # from   https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Boundaries_2022/FeatureServer/2
-  # OBJECTID (type: esriFieldTypeOID, alias: OBJECTID, SQL Type: sqlTypeOther, length: 0, nullable: false, editable: false)
-  # NAME (type: esriFieldTypeString, alias: County Name, SQL Type: sqlTypeOther, length: 50, nullable: true, editable: true)
-  # STATE_NAME (type: esriFieldTypeString, alias: State Name, SQL Type: sqlTypeOther, length: 20, nullable: true, editable: true)
-  # STATE_ABBR (type: esriFieldTypeString, alias: State Abbreviation, SQL Type: sqlTypeOther, length: 2, nullable: true, editable: true)
-  # STATE_FIPS (type: esriFieldTypeString, alias: State FIPS, SQL Type: sqlTypeOther, length: 2, nullable: true, editable: true)
-  # COUNTY_FIPS (type: esriFieldTypeString, alias: County FIPS, SQL Type: sqlTypeOther, length: 3, nullable: true, editable: true)
-  # FIPS (type: esriFieldTypeString, alias: FIPS Code, SQL Type: sqlTypeOther, length: 5, nullable: true, editable: true)
-  # POPULATION (type: esriFieldTypeInteger, alias: 2022 Total Population, SQL Type: sqlTypeOther, nullable: true, editable: true)
-  # POP_SQMI (type: esriFieldTypeDouble, alias: 2022 Population per square mile, SQL Type: sqlTypeOther, nullable: true, editable: true)
-  # SQMI (type: esriFieldTypeDouble, alias: Area in square miles, SQL Type: sqlTypeOther, nullable: true, editable: true)
-  # POPULATION_2020 (type: esriFieldTypeInteger, alias: 2020 Total Population, SQL Type: sqlTypeOther, nullable: true, editable: true)
-  # POP20_SQMI (type: esriFieldTypeDouble, alias: 2020 Population per square mile, SQL Type: sqlTypeOther, nullable: true, editable: true)
-  # Shape__Area (type: esriFieldTypeDouble, alias: Shape__Area, SQL Type: sqlTypeDouble, nullable: true, editable: false)
-  # Shape__Length (type: esriFieldTypeDouble, alias: Shape__Length, SQL Type: sqlTypeDouble, nullable: true, editable: false)
-  
-  if (length(countyfips) > 50) {
-    # The API does let you get >50 at once but instead of figuring out that syntax, this function works well enough
-    batchsize <- 50
-    batches <- 1 + (length(countyfips) %/% batchsize)
-    # ***  add code here to handle 50 at a time and assemble them
-    out <- list()
-    for (i in 1:batches) {
-      first <- 1 + ((i - 1) * batchsize)
-      last <- min(first + batchsize - 1, length(countyfips))
-      out[[i]] <- shapes_counties_from_countyfips(countyfips[first:last], outFields = outFields, myservice = myservice)
-    }
-    out <- do.call(rbind, out)
-    return(out)
-  }
-  
-  if (grepl("ejscreen", myservice, ignore.case = TRUE)) {FIPSVARNAME <- "ID"} else {FIPSVARNAME <- "FIPS"}
-  myurl <- httr2::url_parse(myservice)
-  myurl$query <- list(
-    where = paste0(paste0(FIPSVARNAME, "='", countyfips, "'"), collapse = " OR "),  ########################### #
-    outFields = outFields,
-    returnGeometry = "true",
-    f = "geojson")
-  request <- httr2::url_build(myurl)
-  mymapdata <- sf::st_read(request) # st_read returns data.frame, read_sf returns tibble
-  return(mymapdata)
-}
-########################### # ########################### # ########################### # ########################### #
-
-
-#' Get blockgroups boundaries, via API, to map them
-#'
-#' @details This is useful mostly for small numbers of blockgroups.
-#'   The EJScreen map services provide other ways to map blockgroups and see EJScreen data.
-#' @param bgfips one or more block group FIPS codes as 12-character strings in a vector
-#' @param outFields can be "*" for all, or can be
-#'   just some variables like SQMI, POPULATION_2020, etc., or none
-#' @param myservice URL of feature service to get shapes from.
-#'
-#'   "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/
-#'   EJScreen_2_21_US_Percentiles_Block_Groups/FeatureServer/0/query"
-#'
-#'   for example provides EJScreen indicator values, NPL_CNT, TSDF_CNT, EXCEED_COUNT_90, etc.
-#' @seealso [mapfast()]
-#' @return spatial object via [sf::st_read()] # sf-data.frame, not sf-tibble like [sf::read_sf()]
-#'
-#' @export
-#'
-shapes_blockgroups_from_bgfips <- function(bgfips = '010890029222', outFields = "",
-                                           myservice = c(
-                                             "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Boundaries_2022/FeatureServer/5/query",
-                                             "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Block_Groups/FeatureServer/0/query",
-                                             "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/EJScreen_2_21_US_Percentiles_Block_Groups/FeatureServer/0/query")[1]
-) {
-  
-  # for a vector of blockgroup FIPS, use arcgis API to obtain map boundaries of just those blockgroups
-  
-  if (length(bgfips) > 50) {
-    
-    # The API does let you get >50 at once but instead of figuring out that syntax, this function works well enough
-    batchsize <- 50
-    batches <- 1 + (length(bgfips) %/% batchsize)
-    # ***  add code here to handle 50 at a time and assemble them
-    out <- list()
-    for (i in 1:batches) {
-      first <- 1 + ((i - 1) * batchsize)
-      last <- min(first + batchsize - 1, length(bgfips))
-      out[[i]] <- shapes_blockgroups_from_bgfips(bgfips[first:last], outFields = outFields, myservice = myservice)
-    }
-    out <- do.call(rbind, out)
-    return(out)
-    # warning("Cannot get so many blockgroup shapes in one query, via this API, as coded! Using first 50 only.")
-    # bgfips <- bgfips[1:50]
-  }
-  
-  if (grepl("ejscreen", myservice, ignore.case = TRUE)) {FIPSVARNAME <- "ID"} else {FIPSVARNAME <- "FIPS"}
-  myurl <- httr2::url_parse(myservice)
-  myurl$query <- list(
-    where = paste0(paste0(FIPSVARNAME, "='", bgfips, "'"), collapse = " OR "),  ########################### #
-    outFields = outFields,
-    returnGeometry = "true",
-    f = "geojson")
-  request <- httr2::url_build(myurl)
-  mymapdata <- sf::st_read(request) # data.frame not tibble
-  return(mymapdata)
-}
-########################### # ########################### # ########################### # ########################### #
-
-
 #' Map - points - ggplot2 map of points in the USA - very basic map
 #'
 #' @param mydf data.frame with columns named lat and lon
@@ -673,7 +540,7 @@ mapfast_gg <- function(mydf=data.frame(lat = 40, lon = -100)[0,],
 #'   or lat can be a data.frame with lat,lon column names in which case longitude should not be provided,
 #'   such as lat = testpoints_10[1,], or lat and lon can be separately provided as vectors.
 #' @param lon longitude, or omit this parameter to provide points as the first parameter.
-#' 
+#' @param point logical optional, passed to [url_map_google()]
 #' @param zoom zoomed out value could be 3 or 5, zoomed in default is 12
 #' @param launch logical, whether to launch browser 
 #' @return opens a browser window with Google Maps centered on the specified lat, lon

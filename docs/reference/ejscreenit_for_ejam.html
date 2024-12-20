@@ -56,7 +56,9 @@
 <span>  radius <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  fips <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  shapefile <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  fillmissingcolumns <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  namestr <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  nosave <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  nosee <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -81,8 +83,26 @@
 <dd><p>not implemented</p></dd>
 
 
+<dt id="arg-namestr">namestr<a class="anchor" aria-label="anchor" href="#arg-namestr"></a></dt>
+<dd><p>optional text</p></dd>
+
+
+<dt id="arg-nosave">nosave<a class="anchor" aria-label="anchor" href="#arg-nosave"></a></dt>
+<dd><p>passed to <code><a href="ejscreenit.html">ejscreenit()</a></code></p></dd>
+
+
+<dt id="arg-nosee">nosee<a class="anchor" aria-label="anchor" href="#arg-nosee"></a></dt>
+<dd><p>passed to <code><a href="ejscreenit.html">ejscreenit()</a></code></p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>passed to ejscreenit()</p></dd>
+<dd><p>other parameters passed to <code><a href="ejscreenit.html">ejscreenit()</a></code></p></dd>
+
+
+<dt id="arg-fillmissingcolumns">fillmissingcolumns<a class="anchor" aria-label="anchor" href="#arg-fillmissingcolumns"></a></dt>
+<dd><p>optional. set to TRUE if you want the output
+to have exactly all the same columns as the EJAM table would, and
+fill in with NA values all the columns not provided by EJScreen API.</p></dd>
 
 </dl></div>
     <div class="section level2">

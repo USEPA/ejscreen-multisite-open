@@ -513,6 +513,7 @@ table_gt_format_step2 <- function(df, type = c("demog", "envt")[1], my_cell_colo
 #' @param usa_pctile indicator values as US percentiles
 #' @param state_ratio indicator values as ratio to State average
 #' @param usa_ratio indicator values as ratio to US average
+#' @param ST State abbreviation like "NY"
 #' @seealso [table_gt_from_ejamit()] [table_gt_from_ejamit_overall()] [table_gt_from_ejamit_1site()] [table_validated_ejamit_row()] [table_gt_format_step1()] [table_gt_format_step2()]
 #' @return data.frame ready for table_gt_format_step2 ???
 #' @export

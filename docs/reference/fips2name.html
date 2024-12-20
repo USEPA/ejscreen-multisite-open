@@ -59,8 +59,13 @@
 
 
 <dl><dt id="arg-fips">fips<a class="anchor" aria-label="anchor" href="#arg-fips"></a></dt>
-<dd><p>vector of US Census FIPS codes for Counties (5 digits each) or States (2 digits).
-Can be string or numeric, with or without leading zeroes.</p></dd>
+<dd><p>vector of US Census FIPS codes for</p><ul><li><p>States (2 digits once any required leading zeroes are included)</p></li>
+<li><p>Counties (5)</p></li>
+<li><p>City/town/CDP (7)</p></li>
+<li><p>Tracts (11)</p></li>
+<li><p>Blockgroups (12)
+Can be string or numeric, with or without leading zeroes.</p></li>
+</ul></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

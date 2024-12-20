@@ -14,8 +14,6 @@ naics_from_name(mynames, children = FALSE, ignore.case = TRUE, fixed = FALSE)
 \item{ignore.case}{see \code{\link[=grepl]{grepl()}}}
 
 \item{fixed}{should it be an exact match? see \code{\link[=grepl]{grepl()}}}
-
-\item{search_on_naics_website}{whether to query on naics website for more hits than just search for text in industry title}
 }
 \value{
 a subset of the \link{naicstable} data.table (not just the codes column)
@@ -30,6 +28,6 @@ See \code{\link[=naics_from_any]{naics_from_any()}} which uses this
  data.table::fintersect(naics_from_any( "manufac"), naics_from_any("chem"))
 }
 \seealso{
-\code{\link[=naics_subcodes_from_code]{naics_subcodes_from_code()}} \code{\link[=naics_from_code]{naics_from_code()}}  \code{\link[=naics_from_name]{naics_from_name()}}  \code{\link[=naics_from_any]{naics_from_any()}}
+\code{\link[=naics_findwebscrape]{naics_findwebscrape()}} \code{\link[=naics_subcodes_from_code]{naics_subcodes_from_code()}} \code{\link[=naics_from_code]{naics_from_code()}}  \code{\link[=naics_from_name]{naics_from_name()}}  \code{\link[=naics_from_any]{naics_from_any()}}
 }
 \keyword{internal}

@@ -5,8 +5,8 @@
 \title{EJAM/EJSCREEN comparisons - Try to explain discrepancy in pop and blocks via map and tables of blocks near a site}
 \usage{
 ejscreen_vs_ejam_see1map(
+  vs,
   n = 1,
-  x,
   overlay_blockgroups = FALSE,
   radius = NULL,
   map = TRUE,
@@ -17,9 +17,9 @@ ejscreen_vs_ejam_see1map(
 )
 }
 \arguments{
-\item{n}{row number in x$EJAM of site to check}
+\item{vs}{results from  vs <- ejscreen_vs_ejam(testpoints_10, radius = 3, include_ejindexes = TRUE)}
 
-\item{x}{results from  x <- ejscreen_vs_ejam(testpoints_10, radius =3, include_ejindexes = TRUE)}
+\item{n}{row number in vs$EJAM of site to check}
 
 \item{overlay_blockgroups}{optional, set TRUE to see overlay of boundaries of parent blockgroups,
 noting that you have to click to turn off the layer for block point info popups to work}
@@ -47,9 +47,10 @@ but you may also want the output of ejscreen_vs_ejam_see1()
 EJAM/EJSCREEN comparisons - Try to explain discrepancy in pop and blocks via map and tables of blocks near a site
 }
 \examples{
-dontrun{
-  z <- ejscreen_vs_ejam(testpoints_10, radius = 3, include_ejindexes = TRUE)
-  ejscreen_vs_ejam_see1map(3, z, overlay_blockgroups = TRUE)
+ radius = 3; n = 3
+ \dontrun{
+  vs <- ejscreen_vs_ejam(testpoints_10, radius = radius, include_ejindexes = TRUE)
+  ejscreen_vs_ejam_see1map(vs, n = n, overlay_blockgroups = TRUE)
  }
 }
 \seealso{

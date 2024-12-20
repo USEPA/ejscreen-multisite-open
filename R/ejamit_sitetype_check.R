@@ -1,6 +1,19 @@
+############################ ############################# #
+##########   will   change everywhere from using what had been called 
+
+#   ejamit_sitetype_check()
+
+# to just using identical but renamed 
+
+#   ejamit_sitetype_from_input()  
+
+##  in ejamit()  in ejamit_compare_types_of_places()  in manual_nonalphabetical.R and testthat/test-ejamit_sitetype_check.R  
+## and delete the file  ejamit_sitetype_check.R
+## and do not have to update pkgdown yml file, since noRd and internal
+############################ ############################# #
 
 
-#' ejamit_sitetype_check helper for ejamit() to check what type of sites were specified
+#' helper to infer what type of sites were analyzed by looking at params given as input to ejamit()
 #'
 #' @param sitepoints  parameter as was passed to [ejamit()]
 #' @param fips  parameter as was passed to [ejamit()]
@@ -14,9 +27,9 @@
 #'
 ejamit_sitetype_check <- function(sitepoints, fips=NULL, shapefile=NULL) { 
   
-  if (!is.null(shapefile)) {
+  if (!is.null(shapefile)  ) {
     sitetype <- "shp"
-  } else if (!is.null(fips)) {
+  } else if (!is.null(fips)  ) {
     sitetype <- "fips"
   } else {
     sitetype <- "latlon" # if none of 3 is specified, tries to interactively select file of latlon

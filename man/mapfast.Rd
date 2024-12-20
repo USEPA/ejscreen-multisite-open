@@ -14,8 +14,19 @@ mapfast(
 )
 }
 \arguments{
-\item{mydf}{data.frame or data.table with lat and lon columns or
-columns that \code{\link[=latlon_infer]{latlon_infer()}} can infer to be that}
+\item{mydf}{Typically something like the output of ejamit()$results_bysite, but
+can also be the full output of \code{\link[=ejamit]{ejamit()}} in which case this uses just the $results_bysite table,
+and in general mydf can be a data.frame or data.table that has a set of
+points or polygons or Census FIPS codes.
+\enumerate{
+\item point data defined by columns named lat and lon, or columns that \code{\link[=latlon_infer]{latlon_infer()}} can infer to be that,
+as from \code{\link[=sitepoints_from_any]{sitepoints_from_any()}} or \code{\link[=ejamit]{ejamit()}}$results_bysite
+\item polygon data in a spatial data.frame that has a geometry column of polygons, as from \code{\link[=shapefile_from_any]{shapefile_from_any()}}, or
+\item Census units defined by FIPS codes in a column called "ejam_uniq_id"
+(not fips), where those fips are for States, Counties, Tracts, Blockgroups,
+or cities/towns/Census Designated Places (7 digits including any leading zeroes),
+e.g., as from \link{names2fips('DE')} or ejamit(fips='01')$results_bysite.
+}}
 
 \item{radius}{in miles, converted to meters and passed to leaflet::addCircles()}
 

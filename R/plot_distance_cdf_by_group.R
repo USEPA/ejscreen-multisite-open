@@ -27,6 +27,7 @@
 #'   cumulative count of demog groups at that block group's distance.
 #'   If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
 #'   If returnwhat is "plot" then it returns the plot object as needed for table_xls_format()
+#' @param ... other parameters passed through to [points()]
 #' @seealso [distance_by_group()] [ejamit()] for examples
 #' @aliases plot_distance_cdf_by_group
 #' @return see returnwhat parameter

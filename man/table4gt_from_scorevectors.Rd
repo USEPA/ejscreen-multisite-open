@@ -35,6 +35,8 @@ table4gt_from_scorevectors(
 \item{state_ratio}{indicator values as ratio to State average}
 
 \item{usa_ratio}{indicator values as ratio to US average}
+
+\item{ST}{State abbreviation like "NY"}
 }
 \value{
 data.frame ready for table_gt_format_step2 ???

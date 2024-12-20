@@ -44,7 +44,7 @@ ejam2means = function(ejamitout, vars = names_these, w = dt$pop) {
   
   y = data.frame(t(y))
   
-  y = table_round(fix_pctcols_x100(y, names_pct_as_fraction_ejamit))  
+  y = table_signif_round_x100(y) # table_round(table_x100(y, names_pct_as_fraction_ejamit))  # 
   
   junk = capture.output({printable <- cbind(wtdmean = lapply(as.list(y), print))  }) 
   rownames(printable) <- fixcolnames(rownames(printable), 'r', 'long')
@@ -65,6 +65,7 @@ ejam2means = function(ejamitout, vars = names_these, w = dt$pop) {
 #'
 #' @return info about quantiles of places or people
 #' 
+#' @export
 #' @keywords internal
 #'
 ejam2quantiles = function(ejamitout, vars = names_e_state_pctile, w = dt$pop, probs = c(50, 90)/100, topx_insteadof_pctile = T) { 
@@ -100,7 +101,7 @@ ejam2quantiles = function(ejamitout, vars = names_e_state_pctile, w = dt$pop, pr
   
   y = data.frame(y)
   
-  y = table_round(fix_pctcols_x100(y, names_pct_as_fraction_ejamit))
+  y = table_signif_round_x100(y) # table_round(fix_pctcols_x100(y, names_pct_as_fraction_ejamit)) #  
   
   printable = t(y) # all get rounded back to 2 decimals but it is just a quick look
   rownames(printable) <- fixcolnames(rownames(printable), 'r', 'long')

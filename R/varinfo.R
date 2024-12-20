@@ -13,13 +13,13 @@
 #' - [varname2varcategory_ejam()]
 #' - [varname2vartype_ejam()]
 #' - [table_rounding_info()]
+#' - EJAM table_signif_round_x100()
 #' 
 #' - [fixcolnames()]
 #' - [fixcolnames_infer()]
 #' - EJAM fixcolnames2related()
-#' - EJAM fix_pctcols_x100()
 #' - EJAM fixmapheadernamescolname()
-#' - EJAM var_is_numeric_ish()
+#' - EJAM is.numericish()
 #' 
 
 #' - EJAM varin_map_headernames()

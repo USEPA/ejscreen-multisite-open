@@ -20,7 +20,9 @@
 #'   )
 #'   ```
 #'   This uses an internal function global_or_param()
-#'   
+#' @details
+#' run_app( isPublic = TRUE ) will launch the public-facing version.
+#' 
 #' @inheritParams shiny::shinyApp
 #' @return An object that represents the app. Printing the object or passing it to [runApp()] will run the app.
 #' @seealso [app_run_EJAM()]
@@ -43,6 +45,12 @@ run_app      <- function(
     uiPattern = "/",
     ...
 ) {
+  # Assign golem_opts to the global environment
+  assign("golem_opts", list(...), envir = globalenv())
+  
+  # sets switches controlling what is displayed in public version based on passed isPublic parameter
+  source(system.file("manage-public-private.R", package = "EJAM")) 
+  
   # temporary workaround, see https://github.com/ThinkR-open/golem/issues/6
   source(system.file("global.R", package = "EJAM")) # source('./inst/global1.R') # uses latest source version if devtools::load_all() has been done.
 

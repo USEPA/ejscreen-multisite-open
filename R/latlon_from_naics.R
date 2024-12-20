@@ -12,6 +12,8 @@
 #'  * Many FRS sites lack NAICS code!
 #'
 #'  * Note the difference between children = TRUE and children = FALSE
+#'  
+#'  * The NAICS in the returned table may be a child NAICS not the NAICS used in the query! This may cause confusion if you are querying multiple parent NAICS and you want to analyze results by NAICS!
 #'   
 #'   The functions like [regid_from_naics()], [latlon_from_naics()], and [frs_from_naics()]
 #'   try to find EPA FRS sites based on naics codes or titles.
@@ -34,11 +36,18 @@
 #'   
 #' @param ... passed to [naics_from_any()]
 #' @return A data.table (not just data.frame) with columns called
-#'   lat, lon, REGISTRY_ID, NAICS (unless id_only parameter set TRUE).
+#'   lat, lon, REGISTRY_ID, NAICS, naics_found, naics_query (unless id_only parameter set TRUE).
+#'   naics_query is the input parameter that was used (that had been provided to this function as naics).
+#'   naics_found and NAICS are identical (redundant), and are the code found that
+#'   was listed in the [frs_by_naics] table, so it might be a subcategory (child)
+#'   of the naics_query term. For example, naics_query might be 33611 (5 digits)
+#'   and for one facility the NAICS and naics_found might be 336111 (a 6-digit code)
+#'   and for another facility they might be 336112.
 #'   
 #' @seealso [frs_from_naics()]  [frs_from_sic()] [latlon_from_sic()] [regid_from_naics()] [naics_from_any()]
 #'   
 #' @examples
+#' \dontrun{
 #'   regid_from_naics(321114)
 #'   latlon_from_naics(321114)
 #'   # latlon_from_naics(naics_from_any("cheese")[,code] )
@@ -47,26 +56,69 @@
 #'   head(regid_from_naics(c(3366, 33661, 336611))
 #'   head(regid_from_naics(3366, children = TRUE))
 #'   # mapfast(frs_from_naics(336611)) # simple map
-#'
+#'   
+#'   # get name from one code
+#'   naics_from_code(336)$name
+#'   # get the name from each code
+#'   mycode = c(33611, 336111, 336112)
+#'   naics_from_code(mycode)$name
+#'   # see counts of facilities by code (parent) and subcategories (children)
+#'   naics_counts[NAICS %in% mycode, ]
+#'   # see parent codes that contain each code
+#'   naicstable[code %in% mycode, ]
+#'   
+#'   # how many were found via each naics code?
+#'   found = latlon_from_naics(c(211,331))
+#'   x = table( found$naics_found, found$naics_query)
+#'   x = x[order(x[, 1],decreasing = T),]
+#'   x
+#'   }
 #' @export
 #'
 latlon_from_naics <- function(naics, children = TRUE, id_only = FALSE, ...) {
-
-  if (missing(naics)) {return(NULL)} else if (all(is.na(naics)) | is.null(naics)){return(NULL)}
+  
+  if (missing(naics)) {return(NULL)} else if (all(is.na(naics)) | is.null(naics)) {return(NULL)}
   
   if (data.table::is.data.table(naics) & "code" %in% names(naics)) {naics <- naics$code} # flexible in case it was given output of EJAM::naics_from_any() which is a table not just code
-
+  
   if (!exists("frs_by_naics")) dataload_from_pins("frs_by_naics")
   
-  naics <- naics_from_any(query = naics, children = children, ...)$code # children = TRUE would get more than just exact matches to the provided specific number of digits NAICS
+  naics_queries <- naics
+  results <- list()
   
-  if (id_only) {
-    return(frs_by_naics[NAICS %in% naics, REGISTRY_ID])
-    # return(frs_by_naics[REGISTRY_ID %in% regid_from_naics(naics), REGISTRY_ID])
-  } else {
-    return(frs_by_naics[NAICS %in% naics, ])
-    # return(frs_by_naics[REGISTRY_ID %in% regid_from_naics(naics), ])
+  for (i in 1:length(naics_queries)) {
+    
+    naics_found <- naics_from_any(query = naics_queries[i], children = children, ...)$code 
+    # children = TRUE would get more than just exact matches to the provided specific number of digits NAICS
+    
+    if (id_only) {
+      results[[i]] <- frs_by_naics[NAICS %in% naics_found, REGISTRY_ID] # a vector
+      # Just a vector, results$REGISTRY_ID 
+      # lacks info on query vs children found, 
+      # but changes could break code that assumes this provides a vector vs a data.table
+      ### if more than a vector were returned:
+      # results[[i]] <- cbind(
+      #   naics_query = naics_query[i], 
+      #   naics_found = naics_found, 
+      #   frs_by_naics[NAICS %in% naics_found, REGISTRY_ID]
+      # )
+      
+    } else {
+      results[[i]] <- cbind(
+        frs_by_naics[NAICS %in% naics_found, ],
+        naics_query = naics_queries[i]
+      )
+      results[[i]]$naics_found <- results[[i]]$NAICS # other code expected col called NAICS, so this retains that and makes it very clear it means found not query, though redundant
+      setcolorder(results[[i]], "naics_query", after = NCOL(results[[i]]))
+      # return(frs_by_naics[REGISTRY_ID %in% regid_from_naics(naics), ])
+    }
   }
+  if (id_only) {
+    results <- unlist(results)
+  } else {
+    results <- rbindlist(results)
+  }
+  return(results)
 }
 ########################################## #
 

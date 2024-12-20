@@ -68,6 +68,8 @@
 <span>  updateProgress <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  silentinteractive <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  testing <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  showdrinkingwater <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  showpctowned <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -106,6 +108,11 @@ original radius analyzed by getblocksnearby().</p></dd>
 using a sum of counts, like, for example, the number of people for whom a
 poverty ratio is known, the count of which is the exact denominator needed
 to correctly calculate percent low income.</p></dd>
+
+
+<dt id="arg-wtdmeancols">wtdmeancols<a class="anchor" aria-label="anchor" href="#arg-wtdmeancols"></a></dt>
+<dd><p>character vector of names of variables to aggregate within a buffer
+using a population weighted mean or other type of weighted mean.</p></dd>
 
 
 <dt id="arg-calculatedcols">calculatedcols<a class="anchor" aria-label="anchor" href="#arg-calculatedcols"></a></dt>
@@ -162,11 +169,6 @@ Set to FALSE to prevent long output showing in console in RStudio when in intera
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>more to pass to another function? Not used currently.</p></dd>
-
-
-<dt id="arg-popmeancols">popmeancols<a class="anchor" aria-label="anchor" href="#arg-popmeancols"></a></dt>
-<dd><p>character vector of names of variables to aggregate within a buffer
-using population weighted mean.</p></dd>
 
 </dl></div>
     <div class="section level2">

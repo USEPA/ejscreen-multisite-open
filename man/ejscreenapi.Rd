@@ -12,6 +12,7 @@ ejscreenapi(
   wkid = 4326,
   fips = NULL,
   shapefile = NULL,
+  namestr = "",
   report_every_n = 1000,
   save_when_report = FALSE,
   format_report_or_json = "pjson",
@@ -39,6 +40,8 @@ ejscreenapi(
 (counties, tracts, or blockgroups)}
 
 \item{shapefile}{not implemented}
+
+\item{namestr}{optional text}
 
 \item{report_every_n}{Should it report ETA snd possibly save interim file after every n points}
 

@@ -59,8 +59,12 @@
 #' @param ipurl fixed ip or domain/URL to try
 #' @param reportstyle EJscreen_SOE_report for the full community profile that was new as of 7/2023,
 #'   or EJSCREEN_report for the older style standard report (which has fewer indicators on it).
-#' @param fips If specified, lon and lat are ignored, and fips must be the 
-#'   FIPS code of a blockgroup or tract (or county).
+#' @param fips If specified, lon and lat are ignored, and the one fips code must be the 
+#'   FIPS code of a blockgroup or tract, or county (5 digits with leading zero)
+#'   or city/town/cdp/etc. (7 digits with leading zero).
+#'   A character string is best, with leading zero if relevant.
+#' @param namestr optional text
+#' @param shapefile not implemented
 #' @return Returns JSON by default. See source code of this function for notes on format. 
 #'   status_code
 #' @seealso [ejscreenit()]  or 
@@ -88,12 +92,37 @@
 #' @export
 #' @keywords internal
 #' 
-ejscreenRESTbroker <- function(lon=NULL, lat=NULL, radius = 3, 
-                               fips=NULL,
-                               url=c('https://ejscreen.epa.gov/mapper/ejscreenRESTbroker1.aspx?namestr=', 'https://ejscreen.epa.gov/mapper/ejscreenRESTbroker.aspx?namestr=')[1],
-                               wkid=4326, 
-                               unit=9035, f='pjson', ipurl='ejscreen.epa.gov',
+ejscreenRESTbroker <- function(lon = NULL, lat = NULL, radius = 3, 
+                               fips = NULL,
+                               namestr = '',
+                               shapefile = NULL, # would need POST not GET
+                               url = c('https://ejscreen.epa.gov/mapper/ejscreenRESTbroker1.aspx?', 'https://ejscreen.epa.gov/mapper/ejscreenRESTbroker.aspx?')[1],
+                               ipurl='ejscreen.epa.gov',
+                               wkid = 4326, 
+                               unit = 9035, 
+                               f = 'pjson', 
                                reportstyle=c("EJscreen_SOE_report", "EJSCREEN_report")[1]) {
+  
+  url <- sub('(https://).*?(/mapper)', paste0('\\1',ipurl,'\\2'), url)
+  
+  if (!missing(shapefile) & !is.null(shapefile)) {
+    sitetype <- 'shp'
+  } else {
+    if (!is.null(fips)) {
+      sitetype <- 'fips'
+    } else {
+      if (!is.null(lon) & !is.null(lat)) {
+        sitetype <- 'latlon'
+      } else {
+        # no type found
+        stop('must provide lat and lon, or fips, or shapefile')
+      }
+    }
+  }
+  
+  #################### #  
+  
+  # shapefile ####
 
   # Example of how theEJScreen API could be used to analyze a polygon, which must use POST not GET:
   # HTTP POST URL: https://ejscreen.epa.gov/mapper/ejscreenRESTbroker.aspx
@@ -104,60 +133,84 @@ ejscreenRESTbroker <- function(lon=NULL, lat=NULL, radius = 3,
   #   unit=9035
   #   f=pjson
   
-  url <- sub('(https://).*?(/mapper)', paste0('\\1',ipurl,'\\2'), url)
+  #################### #  
   
-  if (!is.null(fips)) {
+  # fips ####
+  
+  if (sitetype == 'fips') {
+    
     if (length(fips) != 1) {stop('fips must be just one number, as numeric or character')}
-    if (!is.null(lat) | !is.null(lon)) {warning("ignoring lat and lon because fips was specified")}
     fips <- fips_lead_zero(fips)
-    if (nchar(fips) == 12) {areatype <- "blockgroup"} else {
-      if (nchar(fips) == 11) {areatype <- "tract"   } else {
-        if (nchar(fips) ==  5) {areatype <- "county"} else {
-          stop('fips must be 5, 11, or 12 digits, i.e., fips for county, tract, or blockgroup')
-        }
-      }
+    if (missing(namestr)) {namestr <- fips}
+    areatype <- fipstype(fips)
+    if (!(areatype %in% c('blockgroup', 'tract', 'city', 'county'))) {
+      stop('fips must be   5, 7, 11, or 12 digits, i.e., fips for county, city/cdp/town/etc., tract, or blockgroup')
     }
+    if ((!is.null(lat) || !is.null(lon)) && !all(is.na(lat)) && !all(is.na(lon))) {warning("ignoring lat and lon because fips was specified")}
+    if (!missing(radius) && radius != 0) {warning("ignoring radius because fips was specified")}
+    
     # https://ejscreen.epa.gov/mapper/ejscreenRESTbroker1.aspx?namestr=400079517001&geometry=&distance=&unit=9035&areatype=blockgroup&areaid=400079517001&f=pjson
-    this_request <-  paste0(url,
-                            fips,
-                            # '&geometry={"spatialReference":{"wkid":',wkid,'},',
-                            # '"x":', lon, ',"y":', lat, '}',
-                            # '&distance=', radius,
-                            '&unit=', unit, 
-                            '&areatype=', areatype,
-                            '&areaid=', fips,
-                            '&f=', f
-    )
-  } else {
+    
+    geotext <- ''
+    
+  } 
+  #################### #  
+  
+  # latlon ####
+  
+  if (sitetype == 'latlon') {
+    
     if (any(NROW(lon) > 1, NROW(lat) > 1, NROW(radius) > 1 )) {stop('input must be only one point with one distance, so lat, lon, and radius must each be a single number')}
+    if (all(is.na(lat)) | all(is.na(lon))) {stop('lat and lon must not be NA values')}
     
     # MAY WANT TO SPLIT THIS OUT AS A FUNCTION, TO MAKE IT EASIER TO GET JSON AND ALSO APPEND THE PDF URL TO THAT
     # see url_ejscreen_report() for obtaining a vector of URLs, with more options and error-handling
-    this_request <-  paste0(url,
-                            '&geometry={"spatialReference":{"wkid":',wkid,'},',
-                            '"x":', lon, ',"y":', lat, '}',
-                            '&distance=', radius,
-                            '&unit=', unit, 
-                            '&areatype=',     # fails if report requested and omits these
-                            '&areaid=',        # fails if report requested and omits these
-                            '&f=', f
-    )   
+    
+    areatype <- ''
+    fips     <- ''
+    
+    geometry <- paste0('{"spatialReference":{"wkid":',wkid, '},','"x":', lon, ',"y":', lat, '}')
+    geotext <- paste0(
+      '&geometry=', geometry,
+      '&distance=', radius
+    )
+    
   }
+  #################### #    #################### #  
   
-  # geometry <- paste0('{"spatialReference":{"wkid":',wkid, '},','"x":', lon, ',"y":', lat, '}')
+  this_request <-  paste0(url,
+                          '&areatype=', areatype,
+                          '&areaid=',   fips,
+                          '&namestr=',  namestr,
+                          geotext,  # geometry and distance
+                          '&unit=', unit, 
+                          '&f=', f
+  )
+  
+  ## Alternative method of crafting the request: 
+  #
+  # url <- urltools  ::  param_set(url, key = "areatype", value = areatype)
+  # url <- urltools  ::  param_set(url, key = "areaid",   value = fips)
+  # url <- urltools  ::  param_set(url, key = "namestr",  value = namestr)
   # url <- urltools  ::  param_set(url, key = "geometry", value = geometry)
   # url <- urltools  ::  param_set(url, key = "distance", value = radius)
   # url <- urltools  ::  param_set(url, key = "unit",     value = unit)
   # url <- urltools  ::  param_set(url, key = "f",        value = f)
-  
+  # this_request <- url
+
+    
   if (f == 'report') {
+    
     # cat("see url_ejscreen_report() for obtaining a vector of URLs, with more options and error-handling\n")
     # PDFURL <- url_ejscreen_report() # could be used here to replace the line below but would need to test etc.
     PDFURL <- gsub('ejscreenRESTbroker1?', reportstyle, this_request) # gets rid of the 1 as well, if it is found
-
+    
     # https://ejscreen.epa.gov/mapper/EJSCREEN_report.aspx?namestr=&geometry={"spatialReference":{"wkid":4326},"x":-88.14039550781403,"y":40.06610618160108}&distance=1&unit=9036&areatype=&areaid=&f=report 
+    
     return(PDFURL) # returns the URL
+    
   } else {
+    
     # print(this_request)
     # using httr::GET(), but note GET() also is a function name used in other packages.
     
@@ -165,90 +218,28 @@ ejscreenRESTbroker <- function(lon=NULL, lat=NULL, radius = 3,
     if (inherits(gotten, "try-error")) {
       warning("API GET request failed -- server may be unavailable or query was invalid, returning results of try(httr::GET()) which provides error message info")
     }
+    
+    ############################################################## # 
+    ## See format of json results:
+    # str(gotten)
+    ## gotten is returned with these names:
+    ##
+    ##   "url"   "status_code"  "headers"   "all_headers"   "cookies"     
+    ##   "content"     "date"      "times"   "request"     "handle"
+    ############################################################## # 
+    
     return(gotten)
   }
-  ############################################################## # 
-  # returned:
-  #
-  # [1] "url"         "status_code" "headers"     "all_headers" "cookies"     "content"     "date"        "times"      
-  # [9] "request"     "handle"
   
-  # did not try this approach:
-  # xfun::rest_api("https://ejscreen.epa.gov", "/mapper/ejscreenRESTbroker.aspx", params = list(
-  #   geometry = '{"spatialReference":{"wkid":4326},"x":-88.14039550781403,"y":40.06610618160108}',
-  #   distance="1", unit="9036", f="report"
-  # ))
-  ############################################################## # 
 }
 ####################################################################################### #
 
 
 
-
-
-
-# new 2023-07 format of json results:
-# x <- httr::GET(this_request)
-# str(x)
-# List of 10
-# $ url        : chr "https://ejscreen.epa.gov/mapper/ejscreenRESTbroker1.aspx?namestr=&geometry={\"spatialReference\":{\"wkid\":4326"| __truncated__
-# $ status_code: int 200
-# $ headers    :List of 8
-# ..$ cache-control            : chr "private"
-# ..$ content-type             : chr "application/json; charset=utf-8"
-# ..$ server                   : chr "Microsoft-IIS/10.0"
-# ..$ x-aspnet-version         : chr "4.0.30319"
-# ..$ x-powered-by             : chr "ASP.NET"
-# ..$ strict-transport-security: chr "max-age=31536000; includeSubDomains; preload"
-# ..$ date                     : chr "Mon, 24 Jul 2023 23:10:05 GMT"
-# ..$ content-length           : chr "9660"
-# ..- attr(*, "class")= chr [1:2] "insensitive" "list"
-# $ all_headers:List of 1
-# ..$ :List of 3
-# .. ..$ status : int 200
-# .. ..$ version: chr "HTTP/1.1"
-# .. ..$ headers:List of 8
-# .. .. ..$ cache-control            : chr "private"
-# .. .. ..$ content-type             : chr "application/json; charset=utf-8"
-# .. .. ..$ server                   : chr "Microsoft-IIS/10.0"
-# .. .. ..$ x-aspnet-version         : chr "4.0.30319"
-# .. .. ..$ x-powered-by             : chr "ASP.NET"
-# .. .. ..$ strict-transport-security: chr "max-age=31536000; includeSubDomains; preload"
-# .. .. ..$ date                     : chr "Mon, 24 Jul 2023 23:10:05 GMT"
-# .. .. ..$ content-length           : chr "9660"
-# .. .. ..- attr(*, "class")= chr [1:2] "insensitive" "list"
-# $ cookies    :'data.frame':	0 obs. of  7 variables:
-#   ..$ domain    : logi(0) 
-# ..$ flag      : logi(0) 
-# ..$ path      : logi(0) 
-# ..$ secure    : logi(0) 
-# ..$ expiration: 'POSIXct' num(0) 
-# ..$ name      : logi(0) 
-# ..$ value     : logi(0) 
-# $ content    : raw [1:9660] 7b 0d 0a 20 ...
-# $ date       : POSIXct[1:1], format: "2023-07-24 23:10:05"
-# $ times      : Named num [1:6] 0 0.115 0.127 0.139 2.687 ...
-# ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
-# $ request    :List of 7
-# ..$ method    : chr "GET"
-# ..$ url       : chr "https://ejscreen.epa.gov/mapper/ejscreenRESTbroker1.aspx?namestr=&geometry={\"spatialReference\":{\"wkid\":4326"| __truncated__
-# ..$ headers   : Named chr "application/json, text/xml, application/xml, */*"
-# .. ..- attr(*, "names")= chr "Accept"
-# ..$ fields    : NULL
-# ..$ options   :List of 2
-# .. ..$ useragent: chr "libcurl/7.84.0 r-curl/5.0.0 httr/1.4.6"
-# .. ..$ httpget  : logi TRUE
-# ..$ auth_token: NULL
-# ..$ output    : list()
-# .. ..- attr(*, "class")= chr [1:2] "write_memory" "write_function"
-# ..- attr(*, "class")= chr "request"
-# $ handle     :Class 'curl_handle' <externalptr> 
-#   - attr(*, "class")= chr "response"
-
-
 ####################################################################################### # 
 
-#  just the data part:
+##   just the data part:
+#
 # {
 #   "data":
 #     {
@@ -288,3 +279,4 @@ ejscreenRESTbroker <- function(lon=NULL, lat=NULL, radius = 3,
 #     }
 # }
 #          ** Note these groups of outputs are repeated, in main and extras!
+####################################################################################### # 

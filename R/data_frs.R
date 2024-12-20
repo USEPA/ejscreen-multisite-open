@@ -2,7 +2,7 @@
 #' @title frs (DATA) EPA Facility Registry Service table of regulated sites
 #' @description This is a data.table snapshot version of the EPA FRS. 
 #'   You can look up sites by REGISTRY_ID in [frs], and get their location, etc.
-#' @seealso  [frs_by_programid]  [frs_by_naics] [frs_by_sic]
+#' @seealso [epa_programs] [epa_programs_defined] [frs_by_programid]  [frs_by_naics] [frs_by_sic]
 #' @details 
 #'  This dataset can be updated by a package maintainer by using 
 #'     frs_update_datasets() (which is not an exported function)
@@ -12,6 +12,9 @@
 #'   
 #'   Also, EJScreen has maps of EPA-regulated facilities of a few program types,
 #'   as provided here: <https://www.epa.gov/ejscreen/ejscreen-map-descriptions#sites-reporting-to-epa>
+#'   and for a table of acronym definitions 
+#'   see https://www.epa.gov/sites/default/files/2021-05/frs_program_abbreviations_and_names.xlsx
+#'   and [epa_programs_defined]
 #'   
 #'  - Count of    all REGISTRY_ID rows:   Approx 7 million
 #'  - Count of unique REGISTRY_ID values: Approx 4-5 million

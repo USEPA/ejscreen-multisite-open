@@ -10,10 +10,11 @@ EJAM Environmental Justice Analysis Multisite tool
  -->
 <!-- badges: end -->
 
-EJAM is the EJ Analysis Multi-site (EJAM) tool provided by the United
-States Environmental Protection Agency (US EPA). It lets you easily and
-quickly see demographic and environmental information aggregated within
-and across hundreds or thousands of places, all at the same time.
+EJScreen’s Environmental Justice Analysis Multi-site Tool (EJAM) is a
+resource provided by the United States Environmental Protection Agency
+(US EPA). It lets you easily and quickly see demographic and
+environmental information aggregated within and across hundreds or
+thousands of places, all at the same time.
 
 ### What is EJAM?
 
@@ -21,10 +22,9 @@ and across hundreds or thousands of places, all at the same time.
 
 ### EJAM as a Web App
 
-- [Using EJAM as a Web
-  App](https://usepa.github.io/EJAM/articles/0_webapp.html) <!-- 
-              -   EJAM beta test is accessible only if at EPA offices or on VPN
-          -->
+- EJAM is EJScreen’s tool for providing multisite reports. It can be
+  reached from the [EJScreen website](https://www.epa.gov/ejscreen) and
+  [EJScreen Mapping application](https://ejscreen.epa.gov/mapper/).
 
 ### EJAM as a Software Toolkit for Analysts and Developers
 
@@ -129,5 +129,6 @@ product or activity by EPA or the United States Government.
 
 ### Contact
 
-If you have questions or comments, please contact Mark Corrales
+If you have questions or comments, please contact the EJScreen team in
+EPA’s OEJECR, and for technical questions contact Mark Corrales
 (corrales.mark@epa.gov).

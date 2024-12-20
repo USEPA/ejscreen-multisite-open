@@ -7,16 +7,13 @@
 ejam2map(ejamitout, radius = NULL, column_names = "ej", browse = FALSE)
 }
 \arguments{
-\item{radius}{in miles, converted to meters and passed to leaflet::addCircles()}
+\item{ejamitout}{output of ejamit()}
 
-\item{column_names}{If "ej" then nice popup made based on just key EJScreen
-indicators. If "all" then every column in the entire mydf table is shown
-in the popup. If a vector of colnames, only those are shown in popups.}
+\item{radius}{radius in miles}
 
-\item{browse}{optional logical, set to TRUE if you want the function to
-launch a default browser window to show the map
-and print the temp filepath and filename in the console.
-Normally the map would be shown in the default RStudio viewer pane.}
+\item{column_names}{can be "ej", passed to \code{\link[=mapfast]{mapfast()}}}
+
+\item{browse}{logical optional whether to open the web browser to view the map}
 }
 \value{
 like what \code{\link[=mapfastej]{mapfastej()}} returns

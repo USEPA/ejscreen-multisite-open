@@ -18,6 +18,8 @@ such as lat = testpoints_10\link{1,}, or lat and lon can be separately provided 
 
 \item{zoom}{zoomed out value could be 3 or 5, zoomed in default is 12}
 
+\item{point}{logical optional, passed to \code{\link[=url_map_google]{url_map_google()}}}
+
 \item{launch}{logical, whether to launch browser}
 }
 \value{

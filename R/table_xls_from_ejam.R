@@ -93,6 +93,8 @@ table_xls_from_ejam <- function(ejamitout,
   # these should be data.tables or at least they used to be when coming from ejamit() but not within server code...
   # so does that cause a problem for table_xls_format() if they are data.table format???
   
+  # table_xls_format ####
+  
   wb_out <- table_xls_format(
     
     # ### if we must provide data.frame only, not data.table, here, then we may need to convert them:
@@ -105,6 +107,10 @@ table_xls_from_ejam <- function(ejamitout,
     longnames = ejamitout$longnames,       #  1 row, but full plain English column names
     bybg      = ejamitout$results_bybg_people, # not entirely sure should provide bybg tab? it is huge and only for expert users but enables a plot
     formatted = ejamitout$formatted,  
+    
+    custom_tab = ejamitout$results_summarized$cols,
+    custom_tab_name = "thresholds",
+    
     hyperlink_colnames = hyperlink_colnames,  # need to ensure these get formatted right to work as links in Excel
     # heatmap_colnames=names(table_as_displayed)[pctile_colnums], # can use defaults
     # heatmap_cuts=c(80, 90, 95), # can use defaults

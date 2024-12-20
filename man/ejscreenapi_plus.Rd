@@ -12,6 +12,7 @@ ejscreenapi_plus(
   wkid = 4326,
   fips = NULL,
   shapefile = NULL,
+  namestr = "",
   report_every_n = 100,
   save_when_report = FALSE,
   format_report_or_json = "pjson",
@@ -40,6 +41,8 @@ or data.frame or data.table with lat,lon}
 (counties, tracts, or blockgroups)}
 
 \item{shapefile}{not implemented}
+
+\item{namestr}{optional text}
 
 \item{report_every_n}{default is to provide an update every so often}
 
@@ -102,7 +105,7 @@ using the normal name and a synonym name, as with TOTALPOP and "totalPop"
   
   x <- testoutput_ejscreenapi_plus_5; names(x) <- fixcolnames(names(x), "r", "long")
   # x <- ejscreenapi_plus(pts,              radius = myradius, usewhichnames = "long")
-  # x <- ejscreenapi_plus(pts$lon, pts$lat, radius = myradius, usewhichnames = "long")
+  # x <- ejscreenapi_plus(x = pts$lon, y = pts$lat, radius = myradius, usewhichnames = "long")
   # x <- ejscreenapi_plus(pts,              radius = myradius, usewhichnames = "long")
   
   ## view results
