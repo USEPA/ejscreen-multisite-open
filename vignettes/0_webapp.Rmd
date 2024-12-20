@@ -22,22 +22,22 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-# Web app for the public via EJScreen
+# Web app for the public via EJScreen's Multisite Tool
 
-*EPA is working to integrate EJAM's new toolkit into EJScreen*, the public web app, to make public these features as soon as possible. EPA's [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen"){.uri target="_blank" rel="noreferrer noopener"} will leverage EJAM's toolkit to provide public access to batches of EJ reports, with rapid multi-site analysis.
+*EPA has integrated EJAM's toolkit as the EJScreen Multisite Tool*. EPA's [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen"){.uri target="_blank" rel="noreferrer noopener"} provides public access to batches of EJ reports, with rapid multi-site analysis, by leveraging the EJAM toolkit.
 
 # Web app for EPA staff
 
-EPA staff can access an [internal version of the EJAM web app](https://usepa.sharepoint.com/sites/EJAMWorkgroup/SitePages/access-ejam.aspx). It is for use by staff at EPA offices or via VPN, and requires authentication with a PIV card.
+EPA staff while on the Agency network can access an [internal version of the EJAM web app](https://usepa.sharepoint.com/sites/EJAMWorkgroup/SitePages/access-ejam.aspx). It is for use by staff at EPA offices or via VPN, and requires SSO authentication with a PIV card.
 
 ```{=html}
 <!--
-As of October 2024, EPA staff can use version 2.32 of the EJAM web app - The tool is accessible only at EPA offices or via VPN -- You must be inside EPA's network (e.g. using VPN) to access the EJAM web app, and need to authenticate with PIV card.
+EPA staff can use version 2.32 of the internal EJAM web app - The tool is accessible only at EPA offices or via VPN -- You must be inside EPA's network (e.g. using VPN) to access the EJAM web app, and need to SSO authenticate with PIV card.
 -->
 ```
 # Web app for analysts or developers using R/RStudio
 
-*Once the EJAM software and data are made available as open source resources*, anyone (not just EPA staff) will be able to use EJAM in RStudio on their own computer.
+*The EJAM software and data are available as open source resources*, so that anyone (not just EPA staff) can use EJAM in RStudio on their own computer.
 
 EPA staff (on-site or on the VPN) can access the internal version of the EJAM repository as explained [here](https://usepa.sharepoint.com/sites/EJAMWorkgroup/SitePages/access-ejam.aspx).
 
@@ -49,7 +49,7 @@ If you use the R programming language in RStudio, you can use EJAM through a web
 
 You first need to install the EJAM R package and datasets as explained in [Installing the EJAM R package](https://usepa.github.io/EJAM/articles/1_installing.html). There is also a [Quick Start guide](https://usepa.github.io/EJAM/articles/2_quickstart.html) and extensive [documentation of EJAM functions/tools/data](https://usepa.github.io/EJAM/reference/index.html).
 
-Once EJAM is installed (and you have access to the datasets needed), you can launch the local web app from RStudio as follows:
+Once EJAM is installed, you can launch the local web app from RStudio as follows:
 
 ```{r run_app1, eval = FALSE, include= TRUE}
 library(EJAM)
@@ -58,7 +58,7 @@ run_app()
 
 Note this is different than running a simple shiny app that is not also a package via the golem package. You should use the EJAM package function `run_app()` not `shiny::runApp()`.
 
-Note that the web app (e.g., launched locally) handles loading datasets and indexing blocks, assuming you have access to the server that stores those datasets as a pins board, so you would not have to download datasets manually or do indexing manually if launching the EJAM app locally. You can also download the datasets and store them locally. You do need the packages installed that EJAM relies on, as listed in the DESCRIPTION file.
+Note that the web app (e.g., launched locally) handles loading datasets and indexing blocks, so you would not have to download datasets manually or do indexing manually if launching the EJAM app locally. You can also download the datasets and store them locally. You do need the packages installed that EJAM relies on, as listed in the DESCRIPTION file.
 
 ```{=html}
 <!--
