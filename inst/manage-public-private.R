@@ -51,7 +51,10 @@ choices_for_type_of_site_upload <- if (isTRUE(golem_opts$isPublic)) {
 ## app title & version   ###########################################
 # note that manage-public-private.R is sourced prior to global.R being source, by run_app()
 # but global.R and manage-public-private.R both need to know version info so this is done in both:
-desc <- desc::desc(file = "DESCRIPTION")
+desc <- try(desc::desc(file = "DESCRIPTION"))
+if (inherits(desc, 'try-error')) {desc <- try(desc::desc(package = "EJAM"))}
+if (inherits(desc, 'try-error')) {desc <- desc::desc(file = EJAM:::app_sys('DESCRIPTION'))}
+if (inherits(desc, 'try-error')) {stop('cannot find DESCRIPTION file in working directory or in EJAM package')}
 ejam_app_version  <- desc$get("Version")
 ## trim version number to Major.Minor
 ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ejam_app_version)[[1]][2] - 1)
