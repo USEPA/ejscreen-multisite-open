@@ -7,10 +7,10 @@
 
 if (1 == 0) {
   
-
-  
-  # 1st use load_all()  or source this file, or use ::: as below
-  
+  stop(' you would have to put placespicker_ui here for this mini-app to work.')
+  ## Need to use ns() to wrap each id in ui code if its a module, 
+  ## but if not actually using this in a module, this step might let the ui still work:
+  # ns <- function(x) {x}
   
   shiny::runGadget(list(
     ui =        placespicker_ui, server =        placespicker_server
@@ -26,90 +26,134 @@ if (1 == 0) {
 }
 ################################################ ################################################# #
 
- 
 
 # TO TRY THIS as a MODULE ####
 if (1 == 0) {
   
   
-  
   mod_placespicker_ui <- function(id ) {
+    
     ns <- NS(id)
     
-    placespicker_ui # fluidPage() ## but within ui  need to wrap all ids in ns()
+    # .-------------- UI ------------------------  ####
+    
+    placespicker_ui <- fluidPage(
+      shinyjs::useShinyjs(),
+      titlePanel("Cities and other Census Places"),
+      sidebarLayout(
+        sidebarPanel(
+          selectInput(ns("type2analyze"), label = "What kinds of areas do you want to compare?", 
+                      selected = "Cities or Places",  # default to assuming they want to pick cities/places
+                      multiple = FALSE,
+                      choices = c("Select Regions, States, Counties, or Cities", "EPA Regions", "States", "Counties", "Cities or Places")),
+          actionButton(ns("reset"), label = "Clear all selections/ Reset"),
+          checkboxGroupInput(ns("regionpicker2"), label = "EPA Region", width = '100%',
+                             selected = NULL, # set in server
+                             choices = 1:10,  # regiontable is available in server not in UI function # sort(regiontable$REGION), # sort(unique(placetable$eparegion)), 
+                             inline = TRUE),
+          checkboxInput(ns("allstatesinregion"), "All States in EPA Region(s) above?", value = FALSE),
+          selectizeInput(ns("statepicker"), label = "Select State", 
+                         selected = "",
+                         choices = NULL, # unique(placetable$ST),
+                         options = list(closeAfterSelect = TRUE),
+                         multiple = T),
+          checkboxInput(ns("allcountiesinstate"), "All Counties in State(s) above?", value = FALSE),
+          selectizeInput(ns("countypicker"), label = "Select Counties", 
+                         selected = "",
+                         options = list(maxOptions = 254, closeAfterSelect = TRUE), # no limit by default. TX has the most of any 1 state, 254 Counties. But all in US >3k.
+                         # options = list(maxOptions = 10), # to avoid displaying so many counties if you click "all in state" just to be able to query all places in state by name typed
+                         choices = NULL, # unique(placetable$countyname_ST),
+                         multiple = T),
+          checkboxInput(ns("allplacesincounty"), "All Cites/Places in County(ies) above? [not enabled]", value = FALSE),
+          selectizeInput(ns("placespicker"), label = "Select Places", 
+                         selected = "", 
+                         choices = NULL,       ## (40,000 PLACES !)# loads faster if NULL and then update it via server  . to placetable$placename,
+                         options = list(closeAfterSelect = TRUE),
+                         multiple = T)
+        ),
+        ##  Show table of selected locations 
+        mainPanel(
+          shiny::downloadButton(ns("download")),
+          tableOutput(ns("placestable"))
+        )
+      )
+    )
+    ######################################################### #   ######################################################### # 
+    # end of UI
+    
     
   }
-######################################################### #  
-
-mod_placespicker_server <- function(id, ...) {
-  shiny::moduleServer(
-    id = id,
-    function(input, output, session) {
-      ns <- session$ns
-
-       ### TO BE CONTINUED  NOT DONE
-
-         placespicker_server(input = input, output = output, session = session, ...)
-      #       but   within server, any UI functions would need id wrapped in ns()
-      ### TO BE CONTINUED   NOT DONE
-
-      ### example. 
-
-      # observeEvent(input$xyz, {
-      #   tmp <- (input$xyz) # Update the reactive values for this user-manipulated data to pass back to main environment
-      #   reactdat(tmp) #   update the value of reactdat()  based on new value of tmp
-      # })
-      # return( reactdat ) # no parentheses here - return the reactive object not just its current value
-    })
-
-}
-#################################################### # 
-
-#  UI of an outer app shell to use in testing the module
-
-APP_UI_TEST <- function(request) {
+  ######################################################### #  
   
-  shiny::fluidPage(
-    shiny::h2('a fips place picker module demo'),
+  mod_placespicker_server <- function(id, ...) {
+    shiny::moduleServer(
+      id = id,
+      function(input, output, session) {
+        ns <- session$ns
+        
+        ### TO BE CONTINUED  NOT DONE
+        
+        placespicker_server(input = input, output = output, session = session, ...)
+        #       but   within server, any UI functions would need id wrapped in ns()
+        ### TO BE CONTINUED   NOT DONE
+        
+        ### example. 
+        
+        # observeEvent(input$xyz, {
+        #   tmp <- (input$xyz) # Update the reactive values for this user-manipulated data to pass back to main environment
+        #   reactdat(tmp) #   update the value of reactdat()  based on new value of tmp
+        # })
+        # return( reactdat ) # no parentheses here - return the reactive object not just its current value
+      })
     
-    mod_placespicker_ui("TESTID"),
-    
-    # shiny::actionButton(inputId =  "testbutton", 
-    #  label = "Done (may not want this button - just a way to close any modal)"),
-    
-    h3("Example of a table in the parent app"),
-     'fipstableout' ,
-    
-    h3("Example of a live view of the data, as seen in the parent app"),
-    DT::DTOutput(outputId =  "testinfo" ),
-    br()
-  )}
-
-#  SERVER of an outer app shell to use in testing the module
-
-APP_SERVER_TEST <- function(input, output, session) {
+  }
+  #################################################### # 
   
-     # Send table template as initial value 
+  #  UI of an outer app shell to use in testing the module
+  
+  APP_UI_TEST <- function(request) {
+    
+    shiny::fluidPage(
+      shiny::h2('a fips place picker module demo'),
+      
+      mod_placespicker_ui("TESTID"),
+      
+      # shiny::actionButton(inputId =  "testbutton", 
+      #  label = "Done (may not want this button - just a way to close any modal)"),
+      
+      h3("Example of a table in the parent app"),
+      'fipstableout' ,
+      
+      h3("Example of a live view of the data, as seen in the parent app"),
+      DT::DTOutput(outputId =  "testinfo" ),
+      br()
+    )}
+  
+  #  SERVER of an outer app shell to use in testing the module
+  
+  APP_SERVER_TEST <- function(input, output, session) {
+    
+    # Send table template as initial value 
     #reactive_data1 <-  reactiveVal(0)
+    
+    fipstableout <- mod_placespicker_server( id = "TESTID") #,  reactdat = reactive_data1 )
+    fipstableout
+    
+    # can pass  a reactive reactive_data1() , but must pass it with with NO parens
+    
+    # to view actual table in rendered form to be ready to display it in app UI
+    # observe({
+    #   tmp <- reactive_data1() # reactiveVal(out())
+    #   output$testinfo <- DT::renderDT(DT::datatable(  tmp  ))
+    # })  # %>%  bindEvent(input$testbutton)   # (when the "Done entering points" button is pressed? but that is inside the module)
+    
+  } # end of test server
+  ########################################### #
   
-  fipstableout <- mod_placespicker_server( id = "TESTID") #,  reactdat = reactive_data1 )
-  fipstableout
+  ## Run the outer app shell to test the module
   
-  # can pass  a reactive reactive_data1() , but must pass it with with NO parens
+  shinyApp(ui = APP_UI_TEST, server = APP_SERVER_TEST)
   
-  # to view actual table in rendered form to be ready to display it in app UI
-  # observe({
-  #   tmp <- reactive_data1() # reactiveVal(out())
-  #   output$testinfo <- DT::renderDT(DT::datatable(  tmp  ))
-  # })  # %>%  bindEvent(input$testbutton)   # (when the "Done entering points" button is pressed? but that is inside the module)
-  
-} # end of test server
-########################################### #
-
-## Run the outer app shell to test the module
-
-shinyApp(ui = APP_UI_TEST, server = APP_SERVER_TEST)
-
 } # end of module test
 ################################################ ################################################# #
 # ~ ### #
@@ -416,7 +460,7 @@ placespicker_server <- function(input, output, session) {
   ######################################################### #   ######################################################### # 
   
   # OUTPUT TABLE UPDATED - if PICKS CHANGE, OR "ALL" BUTTON hit, OR LEVEL CHANGES ####
-
+  
   ##  > REGIONS ################### 
   
   observe({
@@ -533,8 +577,8 @@ placespicker_server <- function(input, output, session) {
     }
   })
   
-
-    # OUTPUT TABLE DOWNLOAD - renderTable & download ############# 
+  
+  # OUTPUT TABLE DOWNLOAD - renderTable & download ############# 
   displaytable <- reactiveVal() # to show here
   output$placestable <- renderTable({
     displaytable()
@@ -581,71 +625,6 @@ placespicker_server <- function(input, output, session) {
 ######################################################### #   ######################################################### # 
 ######################################################### #   ######################################################### #  # end of server function
 
-# .-------------- UI ------------------------  ####
 
-## if not actually used in a module, but needed to use ns() in ui code for when it is a module, this would let the ui still work:
 
-ns <- function(x) {x}
-
-placespicker_ui <- fluidPage(
-  
-  shinyjs::useShinyjs(),
-  titlePanel("Cities and other Census Places"),
-  
-  sidebarLayout(
-    
-    sidebarPanel(
-      
-      selectInput(ns("type2analyze"), label = "What kinds of areas do you want to compare?", 
-                  selected = "Cities or Places",  # default to assuming they want to pick cities/places
-                  multiple = FALSE,
-                  choices = c("Select Regions, States, Counties, or Cities", "EPA Regions", "States", "Counties", "Cities or Places")
-      ),
-      
-      actionButton(ns("reset"), label = "Clear all selections/ Reset"),
-      
-      checkboxGroupInput(ns("regionpicker2"), label = "EPA Region", width = '100%',
-                         selected = NULL, # set in server
-                         choices = 1:10,  # regiontable is available in server not in UI function # sort(regiontable$REGION), # sort(unique(placetable$eparegion)), 
-                         inline = TRUE),
-      
-      checkboxInput(ns("allstatesinregion"), "All States in EPA Region(s) above?", value = FALSE),
-      
-      selectizeInput(ns("statepicker"), label = "Select State", 
-                     selected = "",
-                     choices = NULL, # unique(placetable$ST),
-                     options = list(closeAfterSelect = TRUE),
-                     multiple = T),
-      
-      checkboxInput(ns("allcountiesinstate"), "All Counties in State(s) above?", value = FALSE),
-      
-      selectizeInput(ns("countypicker"), label = "Select Counties", 
-                     selected = "",
-                     options = list(maxOptions = 254, closeAfterSelect = TRUE), # no limit by default. TX has the most of any 1 state, 254 Counties. But all in US >3k.
-                     # options = list(maxOptions = 10), # to avoid displaying so many counties if you click "all in state" just to be able to query all places in state by name typed
-                     choices = NULL, # unique(placetable$countyname_ST),
-                     multiple = T),
-      
-      checkboxInput(ns("allplacesincounty"), "All Cites/Places in County(ies) above? [not enabled]", value = FALSE),
-      
-      selectizeInput(ns("placespicker"), label = "Select Places", 
-                     selected = "", 
-                     choices = NULL,       ## (40,000 PLACES !)# loads faster if NULL and then update it via server  . to placetable$placename,
-                     options = list(closeAfterSelect = TRUE),
-                     multiple = T
-      )
-      
-    ),
-    
-    ##  Show table of selected locations 
-    
-    mainPanel(
-      shiny::downloadButton(ns("download")),
-      
-      tableOutput(ns("placestable"))
-    )
-  )
-)
 ######################################################### #   ######################################################### # 
-######################################################### #   ######################################################### # 
- # end of UI
