@@ -102,12 +102,12 @@
         "RemoteHost": "api.github.com",
         "RemoteRepo": "EJAM",
         "RemoteUsername": "USEPA",
-        "RemoteRef": "PUBLIC-EJSCREEN",
-        "RemoteSha": "e2c2aa2505559ab7c7b841bffca16cf5983d8036",
+        "RemoteRef": "main",
+        "RemoteSha": "e89b0d241136101a18d5c0e3d1118440cc0828e0",
         "GithubRepo": "EJAM",
         "GithubUsername": "USEPA",
-        "GithubRef": "PUBLIC-EJSCREEN",
-        "GithubSHA1": "e2c2aa2505559ab7c7b841bffca16cf5983d8036",
+        "GithubRef": "main",
+        "GithubSHA1": "e89b0d241136101a18d5c0e3d1118440cc0828e0",
         "Built": "R 4.4.1; ; 2024-12-19 21:48:25 UTC; unix"
       }
     },
