@@ -1,6 +1,10 @@
 ############################################################# # ############################################################# # 
 {
   # Notes on initial setup of pkgdown site ####
+  #
+  # To specify which branch site gets published from: 
+  #    https://github.com/USEPA/EJAM/settings/pages ( if e.g. the repo is USEPA/EJAM )
+  #
   # see https://pkgdown.r-lib.org/articles/pkgdown.html#configuration
   # see https://usethis.r-lib.org/reference/use_pkgdown.html
   ### also possibly of interest:
