@@ -624,23 +624,31 @@ thousands of places, all at the same time.</p>
 <li><a href="https://usepa.github.io/EJAM/articles/0_whatis.html">What
 is EJAM?</a></li>
 </ul>
-<h3 id="ejam-as-a-web-app">EJAM as a Web App</h3>
+<h3 id="ejam-as-a-public-web-app">EJAM as a Public Web App</h3>
 <ul>
-<li>EJAM is EJScreen’s tool for providing multisite reports. It can be
-reached from the <a href="https://www.epa.gov/ejscreen">EJScreen
-website</a> and <a href="https://ejscreen.epa.gov/mapper/">EJScreen
-Mapping application</a>.</li>
+<li>EJAM powers EJScreen’s Multisite Tool, for providing public access
+to multisite reports. It can be reached from the <a href="https://www.epa.gov/ejscreen">EJScreen website</a> and <a href="https://ejscreen.epa.gov/mapper/">EJScreen Mapping
+application</a>.</li>
 </ul>
-<h3 id="ejam-as-a-software-toolkit-for-analysts-and-developers">EJAM as
-a Software Toolkit for Analysts and Developers</h3>
-<p><a href="https://github.com/USEPA/EJAM?tab=readme-ov-file#the-ejam-r-package-for-analysts-and-developers">The
-EJAM R Package for Analysts and Developers</a> written in the <a href="https://www.r-project.org/">R programming language</a>, with
-source code on GitHub. When used in RStudio, the EJAM package provides
-functions to help analysts work with block group data, points, and
-polygons, to very quickly aggregate and compare large numbers of
-locations. Note that EJAM also can be used as a web app by R/RStudio
-users if the package is installed and the shiny app is launched locally
-on a user’s own computer.</p>
+<h3 id="ejam-for-use-by-epa-staff">EJAM for use by EPA Staff</h3>
+<ul>
+<li>EPA staff who are authenticated on the Agency’s internal network (by
+VPN or within the office) have access to a version of the web app that
+is configured specifically for staff use.</li>
+</ul>
+<h3 id="ejam-as-a-software-toolkit-or-web-app-for-analysts-and-developers">EJAM
+as a Software Toolkit (or Web App) for Analysts and Developers</h3>
+<p>EJAM is also available to analysts and developers as an R Package
+written in the <a href="https://www.r-project.org/">R programming
+language</a>, with source code on GitHub. When used in RStudio, the EJAM
+package provides functions to help analysts work with block group data,
+points, and polygons, to very quickly aggregate and compare large
+numbers of locations.</p>
+<p>Note that installing the R package also allows one to use EJAM as a
+local web app, if the shiny app is launched locally on a user’s own
+computer. The EJScreen Multisite Tool configuration is available via
+<code>run_app(isPublic=T)</code> and the version for staff use is
+available via <code>run_app(isPublic=F)</code></p>
 <ul>
 <li><p><a href="https://usepa.github.io/EJAM/articles/1_installing.html">Installing
 the R package</a></p></li>
@@ -652,8 +660,8 @@ Using EJAM for Analysis in RStudio</a></p></li>
 Features</a></p></li>
 <li><p><a href="https://usepa.github.io/EJAM/articles/index.html">Reference Manual
 - EJAM R Functions and Data</a></p></li>
-<li><p><a href="https://github.com/USEPA/EJAM#readme" title="https://github.com/USEPA/EJAM#readme">GitHub Repository - Code
-and Data</a></p></li>
+<li><p><a href="https://usepa.github.io/EJAM/articles/1_installing.html">GitHub
+Repository - Open Source Code and Data</a></p></li>
 </ul>
 <h3 id="open-source-code-policy">Open-Source Code Policy</h3>
 <p>Effective August 8, 2016, the <a href="https://obamawhitehouse.archives.gov/sites/default/files/omb/memoranda/2016/m_16_21.pdf" class="uri" target="_blank" rel="noreferrer noopener">OMB Mandate:
@@ -708,10 +716,10 @@ information and no longer has responsibility to protect the integrity,
 confidentiality, or availability of the information. Any reference to
 specific commercial products, processes, or services by service mark,
 trademark, manufacturer, or otherwise, does not constitute or imply
-their endorsement, recommendation or favoring by EPA. The EPA seal and
-logo shall not be used in any manner to imply endorsement of any
-commercial product or activity by EPA or the United States
-Government.</p>
+their endorsement, recommendation or favoring by EPA.</p>
+<p><strong>The EPA seal and logo shall not be used in any manner to
+imply endorsement of any commercial product or activity by EPA or the
+United States Government.</strong></p>
 <h3 id="contact">Contact</h3>
 <p>If you have questions or comments, please contact the EJScreen team
 in EPA’s OEJECR, and for technical questions contact Mark Corrales (<a href="mailto:corrales.mark@epa.gov">corrales.mark@epa.gov</a>).</p>

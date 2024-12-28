@@ -20,23 +20,33 @@ thousands of places, all at the same time.
 
 - [What is EJAM?](https://usepa.github.io/EJAM/articles/0_whatis.html)
 
-### EJAM as a Web App
+### EJAM as a Public Web App
 
-- EJAM is EJScreen’s tool for providing multisite reports. It can be
-  reached from the [EJScreen website](https://www.epa.gov/ejscreen) and
-  [EJScreen Mapping application](https://ejscreen.epa.gov/mapper/).
+- EJAM powers EJScreen’s Multisite Tool, for providing public access to
+  multisite reports. It can be reached from the [EJScreen
+  website](https://www.epa.gov/ejscreen) and [EJScreen Mapping
+  application](https://ejscreen.epa.gov/mapper/).
 
-### EJAM as a Software Toolkit for Analysts and Developers
+### EJAM for use by EPA Staff
 
-[The EJAM R Package for Analysts and
-Developers](https://github.com/USEPA/EJAM?tab=readme-ov-file#the-ejam-r-package-for-analysts-and-developers)
+- EPA staff who are authenticated on the Agency’s internal network (by
+  VPN or within the office) have access to a version of the web app that
+  is configured specifically for staff use.
+
+### EJAM as a Software Toolkit (or Web App) for Analysts and Developers
+
+EJAM is also available to analysts and developers as an R Package
 written in the [R programming language](https://www.r-project.org/),
 with source code on GitHub. When used in RStudio, the EJAM package
 provides functions to help analysts work with block group data, points,
 and polygons, to very quickly aggregate and compare large numbers of
-locations. Note that EJAM also can be used as a web app by R/RStudio
-users if the package is installed and the shiny app is launched locally
-on a user’s own computer.
+locations.
+
+Note that installing the R package also allows one to use EJAM as a
+local web app, if the shiny app is launched locally on a user’s own
+computer. The EJScreen Multisite Tool configuration is available via
+`run_app(isPublic=T)` and the version for staff use is available via
+`run_app(isPublic=F)`
 
 - [Installing the R
   package](https://usepa.github.io/EJAM/articles/1_installing.html)
@@ -53,8 +63,8 @@ on a user’s own computer.
 - [Reference Manual - EJAM R Functions and
   Data](https://usepa.github.io/EJAM/articles/index.html)
 
-- [GitHub Repository - Code and
-  Data](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")
+- [GitHub Repository - Open Source Code and
+  Data](https://usepa.github.io/EJAM/articles/1_installing.html)
 
 ### Open-Source Code Policy
 
@@ -123,9 +133,11 @@ longer has responsibility to protect the integrity, confidentiality, or
 availability of the information. Any reference to specific commercial
 products, processes, or services by service mark, trademark,
 manufacturer, or otherwise, does not constitute or imply their
-endorsement, recommendation or favoring by EPA. The EPA seal and logo
-shall not be used in any manner to imply endorsement of any commercial
-product or activity by EPA or the United States Government.
+endorsement, recommendation or favoring by EPA.
+
+**The EPA seal and logo shall not be used in any manner to imply
+endorsement of any commercial product or activity by EPA or the United
+States Government.**
 
 ### Contact
 
