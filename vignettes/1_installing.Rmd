@@ -54,53 +54,45 @@ indexblocks()
 
 EJAM is not only a web app built in shiny R, it is also an R package, using the [golem](https://thinkr-open.github.io/golem/ "https://thinkr-open.github.io/golem/"){.uri target="_blank" rel="noreferrer noopener"} framework.
 
-The development version of the app can be installed from the github USEPA github repository. It can be installed locally as an R package, and the data or functions can be used outside of the shiny app interface, if you want to reuse data or code, or want to do customized analysis or explore the data in R.
-
-To install EJAM, you will need to have access to the relevant GitHub repository on EPA's enterprise github site, at [USEPA GitHub](https://github.com/USEPA "https://github.com/USEPA"){.uri target="_blank" rel="noreferrer noopener"}.
+The package can be installed from a github repository. It can be installed locally as an R package, and the data or functions can be used outside of the shiny app interface, if you want to reuse data or code, or want to do customized analysis or explore the data in R.
 
 ## How to install
 
 ### Try this first
 
-You can try this approach that uses `remotes::install_github()`:
 
 ```{r install_github_main, eval=FALSE, include=TRUE}
+
+x <- "https://github.com/USEPA/EJAM-open/archive/refs/tags/v2.32-EJAM-open.tar.gz"
+
+options(timeout = 300)
 if (!require(remotes)) {install.packages("remotes")}
 
-remotes::install_github('USEPA/EJAM',
-      dependencies=T, build=F, build_vignettes=F, build_manual=F, upgrade=F)
+remotes::install_url(url = x,
+                     dependencies = TRUE, upgrade = "never", 
+                     build = FALSE, build_manual = FALSE, build_vignettes = FALSE)
+
 ```
-
-To install the development version, which may have more features but not yet be fully tested:
-
-```{r install_github, eval=FALSE, include=TRUE}
-if (!require(remotes)) {install.packages("remotes")}
-
-remotes::install_github('USEPA/EJAM', ref = "development", 
-      dependencies=T, build=F, build_vignettes=F, build_manual=F, upgrade=F)
-```
-
-If installing from a public repository, and you use R but not for package development, so you do not already have git installed and do not have a personal access token set up, then you might have to use `auth_token = ""` as another parameter within `install_github()`.
 
 ------------------------------------------------------------------------
 
 ### if you need the full source code or want to build/install in RStudio on your own
 
-The EJAM package is available as one of the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM"){.uri target="_blank" rel="noreferrer noopener"} repositories (not on CRAN).
+The EJAM package is available as one of the [USEPA github](https://github.com/USEPA/EJAM-open "github.com/USEPA/EJAM-open"){.uri target="_blank" rel="noreferrer noopener"} repositories (not on CRAN).
 
 Options for getting the source package:
 
 a.  One way to get the source package is that in RStudio you can click New Project, Version Control, Git, and enter the repository URL. It will download the full source package, which has additional files related to development that you do not need if you just want to use the package.
 
-b.  Yet another way to get the full source package is to use a browser to go to the repository page, such as [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM"){.uri target="_blank" rel="noreferrer noopener"} and then click the green "Code" button, and download and unzip the zip file that contains the package.
+b.  Yet another way to get the full source package is to use a browser to go to the repository page, such as [USEPA github](https://github.com/USEPA/EJAM-open "github.com/USEPA/EJAM-open"){.uri target="_blank" rel="noreferrer noopener"} and then click the green "Code" button, and download and unzip the zip file that contains the package.
 
 c.  A third way is to Clone or Fork the package via GitHub Desktop or from the GitHub site.
 
 Regardless of how you got the full source code, you would then need to build/install the package from source on your computer using RStudio (using the Build menu) or using the devtools package, for example.
 
-### if the repository is currently non-public (internal or private, for EPA only)
+### for a repository that is non-public (internal or private, for EPA only)
 
-Note that if a USEPA github repository is not public, you need to be inside EPA's network (e.g., via VPN) and also need to get a personal access token (PAT):
+If a USEPA github repository is not public, you need to be inside EPA's network (e.g., via VPN) and also need to get a personal access token (PAT):
 
 1.  create a GitHub personal access token with at least 'repo scope' which you can do at <https://github.com/settings/tokens>
 
@@ -114,11 +106,11 @@ Note that if a USEPA github repository is not public, you need to be inside EPA'
 
 -   one-time login: from the console, run `credentials::set_github_pat()`. Paste in your PAT to the login popup under 'Token'. This will save the PAT in your GITHUB_PAT environmental variable, where `remotes::install_github()` or `devtools::install_github()` will by default look for it.
 
-3.  Try again to install the package using `devtools::install_github()`
+3.  Try to install the package using `devtools::install_github()`
 
 #### CRAN packages needed (dependencies)
 
-EJAM needs a number of other packages to be installed that are available from CRAN. Trying to load and attach EJAM with require(EJAM) or library(EJAM) will alert you to those other packages you need to install if you don't already have them. The list of CRAN packages needed is in the `DESCRIPTION` file in the R package source code root folder (as can be found in the code repository). Note some are in Suggests and you might want to install those as well. Using dependencies=T in install_github() will make sure of that.
+EJAM needs a number of other packages to be installed that are available from CRAN. Trying to load and attach EJAM with require(EJAM) or library(EJAM) will alert you to those other packages you need to install if you don't already have them. The list of CRAN packages needed is in the `DESCRIPTION` file in the R package source code root folder (as can be found in the code repository). Note some are in Suggests and you might want to install those as well. Using dependencies=T in install_url() will make sure of that.
 
 ## Initialize: load/attach package
 
@@ -138,23 +130,10 @@ Just in case you need more details on how that works, the following describes th
 
 ### Details on the automatic data downloads
 
-To work in the RStudio console, EJAM needs some datasets not stored as part of the package. However, they already should be downloaded and loaded into memory automatically as soon as you use `require(EJAM)`. If you want to check access, you can use `dataload_from_pins(justchecking = T)`.
+To work in the RStudio console, EJAM needs some datasets not stored as part of the package. However, they already should be downloaded and loaded into memory automatically as soon as you use `require(EJAM)`. 
 
 Typically you would not need to download any datasets yourself, because EJAM just downloads these when the app starts (technically, when the R package is attached) (or only as needed in the case of certain datasets that are not always needed). Some datasets are installed along with the package, such as the [blockgroupstats] data. But large files like "[blockpoints]" are stored on a "pins board" server and EJAM downloads them from there. You might want your own local copies, though, for these reasons:
-
-1.  If your computer can’t immediately access the pins board server due to authentication/ credentials setup that you prefer to skip. Access to the datasets may change during development and before they are public datasets they might not be as easy to get access to without setting up access to the pins board, etc.
-2.  If you have local copies, EJAM avoids the slight delay of downloading some essential data (e.g., blockpoints) when you first do library(EJAM), and then when you first use EJ Indexes (relying on bgej) or the FRS/ NAICS/ SIC/ programid/ registryid features (relying on datasets like "frs" etc.).
-
-In case you do want copies of the datasets EJAM normally downloads, and have access to those files, you can save them in the data subfolder of the EJAM package source code folder and then install from source. That way, the locally-run EJAM code avoids downloading them because it always first checks for local copies.
-
-If you do have access to the pins board, and want to download them manually:
-
-```{r dataload_from_pins, eval = FALSE}
-dataload_from_pins(justchecking = T)
-dataload_from_pins('all')
-# It takes a moment for the large downloads, while EJAM is still in development.
-```
-
+ 
 Attaching the package actually checks for copies in memory first (e.g., `exists("quaddata", envir = globalenv())`), then local disk (using [dataload_from_local()] looking in the data folder of the (source or installed) package, as defined by `EJAM:::app_sys()` which is just a wrapper for `system.file()`), then finally tries to download any still needed, using [dataload_from_pins()] for example.
 
 ### Details on the indexing of blocks
