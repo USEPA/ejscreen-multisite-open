@@ -372,7 +372,7 @@ ejamit <- function(sitepoints,
     stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
     
     # Here are preserved ALL rows (pts) including invalid ones
-    print(sitepoints)
+    # print(sitepoints)
     data_uploaded <- sitepoints[, c("ejam_uniq_id", "lat", "lon", "valid", "invalid_msg" )] # invalids here were not passed to getblock... but some valids here might not return from getblock.. so this distinguishes where it was dropped 
     data_uploaded <- data.frame(data_uploaded) # not data.table
     

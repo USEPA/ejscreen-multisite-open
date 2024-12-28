@@ -20,17 +20,23 @@
 # 3) either manually update deployed app via posit connect server management page, 
 # or just wait until it periodically updates by itself.
 
-## To deploy, 1st reinstall package to this machine, from specified repo and branch (needed for manifest)
-#
+############################################ #
+
+## 1st reinstall package to this machine, from specified repo and branch (needed for manifest)
+ 
 ## You might be able to do that now simply via something like this:
-# xyz.tar.gz <- "https://github.com/USEPA/ejscreen-multisite-open/archive/refs/tags/v2.32-public.tar.gz" # for the public app. 
-# install.packages(xyz.tar.gz)  # probably does NOT require PAT set up/ authentication if simply downloading source bundle from a public repo.
-## or else do it like this:
+
+# install_url()  # as explained at https://usepa.github.io/EJAM/articles/1_installing.html 
+
+# or 
 
 devtools::install_github(
+  
+  ###  uncomment one of these:
+  
   # repo = 'USEPA/ejscreen-multisite-open', ref = 'main', # install the        public app from the public repo - requires a PAT; but install.packages() is easier
   # repo = 'USEPA/EJAM-open',               ref = 'main', # install full pkg/internal app from the public repo - requires a PAT; but install.packages() is easier
-  repo = 'USEPA/EJAM', ref = 'PUBLIC-EJSCREEN', # install the public   app from the internal repo - requires access,token,authentication
+  # repo = 'USEPA/EJAM', ref = 'PUBLIC-EJSCREEN', # install the public   app from the internal repo - requires access,token,authentication
   # repo = 'USEPA/EJAM', ref = 'deploy-posit',  # install the internal app from the internal repo - requires access,token,authentication
   
   build_vignettes = FALSE,
@@ -39,6 +45,7 @@ devtools::install_github(
   build = FALSE,
   upgrade = "never"
 )
+############################################ #
 
 ## get list of files found in EJAM root directory
 all_files <- rsconnect::listDeploymentFiles(getwd())
