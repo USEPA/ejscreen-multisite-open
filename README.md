@@ -10,7 +10,7 @@ EJAM Environmental Justice Analysis Multisite tool
  -->
 <!-- badges: end -->
 
-EJScreen’s Environmental Justice Analysis Multi-site Tool (EJAM) is a
+EJScreen’s Environmental Justice Analysis Multisite Tool (EJAM) is a
 resource provided by the United States Environmental Protection Agency
 (US EPA). It lets you easily and quickly see demographic and
 environmental information aggregated within and across hundreds or

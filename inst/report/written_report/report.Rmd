@@ -829,7 +829,7 @@ Residents / conditions ...
     (SEC)
 -   EGU electricity generating unit in a power plant
 -   EJ Environmental Justice
--   EJAM The Environmental Justice Analysis Multi-site tool developed by
+-   EJAM The Environmental Justice Analysis Multisite tool developed by
     USEPA
 -   EJScreen / EJSCREEN Environmental Justice Screening and mapping
     tool, USEPA

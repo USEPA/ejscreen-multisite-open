@@ -24,7 +24,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 # Web app for the public via EJScreen's Multisite Tool
 
-*EPA has integrated EJAM's toolkit as the EJScreen Multisite Tool*. EPA's [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen"){.uri target="_blank" rel="noreferrer noopener"} provides public access to batches of EJ reports, with rapid multi-site analysis, by leveraging the EJAM toolkit.
+*EPA has integrated EJAM's toolkit as the EJScreen Multisite Tool*. EPA's [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen"){.uri target="_blank" rel="noreferrer noopener"} provides public access to batches of EJ reports, with rapid multisite analysis, by leveraging the EJAM toolkit.
 
 # Web app for EPA staff
 
