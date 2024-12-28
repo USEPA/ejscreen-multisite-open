@@ -47,7 +47,6 @@ devtools::install_github(
 )
 ############################################ #
 
-
 ## get list of files found in EJAM root directory
 all_files <- rsconnect::listDeploymentFiles(getwd())
 

@@ -20,7 +20,6 @@
 <meta name="description" content="Webapp and tools summarizing demographic and environmental data for hundreds of places quickly and accurately">
 <meta property="og:description" content="Webapp and tools summarizing demographic and environmental data for hundreds of places quickly and accurately">
 <meta property="og:image" content="https://usepa.github.io/EJAM/logo.svg">
-<meta name="robots" content="noindex">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -83,7 +82,7 @@
 &#10;[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
  -->
 <!-- badges: end -->
-<p>EJScreen’s Environmental Justice Analysis Multi-site Tool (EJAM) is a resource provided by the United States Environmental Protection Agency (US EPA). It lets you easily and quickly see demographic and environmental information aggregated within and across hundreds or thousands of places, all at the same time.</p>
+<p>EJScreen’s Environmental Justice Analysis Multisite Tool (EJAM) is a resource provided by the United States Environmental Protection Agency (US EPA). It lets you easily and quickly see demographic and environmental information aggregated within and across hundreds or thousands of places, all at the same time.</p>
 <div class="section level3">
 <h3 id="what-is-ejam">What is EJAM?<a class="anchor" aria-label="anchor" href="#what-is-ejam"></a>
 </h3>
@@ -92,23 +91,31 @@
 </ul>
 </div>
 <div class="section level3">
-<h3 id="ejam-as-a-web-app">EJAM as a Web App<a class="anchor" aria-label="anchor" href="#ejam-as-a-web-app"></a>
+<h3 id="ejam-as-a-public-web-app">EJAM as a Public Web App<a class="anchor" aria-label="anchor" href="#ejam-as-a-public-web-app"></a>
 </h3>
 <ul>
-<li>EJAM is EJScreen’s tool for providing multisite reports. It can be reached from the <a href="https://www.epa.gov/ejscreen" class="external-link">EJScreen website</a> and <a href="https://ejscreen.epa.gov/mapper/" class="external-link">EJScreen Mapping application</a>.</li>
+<li>EJAM powers EJScreen’s Multisite Tool, for providing public access to multisite reports. It can be reached from the <a href="https://www.epa.gov/ejscreen" class="external-link">EJScreen website</a> and <a href="https://ejscreen.epa.gov/mapper/" class="external-link">EJScreen Mapping application</a>.</li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="ejam-as-a-software-toolkit-for-analysts-and-developers">EJAM as a Software Toolkit for Analysts and Developers<a class="anchor" aria-label="anchor" href="#ejam-as-a-software-toolkit-for-analysts-and-developers"></a>
+<h3 id="ejam-for-use-by-epa-staff">EJAM for use by EPA Staff<a class="anchor" aria-label="anchor" href="#ejam-for-use-by-epa-staff"></a>
 </h3>
-<p><a href="https://github.com/USEPA/EJAM?tab=readme-ov-file#the-ejam-r-package-for-analysts-and-developers" class="external-link">The EJAM R Package for Analysts and Developers</a> written in the <a href="https://www.r-project.org/" class="external-link">R programming language</a>, with source code on GitHub. When used in RStudio, the EJAM package provides functions to help analysts work with block group data, points, and polygons, to very quickly aggregate and compare large numbers of locations. Note that EJAM also can be used as a web app by R/RStudio users if the package is installed and the shiny app is launched locally on a user’s own computer.</p>
+<ul>
+<li>EPA staff who are authenticated on the Agency’s internal network (by VPN or within the office) have access to a version of the web app that is configured specifically for staff use.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="ejam-as-a-software-toolkit-or-web-app-for-analysts-and-developers">EJAM as a Software Toolkit (or Web App) for Analysts and Developers<a class="anchor" aria-label="anchor" href="#ejam-as-a-software-toolkit-or-web-app-for-analysts-and-developers"></a>
+</h3>
+<p>EJAM is also available to analysts and developers as an R Package written in the <a href="https://www.r-project.org/" class="external-link">R programming language</a>, with source code on GitHub. When used in RStudio, the EJAM package provides functions to help analysts work with block group data, points, and polygons, to very quickly aggregate and compare large numbers of locations.</p>
+<p>Note that installing the R package also allows one to use EJAM as a local web app, if the shiny app is launched locally on a user’s own computer. The EJScreen Multisite Tool configuration is available via <code>run_app(isPublic=T)</code> and the version for staff use is available via <code>run_app(isPublic=F)</code></p>
 <ul>
 <li><p><a href="https://usepa.github.io/EJAM/articles/1_installing.html">Installing the R package</a></p></li>
 <li><p><a href="https://usepa.github.io/EJAM/articles/2_quickstart.html">Quick Start Guide</a></p></li>
 <li><p><a href="https://usepa.github.io/EJAM/articles/3_analyzing.html">Basics of Using EJAM for Analysis in RStudio</a></p></li>
 <li><p><a href="https://usepa.github.io/EJAM/articles/4_advanced.html">Advanced Features</a></p></li>
 <li><p><a href="https://usepa.github.io/EJAM/articles/index.html">Reference Manual - EJAM R Functions and Data</a></p></li>
-<li><p><a href="https://github.com/USEPA/EJAM#readme" title="https://github.com/USEPA/EJAM#readme" class="external-link">GitHub Repository - Code and Data</a></p></li>
+<li><p><a href="https://usepa.github.io/EJAM/articles/1_installing.html">GitHub Repository - Open Source Code and Data</a></p></li>
 </ul>
 </div>
 <div class="section level3">
@@ -143,7 +150,8 @@
 <div class="section level3">
 <h3 id="disclaimer-for-github-repository-content">Disclaimer for GitHub Repository Content<a class="anchor" aria-label="anchor" href="#disclaimer-for-github-repository-content"></a>
 </h3>
-<p>The United States Environmental Protection Agency (EPA) GitHub project code is provided on an “as is” basis and the user assumes responsibility for its use. EPA has relinquished control of the information and no longer has responsibility to protect the integrity, confidentiality, or availability of the information. Any reference to specific commercial products, processes, or services by service mark, trademark, manufacturer, or otherwise, does not constitute or imply their endorsement, recommendation or favoring by EPA. The EPA seal and logo shall not be used in any manner to imply endorsement of any commercial product or activity by EPA or the United States Government.</p>
+<p>The United States Environmental Protection Agency (EPA) GitHub project code is provided on an “as is” basis and the user assumes responsibility for its use. EPA has relinquished control of the information and no longer has responsibility to protect the integrity, confidentiality, or availability of the information. Any reference to specific commercial products, processes, or services by service mark, trademark, manufacturer, or otherwise, does not constitute or imply their endorsement, recommendation or favoring by EPA.</p>
+<p><strong>The EPA seal and logo shall not be used in any manner to imply endorsement of any commercial product or activity by EPA or the United States Government.</strong></p>
 </div>
 <div class="section level3">
 <h3 id="contact">Contact<a class="anchor" aria-label="anchor" href="#contact"></a>

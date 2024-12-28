@@ -88,6 +88,7 @@
 <url><loc>https://usepa.github.io/EJAM/reference/distance_trends.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/distance_via_surfacedistance.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/doaggregate.html</loc></url>
+<url><loc>https://usepa.github.io/EJAM/reference/download_latest_arrow_data.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/dupenames.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/dupeRfiles.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/echo_colids_from_num_name_group.html</loc></url>
@@ -137,6 +138,7 @@
 <url><loc>https://usepa.github.io/EJAM/reference/ejscreen_vs_explain.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/ejscreen_vs_explain_summary.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/epa_programs.html</loc></url>
+<url><loc>https://usepa.github.io/EJAM/reference/epa_programs_defined.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/expand.gridMatrix.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/fill_tbl_full.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/fill_tbl_full_ej.html</loc></url>
@@ -444,6 +446,7 @@
 <url><loc>https://usepa.github.io/EJAM/reference/run_app.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/setdiff2.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/setdiff_yx.html</loc></url>
+<url><loc>https://usepa.github.io/EJAM/reference/shape2zip.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/shapefile2blockpoints.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/shapefile2latlon.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/shapefile_clean.html</loc></url>
@@ -458,6 +461,7 @@
 <url><loc>https://usepa.github.io/EJAM/reference/shapefile_from_json.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/shapefile_from_sitepoints.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/shapefile_from_zip.html</loc></url>
+<url><loc>https://usepa.github.io/EJAM/reference/shapefix.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/shapes_blockgroups_from_bgfips.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/shapes_counties_from_countyfips.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/shapes_from_fips.html</loc></url>
@@ -495,12 +499,10 @@
 <url><loc>https://usepa.github.io/EJAM/reference/statestats_queryd.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/statestats_querye.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/states_as_sites.html</loc></url>
-<url><loc>https://usepa.github.io/EJAM/reference/states_infer.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/states_shapefile.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/state_from_blockid.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/state_from_blockid_table.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/state_from_blocktable.html</loc></url>
-<url><loc>https://usepa.github.io/EJAM/reference/state_from_fips.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/state_from_fips_bybg.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/state_from_latlon.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/state_from_s2b_bysite.html</loc></url>
@@ -526,6 +528,8 @@
 <url><loc>https://usepa.github.io/EJAM/reference/table_x100.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/table_xls_format.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/table_xls_from_ejam.html</loc></url>
+<url><loc>https://usepa.github.io/EJAM/reference/testdata.html</loc></url>
+<url><loc>https://usepa.github.io/EJAM/reference/testdatafolder.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/testids_program_sys_id.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/testids_registry_id.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/testoutput_doaggregate_1000pts_1miles.html</loc></url>
@@ -556,6 +560,7 @@
 <url><loc>https://usepa.github.io/EJAM/reference/testpoints_conus5.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/testpoints_n.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/testpoints_overlap3.html</loc></url>
+<url><loc>https://usepa.github.io/EJAM/reference/testshapes_2.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/test_address_table.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/test_regid.html</loc></url>
 <url><loc>https://usepa.github.io/EJAM/reference/test_xtrac.html</loc></url>
