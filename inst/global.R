@@ -43,7 +43,10 @@ options(spinner.color = "#005ea2", spinner.type = 4)
 
 ## app title & version   ###########################################
 # note that manage-public-private.R is sourced prior to global.R being source, by run_app()
-desc <- desc::desc(file = "DESCRIPTION")
+desc <- try(desc::desc(file = "DESCRIPTION"))
+if (inherits(desc, 'try-error')) {desc <- try(desc::desc(package = "EJAM"))}
+if (inherits(desc, 'try-error')) {desc <- desc::desc(file = EJAM:::app_sys('DESCRIPTION'))}
+if (inherits(desc, 'try-error')) {stop('cannot find DESCRIPTION file in working directory or in EJAM package')}
 ejam_app_version <- desc$get("Version")
 ## trim version number to Major.Minor
 ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ejam_app_version)[[1]][2] - 1)
