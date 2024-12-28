@@ -119,7 +119,7 @@ update_pkgdown = function(
   
   # ? devtools::test() 
   
-  ## [ FAIL 7 | WARN 7 | SKIP 1 | PASS 617 ] as of 5/13/24
+  ## 
   #################### # #################### # #################### # #################### # 
   
   # README & DOCUMENT ####
