@@ -4,6 +4,8 @@
 
 # note that manage-public-private.R is sourced prior to global.R being source, by run_app()
 
+if(!exists("golem_opts")) golem_opts <- list(isPublic = TRUE)
+
 # About tab
 default_hide_about_tab <- isTRUE(golem_opts$isPublic)
 
