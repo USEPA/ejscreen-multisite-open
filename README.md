@@ -1,7 +1,7 @@
 EJAM Environmental Justice Analysis Multisite tool
 ================
 
-# <img src="man/figures/logo659.png" align="right" width="250px"/>
+# <img src="man/figures/logo659.png" align="right" width="220px"/>
 
 <!-- README.md is generated from README.Rmd. Please edit Rmd not md  -->
 <!-- badges: start -->
@@ -20,20 +20,20 @@ thousands of places, all at the same time.
 
 - [What is EJAM?](https://usepa.github.io/EJAM/articles/0_whatis.html)
 
-### EJAM as a Public Web App
+### EJAM’s multisite analysis as a part of EJScreen
 
 - EJAM powers EJScreen’s Multisite Tool, for providing public access to
-  multisite reports. It can be reached from the [EJScreen
-  website](https://www.epa.gov/ejscreen) and [EJScreen Mapping
+  multisite reports. The EJScreen Multisite Tool can be reached from the
+  [EJScreen website](https://www.epa.gov/ejscreen) or [EJScreen Mapping
   application](https://ejscreen.epa.gov/mapper/).
 
-### EJAM for use by EPA Staff
+### EJAM as a web app for use by EPA staff
 
 - EPA staff who are authenticated on the Agency’s internal network (by
   VPN or within the office) have access to a version of the web app that
   is configured specifically for staff use.
 
-### EJAM as a Software Toolkit (or Web App) for Analysts and Developers
+### EJAM as a Software Toolkit (and Local Web App) for Analysts and Developers
 
 EJAM is also available to analysts and developers as an R Package
 written in the [R programming language](https://www.r-project.org/),
@@ -66,7 +66,7 @@ computer. The EJScreen Multisite Tool configuration is available via
 - [GitHub Repository - Open Source Code and
   Data](https://usepa.github.io/EJAM/articles/1_installing.html)
 
-### Open-Source Code Policy
+#### Open-Source Code Policy
 
 Effective August 8, 2016, the <a
 href="https://obamawhitehouse.archives.gov/sites/default/files/omb/memoranda/2016/m_16_21.pdf"
@@ -97,21 +97,20 @@ href="https://www.epa.gov/developers/open-source-software-and-epa-code-repositor
 class="uri" target="_blank" rel="noreferrer noopener">EPA’s Interim Open
 Source Code Guidance</a>.
 
-### Contributing
+#### Contributing
 
-- [How to
-  Contribute](https://github.com/USEPA/EJAM/blob/master/CONTRIBUTING.md)
+We encourage analysts and developers to test the EJAM R package and the
+EJAM shiny app, and provide feedback, or to share code, and we welcome
+your suggestions or contributions.
 
-  - We encourage analysts and developers to test the EJAM R package and
-    the EJAM shiny app, and provide feedback, or to share code, and we
-    welcome your suggestions or contributions.
+- [How to Contribute](https://usepa.github.io/EJAM/CONTRIBUTING.html)
 
-### License
+#### License
 
 By submitting a pull request or issue, you are agreeing to comply with a
 waiver of copyright interest.
 
-### Disclaimer for App
+#### Disclaimer for App
 
 This software/application has been approved for release by the U.S.
 Environmental Protection Agency (USEPA). Although the software has been
@@ -124,7 +123,7 @@ is released on condition that neither the USEPA nor the U.S. Government
 shall be held liable for any damages resulting from its authorized or
 unauthorized use.
 
-### Disclaimer for GitHub Repository Content
+#### Disclaimer for GitHub Repository Content
 
 The United States Environmental Protection Agency (EPA) GitHub project
 code is provided on an “as is” basis and the user assumes responsibility
