@@ -103,11 +103,11 @@
         "RemoteRepo": "ejscreen-multisite-open",
         "RemoteUsername": "USEPA",
         "RemoteRef": "main",
-        "RemoteSha": "ae9a8805f1596cd875c72cb4a6b34b885886d88f",
+        "RemoteSha": "c6fb1b57c94c3589f927b8630603a6abfa4ea907",
         "GithubRepo": "ejscreen-multisite-open",
         "GithubUsername": "USEPA",
         "GithubRef": "main",
-        "GithubSHA1": "ae9a8805f1596cd875c72cb4a6b34b885886d88f",
+        "GithubSHA1": "c6fb1b57c94c3589f927b8630603a6abfa4ea907",
         "Built": "R 4.4.1; ; 2024-12-19 21:48:25 UTC; unix"
       }
     },
