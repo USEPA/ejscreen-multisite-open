@@ -174,7 +174,9 @@ ejamit <- function(sitepoints,
                    infer_sitepoints = FALSE,
                    need_blockwt = TRUE,
                    
-                   thresholds = list(90, 90),
+                   thresholds = list(80, # in server/global default 
+                                     80 # in server/global default
+                                     ),
                    threshnames = list(c(names_ej_pctile, names_ej_state_pctile), 
                                       c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
                    threshgroups = list("EJ-US-or-ST", "Supp-US-or-ST"),
@@ -188,7 +190,7 @@ ejamit <- function(sitepoints,
                    called_by_ejamit = TRUE,
                    testing = FALSE,
                    showdrinkingwater = TRUE,
-                   showpctowned = FALSE,
+                   showpctowned = TRUE,
                    ...
 ) {
 
@@ -370,7 +372,7 @@ ejamit <- function(sitepoints,
     stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
     
     # Here are preserved ALL rows (pts) including invalid ones
-    print(sitepoints)
+    # print(sitepoints)
     data_uploaded <- sitepoints[, c("ejam_uniq_id", "lat", "lon", "valid", "invalid_msg" )] # invalids here were not passed to getblock... but some valids here might not return from getblock.. so this distinguishes where it was dropped 
     data_uploaded <- data.frame(data_uploaded) # not data.table
     

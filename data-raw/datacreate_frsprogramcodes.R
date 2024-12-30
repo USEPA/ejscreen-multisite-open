@@ -1,5 +1,9 @@
 ## code to prepare `frsprogramcodes` dataset goes here
 
+# Note: compare frsprogramcodes, epa_programs, epa_programs_defined, etc.
+
+## note that this overlaps with drafted epa_programs_defined that downloads a much longer list of acryonyms and their definitions.
+
 # Key Media programs ECHO uses to limit queries, and code found in frs dataset for that program:
 #   
 # 1 NPDES (ICIS-NPDES) = NPDES

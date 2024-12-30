@@ -12,6 +12,7 @@ ejscreenit_for_ejam(
   namestr = "",
   nosave = TRUE,
   nosee = TRUE,
+  fillmissingcolumns = FALSE,
   ...
 )
 }
@@ -30,11 +31,9 @@ ejscreenit_for_ejam(
 
 \item{nosee}{passed to \code{\link[=ejscreenit]{ejscreenit()}}}
 
-\item{...}{other parameters passed to \code{\link[=ejscreenit]{ejscreenit()}}}
+\item{fillmissingcolumns}{passed to \code{\link[=ejscreenapi2ejam_format]{ejscreenapi2ejam_format()}}}
 
-\item{fillmissingcolumns}{optional. set to TRUE if you want the output
-to have exactly all the same columns as the EJAM table would, and
-fill in with NA values all the columns not provided by EJScreen API.}
+\item{...}{other parameters passed to \code{\link[=ejscreenit]{ejscreenit()}}}
 }
 \value{
 a data.table that looks like output of ejamit()$results_bysite

@@ -98,7 +98,8 @@ if (0 == 1) {  # collapsable list
          "datacreate_blockgroupstats2.32.R", "datacreate_blockgroupstats2.32_add_d_acs22columns.R",  "datacreate_blockgroupstats2.32_recalc_language.R",
          "datacreate_usastats2.32.R", "datacreate_usastats2.32_add_dsubgroups.R", "datacreate_avg.in.us.R", "datacreate_high_pctiles_tied_with_min.R", "datacreate_formulas.R", "datacreate_test_address_table.R", "datacreate_testpoints_testoutputs.R", 
          "datacreate_default_points_shown_at_startup.R", "datacreate_testpoints_5_50_500.R", "datacreate_ejscreenRESTbroker2table_na_filler.R", "datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R",
-         "datacreate_frs_.R", "datacreate_frs_by_mact.R", "datacreate_frs_by_sic.R", "datacreate_frsprogramcodes.R", "datacreate_epa_programs.R", "datacreate_testids_program_sys_id.R", "datacreate_testids_registry_id.R", "datacreate_naics_counts.R", "datacreate_naicstable.R", "datacreate_SIC.R", "datacreate_sic_counts.R", "datacreate_sictable.R", 
+         "datacreate_frs_.R", "datacreate_frs_by_mact.R", "datacreate_frs_by_sic.R", "datacreate_frsprogramcodes.R", "datacreate_epa_programs.R", 
+         "datacreate_epa_programs_defined.R", "datacreate_testids_program_sys_id.R", "datacreate_testids_registry_id.R", "datacreate_naics_counts.R", "datacreate_naicstable.R", "datacreate_SIC.R", "datacreate_sic_counts.R", "datacreate_sictable.R", 
          "datacreate_lat_alias.R", "datacreate_ejampackages.R", "datacreate_meters_per_mile.R"
   )
   setdiff(x, dir(rawdir, pattern = 'datacreate_') )   # confirm the organized list x is completely reflecting current actual files
@@ -608,6 +609,12 @@ system.time({
 # rstudioapi::documentOpen("./data-raw/datacreate_testpoints_testoutputs.R")
 source_maybe("datacreate_testpoints_testoutputs.R")
 
+ ######################################### #
+ ### datacreate_testshapes_2.R ####
+ # rstudioapi::documentOpen("./data-raw/datacreate_testshapes_2.R")
+ source_maybe("datacreate_testshapes_2.R")
+ 
+ 
 # ~------------------------------------------- ####
 ## related to ejscreenapi  ####
 ######################################### #
@@ -693,6 +700,10 @@ source_maybe('datacreate_frsprogramcodes.R')
 ### datacreate_epa_programs.R ####
 # documentOpen('./data-raw/datacreate_epa_programs.R')    #
 source_maybe('datacreate_epa_programs.R')
+
+### datacreate_epa_programs_defined.R ####
+# documentOpen('./data-raw/datacreate_epa_programs_defined.R')    #
+source_maybe('datacreate_epa_programs_defined.R')
 
 ### datacreate_testids_program_sys_id.R ####
 # documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
@@ -867,5 +878,5 @@ loadall()
 # DOCUMENTATION WEBSITE UPDATE #### 
 cat("\n\n You may want to use 'datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R' now \n\n")
 #  rstudioapi::documentOpen("./data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R")
-source_maybe("./data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R")
+source_maybe("datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R")
 ########################################## ######################################### # 

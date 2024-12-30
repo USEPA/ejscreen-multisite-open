@@ -52,6 +52,9 @@ test_interactively = function(ask = TRUE,
                               mydir = NULL
 ) {
   
+  # to make a sound when an error is hit and when it finishes
+  if (interactive()) {require(beepr)} # using beepr::beep(10) since utils::alarm() may not work 
+  
   ########################################## # ########################################## # 
   if (missing(y_basic) & ask) {
     if (missing(y_basic)) {
@@ -142,7 +145,8 @@ test_interactively = function(ask = TRUE,
         test_shape = c(
           "test-shapefile_xyz.R",
           "test-shapes_from_fips.R",
-          "test-ejam2shapefile.R"
+          "test-ejam2shapefile.R",
+          "test-shape2zip.R"
         ),
         test_getblocks = c(
           "test-radius_inferred.R",              # this is SLOW THOUGH
@@ -184,13 +188,14 @@ test_interactively = function(ask = TRUE,
           "test-mod_view_results.R"    
         ),
         test_app = c(
-          "test-report_residents_within_xyz.R",  # maybe belongs in a separate group about reports/tables?
+          #"test-report_residents_within_xyz.R",  # maybe belongs in a separate group about reports/tables?
           "test-ui_and_server.R",
           "test-FIPS-shiny-functionality.R", "test-latlon-shiny-functionality.R", "test-NAICS-shiny-functionality.R", "test-shapefile-shiny-functionality.R"
         ),
         test_test = c(
-          "test-test1.R", #   fast way to check this script via  biglist <- test_interactively(ask = FALSE, y_runsome = T, tname = 'test')
-          "test-test2.R"  #   fast way to check this script
+          "test-test.R"#, #   fast way to check this script via  biglist <- test_interactively(ask = FALSE, y_runsome = T, tname = 'test')
+          #"test-test2.R",  #   fast way to check this script
+          #"test-test.R"
         ),
         test_golem = c(
           "test-golem_utils_server.R", # not used
@@ -441,6 +446,13 @@ test_interactively = function(ask = TRUE,
                                     skipped, error_cant_test)]),
             seconds = secs
           ))
+          
+          if (sum(xtable[[i]]$flag) > 0) {
+            # using beepr::beep() since utils::alarm() may not work
+            # using :: might create a dependency but prefer that pkg be only in Suggests in DESCRIPTION
+            if (interactive()) {beepr::beep(10)}
+            cat("\n NOT ALL PASSED IN", tgroupname, "\n\n")
+          }
           
         } # finished this one group of test files
         

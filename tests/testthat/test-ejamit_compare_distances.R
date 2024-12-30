@@ -254,14 +254,13 @@ test_that(
 ######################################## #
 
 test_that(
-  "out_bydistance2results_bydistance() etc. work", 
+  "out_bydistance2results_bydistance(), out_bydistance2results_bysite_bydistance() no error", 
   {
-    
-    
     # expect_no_error({
     suppressWarnings({
       junk <- capture_output({
         
+        # takes maybe 5 seconds to re create this each time
         fout = ejamit_compare_distances_fulloutput(
           sitepoints = testpoints_10[1:2, ],
           radii = c(1,10),
@@ -280,31 +279,73 @@ test_that(
     expect_equal(
       NROW(x), 2
     )
-    expect_identical(
-      names(x), 
-      names(testoutput_ejamit_10pts_1miles$results_bysite)
-    )
     ########################## #
-    # out_bydistance2results_bysite_bydistance()  ok
+    # out_bydistance2results_bysite_bydistance() no crash
     
     expect_no_error({
       suppressWarnings({
         x = out_bydistance2results_bysite_bydistance(fout)
       })
     })
-    expect_identical(
-      x[[1]],
-      testoutput_ejamit_10pts_1miles$results_bysite[1:2,], ignore_attr=T
-    )
     ########################## #
     #  out_bydistance2results_bydistance_bysite  ok
     expect_no_error({
       x = out_bydistance2results_bydistance_bysite(fout)
     })
-    expect_identical( 
+    ########################## #
+  })
+######################################## #
+
+test_that(
+  "out_bydistance2results_bydistance() etc get same numbers as before", 
+  {
+    suppressWarnings({
+      junk <- capture_output({
+        
+        # takes maybe 5 seconds to re create this each time
+        fout = ejamit_compare_distances_fulloutput(
+          sitepoints = testpoints_10[1:2, ],
+          radii = c(1,10),
+          donuts_not_cumulative = F,
+          quiet = F, silentinteractive = F
+        )
+        
+      })
+    })
+    
+    suppressWarnings({
+      x = out_bydistance2results_bydistance(fout)
+    })
+    
+    ######## out_bydistance2results_bydistance() outputs are still formatted as before
+    
+    expect_identical(
+      names(x), 
+      names(testoutput_ejamit_10pts_1miles$results_bysite)
+    )
+    ########################## #
+    # out_bydistance2results_bysite_bydistance() give same results as before
+ 
+      suppressWarnings({
+        x = out_bydistance2results_bysite_bydistance(fout)
+      }) 
+    expect_equal(
+      x[[1]],
+      testoutput_ejamit_10pts_1miles$results_bysite[1:2,], ignore_attr = T      ########  outputs are same numbers as before
+    )
+    ########################## #
+    #  out_bydistance2results_bydistance_bysite give same results as before
+
+    x = out_bydistance2results_bydistance_bysite(fout)
+    expect_identical(
       x[[2]]$ejam_uniq_id,
       as.integer(c(2, 2)) # site number 2 is in this table once per distance
     )
+    
+    
+    # expect_equal(
+    #   x[[1]][1, ], # 1st distance,  1st site
+    #   testoutput_ejamit_10pts_1miles$results_bysite[1, ]
+    # )
     ########################## #
   })
-

@@ -126,6 +126,7 @@ reference:
 - subtitle: "EPA Programs"
   contents:
   - epa_programs
+  - epa_programs_defined
   - latlon_from_program
   - frsprogramcodes
   - frs_from_program
@@ -153,6 +154,7 @@ reference:
   - shapes_from_fips
   - shapes_counties_from_countyfips
   - shapes_blockgroups_from_bgfips
+  - shape2zip
   - ejam2shapefile
 - title: "Specify Counties etc."
   desc: >
@@ -321,6 +323,7 @@ reference:
 - title: "Test Data"
 - subtitle: "Examples of Inputs (Points, etc.)"
   contents:
+  - testshapes_2
   - testpoints_n
   - testpoints_5
   - testpoints_10
@@ -367,6 +370,8 @@ reference:
 - title: "Utilities / Misc."
   contents:
   - run_app
+  - testdata
+  - testdatafolder
   - dataload_from_pins
   - dataload_from_urlpins
   - dataload_from_local

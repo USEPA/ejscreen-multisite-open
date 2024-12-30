@@ -2,16 +2,16 @@
 % Please edit documentation in R/URL_FUNCTIONS_part1.R
 \name{url_envirofacts_data}
 \alias{url_envirofacts_data}
-\title{Get URLs of EnviroFacts API queries - DRAFT WORK IN PROGRESS}
+\title{Get URLs of EPA EnviroFacts API queries - DRAFT INCOMPLETE WORK IN PROGRESS}
 \usage{
 url_envirofacts_data(regid, as_html = FALSE, linktext)
 }
 \arguments{
+\item{regid}{EPA-regulated facility registry identification (ID), vector}
+
 \item{as_html}{Whether to return as just the urls or as html hyperlinks to use in a DT::datatable() for example}
 
 \item{linktext}{used as text for hyperlinks, if supplied and as_html=TRUE}
-
-\item{tablename}{such as tri_info}
 }
 \value{
 URL(s)
@@ -20,8 +20,6 @@ URL(s)
 Get URL(s) to query and get data on facilities from Envirofacts, in XML,JSON,CSV, or EXCEL format
 }
 \details{
-Lets you search a specific regulatory program database and filter by State, location, etc.
-
 see \url{https://www.epa.gov/enviro/web-services} and
 
 \url{https://www.epa.gov/enviro/envirofacts-data-service-api}

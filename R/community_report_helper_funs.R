@@ -384,7 +384,6 @@ generate_report_footnotes <- function(
   #  ejam2report(), and
   #  community_report_template.Rmd 
   
-  
   dieselnote = paste0("
   <span style= 'font-size: 9pt'>
   <p tabindex=\'13\' style='font-size: 9pt'><small>", diesel_caveat, "</small></p>
@@ -419,7 +418,8 @@ generate_report_footnotes <- function(
 #' @keywords internal
 #'
 generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny = FALSE, 
-                                 report_title = "EJAM Multisite Report") {
+                                 report_title = .community_report_title) {
+
   
   if (in_shiny) {
     shift_hsb <- 630
@@ -552,19 +552,65 @@ report_xmilesof <- function(radius, unitsingular = 'mile') {
 #'
 report_residents_within_xyz <- function(text1 = 'Residents within ', 
                                         radius = NULL, unitsingular = 'mile', 
-                                        nsites = 1, sitetype = c('latlon', 'fips', 'shp')[1]) {
+                                        nsites = 1, 
+                                        sitetype = c(
+                                          
+                                          # uploaded each site
+                                          'latlon', 'fips', 'shp',
+                                          'frs', 'epa_program_up',
+                                          'echo',
+                                          
+                                          # selected pulldown category
+                                          'naics', 'sic', 'mact', 
+                                          'epa_program_sel'
+                                          )[1]
+
+) {
   
   xmilesof <- report_xmilesof(radius, unitsingular = unitsingular)
   
   sitetype_nullna <- " place"
   if (is.null(sitetype)) {sitetype <- sitetype_nullna}
   sitetype[is.na(sitetype)] <- sitetype_nullna
-  if (sitetype == 'shp') {
-    location_type <- " selected polygon"
+  
+  # uploaded each site ---------------------------------- -
+  
+  if (sitetype == 'latlon') {
+    location_type <- " specified point"
+    
   } else if (sitetype == 'fips') {
-    location_type <- " selected Census unit"
-  } else if (sitetype == 'latlon') {
-    location_type <- " selected point"
+    location_type <- " specified Census unit"
+    
+  } else if (sitetype == 'shp') {
+    location_type <- " specified polygon"
+    
+  } else if (sitetype == 'frs') {
+    location_type <- " FRS ID-specified site"
+    
+  } else if (sitetype == 'epa_program_up') {
+    location_type <- " EPA Program ID-based site"
+    
+  } else if (sitetype == 'echo') {
+    location_type <- " regulated facility"
+
+    
+    # selected pulldown category ---------------------------------- -
+    
+  } else if (sitetype == 'naics') {
+    location_type <- " NAICS industry-specific site"
+    
+  } else if (sitetype == 'sic') {
+    location_type <- " SIC industry-specific site"
+    
+  } else if (sitetype == 'mact') {
+    location_type <- " MACT category site"
+    
+  } else if (sitetype == 'epa_program_sel') {
+    location_type <- " EPA program-specific site"
+    
+
+    # misc / unknown ---------------------------------- -
+    
   } else if (sitetype == sitetype_nullna) {
     # ok, use default filler
     location_type <- sitetype

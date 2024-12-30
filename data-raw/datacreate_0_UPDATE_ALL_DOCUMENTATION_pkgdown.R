@@ -1,6 +1,10 @@
 ############################################################# # ############################################################# # 
 {
   # Notes on initial setup of pkgdown site ####
+  #
+  # To specify which branch site gets published from: 
+  #    https://github.com/USEPA/EJAM/settings/pages ( if e.g. the repo is USEPA/EJAM )
+  #
   # see https://pkgdown.r-lib.org/articles/pkgdown.html#configuration
   # see https://usethis.r-lib.org/reference/use_pkgdown.html
   ### also possibly of interest:
@@ -103,6 +107,7 @@ update_pkgdown = function(
   if (dotests) {
     cat('doing unit tests \n')
     source("./tests/manual_nonalphabetical.R")
+    # rstudioapi::documentOpen("./tests/manual_nonalphabetical.R")
     test_interactively(ask = doask & interactive() & testinteractively )
   }
   
@@ -114,7 +119,7 @@ update_pkgdown = function(
   
   # ? devtools::test() 
   
-  ## [ FAIL 7 | WARN 7 | SKIP 1 | PASS 617 ] as of 5/13/24
+  ## 
   #################### # #################### # #################### # #################### # 
   
   # README & DOCUMENT ####

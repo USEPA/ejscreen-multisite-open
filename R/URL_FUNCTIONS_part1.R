@@ -54,6 +54,10 @@
 #'
 urls_clusters_and_sort_cols <- function(results_table) {
   
+  if (is.data.table(results_table)) {
+    setDF(results_table)
+    on.exit(setDT(results_table))
+  }
   ########################################### #  
   # Add columns with hyperlinks to site reports
   # 
@@ -191,6 +195,46 @@ unlinkify = function(x) {
 # unlinkify(test_dt1); class(unlinkify(test_dt1))
 # unlinkify(test_df2); class(unlinkify(test_df2))
 # unlinkify(test_dt2); class(unlinkify(test_dt2))  
+################################################### #################################################### #
+
+#' utility to prep URLs for being written to Excel
+#' 
+#' @param urls vector of urls such as from [url_ejscreen_report()]
+#'
+#' @param urltext The text to appear in Excel cells instead of just the URL showing
+#' @details
+#'   ## works best if using [openxlsx::writeData()] not [openxlsx::write.xlsx()]
+#'   ## to write this column of urls to a worksheet
+#'   lat <- c(30.977402, 32.515813); lon = c(-83.368997, -86.377325)
+#'   radius <- 1
+#'   urlejtest <- function(lat,lon,radius) {
+#'   paste0('https://ejscreen.epa.gov/mapper/EJscreen_SOE_report.aspx',
+#'     '?&geometry={\"spatialReference\":{\"wkid\":4326},\"x\":', 
+#'     lon,  ',\"y\":', lat, '}&distance=', radius,'&unit=9035&areatype=&areaid=&namestr=&f=report')
+#'   }
+#'   urls <- urlejtest(lat, lon, radius)
+#'   
+#'   urlx <- url_xl_style(urls, urltext = paste0("Report ", 1:2))
+#'   
+#'   wb <- openxlsx::createWorkbook()
+#'   openxlsx::addWorksheet(wb, sheetName = 'tab1')
+#'   writeData(wb, sheet = 1, x = urlx, startCol = 1, startRow = 2)
+#'   openxlsx::saveWorkbook(wb, file = 'test1.xlsx', overwrite = TRUE)
+#'   
+#'   # using just [write.xlsx()] is simpler but ignores the urltext param:
+#'   openxlsx::write.xlsx(data.frame(lat = lat, lon = lon, urlx), file = 'test2.xlsx')
+#'   
+#' @keywords internal
+#' @noRd
+#' 
+url_xl_style <- function(urls, urltext = urls) {
+  
+  x <- urls
+  names(x) <- urltext
+  class(x) <- 'hyperlink'
+  return(x)
+  
+}
 ################################################### #################################################### #
 
 
@@ -486,12 +530,11 @@ url_enviromapper <- function(lon, lat, as_html=FALSE, linktext, zoom=13) {
 ################################################### #################################################### #
 
 
-#' Get URLs of EnviroFacts API queries - DRAFT WORK IN PROGRESS
+#' Get URLs of EPA EnviroFacts API queries - DRAFT INCOMPLETE WORK IN PROGRESS
 #' 
 #' Get URL(s) to query and get data on facilities from Envirofacts, in XML,JSON,CSV, or EXCEL format
 #' 
-#' @details Lets you search a specific regulatory program database and filter by State, location, etc.
-#'
+#' @details 
 #'   see <https://www.epa.gov/enviro/web-services> and
 #'  
 #'   <https://www.epa.gov/enviro/envirofacts-data-service-api>
@@ -508,7 +551,7 @@ url_enviromapper <- function(lon, lat, as_html=FALSE, linktext, zoom=13) {
 #'   https://data.epa.gov/efservice/multisystem/minLatitude/35.465158/maxLatitude/52.912225/minLongitude/-104.387994/maxLongitude/-69.231744/naics_type/Beginning+with/naics_to/32611
 #'   https://data.epa.gov/efservice/multisystem/minLatitude/35.465158/maxLatitude/52.912225/minLongitude/-104.387994/maxLongitude/-69.231744/EXCEL
 #'   
-#' @param tablename such as tri_info 
+#' @param regid EPA-regulated facility registry identification (ID), vector
 #' @param as_html Whether to return as just the urls or as html hyperlinks to use in a DT::datatable() for example
 #' @param linktext used as text for hyperlinks, if supplied and as_html=TRUE
 #'

@@ -14,6 +14,8 @@ plot_ridgeline_ratios_ez(
 \item{out}{like from ejamit()}
 
 \item{varnames}{vector of colnames in out$results_bysite, the ratio variables}
+
+\item{maxratio}{cap on ratios to show so plot looks better (all values above cap get replaced by cap before plotting)}
 }
 \description{
 Make ridgeline plot of ratios of demographic score to its average

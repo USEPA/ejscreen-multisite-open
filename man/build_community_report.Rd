@@ -2,7 +2,7 @@
 % Please edit documentation in R/build_community_report.R
 \name{build_community_report}
 \alias{build_community_report}
-\title{Generate EJAM Summary Report in HTML within shiny app}
+\title{Generate EJScreen Multisite (EJAM) Summary Report in HTML within shiny app}
 \usage{
 build_community_report(
   output_df,

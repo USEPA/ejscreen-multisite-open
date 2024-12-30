@@ -2,15 +2,23 @@
 % Please edit documentation in R/download_latest_arrow_data.R
 \name{download_latest_arrow_data}
 \alias{download_latest_arrow_data}
-\title{Download latest versions of arrow datasets if user doesn't have them}
+\title{Download latest versions of arrow datasets if user doesn't have them already}
 \usage{
-download_latest_arrow_data(varnames = .arrow_ds_names, envir = globalenv())
+download_latest_arrow_data(varnames = .arrow_ds_names, repository = "USEPA/ejamdata")
 }
 \arguments{
 \item{varnames}{use defaults, or vector of names like "bgej" or use "all" to get all available}
 
-\item{envir}{if needed to specify environment other than default, e.g., globalenv() or parent.frame()}
+\item{repository}{repository name such as "USEPA/ejamdata"}
 }
 \description{
-Used when EJAM is loaded
+Used when EJAM package is attached
 }
+\details{
+Checks to see what is the latest version of datasets available according to a repository's latest release tag.
+Compares that to what version was last saved locally (as stored in the installed package's
+ejamdata_version.txt file).
+
+Relies on \code{\link[piggyback:pb_releases]{piggyback::pb_releases()}} to download data files from a specific release (version) of the package.
+}
+\keyword{internal}

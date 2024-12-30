@@ -9,7 +9,8 @@ report_residents_within_xyz(
   radius = NULL,
   unitsingular = "mile",
   nsites = 1,
-  sitetype = c("latlon", "fips", "shp")[1]
+  sitetype = c("latlon", "fips", "shp", "frs", "epa_program_up", "echo", "naics", "sic",
+    "mact", "epa_program_sel")[1]
 )
 }
 \arguments{

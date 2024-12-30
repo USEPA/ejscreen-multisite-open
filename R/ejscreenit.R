@@ -234,7 +234,17 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
   ################################################### #  ################################################### #
   if (interactive() & missing(interactiveprompt)) interactiveprompt <- TRUE
   if (any(is.null(fips))) {
-    pts <- latlon_from_anything(x, y, interactiveprompt = interactiveprompt) 
+    
+    ## Confusingly, parameters order differs between ejscreenapi_plus() and other functions like latlon_from_anything(),
+    ## where most functions in ejam use lat,lon order but ejscreenapi_plus() used x,y meaning lon,lat !!
+    ## That is further complicated by the fact that the functions are flexible in allowing the first param to be a file/ table of lat,lon if the 2d is missing.
+    ## So this code figures out what is what and interprets each param as appropriate:
+    if (missing(y) | is.null(y)) {
+      pts <- latlon_from_anything(anything = x, interactiveprompt = interactiveprompt)
+    } else {
+      pts <- latlon_from_anything(anything = y, lon_if_used = x, interactiveprompt = interactiveprompt)
+    }
+   
   } else {
     pts <- NULL
     radius <- 0
