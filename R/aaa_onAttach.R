@@ -33,6 +33,8 @@
   # startup msg shown at library(EJAM) or when reinstalling from source ####
   packageStartupMessage("Now running .onAttach(), as part of attaching the EJAM package.")
   
+  # make sure to run the manage-public-private script, in case user is not running the app
+  source(system.file("manage-public-private.R", package = "EJAM")) 
   
   # packageStartupMessage(
   #    
