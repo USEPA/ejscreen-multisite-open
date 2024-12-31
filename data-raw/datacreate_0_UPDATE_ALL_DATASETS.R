@@ -29,9 +29,7 @@ loadall <- function() {
 rmost2 <- function(notremove = c(
   c("askquestions", "localfolder", "td", "rawdir", 
     "source_maybe", "consoleclear" ,  "reload", "rmost2", "loadall"),
-  "blockwts", "blockpoints", "blockid2fips", "quaddata", "localtree",
-  "bgej", "bgid2fips",
-  "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact"
+  .arrow_ds_names
 )) {rmost(notremove = notremove)}
 ######################################### #
 source_maybe <- function(scriptname = NULL,
@@ -210,11 +208,7 @@ if (!is.null(x)) {
   print(x)  
   
   pin_seen <- x$name
-  pin_expected = c(
-    'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-    'bgej', 'bgid2fips', # note that 'bg_cenpop2020' and 'bgpts' are in EJAM/data/ not pins
-    'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"
-  )
+  pin_expected = .arrow_ds_names
   if (length(setdiff2(pin_seen, pin_expected)) > 0 ) {
     message("Expected to see on pin board but not there: ", paste0(setdiff(pin_expected, pin_seen), collapse = ", "))
     message("See on on pin board but not expected: ", paste0(setdiff(pin_seen, pin_expected), collapse = ", "))
@@ -839,11 +833,7 @@ source_maybe("datacreate_meters_per_mile.R")
 
 cat("Which datasets are attached or can be lazyloaded in memory, of those you may want to pin?")
 x = dataload_from_pins(justchecking = TRUE, silent = TRUE, 
-                       varnames = c(
-                         "blockwts", "blockpoints", "blockid2fips", "quaddata", # "localtree",
-                         "bgej", "bgid2fips",
-                         "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact"
-                       )
+                       varnames = .arrow_ds_names
 )
 cat("These datasets are currently seen on the pins board: \n")
 x[,c("name", "created", "ejscreen_version")]
@@ -866,11 +856,7 @@ datawrite_to_pins(varnames = these) # it will ask interactively to confirm which
 
 
 x = dataload_from_pins(justchecking = TRUE, silent = TRUE, 
-                       varnames = c(
-                         "blockwts", "blockpoints", "blockid2fips", "quaddata", # "localtree",
-                         "bgej", "bgid2fips",
-                         "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact"
-                       )
+                       varnames = .arrow_ds_names
 )
 cat("These datasets are currently seen on the pins board: \n")
 x[,c("name", "created", "ejscreen_version")]

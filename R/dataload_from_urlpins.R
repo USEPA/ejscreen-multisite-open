@@ -11,22 +11,14 @@
 #'
 #' @export
 #'
-dataload_from_urlpins <- function(varnames = c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-                                               # load only if /when needed:
-                                               'bgej',
-                                               'bgid2fips',
-                                               'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")[1:4],
+dataload_from_urlpins <- function(varnames = .arrow_ds_names[1:4],
                                   server = "https://ejanalysis.github.io/ejscreendata/pins/",
                                   envir = globalenv(),
                                   justchecking = FALSE) {
   
   board <- pins::board_url(server)
   
-  if (all(varnames == 'all')) {varnames <- c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-                                             # load only if /when needed:
-                                             'bgej',
-                                             'bgid2fips',
-                                             'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")}
+  if (all(varnames == 'all')) {varnames <- .arrow_ds_names}
   if (justchecking) {
     x <- board  %>% pins::pin_search() # like  pin_list()
     return(x)
