@@ -58,6 +58,9 @@ ejscreen_version_global <- desc$get("EJScreenVersion")#as.vector(metadata_mappin
 ## for public branch, want to hide so it can be legible when embedded as an iframe
 show_full_header_footer <- FALSE
 
+# advanced tab ####
+default_hide_advanced_settings <- TRUE
+
 ## (IP address  for ejscreenapi module) ###########################################
 # ips <- c('10.147.194.116', 'awsgeopub.epa.gov', '204.47.252.51', 'ejscreen.epa.gov')
 # whichip <- ips[4]

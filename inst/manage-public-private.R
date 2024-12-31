@@ -11,7 +11,7 @@ default_hide_about_tab <- isTRUE(golem_opts$isPublic)
 default_hide_plot_histo_tab <- isTRUE(golem_opts$isPublic)
 
 # Advanced settings
-default_hide_advanced_settings <- isTRUE(golem_opts$isPublic)
+default_hide_advanced_settings <- TRUE # isTRUE(golem_opts$isPublic)
 
 # Written Report
 default_hide_written_report <- TRUE
