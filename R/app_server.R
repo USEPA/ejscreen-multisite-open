@@ -172,6 +172,7 @@ app_server <- function(input, output, session) {
   
   ## hide vs show ADVANCED tab at start  ---------------------- #   ***
   
+    # could use      global_or_param()   here instead
   if (!is.null(get_golem_options('advanced'))) { # option provided to run_app()
     if (get_golem_options("advanced")) {
       print("showing advanced tab")
