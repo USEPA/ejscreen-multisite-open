@@ -5,9 +5,7 @@
 \title{Load datasets from local disk folder}
 \usage{
 dataload_from_local(
-  varnames = c(c("blockwts", "blockpoints", "quaddata"), "bgej", "bgid2fips",
-    "blockid2fips", c("frs", "frs_by_programid", "frs_by_naics", "frs_by_sic",
-    "frs_by_mact"))[1:3],
+  varnames = .arrow_ds_names[1:3],
   ext = c(".arrow", ".rda")[1],
   fun = c("arrow::read_ipc_file", "load")[1],
   envir = globalenv(),

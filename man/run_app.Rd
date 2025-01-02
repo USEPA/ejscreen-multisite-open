@@ -61,6 +61,9 @@ An object that represents the app. Printing the object or passing it to \code{\l
 \description{
 Launches shiny web app from RStudio - \code{\link[=app_run_EJAM]{app_run_EJAM()}} and \code{\link[=run_app]{run_app()}} are the same
 }
+\details{
+run_app( isPublic = TRUE ) will launch the public-facing version.
+}
 \seealso{
 \code{\link[=app_run_EJAM]{app_run_EJAM()}}
 }

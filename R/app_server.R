@@ -73,7 +73,7 @@ app_server <- function(input, output, session) {
     req(input$bt_rad_buff)
     sanitize_numeric(input$bt_rad_buff)
   })
-
+  
   
   #
   # provide nice message if disconnected, via shinydisconnect package
@@ -98,7 +98,7 @@ app_server <- function(input, output, session) {
       options(shiny.testmode = TRUE)
       cat('shiny.testmode == TRUE\n') 
     } else {
-      if(!isTRUE(getOption("shiny.testmode"))) {
+      if (!isTRUE(getOption("shiny.testmode"))) {
         options(shiny.testmode = FALSE)
         cat('shiny.testmode == FALSE\n')
       }
@@ -144,12 +144,15 @@ app_server <- function(input, output, session) {
   #   tabPanel(title = 'EJScreen Batch Tool',
   #   tabPanel(title = 'Advanced Settings',
   
-  ## buttons to switch tabs (used to navigate if the clickable tab controls themselves are "hidden") ---------------------- #
+  ##     -------------------------- BUTTONS to switch tabs ---------------------- #
   
-  ## "About" button/link
-  observeEvent(input$link_to_about_page, {updateTabsetPanel(session, inputId = "all_tabs", selected = "About EJAM")})
+  # (to navigate if clickable tab controls are "hidden") 
+  
+  ## "About" button/link  (might not be used)
+  # observeEvent(input$link_to_about_page, {updateTabsetPanel(session, inputId = "all_tabs", selected = "About EJAM")})
+  
   ## "back to site selection" buttons (to go back to site selection tab from results tab)
-  observeEvent(input$back_to_site_sel,  {updateTabsetPanel(session, inputId = 'all_tabs', selected = 'Site Selection')})
+  observeEvent(input$back_to_site_sel,  {updateTabsetPanel(session, inputId = 'all_tabs', selected = 'Site Selection')})  # might not  be used
   observeEvent(input$back_to_site_sel2, {updateTabsetPanel(session, inputId = 'all_tabs', selected = 'Site Selection')})
   ## "return to results" button (to go from site selection to results)
   observeEvent(input$return_to_results, {updateTabsetPanel(session, inputId = "all_tabs", selected = "See Results")})  # updateTabsetPanel(session, 'results_tabs', 'Summary')
@@ -161,9 +164,15 @@ app_server <- function(input, output, session) {
       shinyjs::hide(id = 'return_to_results')
     }
   })
+  ##    --------------------------  TABS to show/hide    -------------------------- -
+  
+  ## start app without showing Results since no analysis done yet
+  hideTab(inputId = 'all_tabs', target = 'See Results')
+  ## note the app will show and select the results tab once results are finished processing
   
   ## hide vs show ADVANCED tab at start  ---------------------- #   ***
   
+    # could use      global_or_param()   here instead
   if (!is.null(get_golem_options('advanced'))) { # option provided to run_app()
     if (get_golem_options("advanced")) {
       print("showing advanced tab")
@@ -175,16 +184,32 @@ app_server <- function(input, output, session) {
     }
   }
   ## hide vs show ADVANCE tab on button click (button in 'About EJAM' tab) ***
+  
   observeEvent(input$ui_show_advanced_settings,
                {showTab(inputId = 'all_tabs', target = 'Advanced Settings')})
   observeEvent(input$ui_hide_advanced_settings,
                {hideTab(inputId = 'all_tabs', target = 'Advanced Settings')})
-  ## hide vs show (full) Written Report tab
+  
+  ## hide vs show ABOUT tab  ---------------------- #   ***
+  if (default_hide_about_tab) {
+    hideTab(inputId = 'all_tabs', target = 'About') 
+  }
+  ## hide vs show WRITTEN REPORT tab ---------------------- #   ***
   if (default_hide_written_report) {
-    hideTab(inputId = 'results_tabs', target = 'Written Report')
+    hideTab(inputId = 'results_tabs', target = 'Written Report') 
+  }
+ 
+  ## hide vs show BARPLOTS tab  ---------------------- #   ***
+  if (default_hide_plot_barplots_tab) {
+    hideTab(inputId = 'details_subtabs', target = 'Plot Average Scores')
+  }
+    
+  ## hide vs show HISTOGRAMS tab  ---------------------- #   ***
+  if (default_hide_plot_histo_tab) {
+    hideTab(inputId = 'details_subtabs', target = 'Plot Full Range of Scores')
   }
   
-  ## advanced tab size cap on file uploads  ---------------------- #
+  ## advanced tab provides size cap on file uploads  ---------------------- #
   
   max_mb_upload_react <- reactive({
     x <- as.numeric((input$max_mb_upload))
@@ -226,16 +251,28 @@ app_server <- function(input, output, session) {
   # ______ SELECT SITES ________####
   #. ####
   
+  naics_counts_filtered <- reactive({
+    if (input$naics_digits_shown == "detailed") {
+      naics_counts # [nchar(naics_counts$NAICS) %in% 2:6, ]
+    } else {
+      naics_counts[nchar(naics_counts$NAICS) == 3, ]
+    }
+  })
+  
   # update ss_select_NAICS input options ###
-  observeEvent(input$add_naics_subcategories, {
+  observeEvent(eventExpr = {
+    input$add_naics_subcategories
+    input$naics_digits_shown
+  },
+  handlerExpr = {
     #req(input$add_naics_subcategories)
     
     ## switch labels based on subcategory radio button
     
     if (input$add_naics_subcategories) {
-      naics_choices <- setNames(naics_counts$NAICS,naics_counts$label_w_subs)
+      naics_choices <- setNames(naics_counts_filtered()$NAICS, naics_counts_filtered()$label_w_subs)
     } else{
-      naics_choices <- setNames(naics_counts$NAICS,naics_counts$label_no_subs)
+      naics_choices <- setNames(naics_counts_filtered()$NAICS, naics_counts_filtered()$label_no_subs)
     }
     
     vals <- input$ss_select_naics
@@ -289,7 +326,7 @@ app_server <- function(input, output, session) {
   #   submitted_upload_method(current_upload_method())
   # })
   
-
+  
   
   
   observeEvent(input$show_data_preview,
@@ -550,9 +587,9 @@ app_server <- function(input, output, session) {
     ## if acceptable file type, read in; if not, send warning text
     input_file_path <- input$ss_upload_latlon$datapath
     # ideally would quickly check file size here before actually trying to read the entire file in case it is > cap.
-   
+    
     sitepoints <- as.data.table(read_csv_or_xl(fname= input_file_path))
-                  
+    
     # DO NOT USE THE UPLOAD IF IT HAS MORE THAN MAX POINTS ALLOWED FOR UPLOAD
     #
     if (NROW(sitepoints) > input$max_pts_upload) {
@@ -603,7 +640,7 @@ app_server <- function(input, output, session) {
     ## if acceptable file type, read in; if not, send warning text
     
     read_frs <- as.data.table(read_csv_or_xl(fname= input_file_path))
-      # returns a data.frame
+    # returns a data.frame
     cat("ROW COUNT IN FILE THAT SHOULD provide FRS REGISTRY_ID: ", NROW(read_frs), "\n")
     #include frs_is_valid verification check function, must have colname REGISTRY_ID
     if (frs_is_valid(read_frs)) {
@@ -671,7 +708,7 @@ app_server <- function(input, output, session) {
         
         #   2. GET FACILITY LAT/LON INFO FROM NAICS CODES
         
-        sitepoints <- frs_from_naics(inputnaics, children = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
+        sitepoints <- frs_from_naics(inputnaics, childrenForNAICS = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
         
         sitepoints[, ejam_uniq_id := .I]
         data.table::setcolorder(sitepoints, 'ejam_uniq_id')
@@ -684,7 +721,7 @@ app_server <- function(input, output, session) {
           shiny::validate('No valid locations found under this NAICS code.')
         }
       } else{
-        sitepoints <- frs_from_naics(inputnaics, children = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
+        sitepoints <- frs_from_naics(inputnaics, childrenForNAICS = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
         
         sitepoints[, ejam_uniq_id := .I]
         data.table::setcolorder(sitepoints, 'ejam_uniq_id')
@@ -733,8 +770,8 @@ app_server <- function(input, output, session) {
     
     
     read_pgm <- as.data.table(read_csv_or_xl(fname= input_file_path))
-                   
-             # returns a data.frame
+    
+    # returns a data.frame
     cat("ROW COUNT IN file that should have program, pgm_sys_id: ", NROW(read_pgm), "\n")
     ## error if no columns provided
     if (!any(c('program','pgm_sys_id') %in% tolower(colnames(read_pgm)))) {
@@ -901,7 +938,7 @@ app_server <- function(input, output, session) {
   data_up_fips <- reactive({
     req(input$ss_upload_fips)
     
-  
+    
     
     input_file_path <- input$ss_upload_fips$datapath
     ## if acceptable file type, read in; if not, send warning text
@@ -909,43 +946,43 @@ app_server <- function(input, output, session) {
     cat("COUNT OF ROWS IN FIPS FILE: ", NROW(fips_dt),"\n")
     
     ################################################################################### #
-
-      fips_vec <- fips_from_table(fips_table = fips_dt, addleadzeroes = TRUE, inshiny = TRUE)
-      #fips_vec <- fips_out$vec
+    
+    fips_vec <- fips_from_table(fips_table = fips_dt, addleadzeroes = TRUE, inshiny = TRUE)
+    #fips_vec <- fips_out$vec
+    
+    if (is.null(fips_vec)) {
+      disable_buttons[['FIPS']] <- TRUE
+      invalid_alert[['FIPS']] <- 0  # hides the invalid site warning
+      an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
+      fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST', 'FIPS.COUNTY', 'FIPS.TRACT')
       
-      if (is.null(fips_vec)) {
-        disable_buttons[['FIPS']] <- TRUE
-        invalid_alert[['FIPS']] <- 0  # hides the invalid site warning
-        an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
-        fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST', 'FIPS.COUNTY', 'FIPS.TRACT')
-        
-        validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
-      } else{
-        disable_buttons[['FIPS']] <- FALSE
-        cat("COUNT OF FIPS via fips_from_table(): ", length(fips_vec), '\n')
-        # now let ejamit() do the rest for the FIPS case
-        fips_vec
-      }
-      fips_vec <- fips_lead_zero(fips_vec)
-      fips_is_valid <- fips_valid(fips_vec)
+      validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
+    } else{
+      disable_buttons[['FIPS']] <- FALSE
+      cat("COUNT OF FIPS via fips_from_table(): ", length(fips_vec), '\n')
+      # now let ejamit() do the rest for the FIPS case
+      fips_vec
+    }
+    fips_vec <- fips_lead_zero(fips_vec)
+    fips_is_valid <- fips_valid(fips_vec)
+    
+    if (sum(fips_is_valid) > 0) {
       
-      if (sum(fips_is_valid) > 0) {
-
-        numna <- sum(!fips_is_valid)
-        num_notna <- length(fips_vec) - sum(!fips_is_valid)
-        num_valid_pts_uploaded[['FIPS']] <- num_notna
-        invalid_alert[['FIPS']] <- numna # this updates the value of the reactive invalid_alert()
-        cat("Number of FIPS codes:  "); cat(length(fips_vec), 'total,', num_notna, 'valid,', numna, ' invalid \n')
-        
-        fips_vec
-      } else {
-        invalid_alert[['FIPS']] <- 0 # hides the invalid site warning
-        an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites/shapes
-        disable_buttons[['FIPS']] <- TRUE
-        ## if not matched, return this message
-        shiny::validate('No valid FIPS codes found in this file.')
-      }
-  
+      numna <- sum(!fips_is_valid)
+      num_notna <- length(fips_vec) - sum(!fips_is_valid)
+      num_valid_pts_uploaded[['FIPS']] <- num_notna
+      invalid_alert[['FIPS']] <- numna # this updates the value of the reactive invalid_alert()
+      cat("Number of FIPS codes:  "); cat(length(fips_vec), 'total,', num_notna, 'valid,', numna, ' invalid \n')
+      
+      fips_vec
+    } else {
+      invalid_alert[['FIPS']] <- 0 # hides the invalid site warning
+      an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites/shapes
+      disable_buttons[['FIPS']] <- TRUE
+      ## if not matched, return this message
+      shiny::validate('No valid FIPS codes found in this file.')
+    }
+    
   }) # END OF FIPS UPLOAD
   ################################################################################### #
   
@@ -1437,7 +1474,7 @@ app_server <- function(input, output, session) {
     }
   })
   
-
+  
   
   ## disable radius slider when FIPS is selected
   observe({
@@ -1471,7 +1508,7 @@ app_server <- function(input, output, session) {
   
   ## record radius at time of analysis
   submitted_radius_val <- reactiveVal(NULL)
-
+  
   # set/update based on advanced tab set by global.R and then might be changed by a user
   observeEvent(
     input$default_miles,
@@ -1896,7 +1933,7 @@ app_server <- function(input, output, session) {
         
         ## stop and return NULL if no valid sites left after doaggregate
         if(all(dup$valid == FALSE)){
-         message('No valid sites remaining. Quitting analysis')
+          message('No valid sites remaining. Quitting analysis')
           data_processed(NULL)
           
           progress_doagg$close()
@@ -2078,6 +2115,12 @@ app_server <- function(input, output, session) {
     }
     ## update overall progress bar
     progress_all$inc(1/3, message = 'Done processing! Loading results now', detail = NULL)
+    num_invalid_sites <- NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == F,])
+    
+    if (num_invalid_sites > 0) {
+      showNotification(paste(num_invalid_sites, " sites were excluded from the Community Report results. Refer to the 'Invalid Reason' column in the details panel for more information."), 
+                       type = "warning", duration = 7)
+    }
     
     # assign batch.summarize output to data_summarized reactive ### #
     data_summarized(outsum)
@@ -2087,6 +2130,7 @@ app_server <- function(input, output, session) {
     
     ## switch tabs and jump to top of screen
     shinyjs::js$toTop();
+    showTab(session = session, inputId = 'all_tabs', target = 'See Results') # in case was hidden because app had just launched
     updateTabsetPanel(session, inputId = "all_tabs",     selected = "See Results")
     updateTabsetPanel(session, inputId = 'results_tabs', selected = 'Community Report')
   })  # end of observeEvent based on Start analysis button called input$bt_get_results
@@ -2099,10 +2143,10 @@ app_server <- function(input, output, session) {
   
   # *** Ratios were already calculated by doaggregate() 
   # *** UNLESS somehow the user has changed the defaults to doaggregate(  calculate_ratios = FALSE  )
-
+  
   ############################# #
   ##   demog RATIOS of overall scores to US or state D AVG ####
-
+  
   ratio.to.us.d    <- reactive({unlist(
     data_processed()$results_overall[ , c(..names_d_ratio_to_avg,       ..names_d_subgroups_ratio_to_avg      )]
   ) }) # ???
@@ -2406,35 +2450,35 @@ app_server <- function(input, output, session) {
   
   v1_summary_plot_state <- reactive({
     req(data_processed())
-      if (!is.null(cur_button())) {
-        # Extract the selected row number from cur_button
-        selected_row <- as.numeric(gsub('button_', '', isolate(cur_button())))
-        
+    if (!is.null(cur_button())) {
+      # Extract the selected row number from cur_button
+      selected_row <- as.numeric(gsub('button_', '', isolate(cur_button())))
+      
+      ejam2barplot(
+        data_processed(),
+        sitenumber = selected_row,
+        varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+        main = "Demographics at the Analyzed Location \n Compared to State Averages"
+      )
+    } else {
+      # No specific location selected, use a default plot setup
+      if (input$Custom_title_for_bar_plot_of_indicators == '') {
+        # Default plot title
         ejam2barplot(
           data_processed(),
-          sitenumber = selected_row,
           varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
-          main = "Demographics at the Analyzed Location Compared to State Averages"
+          main = "Demographics at the Analyzed Location \n Compared to State Averages"
         )
       } else {
-        # No specific location selected, use a default plot setup
-        if (input$Custom_title_for_bar_plot_of_indicators == '') {
-          # Default plot title
-          ejam2barplot(
-            data_processed(),
-            varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
-            main = "Demographics Compared to State Averages"
-          )
-        } else {
-          # Custom title provided by user
-          # Note: This piece may not be needed for state plot
-          ejam2barplot(
-            data_processed(),
-            varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
-            main = input$Custom_title_for_bar_plot_of_indicators
-          )
-        }
+        # Custom title provided by user
+        # Note: This piece may not be needed for state plot
+        ejam2barplot(
+          data_processed(),
+          varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+          main = input$Custom_title_for_bar_plot_of_indicators
+        )
       }
+    }
   })
   
   ###################  #
@@ -2450,12 +2494,12 @@ app_server <- function(input, output, session) {
         plot_barplot_ratios_ez(
           out = data_processed(),
           varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),
-          main = "Demographics at the Analyzed Location Compared to US Overall",
+          main = "Demographics at the Analyzed Location \n Compared to US Overall",
           single_location = TRUE,
           row_index = selected_row
         )
       } else {
-
+        
         if (input$Custom_title_for_bar_plot_of_indicators == '') {
           
           #Default way
@@ -2476,7 +2520,7 @@ app_server <- function(input, output, session) {
       }
     }
     else if (input$plotkind_1pager == 'ridgeline') {
-
+      
       ## ratios by site  (demog each site / demog avg in US)
       ratio.to.us.d.bysite <- data_processed()$results_bysite[ ,  c(
         ..names_d_ratio_to_avg,
@@ -2615,7 +2659,7 @@ app_server <- function(input, output, session) {
         v1_summary_plot()
       })
     }
-
+    
   })
   
   
@@ -2661,15 +2705,15 @@ app_server <- function(input, output, session) {
       
       # Get the name of the selected location
       location_name <- output_df$statename
-  
+      
       locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""), 
                             " of this ", ifelse(submitted_upload_method() == 'SHP', "polygon", 
-                                                 ifelse(submitted_upload_method() == 'FIPS', "Census unit", "point")))
+                                                ifelse(submitted_upload_method() == 'FIPS', "Census unit", "point")))
       
       # Create a filtered version of report_map for single location #####################  #
       
       progress$set(value = 0.4, detail = "Creating map...")
-
+      
       single_location_map <- reactive({
         
         req(data_processed())
@@ -2783,6 +2827,168 @@ app_server <- function(input, output, session) {
                                                  ifelse(submitted_upload_method() == 'FIPS', "shapes", "points")))
       map_to_use <- report_map()
       
+      v1_summary_plot_report <- reactive({
+        # req(data_summarized()) # it used to say this is required here but I dont think it actually is used
+        req(data_processed())
+        # data_processed() needed for ridgeline or boxplot, and ratio.to.us.d() which is made from data_processed() is needed for boxplots,
+        
+        if (input$plotkind_1pager == 'bar') {
+          if (!is.null(cur_button())) {
+            selected_row <- as.numeric(gsub('button_', '', isolate(cur_button())))
+            plot_barplot_ratios_ez(
+              out = data_processed(),
+              varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),
+              main = "Demographics at the Analyzed Location \n Compared to US Overall",
+              single_location = TRUE,
+              row_index = selected_row
+            )
+          } else {
+            
+            if (input$Custom_title_for_bar_plot_of_indicators == '') {
+              
+              #Default way
+              plot_barplot_ratios_ez(
+                out = data_processed(),
+                varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), 
+                main = "Demographics at the Analyzed Location \n Compared to US Overall"
+              )
+              
+            } else {
+              #If there is a new title in advanced settings
+              plot_barplot_ratios_ez(
+                out = data_processed(),
+                varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), 
+                main = input$Custom_title_for_bar_plot_of_indicators
+              )
+            }
+            
+          }
+        }
+        else if (input$plotkind_1pager == 'ridgeline') {
+          
+          ## ratios by site  (demog each site / demog avg in US)
+          ratio.to.us.d.bysite <- data_processed()$results_bysite[ ,  c(
+            ..names_d_ratio_to_avg,
+            ..names_d_subgroups_ratio_to_avg
+          )]
+          plot_ridgeline_ratios(ratio.to.us.d.bysite)
+          
+        } else {if (input$plotkind_1pager == "box") {
+          
+          ## *BOXPLOTS for short report (all sites D ratios vs US avg) ####
+          
+          # compare / merge with  boxplots_ratios()  ***
+          
+          # ****************************************************************************
+          
+          ## ratios by site  (demog each site / demog avg in US)
+          ratio.to.us.d.bysite <- data_processed()$results_bysite[ ,  c(
+            ..names_d_ratio_to_avg,
+            ..names_d_subgroups_ratio_to_avg
+          )]
+          ## assign column names (could use left_join like elsewhere)
+          names(ratio.to.us.d.bysite) <-  fixcolnames(c(names_d, names_d_subgroups), 'r', 'short') # is this right?
+          ## pivot data from wide to long - now one row per indicator
+          ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>%
+            tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>%
+            ## replace Infs with NAs - these happen when indicator at a site is equal to zero
+            dplyr::mutate(value = dplyr::na_if(value, Inf)) #%>%
+          # NOTE NOW ratio.to.us.d.bysite IS A tibble, not data.frame, and is in LONG format now. !!!
+          
+          ## find max of ratios
+          max.ratio.d.bysite <- max(ratio.to.us.d.bysite$value, na.rm = TRUE)
+          max.name.d.bysite <- ratio.to.us.d.bysite$indicator[which.max(ratio.to.us.d.bysite$value)]
+          ## specify  upper bound for ratios (will drop values above this from graphic)
+          q75.maxof75s <- max(quantile(ratio.to.us.d.bysite$value, 0.75, na.rm = TRUE),na.rm = TRUE)
+          ylimit <- ceiling(q75.maxof75s) # max of 75th pctiles rounded up to nearest 1.0x?
+          max_limit <- max(3, ylimit, na.rm = TRUE) #
+          # perhaps want a consistent y limits to ease comparisons across multiple reports the user might run.
+          #  If the max value of any ratio is say 2.6, we might want ylim to be up to 3.0,
+          #  if the max ratio is 1.01, do we still want ylim to be up to 3.0??
+          #  if the max ratio or even max of 95th pctiles is >10, don't show it, but
+          #  what if the 75th pctile value of some indicator is >10? expand the scale to always include all 75ths.
+          
+          ## find 75th %ile of ratios for the indicator with the max ratio
+          q75.ratio.d.bysite <- quantile(ratio.to.us.d.bysite$value[ratio.to.us.d.bysite$indicator == max.name.d.bysite], 0.75, na.rm = TRUE)
+          
+          # to use for dot showing the mean ratio of each indicator *** NOT USED?
+          meanratios <- data.frame(
+            indicator = fixcolnames(c(names_d, names_d_subgroups), 'r', 'short'),      # is this right?
+            value = unlist(ratio.to.us.d()[c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg)])
+          )
+          ## paste subtitle for boxplot
+          subtitle <- paste0('Within ', sanitized_bt_rad_buff(),' miles of one site, ',
+                             max.name.d.bysite, ' is ', round(max.ratio.d.bysite,1), 'x the US average\n' #,
+                             # 'and 1 in 4 sites is at least ',round(q75.ratio.d.bysite,2), 'x the US average'
+          )
+          ## specify # of characters to wrap indicator labels
+          n_chars_wrap <- 13
+          towhat_nicename <- "US Average"
+          mymaintext <- paste0("Ratios to ", towhat_nicename, ", as distributed across these sites")
+          
+          ##################################################################################### #
+          
+          ## much of this is plotting code is based on boxplots_ratios() - should consolidate
+          
+          ggplot2::ggplot(
+            ratio.to.us.d.bysite  ,
+            # mydata,
+            aes(x = indicator, y = value )
+          ) + #, fill = indicator)) +
+            ## draw boxplots
+            geom_boxplot() +
+            
+            #  show average persons ratio to US,  for each boxplot column
+            # xxx   Try to fix / use this:
+            # geom_point(
+            #   data =  meanratios,
+            #   aes(x = reorder(indicator, meanratios), y = value), colour = "orange", size = 2
+            # ) +
+            
+            ## wrap indicator labels on x axis
+            scale_x_discrete(labels = function(x) stringr::str_wrap(x, n_chars_wrap)) +
+            ## set limits for ratio on y axis - use hard limit at 0, make upper limit 5% higher than max limit
+            scale_y_continuous(limits = c(0,max_limit), expand = expansion(mult = c(0, 0.05))) +
+            ## alternate version that clips top and bottom axes exactly at (0, max_limit)
+            # scale_y_continuous(limits = c(0,max_limit), expand = c(0,0)) +
+            
+            ## add horizontal line at 1
+            geom_hline(aes(yintercept = 1)) +
+            ## set plot axis labels and titles
+            labs(x = "",
+                 y = "Ratio of Indicator values in selected locations\n vs. US average value",
+                 subtitle = subtitle,
+                 title = mymaintext ) +
+            # title = 'Ratio vs. US Average for Demographic Indicators') +
+            
+            ## draw individual dot per site? at least for small datasets?/few facilities - removed as they cover up boxplots with large datasets
+            #geom_jitter(color = 'black', size = 0.4, alpha = 0.9, ) +
+            
+            ## set color scheme ?
+            # actually do not need each a color, for boxplot.
+            # scale_fill_brewer(palette = 'Dark2') +
+            ## alternate color scheme
+            # viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
+            
+            ggplot2::theme_bw() +
+            ggplot2::theme(
+              ## set font size of text
+              text = ggplot2::element_text(size = 14),
+              #axis.text  = ggplot2::element_text(size = 16),
+              ## set font size of axis titles
+              axis.title = ggplot2::element_text(size = 16),
+              ## center and resize plot title
+              plot.title = ggplot2::element_text(size = 22, hjust = 0.5),
+              ## center subtitle
+              plot.subtitle = ggplot2::element_text(hjust = 0.5),
+              ## hide legend
+              legend.position = 'none'
+            )  # end of ggplot section
+        }
+        }
+        # box
+      })
+      
       params <- list(
         output_df = output_df,
         analysis_title =  sanitized_analysis_title(),
@@ -2792,7 +2998,7 @@ app_server <- function(input, output, session) {
         in_shiny = FALSE,
         filename = NULL,
         map = map_to_use,
-        summary_plot = v1_summary_plot()
+        summary_plot = v1_summary_plot_report()
       )
     }
     
@@ -2854,9 +3060,9 @@ app_server <- function(input, output, session) {
   
   
   
-
   
- 
+  
+  
   
   
   #############################################################################  #
@@ -2889,7 +3095,7 @@ app_server <- function(input, output, session) {
                         names_e #,
                         # no names here corresponding to number above x threshold, state, region ??
     )
-
+    
     tableheadnames <- c('Site ID', 'Invalid Reason','Est. Population', 'Barplot Report',  # should confirm that Barplot/Community Report belongs here
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report',
                         fixcolnames(c(names_d, names_d_subgroups, names_e), 'r', 'shortlabel'))
@@ -2924,7 +3130,7 @@ app_server <- function(input, output, session) {
                                              id = paste0('button_', index), 
                                              label = "Generate",
                                              onclick = paste0('Shiny.onInputChange(\"select_button', index,'\", this.id)' )
-                                             ),
+                                  ),
                                   '')
       ) %>%
       
@@ -3044,7 +3250,7 @@ app_server <- function(input, output, session) {
       file.copy(from = EJAM:::app_sys(paste0(Rmd_folder, 'communityreport.css')),
                 to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
     }
-
+    
     # Copy logo file
     if (!file.exists(file.path(tempdir(), 'www', 'EPA_logo_white_2.png'))) {
       dir.create(file.path(tempdir(), 'www'), showWarnings = FALSE, recursive = TRUE)
@@ -3054,7 +3260,7 @@ app_server <- function(input, output, session) {
     return(tempReport)
   }
   ##############################################  #
-
+  
   ## Observe 1-site-report buttons ####
   # (1 button per site in the table of sites, to see barplot for that site)
   observeEvent(
@@ -3091,7 +3297,7 @@ app_server <- function(input, output, session) {
           easyClose = TRUE,
           size = "m"
         ))
-
+        
       })
   #############################################################################  #
   
@@ -3104,13 +3310,13 @@ app_server <- function(input, output, session) {
   output$report_version_date <- renderUI({
     message(paste0("shinytestmode = ", getOption("shiny.testmode")))
     p(style = "margin-bottom: 0",
-     paste("Version",
-           ejam_app_version,
-           "| Report created on",
-           ifelse(
-             isTRUE(getOption("shiny.testmode")),
-             "[SHINYTEST DATE]",
-             format(Sys.Date(), '%B %d, %Y'))))
+      paste("Version",
+            ejam_app_version,
+            "| Report created on",
+            ifelse(
+              isTRUE(getOption("shiny.testmode")),
+              "[SHINYTEST DATE]",
+              format(Sys.Date(), '%B %d, %Y'))))
   })
   output$download_results_table <- downloadHandler(
     filename = function() {
@@ -3739,9 +3945,9 @@ app_server <- function(input, output, session) {
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
                       ext = '.doc')
-
+      
     },
-
+    
     content = function(file) {
       # Copy the report file to a temporary directory before processing it, in
       # case we don't have write permissions to the current working dir (which
@@ -3858,7 +4064,7 @@ app_server <- function(input, output, session) {
     rad <- data_processed()$results_overall$radius.miles # input radius can be changed by user and would alter the report text but should just show what was run not what slider currently says
     nsites <- NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T, ])
     popstr <- prettyNum(total_pop(), big.mark = ',') # rounded already?
-     
+    
     # report_residents_within_xyz <- function(sitetype = c('latlon', 'fips', 'shp')[1], radius = NULL, nsites = 1) {
     #   
     #   report_xmilesof <- function(radius) {
@@ -3915,7 +4121,7 @@ app_server <- function(input, output, session) {
   #############################################################################  #
   #
   # ______ ejscreenapi MODULE _________ ####
-  # (to get batch via API)
+  # (to get batch via API)  see default_hide_ejscreenapi_tab in global.R etc.
   
   # create UI part for main EJAM app here rather than in app_ui because we need access to input$ radius of main app to pass that to module that uses it as the initial radius shown on its slider
   # pass from server code of app to server code of module by creating the main radius UI in server of app (cannot access the input$ in UI of app)

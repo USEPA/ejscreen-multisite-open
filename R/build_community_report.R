@@ -1,6 +1,6 @@
 
 
-#' Generate EJAM Summary Report in HTML within shiny app
+#' Generate EJScreen Multisite (EJAM) Summary Report in HTML within shiny app
 #' 
 #' Creates a 2 page report on overall results or for one site, with demographic and environmental indicators, and EJ Indexes if needed.
 #' 
@@ -47,7 +47,6 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
   
   ## iterate through variable lists in map_headernames to get column names
   expandedVarlist <- c()
-
   for (var in varlist) {
     if (exists(var) & !(var %in% expandedVarlist)) {
       expandedVarlist <- c(expandedVarlist, get(var))
@@ -80,13 +79,13 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
     full_page,
     fill_tbl_full_subgroups(output_df_rounded),
     generate_report_footnotes(
-      # ejscreen_vs_ejam_caveat = "Note: Some numbers as shown on the EJScreen report for a single location will in some cases appear very slightly different than in multisite reports. All numbers shown in both types of reports are estimates, and any differences are well within the range of uncertainty inherent in the American Community Survey data as used in EJScreen. Slight differences are inherent in very quickly calculating results for multiple locations.",
+      # ejscreen_vs_ejam_caveat = "Note: Some numbers as shown on the EJScreen report for a single location will in some cases appear very slightly different than in EJScreen's multisite reports. All numbers shown in both types of reports are estimates, and any differences are well within the range of uncertainty inherent in the American Community Survey data as used in EJScreen. Slight differences are inherent in very quickly calculating results for multiple locations.",
       diesel_caveat = paste0("Note: Diesel particulate matter index is from the EPA's Air Toxics Data Update, which is the Agency's ongoing, comprehensive evaluation of air toxics in the United States. This effort aims to prioritize air toxics, emission sources, and locations of interest for further study. It is important to remember that the air toxics data presented here provide broad estimates of health risks over geographic areas of the country, not definitive risks to specific individuals or locations. More information on the Air Toxics Data Update can be found at: ",
                              url_linkify("https://www.epa.gov/haps/air-toxics-data-update", "https://www.epa.gov/haps/air-toxics-data-update"))
     ),
     collapse = ''
   )
-  
+    
   if (is.null(filename)) {
     return(HTML(full_page))
   } else {

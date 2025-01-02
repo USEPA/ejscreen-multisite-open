@@ -153,7 +153,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
                         called_by_ejamit=FALSE, updateProgress = NULL,
                         silentinteractive=TRUE, testing=FALSE,
                         showdrinkingwater = TRUE,
-                        showpctowned = FALSE,
+                        showpctowned = TRUE,
                         ...) {
   
   ###################################################### #
@@ -766,14 +766,14 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   if (!showdrinkingwater) {
     print(results_overall[ , .( drinking)])
     print(results_bysite[ , .(ejam_uniq_id,  drinking)])
-    results_overall$drinking <- NA
-    results_bysite$drinking <- NA    
+    results_overall$drinking <- as.numeric(NA)
+    results_bysite$drinking <- as.numeric(NA)    
   }
   if (!showpctowned) {
   print(results_overall[ , .(pctownedunits )])
   print(results_bysite[ , .(ejam_uniq_id, pctownedunits)])
-  results_overall$pctownedunits <- NA
-  results_bysite$pctownedunits <- NA
+  results_overall$pctownedunits <- as.numeric(NA)
+  results_bysite$pctownedunits <- as.numeric(NA)
   }
   
 

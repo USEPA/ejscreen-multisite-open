@@ -313,7 +313,9 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL,
   
   # create some summary stats across the site types
   
-  x = out$results_bysite[, .(validresults = sum(valid)), by = out$typeofsite]
+  out$results_bysite$typeofsite <- out$typeofsite # add temp column to simplify next line
+  x = out$results_bysite[, .(validresults = sum(valid)), by = 'typeofsite'] # normally by= refers to a column within the DT[] so typeofsite was made a col here temporarily 
+  out$results_bysite[, typeofsite := NULL] # remove temp col
   names(x) <- c("type", "valid")
   x$sitecount = out$sitecount_bytype
   x$pctvalid = round(100 * x$valid / x$sitecount, 0)

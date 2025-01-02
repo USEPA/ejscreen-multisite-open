@@ -1,7 +1,5 @@
 # global.R defines variables needed in global environment
 
-# if not already done in .onAttach() step, do this now as app launches
-dataload_from_pins(varnames = c("blockpoints", "blockwts", "quaddata"))
 indexblocks()
 
 # Note: Do not set defaults for a module UNTIL INSIDE THE MODULE 
@@ -27,8 +25,7 @@ library(shiny)
 bookmarking_allowed <- TRUE  # https://mastering-shiny.org/action-bookmark.html
 if (bookmarking_allowed) {enableBookmarking(store = "url")}
 
-default_hide_advanced_settings <- TRUE
-default_hide_written_report <- TRUE
+
 default_testing        <- FALSE
 default_shiny.testmode <- FALSE  # If TRUE, then various features for testing Shiny applications are enabled.
 default_print_uploaded_points_to_log <- TRUE
@@ -43,18 +40,24 @@ options(shiny.sanitize.errors = TRUE)
 options(spinner.color = "#005ea2", spinner.type = 4)
 
 ## app title & version   ###########################################
-# apptitle <- "EJAM v2.2"
-desc <- desc::desc(file = "DESCRIPTION")
-ejam_app_version  <- desc$get("Version")
+# note that manage-public-private.R is sourced prior to global.R being source, by run_app()
+desc <- try(desc::desc(file = "DESCRIPTION"))
+if (inherits(desc, 'try-error')) {desc <- try(desc::desc(package = "EJAM"))}
+if (inherits(desc, 'try-error')) {desc <- desc::desc(file = EJAM:::app_sys('DESCRIPTION'))}
+if (inherits(desc, 'try-error')) {stop('cannot find DESCRIPTION file in working directory or in EJAM package')}
+ejam_app_version <- desc$get("Version")
 ## trim version number to Major.Minor
-ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ejam_app_version)[[1]][2]-1)
+ejam_app_version <- substr(ejam_app_version, start = 1, stop = gregexpr('\\.',ejam_app_version)[[1]][2] - 1)
 
-acs_version_global = desc$get("ACSVersion")#as.vector(metadata_mapping$blockgroupstats[['acs_version']]) # "2017-2021"
-ejscreen_version_global = desc$get("EJScreenVersion")#as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']])
+acs_version_global      <- desc$get("ACSVersion")#as.vector(metadata_mapping$blockgroupstats[['acs_version']]) # "2017-2021"
+ejscreen_version_global <- desc$get("EJScreenVersion")#as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']])
 
 ## constant to show/hide EPA HTML header and footer in app UI
 ## for public branch, want to hide so it can be legible when embedded as an iframe
 show_full_header_footer <- FALSE
+
+# advanced tab ####
+default_hide_advanced_settings <- TRUE
 
 ## (IP address  for ejscreenapi module) ###########################################
 # ips <- c('10.147.194.116', 'awsgeopub.epa.gov', '204.47.252.51', 'ejscreen.epa.gov')
@@ -281,7 +284,7 @@ probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', z
 
 ## Sanitize functions
 sanitize_text = function(text) {
-  gsub("[^a-zA-Z0-9 -]", "", text)
+  gsub("[^a-zA-Z0-9 .-]", "", text)  
 }
 
 sanitize_numeric <- function(text) {
@@ -326,9 +329,9 @@ escape_html <- function(text) {
 intro_text <- tagList(
   # tags$p("For more information about EJAM:"),
   h2( a(href = "https://usepa.github.io/EJAM/articles/0_whatis.html",
-        "What is EJAM?", 
+        "What is EJScreen's EJAM tool?", 
         target = "_blank", rel = "noreferrer noopener") ),
-  p("EJAM is a tool developed by the United States Environmental Protection Agency (US EPA) that makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using this tool is like getting a typical EJScreen report, but for hundreds or thousands of places, all at the same time."),
+  p("EJScreen's multisite tool (EJAM) is a tool developed by the United States Environmental Protection Agency (US EPA) that makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using this tool is like getting a typical EJScreen report, but for hundreds or thousands of places, all at the same time."),
   p("This provides interactive results and a formatted, ready-to-share report with tables, graphics, and a map. The report can provide EJ-related information about people who live in communities near any of the industrial facilities on a list, for example."),
   br(),
   br()
@@ -463,13 +466,13 @@ fips_help_msg <- paste0('
   <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
   <label class="control-label" for="selectFrom1">
   <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit),',
-  # ' Census Designated Place (CDP) like city or township (6-digit or 7-digit),',   # uncomment this when ready ***
-  ' Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).</p>
+                        # ' Census Designated Place (CDP) like city or township (6-digit or 7-digit),',   # uncomment this when ready ***
+                        ' Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).</p>
   <p>The file should contain at least one column, FIPS, with the fips codes. ',
-  'It will also work with the following aliases: ',
-  'fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
+                        'It will also work with the following aliases: ',
+                        'fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
   ',
-  'There can be other columns like an ID column that should be unique (no duplicates),
+                        'There can be other columns like an ID column that should be unique (no duplicates),
   and each record should be separated by a carriage return.</p>
   <p>The file could be formatted as follows, for example: </p>
   </label>
@@ -542,10 +545,12 @@ html_header_fmt <- tagList(
     tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
     tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
     
-    ## APP TITLE could be defined here, or if using golem package, in golem_add_external_resources() within app_ui.R ####
-    #
+    ## >> APP TITLE could be defined here ####
+    # AND in golem_add_external_resources() IN app_ui.R,  
+    # AND BELOW IN SHORT VERSION OF HEADER
+    
     # tags$title('EJAM | US EPA'),
-    tags$meta(name = "application-name", content = "EJAM"),
+    tags$meta(name = "application-name", content = .app_title),
     
     ## EPA FAVICONS - but can be specified in (and this would conflict with) golem_add_external_resources() within app_ui.R ####
     
@@ -604,17 +609,21 @@ html_header_fmt <- tagList(
     ))
   ), 
   
-  ### Body tag and Site Header ####
-
+  
+  ### >> APP TITLE in Header/ Body tag ####
+  
   tags$body(
     class = "path-themes not-front has-wide-template", id = "top",
     tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds.min.js')
+    
+  ),    
   
-    ),    
- 
-######################################################################## #
+  ######################################################################## #
   if (!show_full_header_footer) {
-HTML('
+    
+    ### THIN HEADER ROW/ TITLE ####
+    
+    HTML(paste0('
      <div class="container-fluid" style="border-spacing: 0; margin: 0; padding-bottom: 0; border: 0;
      border-right-width: 0px; font-size:24px; ";>
   
@@ -632,21 +641,48 @@ HTML('
             style="margin: 0px; padding-bottom: 4px; padding-top: 4px; padding-left: 4px; padding-right: 4px" alt="EPA" title="EPA">
         </td>
 
-        <td valign="bottom" style="line-height:34px; padding: 0px; border-bottom-color: #ffffff; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #ffffff";>
-          <span style="font-size: 17pt; font-weight:700; font-family:Arial";>EJScreen</span>
-          <span style="font-size: 10pt; font-weight:700;";>&nbsp;&nbsp;Environmental Justice Analysis Multisite (EJAM) Tool (Version 2.3)</span>
-        </td>
-<!--        
-        <td valign="middle" align="right">
+        <td valign="bottom" style="line-height:34px; padding: 0px; 
+        border-bottom-color: #ffffff; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #ffffff";
+        vertical-align: bottom;>
+        
+                <span style="font-size: 17pt; font-weight:700; font-family:Arial";>',   # large font for app title
+                
+                .app_title,   # see manage-public-private.R
+                
+                '</span>',
+                
+                '<span style="font-size: 10pt; font-weight:700; font-family:Arial";>',  # smaller font for version info
+                
+                .app_version_headertext,  # see manage-public-private.R, e.g., " (Version 2.3)" 
+                
+                '</span>',
+                '
+                                                        
+<!-- 
+<span style="font-size: 10pt; font-weight:700;";>
+
+&nbsp;&nbsp;EJ Analysis Multisite Tool (version 2.3)
+
+</span>
+--> 
+        </td>', 
+      ### > links ####         
+      # could adjust which of the links here get shown in the header, depending on  isTRUE(golem_opts$isPublic)           
+' 
+        <td valign="bottom" align="right";  style="line-height:34px; padding: 0px;
+                border-bottom-color: #ffffff; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #ffffff";>
           <span id="homelinks">
-            <a href="https://www.epa.gov/ejscreen" alt="Go to EJScreen home page" title="Go to EJScreen home page">EJScreen Website</a> | 
-            <a href="mobile/index.html" alt="Go to EJScreen mobile page" title="Go to EJScreen mobile page">Mobile</a> | 
-            <a href="https://www.epa.gov/ejscreen/ejscreen-map-descriptions" alt="Go to EJScreen glossary page" title="Go to EJScreen glossary page" target="_blank">Glossary</a> | 
-            <a href="help/ejscreen_help.pdf" alt="Go to help page" title="Go to help page" target="_blank">Help</a> | 
-            <a href="mailto:ejscreen@epa.gov?subject=EJScreen%20Version%202.3%20Question" id="emailLink" alt="Contact Us" title="Contact Us">Contact Us</a>
+            <a href="https://www.epa.gov/ejscreen" alt="Go to EJScreen home page" title="Go to EJScreen home page" target="_blank">EJScreen Website</a> | 
+            <a href="https://ejscreen.epa.gov/mapper/" alt="Go to EJScreen mapper"    title="Go to EJScreen mapper" target="_blank">EJScreen Mapper</a> | 
+            <a href="https://www.epa.gov/ejscreen/overview-socioeconomic-indicators-ejscreen" alt="Go to EJScreen glossary page" title="Go to EJScreen glossary page" target="_blank">Glossary</a> | 
+            <a href="www/ejscreen-multisite-help-2025-01.pdf" alt="Go to help document" title="Go to help document" target="_blank">Help</a> | 
+            <a href="mailto:ENVIROMAIL_GROUP@epa.gov?subject=EJScreen%20Multisite%20Tool%20Question" id="emailLink" alt="Contact Us" title="Contact Us">Contact Us</a>
           </span>&nbsp;&nbsp;
         </td>
--->              
+ ',
+
+                
+ '              
       </tr>
     </tbody></table>
     
@@ -654,25 +690,26 @@ HTML('
   
 </div>
      ',
-  
-  ########################################################################## #
-  
-  ### Contact Us - Header ####
-  
-  #HTML(
-    '<div class="l-page  has-footer" style="padding-top:0">
+                
+                ########################################################################## #
+                
+                #HTML(
+                '<div class="l-page  has-footer" style="padding-top:0">
         <div class="l-constrain">
         
-
-          
           
  '
-  )
-
-} else {
-  # To display the full header, html_header_fmt can be set to NULL or an empty tagList
-  HTML(
-    '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
+    ))
+    ########################################################################## #
+    ########################################################################## #
+    
+  } else {
+    
+    ### (OPTIONAL LARGER EPA HEADER) ####
+    
+    # To display the full header, html_header_fmt can be set to NULL or an empty tagList
+    HTML(
+      '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
             <a id="skip-to-main" href="#main" class="skiplinks__link visually-hidden focusable">Skip to main content</a>
          </div>
 
@@ -810,22 +847,22 @@ HTML('
 
 
           <main id="main" class="main" role="main" tabindex="-1">'
-    
-  #)    ,   #   comment  out when excluding html below
-  
-  ) # END OF   html_header_fmt()
-  ########################################################################## #
-  
-}
+      
+      #)    ,   #   comment  out when excluding html below
+      
+    ) # END OF   html_header_fmt()
+    ########################################################################## #
+     # end of large header
+  }
 )
 
 
 html_footer_fmt <- tagList(
   if (!show_full_header_footer) {
-  ### Contact Us - Footer ####
-  # 
-  HTML(
-    ' 
+    ### SMALL/NO FOOTER ####
+    # 
+    HTML(
+      ' 
       </div>
       
       <div class="l-page__footer">
@@ -833,9 +870,9 @@ html_footer_fmt <- tagList(
       </div>
       
     </div>'
-  )
+    )
   } else {
-    ### Site Footer ####
+    ### (OPTIONAL LARGER FOOTER) ####
     HTML(
       '</main>
         <footer class="footer" role="contentinfo">
@@ -1008,9 +1045,9 @@ html_footer_fmt <- tagList(
           <path fill="currentColor" d="M2.3 12l7.5-7.5 7.5 7.5 2.3-2.3L9.9 0 .2 9.7 2.5 12z"></path>
         </svg>
       </a>'
-    )
-    }
+    ) # end of large footer
+  }
   # ,
   # 
-
+  
 )

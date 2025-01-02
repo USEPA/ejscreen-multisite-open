@@ -1,9 +1,10 @@
 ################################################################################## #
-# SCRIPT TO READ AND CLEAN LATEST FRS (and FRS BY SIC) AND SAVE FOR USE AS DATASETS
+# SCRIPT TO READ AND CLEAN LATEST FRS (and FRS BY SIC) DATASETS
 ################################################################################## #
 
-# Note: As of 12/23, EJAM will no longer store some key frs files as package EJAM/data/
-#  but as pins on connect server board.
+# Note: some key frs files are not stored as part of the package in EJAM/data/ but downloaded for use
+
+# Note: compare frsprogramcodes, epa_programs, epa_programs_defined, etc.
 
 ################################################################################ # 
 ## DOWNLOAD FRS info AND UPDATE/CREATE & SAVE LOCAL FILES for frs-related datasets
