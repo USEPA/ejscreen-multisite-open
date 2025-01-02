@@ -30,7 +30,7 @@ download_latest_arrow_data <- function(
   
   latestArrowVersion <- piggyback::pb_releases(
     repo = repository,
-    .token = NULL
+    .token = ""
   )[1, "tag_name"]
   ejamdata_version_fpath <- paste0(installed_data_folder,"/ejamdata_version.txt")
   if (!file.exists(ejamdata_version_fpath)) {
@@ -63,7 +63,8 @@ download_latest_arrow_data <- function(
     dest = installed_data_folder,
     repo = repository, 
     tag = "latest",
-    use_timestamps = FALSE
+    use_timestamps = FALSE,
+    .token = ""
   )
   
   message("Finished downloading. Updating stored local version.")
