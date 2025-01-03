@@ -31,6 +31,7 @@
 #' @param justchecking can set to TRUE to just see a list of what pins are stored in that board
 #' @param silent set to TRUE to suppress cat() msgs to console
 #' @param ignorelocal set it to TRUE to avoid 1st checking local disk for copies of files
+#' @param onAttach Indicates whether the function is being called from onAttach. IF so, it will download all arrow files if user cannot connect to PINS board
 #' @import pins
 #'
 #' @return If justchecking = FALSE,
@@ -109,7 +110,7 @@ dataload_from_pins <- function(
     if (!silent) {cat("Failed trying to connect to pins board server.\n\n")}
     
     # since can't connect to pins, download all arrow files to data directory
-    EJAM:::download_latest_arrow_data(
+    download_latest_arrow_data(
       varnames = if(onAttach) .arrow_ds_names else varnames,
       envir = envir
     )

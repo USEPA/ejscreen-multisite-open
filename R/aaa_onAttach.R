@@ -18,7 +18,6 @@
 #' 
 #' @param libname na
 #' @param pkgname na
-#' @param onAttach Indicates whether the function is being called from onAttach. IF so, it will download all arrow files if user cannot connect to PINS board
 #' 
 #' @noRd
 #' 

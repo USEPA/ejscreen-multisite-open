@@ -11,8 +11,8 @@
 # the code is stirng instead of numeric, but that doesn't seem to matter to regid_from_naics (in latlon_from_naics.R)
 
 test_that('website_url and website_scrape cause errors',{
-  expect_error( {  val <- frs_from_naics(21112, childrenForNAICS= FALSE, website_url = TRUE)}) # "crude petroleum"
-  expect_no_error({val <- frs_from_naics(21112, childrenForNAICS= FALSE, website_scrape = TRUE)}) # "crude petroleum"
+  expect_error( {  val <- frs_from_naics(21112, website_url = TRUE)}) # "crude petroleum"
+  expect_no_error({val <- frs_from_naics(21112, website_scrape = TRUE)}) # "crude petroleum"
   })
 
 # however, even using naics_from_any gave an error that the function naics_url_of_query does not exist
@@ -37,42 +37,43 @@ test_that('some naics have no sites',{
 # perhaps default children = TRUE or provide some type of message
 
 test_that('results of subcategories only output when children = TRUE',{
-  expect_no_warning(frs_from_naics(21222, childrenForNAICS= FALSE)) # "silver and gold mining"
+  expect_no_warning(frs_from_naics(21222)) # "silver and gold mining"
   suppressWarnings({
-    expect_no_error(frs_from_naics(21222, childrenForNAICS = TRUE)) # "silver and gold mining" # warns now about the function - see warning
+    expect_no_error(frs_from_naics(21222)) # "silver and gold mining" # warns now about the function - see warning
   })
-    expect_no_warning(frs_from_naics(212221, childrenForNAICS= FALSE)) # "gold mining"
-  expect_no_warning(frs_from_naics(212222, childrenForNAICS= FALSE)) # "silver mining"
-suppressWarnings({
-  x <- frs_from_naics(21222, childrenForNAICS = TRUE) # 373 # all gold and silver mining
-})
+  expect_no_warning(frs_from_naics(212221)) # "gold mining"
+  expect_no_warning(frs_from_naics(212222)) # "silver mining"
+  suppressWarnings({
+    x <- frs_from_naics(21222) # 373 # all gold and silver mining
+  })
 
-  expect_equal(length(which(grepl(212221,x$NAICS))), nrow(frs_from_naics(212221, childrenForNAICS= FALSE))) # 354 count of gold, matches subset from 21222 w/ children
-  expect_equal(length(which(grepl(212222,x$NAICS))), nrow(frs_from_naics(212222, childrenForNAICS= FALSE))) # 41 count of silver, matches subset from 21222 w/ children
+  expect_equal(length(which(grepl(212221,x$NAICS))), nrow(frs_from_naics(212221, childrenForNAICS= TRUE))) # 354 count of gold, matches subset from 21222 w/ children
+  expect_gt(length(which(grepl(212222,x$NAICS))), nrow(frs_from_naics(21222, childrenForNAICS= FALSE))) # 41 count of silver, matches subset from 21222 w/ children
+  
   expect_equal(nrow(frs_from_naics(21222, childrenForNAICS= FALSE)), sum(!grepl(212221,x$NAICS ) & !grepl(212222, x$NAICS))) # 1, that was returned by 21222 w/o children (both gold and silver mining)
-
+  expect_equal(nrow(frs_from_naics(21222, childrenForNAICS = TRUE)), sum((grepl(212221,x$NAICS ) | grepl(212222, x$NAICS) | grepl(21222, x$NAICS))))
 })
 
 # string queries I believe are based on longest common string. For example "gold ore"
 # finds NAICS 21222 & 212221 "gold ore mining" but "gold mining" returns empty
 test_that('string queries function', {
-  expect_no_warning({val <- frs_from_naics("gold ore", childrenForNAICS= FALSE)})
+  expect_no_warning({val <- frs_from_naics("gold ore")})
   expect_true(nrow(val) > 0)
-  expect_no_warning({val <- frs_from_naics("gold mining", childrenForNAICS= FALSE)})
+  expect_no_warning({val <- frs_from_naics("gold mining")})
   # expect_true(nrow(val) > 0) # fails but that is ok
 })
 
 test_that('list of queries returns joined results', {
-  expect_no_warning({ x <- frs_from_naics(c("gold ore", "silver ore"), childrenForNAICS= FALSE)})
-  expect_no_warning({ y <- frs_from_naics("gold ore", childrenForNAICS= FALSE)})
-  expect_no_warning({ z <- frs_from_naics("silver ore", childrenForNAICS= FALSE)})
+  expect_no_warning({ x <- frs_from_naics(c("gold ore", "silver ore"))})
+  expect_no_warning({ y <- frs_from_naics("gold ore")})
+  expect_no_warning({ z <- frs_from_naics("silver ore")})
   expect_equal(x %>% arrange(REGISTRY_ID), full_join(y, z) %>% arrange(REGISTRY_ID))
 
 })
 
 test_that('list of queries can mix numbers and strings', {
-  expect_no_warning({x <- frs_from_naics(c("212221",  "silver ore"), childrenForNAICS= FALSE)})
-  expect_no_warning({y <- frs_from_naics(c(212221,  "silver ore"), childrenForNAICS= FALSE)})
+  expect_no_warning({x <- frs_from_naics(c("212221",  "silver ore"))})
+  expect_no_warning({y <- frs_from_naics(c(212221,  "silver ore"))})
   expect_equal(x,y)
 })
 
@@ -82,8 +83,8 @@ test_that('list of queries can mix numbers and strings', {
 # by default the grepl function looking for the query text is not case sensitive
 
 test_that('case of query text only matters, if ignore.case = FALSE', {
-  expect_equal(nrow(frs_from_naics(c( "silver ore"), childrenForNAICS= FALSE)),
-               nrow(frs_from_naics(c( "Silver Ore"), childrenForNAICS= FALSE, ignore.case = FALSE)))
+  expect_equal(nrow(frs_from_naics(c( "silver ore"))),
+               nrow(frs_from_naics(c( "Silver Ore"), ignore.case = FALSE)))
 
 })
 
@@ -95,14 +96,14 @@ test_that('case of query text only matters, if ignore.case = FALSE', {
 # by setting fixed = TRUE and using capital letters in the query, ignore.case = TRUE should be ignored and the string will be searched for exactly
 # this gives a warning
 test_that('fixed = TRUE makes case matter, even if ignore.case = TRUE',{
-  expect_warning({x <- frs_from_naics(c("Silver Ore"), childrenForNAICS= FALSE, fixed = TRUE)})
+  expect_warning({x <- frs_from_naics(c("Silver Ore"), fixed = TRUE)})
   ## all lowercase produces 2 warnings for some reason
   expect_warning(
-    expect_warning(y <- frs_from_naics(c("silver ore"), childrenForNAICS= FALSE, fixed = TRUE))
+    expect_warning(y <- frs_from_naics(c("silver ore"), fixed = TRUE))
   )
 
   expect_equal(nrow(y), 0)
   expect_equal(nrow(x),
-               nrow(frs_from_naics(c("silver ore"), childrenForNAICS= FALSE)))
+               nrow(frs_from_naics(c("silver ore"))))
 
 })

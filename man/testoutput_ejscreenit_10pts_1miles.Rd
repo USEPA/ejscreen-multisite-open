@@ -10,7 +10,7 @@ test output of ejscreenit(), using the EJScreen API
 \details{
 This is the output of
 
-EJAMejscreenapi::ejscreenit(
+ejscreenit(
 
 testpoints_10, radius = 1,
 

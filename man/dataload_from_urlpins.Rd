@@ -5,7 +5,7 @@
 \title{Utility to download / load datasets from pin board in pkgdown github pages of public repo}
 \usage{
 dataload_from_urlpins(
-  varnames = .arrow_ds_names[1:4],
+  varnames = .arrow_ds_names[1:3],
   server = "https://ejanalysis.github.io/ejscreendata/pins/",
   envir = globalenv(),
   justchecking = FALSE

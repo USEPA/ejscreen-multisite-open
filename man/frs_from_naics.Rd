@@ -4,10 +4,12 @@
 \alias{frs_from_naics}
 \title{Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites}
 \usage{
-frs_from_naics(naics_code_or_name, ...)
+frs_from_naics(naics_code_or_name, childrenForNAICS = TRUE, ...)
 }
 \arguments{
-\item{naics_code_or_name}{}
+\item{naics_code_or_name}{passed to \code{\link[=naics_from_any]{naics_from_any()}} as the query}
+
+\item{childrenForNAICS}{passed to \code{\link[=naics_from_any]{naics_from_any()}} as the children param of that function}
 
 \item{...}{passed to \code{\link[=naics_from_any]{naics_from_any()}}}
 }

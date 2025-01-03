@@ -9,7 +9,7 @@ generate_html_header(
   totalpop,
   locationstr,
   in_shiny = FALSE,
-  report_title = .community_report_title
+  report_title = NULL
 )
 }
 \arguments{
