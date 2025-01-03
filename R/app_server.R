@@ -291,8 +291,10 @@ app_server <- function(input, output, session) {
   
   num_valid_pts_uploaded <- reactiveValues('SHP' = 0)
   
+  ## initialize SHP file extension error message
+  error_message <- reactiveVal(NULL)
+  
   data_up_shp <- reactive({
-    error_message <- reactiveVal(NULL)
     
     req(input$ss_upload_shp)
     infiles <- input$ss_upload_shp$datapath # get path and temp (not original) filename of the uploaded file
@@ -311,12 +313,6 @@ app_server <- function(input, output, session) {
       error_message(NULL)  
       disable_buttons[['SHP']] <- FALSE
     }
-    
-    output$error_message <- renderText({
-      if (!is.null(error_message())) {
-        error_message()
-      }
-    })
     
     ####### SHOULD REPLACE WITH CODE IN NEW FUNCTIONS that avoid saving uploaded shapefiles locally on server LIKE shapefile_from_filepaths() ***
     #
@@ -427,6 +423,12 @@ app_server <- function(input, output, session) {
     
   }) # END OF SHAPEFILE UPLOAD
   
+  ## show error message when any SHP file extensions are missing
+  output$error_message <- renderText({
+    if (!is.null(error_message())) {
+      error_message()
+    }
+  })
   #############################################################################  #
   
   ## *** note: repeated file reading code below could be replaced by  latlon_from_anything() ####
