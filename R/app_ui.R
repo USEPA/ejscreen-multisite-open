@@ -41,46 +41,23 @@ app_ui  <- function(request) {
         refresh = "Click to Restart the App",
         background = "#FFFFFF", colour = "#444444", refreshColour = "darkgreen", overlayColour = "#000000", overlayOpacity = 0.5,
         width = 450, top = 50, size = 20, css = ""
-      ), actionButton("disconnect", "Disconnect the app"),
+      ), 
+      
+      # actionButton("disconnect", "Disconnect the app"),
       
       ### html header inserted from global.R ####
       html_header_fmt,
       
-      ### title (for app and browser tab) ####
-      
-      
-      div(class = "title-panel",
-          titlePanel(
-            title = paste("EJAM (Environmental Justice Analysis Multi-site) Tool v",ejam_app_version, sep =""),
-            windowTitle = paste("EJAM (Environmental Justice Analysis Multi-site) Tool v", ejam_app_version, sep ="")
-          )
-      ),
-      
-      # ***outline of tabs*** ####
-      # at one point was this:
-      #
-      # tabsetPanel(                         id = 'all_tabs',     ##
-      #   tabPanel(title = 'About EJAM',
-      #   tabPanel(title = 'Site Selection',
-      #   tabPanel(title =   , # ??
-      #   tabsetPanel(                       id = 'results_tabs', ##
-      #       tabPanel(title = 'Summary',
-      #       tabPanel(title = 'Details',
-      #          tabPanel(title = 'Site-by-Site Table',
-      #          tabPanel(title = 'Plot Average Scores',
-      #          tabPanel(title = 'Plot Full Range of Scores',
-      #       tabPanel(title = 'Written Report',
-      #   tabPanel(title = 'EJScreen Batch Tool',
-      #   tabPanel(title = 'Advanced Settings',
-      
+      ### title is now in html in global.R (for app and browser tab) ####
+
       # TABSETPANEL ALL -  tabsetPanel(id = 'all_tabs',  ####
       tabsetPanel( # up to line 1101 or so
         id = 'all_tabs',
-        # type = 'hidden', # xxxx ***
-        selected = 'Site Selection',  # tabs are  'About EJAM',   'Site Selection', 'EJScreen Batch Tool', 'EJScreen Batch Tool',
-        # ______ About ______ tabPanel(title = 'About EJAM' ####
         
-        tabPanel(title = 'About EJAM',
+        selected = 'Site Selection',
+        # ______ About ______ tabPanel(title = 'About' ####
+        ## see  default_hide_about_tab
+        tabPanel(title = 'About',
                  br(),
                  fluidRow(
                    column(8,
@@ -110,11 +87,11 @@ app_ui  <- function(request) {
         tabPanel(
           title = 'Site Selection',
           #h3('Welcome to EJAM'),
-          div(
-            p('EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site.'),
-            class = "about-EJAM-span"
-          ),
-          hr(), ## horizontal line
+          # div(
+          #   p("EJScreen's multisite tool (EJAM) lets you explore the demographics and environmental conditions in any list of places, such as for everyone who lives within 1 mile of a certain type of EPA-regulated site. EJAM stands for the Environmental Justice Analysis Multisite tool that is part of EJScreen."),
+          #   class = "about-EJAM-span"
+          # ),
+          # hr(), ## horizontal line # removed to look a bit more like ejscreen mapper page and have more space
           
           ## fluidRow container for upload method (left column) and map (right column) ####
           fluidRow( # through about line 441
@@ -137,11 +114,11 @@ app_ui  <- function(request) {
                   conditionalPanel(
                     condition = 'input.ss_choose_method == "dropdown"',
                     selectInput(inputId = 'ss_choose_method_drop',
-                                label = tags$span('How would you like to select categories?'),
-                                choices = c('by Industry (NAICS) Code' = 'NAICS',
-                                            'by Industry (SIC) Code'   = 'SIC',
-                                            'by EPA Program'           = 'EPA_PROGRAM',
-                                            'by MACT subpart'          = 'MACT'))
+                                label = tags$span(
+                                  'How would you like to select categories?'
+                                ),
+                                choices = choices_for_type_of_site_category
+                    )
                   ),
                   
                   ### input: what LOCATIONS type to upload? (IDs, latlon, FIPS, Shapes) ####
@@ -153,11 +130,7 @@ app_ui  <- function(request) {
                                 label = tags$span(
                                   'What type of data are you uploading?'
                                 ),
-                                choices = c('Latitude/Longitude file upload'               = 'latlon',
-                                            'EPA Facility ID (FRS Identifiers)'            = 'FRS',
-                                            'EPA Program IDs'                              = 'EPA_PROGRAM',
-                                            'FIPS Codes'                                   = 'FIPS',
-                                            'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
+                                choices = choices_for_type_of_site_upload
                     )
                   ),
               ),
@@ -186,9 +159,9 @@ app_ui  <- function(request) {
                         column(
                           12,
                           ################################################################# #
-   # uploads:                          
+                          # uploads:                          
                           ## *Latitude Longitude* LOCATIONS Uploads  (conditional panel)  ------------------------------------- - ####
-
+                          
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlon'",
                             
@@ -242,8 +215,8 @@ app_ui  <- function(request) {
                           
                           
                           ## *CATEGORIES OF SITES*  input: choose among facility dropdown options, conditional panel ####
-
-     # uploads:  
+                          
+                          # uploads:  
                           
                           ## _FIPS - upload conditional panel ------------------------------------- - ####
                           
@@ -264,7 +237,7 @@ app_ui  <- function(request) {
                             actionButton('fips_help', label = 'More Info', class = 'usa-button usa-button--outline')
                           ), # end FIPS conditionalPanel
                           ################################################################# #
-
+                          
                           ## _FRS regid - upload  conditional panel ------------------------------------- - ####
                           
                           conditionalPanel(
@@ -302,13 +275,11 @@ app_ui  <- function(request) {
                             actionButton('epa_program_help', label = 'More Info', class = 'usa-button usa-button--outline')
                           ), #end EPA program upload conditional panel
                           ################################################################# #
-      # dropdowns:                    
+                          # dropdowns:                    
                           ## _EPA program - dropdown  conditional panel ------------------------------------- - ####
                           
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'EPA_PROGRAM'",
-                            span('More info about these programs can be found here: ', a('https://www.epa.gov/frs/frs-data-sources', href = 'https://www.epa.gov/frs/frs-data-sources', target = '_blank', rel = 'noreferrer noopener')),
-                            br(),
                             ## input: select an EPA program from list ------------------------------------- - ------------------------------------- -
                             selectizeInput(inputId = 'ss_select_program', label = 'Pick an EPA program',
                                            ## named vector in global.R - values are acronyms,
@@ -317,6 +288,13 @@ app_ui  <- function(request) {
                                            selected = default_epa_program_selected, # not sure this is a good idea but trying it out
                                            ## add X to remove selected options from list
                                            options = list('plugins' = list('remove_button'))),
+                            br(), 
+                            span('More info about ', a('these EPA programs', href = 'https://www.epa.gov/frs/frs-data-sources', target = '_blank', rel = 'noreferrer noopener')),
+                            br(), 
+                            span('Search for regulated facilities in ', a('EPA Envirofacts', href = 'https://enviro.epa.gov/envirofacts/multisystem/search', target = '_blank', rel = 'noreferrer noopener')),
+                            br(),
+                            span('Search for regulated facilities in ', a('EPA ECHO data', href = 'https://echo.epa.gov/', target = '_blank', rel = 'noreferrer noopener')),
+                            br()
                           ), # end conditional panel EPA programs
                           ################################################################# #
                           
@@ -344,7 +322,14 @@ app_ui  <- function(request) {
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'NAICS'",
                             div(style = 'border: 1px solid #005ea2; padding: 10px; background-color: white',
+                                
+                                radioButtons('naics_digits_shown', "See all subcategories of NAICS?",
+                                             inline = TRUE,
+                                             choiceNames = c("Basic list", "Detailed list"),
+                                             choiceValues = c('basic', 'detailed'),
+                                             selected = 'basic'),
                                 radioButtons('add_naics_subcategories', "Add all subcategories of NAICS?",
+                                             inline = TRUE,
                                              choiceNames = c("Yes","No"),
                                              choiceValues = c(TRUE,FALSE),
                                              selected = TRUE)
@@ -353,10 +338,6 @@ app_ui  <- function(request) {
                             br(),
                             tags$ul(
                               # tags$li('Required columns: program, pgm_sys_id'),
-                              tags$li(tags$a(href = 'https://www.epa.gov/frs/frs-query#industrial', target = '_blank', 
-                                             'EPA Facility Industrial Classification Search tool')),
-                              tags$li(tags$a(href = 'https://www.census.gov/naics/', target = '_blank', 
-                                             'More about NAICS codes from Census')),
                               tags$li(tags$a(href = 'https://www.naics.com/search', target = '_blank', 
                                              'More about NAICS codes from naics.com'))
                             )
@@ -553,7 +534,7 @@ app_ui  <- function(request) {
                                       br(),
                                       div(class = 'navbar1',
                                           navbarPage(
-                                            id="details_subtabs",
+                                            id = "details_subtabs",
                                             title = NULL,
                                             #   navlistPanel(
                                             #   "Results Pages",
@@ -597,7 +578,7 @@ app_ui  <- function(request) {
                                             ### _BARPLOT (AVG SCORES) - tabPanel(title = 'Plot Average Scores' ####
                                             # .
                                             
-                                            tabPanel(id="plot_average", 
+                                            tabPanel(id = "plot_average", 
                                                      title = 'Plot Average Scores',
                                                      h4('About this Chart'),
                                                      helpText('These charts show how each demographic group and environmental stressor, in the analyzed locations, compares to its US average.'),
@@ -645,7 +626,7 @@ app_ui  <- function(request) {
                                             
                                             ### _HISTOPLOT (RANGE OF SCORES) - tabPanel(title = 'Plot Full Range of Scores' ####
                                             
-                                            tabPanel(id="plot_range", 
+                                            tabPanel(id = "plot_range", 
                                                      title = 'Plot Full Range of Scores',
                                                      ### _HISTOGRAM
                                                      #h3(id = 'histogram',"Explore Indicator Distributions"),
@@ -690,8 +671,8 @@ app_ui  <- function(request) {
                                                        
                                                      ) # end wellpanel
                                             ) # end tab panel for histograms
-                                          )
-                                      )
+                                          ) # end navbarPage
+                                      ) # end div(class = 'navbar1'
                                       
                              ), # end 'Details' results tab
                              
@@ -702,18 +683,18 @@ app_ui  <- function(request) {
                              
                              
                              tabPanel(title = 'Written Report',
-                                      
+
                                       #  MAKE SURE all parameter names are used (identical names, and all are there) in these 4 places:
                                       #  1. input$ ids in app_ui.R, from user, to customize the long report
                                       #  2. params$ list passed by app_server.R to render the Rmd doc
                                       #  3. params: accepted in  .Rmd yaml info header
                                       #  4. params$  as used within body of  .Rmd text inline and in r code blocks.
-                                      
+
                                       br(), ## vertical space
-                                      
+
                                       wellPanel(
                                         br(), ## vertical space
-                                        
+
                                         ## arrange text and buttons
                                         fluidRow(
                                           column(6,
@@ -725,12 +706,12 @@ app_ui  <- function(request) {
                                                  shiny::downloadButton(outputId = 'rg_download',
                                                                        label = 'Download report',
                                                                        class = 'usa-button'),
-                                                 
+
                                           )
                                         ), ######################################################### #
-                                        
+
                                         #------- WHERE was analyzed? (where/ what sector/zones/types of places)
-                                        
+
                                         #?  # analysis_title =  input$analysis_title,
                                         # zonetype =  input$rg_zonetype,   ### names differ by   rg_
                                         # where = input$rg_enter_miles,   ############# names differ
@@ -749,17 +730,17 @@ app_ui  <- function(request) {
                                         # risks_are_x = input$risks_are_x,                      ### names match
                                         # source_of_latlons = input$source_of_latlons,          ### names match
                                         # sitecount = nrow(data_processed()$results_bysite),      ### param derived from data
-                                        
+
                                         # put input$analysis_title   here???
-                                        
+
                                         fluidRow(          #    param is called  where
                                           column(4,
                                                  ## input: analysis location - uses current value of radius slider
                                                  uiOutput('rg_enter_miles')
                                           )),
-                                        
+
                                         # param distance is based on input$bt_rad_buff
-                                        
+
                                         fluidRow(
                                           column(4,
                                                  ## input:  - which sites analyzed  #    param is called   sectorname_short
@@ -768,7 +749,7 @@ app_ui  <- function(request) {
                                                            value = "facilities in the _____ source category"),
                                           )
                                         ),
-                                        
+
                                         fluidRow(
                                           column(4,
                                                  ## input:   # zonetype =  input$rg_zonetype
@@ -784,7 +765,7 @@ app_ui  <- function(request) {
                                                              choices = c('near the','nearby',''))
                                           )
                                         ),
-                                        
+
                                         fluidRow(
                                           column(4,
                                                  ## input:    # in_areas_where calculated from input$in_areas_where, and input$in_areas_where_enter
@@ -834,7 +815,7 @@ app_ui  <- function(request) {
                                                  )
                                           )
                                         ),
-                                        
+
                                         fluidRow(
                                           column(4,
                                                  ## input:
@@ -855,7 +836,7 @@ app_ui  <- function(request) {
                                                  )
                                           )
                                         ),
-                                        
+
                                         fluidRow(
                                           column(4,
                                                  ## input:
@@ -864,10 +845,10 @@ app_ui  <- function(request) {
                                                            placeholder = "EPA's Facility Registry Service (FRS)"),
                                           )
                                         ),
-                                        
-                                        
+
+
                                         #------- METHODS, AUTHORS, ETC.
-                                        
+
                                         fluidRow(
                                           column(2,
                                                  ## input:
@@ -917,9 +898,9 @@ app_ui  <- function(request) {
                                                     placeholder =  as.vector(metadata_mapping$blockgroupstats[['ejam_package_version']]))
                                         ),
                                         ############################ #
-                                        
+
                                         #------- RESULTS (tables and map and plots)
-                                        
+
                                         # total_pop: NA
                                         # results: NA
                                         # results_formatted: NA
@@ -936,10 +917,10 @@ app_ui  <- function(request) {
                                         # barplot: NA
                                         # barplot_placeholder_png:         "barplot_placeholder.png"
                                         #
-                                        
-                                        
+
+
                                         #------- TEXT PHRASES DESCRIBING AND INTERPRETING RESULT
-                                        
+
                                         # demog_how_elevated: NA
                                         # envt_how_elevated: NA
                                         # demog_high_at_what_share_of_sites: NA
@@ -947,7 +928,7 @@ app_ui  <- function(request) {
                                         # conclusion1: NA
                                         # conclusion2: NA
                                         # conclusion3: NA
-                                        
+
                                         fluidRow(
                                           column(4,
                                                  ## input:
@@ -1008,21 +989,24 @@ app_ui  <- function(request) {
                                           )
                                         ),
                                       ) # end wellpanel
-                             )#, # end written report  tab
+                             )  # end written report  tab
                              
                  ) ## end of tabset panel results_tabs ^^^^^^^^^^  ####
                  
-        ),  # end of tab panel See Results ^^^^^^^^^^  ####
+        )      # end of tab panel See Results ^^^^^^^^^^  ####
         
-        # An advanced tab had been hidden by default but can be activated by a button (from within the About EJAM tab)
+        ,  # uncomment this comma if uncommenting the advanced tab AND/OR ejscreenapi module
+        
         
         ######################################################## #
         #
         # . --------------------------------------------------------------- ####
         ## . ####
-        # EJSCREEN API MODULE -  tabPanel(title = 'EJScreen Batch Tool'   ####
-        # may move to another tab. or in a conditional UI panel.
-        # tabPanel(title = 'EJScreen Batch Tool',
+        # EJSCREEN API MODULE -  tabPanel   ####
+        ## may move to another tab. or in a conditional UI panel.
+        ## see default_hide_ejscreenapi_tab in global.R
+        
+        # tabPanel(title = 'EJScreen Batch Tool',  
         #
         #          h3("Access to EJScreen results via the API"),
         #          h4("(slow, fewer features, and cannot aggregate overall, but exactly replicates EJScreen web app)"),
@@ -1044,7 +1028,9 @@ app_ui  <- function(request) {
         #          # uiOutput("mod_ejscreenapi_ui_TO_SHOW_IN_APP_UI")  # this approach would use the module UI from the outer app server, not here
         #          # mod_ejscreenapi_ui_test("x1")
         #
-        # ),
+        # )
+        # , # uncomment if uncommenting BOTH ejscreenapi module tab and advanced tab
+        
         ######################################################## #
         ## . ####
         # ADVANCED SETTINGS - tabPanel(title = "Advanced Settings"  ####
@@ -1112,16 +1098,16 @@ app_ui  <- function(request) {
                  # stepradius # (set via global.R)
                  
                  numericInput('default_miles', label = "Default miles radius",  # what is shown at app startup for all but shapefiles
-                              ### Also note server code where radius can be modified via updateSliderInput, 
+                              ### Also note server code where radius can be modified via updateSliderInput,
                               ### and saved current value stored is specific to each upload type, returns to that when switch type back.
                               min = minradius,  # from global.R
                               value = global_or_param("default_default_miles"),
-                              max   = global_or_param("default_max_miles")), # (set via global.R) highest allowed default (i.e. initial) value 
+                              max   = global_or_param("default_max_miles")), # (set via global.R) highest allowed default (i.e. initial) value
                  
                  numericInput('default_miles_shapefile', label = "Default miles width of buffer around shapefile edges",
                               min = minradius_shapefile, # from global.R
                               global_or_param("default_default_miles_shapefile"),
-                              max   =     max_default_miles), # (set via global.R) highest allowed default (i.e. initial) value 
+                              max   =     max_default_miles), # (set via global.R) highest allowed default (i.e. initial) value
                  
                  numericInput('max_miles', label = "Maximum radius in miles",
                               value = global_or_param("default_max_miles"), # (set via global.R) initial cap that advanced tab lets you increase here
@@ -1245,7 +1231,7 @@ app_ui  <- function(request) {
                  ## input: GROUP NAME for 2d set of comparisons
                  shiny::textInput(inputId = 'an_threshgroup2',
                                   label = 'Name for 2nd set of comparisons',
-                                  value =   default.an_threshgroup2
+                                  value = default.an_threshgroup2
                  ),
                  ## input: variable names for 2d set of comparisons
                  shiny::selectizeInput(inputId = 'an_threshnames2',
@@ -1278,7 +1264,7 @@ app_ui  <- function(request) {
                  #                  was DISABLED while PDF KNITTING DEBUGGED
                  radioButtons("format1pager", "Format", choices = c(html = "html", html = "pdf"), inline = TRUE),
                  
-                 textInput(inputId = "Custom_title_for_bar_plot_of_indicators", label = "Enter title for bar plot of indicators", value = "" ),
+                 textInput(inputId = "Custom_title_for_bar_plot_of_indicators", label = "Enter title for bar plot of indicators", value = gsub("[^a-zA-Z0-9 ]", "", "") ),
                  
                  ######################################################## #
                  ## Long report options ####
@@ -1331,10 +1317,11 @@ app_ui  <- function(request) {
                  checkboxInput('print_uploaded_points_to_log', label = "Print each new uploaded lat lon table full contents to server log",
                                value = default_print_uploaded_points_to_log),
                  ## . ####
-                 ############################################################### # 
+                 ############################################################### #
                  # ejscreen API tool link ####
-                 
-                 span('EJAM tool for batch use of the EJScreen API: ',
+
+                 span('tool for batch use of the EJScreen API: ',
+
                       a('ejscreenapi tool',
                         href = 'https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/',
                         target = '_blank', rel = 'noreferrer noopener'))
@@ -1343,11 +1330,11 @@ app_ui  <- function(request) {
                  ##################################################################### #
                  
         ) # end Advanced Settings + API tab ## ##
+        
         ################################################################################ #
         ## . ####
         
       ), # end tabset panel from line 37 or so ^^^^^^^^^  ## ##
-      
       html_footer_fmt  ## adds HTML footer - defined in global.R
       
     ) ## end fluidPage
@@ -1380,7 +1367,9 @@ golem_add_external_resources <- function() {
     # app title ####
     golem::bundle_resources(
       path = EJAM:::app_sys("app/www"),   #  points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www
-      app_title = "EJAM"
+      
+      app_title = .app_title # BUT SEE ALSO THE TITLE IN HTML IN global.R 
+      
     ),
     
     # favorites icons ####

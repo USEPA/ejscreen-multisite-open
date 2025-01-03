@@ -24,6 +24,7 @@
 #' @param fips if used instead of lon,lat it should be a character FIPS code vector
 #'   (counties, tracts, or blockgroups)
 #' @param shapefile not implemented
+#' @param namestr optional text
 #' @param report_every_n default is to provide an update every so often
 #' @param save_when_report default is FALSE but if TRUE it saves work in progress every so often
 #' @param format_report_or_json do not use
@@ -61,7 +62,7 @@
 #'   
 #'   x <- testoutput_ejscreenapi_plus_5; names(x) <- fixcolnames(names(x), "r", "long")
 #'   # x <- ejscreenapi_plus(pts,              radius = myradius, usewhichnames = "long")
-#'   # x <- ejscreenapi_plus(pts$lon, pts$lat, radius = myradius, usewhichnames = "long")
+#'   # x <- ejscreenapi_plus(x = pts$lon, y = pts$lat, radius = myradius, usewhichnames = "long")
 #'   # x <- ejscreenapi_plus(pts,              radius = myradius, usewhichnames = "long")
 #'   
 #'   ## view results
@@ -79,6 +80,7 @@
 ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
                              fips = NULL,
                              shapefile = NULL, # pending
+                             namestr = '',
                              report_every_n=100, save_when_report=FALSE, 
                              format_report_or_json='pjson', on_server_so_dont_save_files=FALSE, ipurl='ejscreen.epa.gov',
                              mapping_for_names = NULL, 
@@ -98,10 +100,17 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
     pts <- data.table(fips = fips, lat = lat, lon = lon)
   } else {
     
-  # For convenience, if x is a path and filename, read it, and 
+  # For convenience, if x is a path and filename (and y is missing), read the file named by x, but 
   # and if x is a data.frame with lat,lon columns, just use it.
-  
-  pts <- latlon_from_anything(x,y)
+    ## Confusingly, parameters order differs between ejscreenapi_plus() and other functions like latlon_from_anything(),
+    ## where most functions in ejam use lat,lon order but ejscreenapi_plus() used x,y meaning lon,lat !!
+    ## That is further complicated by the fact that the functions are flexible in allowing the first param to be a file/ table of lat,lon if the 2d is missing.
+    ## So this code figures out what is what and interprets each param as appropriate:
+  if (missing(y) | is.null(y)) {
+    pts <- latlon_from_anything(anything = x)
+  } else {
+    pts <- latlon_from_anything(anything = y, lon_if_used = x)
+  }
   lon <- pts$lon; lat <- pts$lat
   }
   # ***use EJScreen API*** ####
@@ -111,6 +120,7 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
     radius = radius, unit = unit, wkid = wkid, 
     fips = fips,
     shapefile = shapefile, 
+    namestr = namestr,
     format_report_or_json = format_report_or_json, ipurl = ipurl,
     report_every_n = report_every_n, save_when_report = save_when_report, 
     on_server_so_dont_save_files = on_server_so_dont_save_files,
@@ -130,7 +140,7 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
   ### Add links to EJScreen ####
   ### Flag sites near others ####
   ### Put best cols 1st #### 
-  results_table <- cbind(pts, batchtableout) # needed here to allow links to be made 
+  results_table <- cbind(pts, batchtableout) # needed here to allow links to be made . Since pts was a data.table, results_table here will be too!
   results_table <- urls_clusters_and_sort_cols(results_table)
   
   # results_table <- results_table[, names(results_table) != 'mapurl']   # drop this column that was only useful while viewing uploaded points but is redundant in final results here
@@ -139,6 +149,7 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
   
   # table is renamed here so code will be identical to code in server.R
   table_as_displayed <- results_table
+  setDF(table_as_displayed) # code below assumed it was df not dt
   
   # colnames in results table are always api version of names
   #   name the columns using the Rfieldnames style  - also ensures any calc_ratios_to_avg() will work right
@@ -216,6 +227,7 @@ ejscreenapi_plus <- function(x, y=NULL, radius = 3, unit ='miles', wkid=4326,
     newtype = usewhichnames, # towhichnames = usewhichnames, 
     mapping_for_names = mapping_for_names
   )
+  setDF(table_as_displayed)
   
   return(table_as_displayed)
 }

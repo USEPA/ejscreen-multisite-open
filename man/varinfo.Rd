@@ -48,12 +48,12 @@ several of which are not exported:
 \item \code{\link[=varname2varcategory_ejam]{varname2varcategory_ejam()}}
 \item \code{\link[=varname2vartype_ejam]{varname2vartype_ejam()}}
 \item \code{\link[=table_rounding_info]{table_rounding_info()}}
+\item EJAM table_signif_round_x100()
 \item \code{\link[=fixcolnames]{fixcolnames()}}
 \item \code{\link[=fixcolnames_infer]{fixcolnames_infer()}}
 \item EJAM fixcolnames2related()
-\item EJAM fix_pctcols_x100()
 \item EJAM fixmapheadernamescolname()
-\item EJAM var_is_numeric_ish()
+\item EJAM is.numericish()
 \item EJAM varin_map_headernames()
 \item EJAM namesbyvarlist()
 \item EJAM names_whichlist()

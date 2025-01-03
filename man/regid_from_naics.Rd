@@ -5,7 +5,7 @@
 \title{Find registry ids of EPA-regulated facilities in FRS by NAICS code (industrial category)
 Like latlon_from_naics() but returns only regid}
 \usage{
-regid_from_naics(naics, children = FALSE, id_only = TRUE, ...)
+regid_from_naics(naics, children = TRUE, id_only = TRUE, ...)
 }
 \arguments{
 \item{naics}{a vector of naics codes, or

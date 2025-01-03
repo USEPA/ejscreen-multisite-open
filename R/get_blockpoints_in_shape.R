@@ -5,9 +5,13 @@
 #'
 #' @export
 #'
-shapefile2blockpoints <- function(...) {
+shapefile2blockpoints <- function(polys, addedbuffermiles = 0, blocksnearby = NULL,
+                                  dissolved = FALSE, safety_margin_ratio = 1.10, crs = 4269,
+                                  updateProgress = NULL) {
 
-  get_blockpoints_in_shape(...)
+  get_blockpoints_in_shape(polys = polys, addedbuffermiles = addedbuffermiles, blocksnearby = blocksnearby,
+                           dissolved = dissolved, safety_margin_ratio = safety_margin_ratio, crs = crs,
+                           updateProgress = updateProgress)
 }
 ############################################################# #
 
@@ -55,8 +59,8 @@ shapefile2blockpoints <- function(...) {
 #'
 #' @export
 #'
-get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL,
-                                     dissolved=FALSE, safety_margin_ratio=1.10, crs = 4269,
+get_blockpoints_in_shape <- function(polys, addedbuffermiles = 0, blocksnearby = NULL,
+                                     dissolved = FALSE, safety_margin_ratio = 1.10, crs = 4269,
                                      updateProgress = NULL) {
 
   ############################################################################################################### #
@@ -141,7 +145,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
                                       earthRadius_miles * cos(a$ymax * radians_per_degree) * cos(a$xmax * radians_per_degree)),
                             ylims = c(earthRadius_miles * sin(a$ymin * radians_per_degree), earthRadius_miles * sin(a$ymax * radians_per_degree)))
 
-  }) %>% unlist(use.names=FALSE) %>% unique
+  }) %>% unlist(use.names = FALSE) %>% unique
   ########################### #
 
 
@@ -150,7 +154,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     updateProgress(message_main = boldtext, value = 0.25)
   }
 
-  blockpoints_sf <- sf::st_as_sf(blockpoints[blockpoints_filt,], coords=c('lon','lat'), crs=crs)
+  blockpoints_sf <- sf::st_as_sf(blockpoints[blockpoints_filt,], coords = c('lon','lat'), crs = crs)
   if (!exists("blockpoints_sf")) {
     warning("requires the blockpoints   called blockpoints_sf  you can make like this: \n blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269) \n # Geodetic CRS:  NAD83 ")
     return(NULL)

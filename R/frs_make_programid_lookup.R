@@ -1,5 +1,9 @@
 #' Reformat frs datatable to look up facilities by PGM_SYS_ACRNMS
 #' @param x data.table frs from [frs_get()] 
+#' @details More information including definitions of the programs (full names) can be found here: 
+#' - https://www.epa.gov/frs/frs-data-sources
+#' - [2021-05/frs_program_abbreviations_and_names.xlsx](https://www.epa.gov/sites/default/files/2021-05/frs_program_abbreviations_and_names.xlsx)
+#' 
 #' @import data.table
 #' @return data.table with columns lat, lon, REGISTRY_ID, program, pgm_sys_id
 #' @seealso [frs_update_datasets()]  

@@ -5,6 +5,7 @@
 #'
 #' @param out like from ejamit()
 #' @param varnames vector of colnames in out$results_bysite, the ratio variables
+#' @param maxratio cap on ratios to show so plot looks better (all values above cap get replaced by cap before plotting)
 #' @examples
 #'  out <- testoutput_ejamit_1000pts_1miles
 #'  plot_ridgeline_ratios_ez(out)
@@ -33,7 +34,7 @@ plot_ridgeline_ratios_ez <- function(out, varnames = c(names_d_ratio_to_avg, nam
 
 #' Make ridgeline plot of ratios of demographic score to its average
 #'
-#' @param ratio.to.us.d.overall named list of a few ratios to plot (data.frame)
+#' @param ratio.to.us.d.bysite named list of a few ratios to plot (data.frame)
 #' @param shortlabels names to use for plot - should be same length as named list ratio.to.us.d.overall
 #' @examples
 #'  out <- testoutput_ejamit_1000pts_1miles

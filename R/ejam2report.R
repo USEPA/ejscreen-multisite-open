@@ -69,7 +69,13 @@ ejam2report <- function(ejamitout = testoutput_ejamit_10pts_1miles,
     popstr <- prettyNum(round(ejamout1$pop, table_rounding_info("pop")), big.mark = ',')
     
     if (submitted_upload_method == 'SHP') {
-      locationstr <- paste0('Polygon ', data_up_shp[x,]$OBJECTID_1)
+      # locationstr <- paste0('Polygon ', data_up_shp[x,]$OBJECTID_1)
+      if (is.null(sitenumber)) {
+        locationstr <- "Areas in Aggregate (defined by shapefile)"
+      } else {
+        locationstr <- paste0("Site ", sitenumber, " (ejam_uniq_id ", ejamout1$ejam_uniq_id, ")")
+      }
+      
       if (ejamout1$radius.miles > 0) {
         locationstr <- paste0(locationstr, '<br>with ', ejamout1$radius.miles, ' mile buffer')
       }

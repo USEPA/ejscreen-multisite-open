@@ -250,7 +250,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
       
       #  show diagnostics here like how many blocks were found nearby? this slows it down
       if (test_getblocksnearby & getblocks_diagnostics_shown) {
-      getblocks_diagnostics(mysites2blocks)
+        getblocks_diagnostics(mysites2blocks)
       }
       
     } # NEXT RADIUS 
@@ -291,18 +291,24 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   cat("Radius choice(s)     =", rtext, '\n')
   cat("test_ejamit =", test_ejamit, "\n")
   if (!test_ejamit) {
-  cat("test_getblocksnearby =", test_getblocksnearby, "\n")
-  cat("test_doaggregate     =", test_doaggregate, "\n")
-  cat("test_batch.summarize =", test_batch.summarize, "\n")
+    cat("test_getblocksnearby =", test_getblocksnearby, "\n")
+    cat("test_doaggregate     =", test_doaggregate, "\n")
+    cat("test_batch.summarize =", test_batch.summarize, "\n")
   }
   if (logging) {sink(NULL)} # stop logging to file.
-  if (honk_when_ready) {beepr::beep(8)}
   if (plot) {speedtest_plot(speedtable, ...)}
   print(speedtable)
+  
+  if (interactive() && honk_when_ready && length(try(find.package("beepr", quiet = T))) != 0) {
+    # using beepr::beep() since utils::alarm() may not work
+    # using :: might create a dependency but prefer that pkg be only in Suggests in DESCRIPTION
+    beepr::beep(8)
+  }
+  if (interactive()) { 
+    rstudioapi::showDialog("", "FINISHED")
+  }
   return(speedtable)
 }
-
-
 ######################################################################### #
 
 

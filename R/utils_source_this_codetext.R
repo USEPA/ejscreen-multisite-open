@@ -3,6 +3,8 @@
 
 # source_this_codetext()  - allows execution of any code in the text
 # source_this_codetext_careful() - allows execution of only functions explicitly allowed
+#   ONLY ALLOWS EXTREMELY LIMITED OPERATIONS AS CODED unless eval_envir = globalenv()
+
 ######################################## #
 
 
@@ -59,9 +61,9 @@
 
 
 
-source_this_codetext_careful <- function(text_expression, data_list, eval_envir = NULL) {
-
-  # DRAFT WORK NOT COMPLETED 
+source_this_codetext_careful <- function(text_expression, data_list = NULL, eval_envir = NULL) {
+  
+  # DRAFT WORK NOT COMPLETED - 
   
   # # A safer implementation was in this example, which 
   #  allows only arithmetic functions explicitly enabled:
@@ -71,9 +73,13 @@ source_this_codetext_careful <- function(text_expression, data_list, eval_envir 
   
   # argument checks
   stopifnot(is.character(text_expression) && length(text_expression) == 1)
-  stopifnot(is.list(data_list))
-  stopifnot(length(data_list) == 0 || (!is.null(names(data_list)) && all(names(data_list) != "")))
-  stopifnot(all(!(lapply(data_list, typeof) %in% c('closure', 'builtin'))))
+  if (!is.null(data_list)) {
+    stopifnot(is.list(data_list))
+    stopifnot(length(data_list) == 0 || (!is.null(names(data_list)) && all(names(data_list) != "")))
+    stopifnot(all(!(lapply(data_list, typeof) %in% c('closure', 'builtin'))))
+  } else {
+    
+  }
   stopifnot(is.null(eval_envir) || is.environment(eval_envir))
   # default environment for convenience
   if (is.null(eval_envir)) {
@@ -84,8 +90,10 @@ source_this_codetext_careful <- function(text_expression, data_list, eval_envir 
     
     eval_envir = rlang::new_environment(data = arithmetic_funcs, parent = rlang::empty_env())
   }
-  # load data objects into evaluation environment, then evaluate expression
-  eval_envir <- list2env(data_list, envir = eval_envir)
+  # load any data objects into evaluation environment, then evaluate expression
+  if (!is.null(data_list)) {
+    eval_envir <- list2env(data_list, envir = eval_envir)
+  }
   eval(parse(text = text_expression, keep.source = FALSE), eval_envir)
 }
 ######################################## #
@@ -111,7 +119,7 @@ source_this_codetext <- function(codetext, env = parent.frame()) {
   return(
     eval(parse(text = codetext), envir = env)
   )
-
+  
   ## EJAM::calc_ejam() which uses calc_byformula() 
   ## was based on 
   ## ejscreen::ejscreen.acs.calc() which used analyze.stuff::calc.fields() 

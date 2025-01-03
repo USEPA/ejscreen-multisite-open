@@ -4,7 +4,13 @@
 \alias{latlon_from_anything}
 \title{Get lat/lon flexibly - from file, data.frame, data.table, or lat/lon vectors}
 \usage{
-latlon_from_anything(anything, lon_if_used, interactiveprompt = TRUE)
+latlon_from_anything(
+  anything,
+  lon_if_used,
+  interactiveprompt = TRUE,
+  invalid_msg_table = FALSE,
+  set_invalid_to_na = TRUE
+)
 }
 \arguments{
 \item{anything}{If missing and interactive mode in RStudio, prompts user for file. Otherwise,
@@ -17,6 +23,10 @@ be inferred to be that by latlon_infer()}
 
 \item{interactiveprompt}{If TRUE (default) and in interactive mode not running shiny,
 will prompt user for file if "anything" is missing.}
+
+\item{invalid_msg_table}{Set to TRUE to add columns "valid" and "invalid_msg" to output}
+
+\item{set_invalid_to_na}{used by latlon_df_clean()}
 }
 \value{
 A data.frame that has at least columns lon and lat (and others if they were in anything),

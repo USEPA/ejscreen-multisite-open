@@ -114,6 +114,7 @@
 #'   e.g.,  "Particulate Matter (PM 2.5 in ug/m3)" not "pm"
 #' @param fips if used instead of x,y it can specify fips codes of counties, tracts, or blockgroups
 #' @param shapefile not implemented
+#' @param namestr optional text
 #' @param nosave   logical, if TRUE, sets as FALSE and overrides save_map, save_plot, save_table. Ignored if FALSE.
 #' @param nosee    logical, if TRUE, sets as FALSE and overrides see_map, see_plot, see_table. Ignored if FALSE.
 #' @param save_map   logical, whether to save png image file locally
@@ -212,6 +213,7 @@
 ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
                        fips = NULL,
                        shapefile = NULL,
+                       namestr = '',
                        nosave = TRUE, nosee = TRUE,
                        save_map    =TRUE, see_map  =TRUE,
                        save_plot   =TRUE, see_plot =TRUE,
@@ -232,7 +234,17 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
   ################################################### #  ################################################### #
   if (interactive() & missing(interactiveprompt)) interactiveprompt <- TRUE
   if (any(is.null(fips))) {
-    pts <- latlon_from_anything(x, y, interactiveprompt = interactiveprompt) 
+    
+    ## Confusingly, parameters order differs between ejscreenapi_plus() and other functions like latlon_from_anything(),
+    ## where most functions in ejam use lat,lon order but ejscreenapi_plus() used x,y meaning lon,lat !!
+    ## That is further complicated by the fact that the functions are flexible in allowing the first param to be a file/ table of lat,lon if the 2d is missing.
+    ## So this code figures out what is what and interprets each param as appropriate:
+    if (missing(y) | is.null(y)) {
+      pts <- latlon_from_anything(anything = x, interactiveprompt = interactiveprompt)
+    } else {
+      pts <- latlon_from_anything(anything = y, lon_if_used = x, interactiveprompt = interactiveprompt)
+    }
+   
   } else {
     pts <- NULL
     radius <- 0
@@ -246,9 +258,13 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
   ################################################### #
   # MAP INPUT POINTS BEFORE BUFFERING ####
   if (see_map) {
+    if (!missing(shapefile)) {
+      print(mapfast(shapefile, column_names = 'all'))
+    } else {
     print(mapfast(pts, column_names = 'all'))
+    }
     if (interactiveprompt) {
-      junk <- readline('Press any key to go on after viewing this map of input points')
+      junk <- readline('Press any key to go on after viewing this map of input places')
     }
     # mapfast(testoutput_ejscreenapi_plus_5) is ok, but ejscreenit(pts) fails here ***
   }
@@ -265,6 +281,7 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
                           usewhichnames = usewhichnames,
                           fips = fips,
                           shapefile = shapefile,
+                          namestr = namestr,
                           # verbose = FALSE, # ALREADY THE DEFAULT IN ejscreenapi_plus() and putting it here causes problems if user tries to specify a value for it in ejscreenit()
                           calculate_ratios = calculate_ratios,
                           getstatefromplacename = TRUE,
@@ -280,7 +297,9 @@ ejscreenit <- function(x, y=NULL, radius = 3, maxradiusmiles=10,
   if (0 == 1) {
     ## ejscreenapi_plus() combines these steps: ####
     ## use API to get results for each site ####
-    out2 <- ejscreenapi(lon = pts$lon, lat = pts$lat, radius = radius, drop_redundant_indicators = TRUE,
+    out2 <- ejscreenapi(lon = pts$lon, lat = pts$lat, radius = radius, 
+                        shapefile = shapefile, 
+                        drop_redundant_indicators = TRUE,
                         getstatefromplacename = TRUE)    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  
     ## add weblinks #### 
     out2 <- urls_clusters_and_sort_cols(out2)

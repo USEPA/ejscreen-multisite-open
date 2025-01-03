@@ -34,8 +34,8 @@
 #' @param wkid optional spatial reference code. https://epsg.io/4326
 #' @param fips if used instead of lon,lat it should be a character FIPS code 
 #'   (counties, tracts, or blockgroups)
+#' @param namestr optional text used on report if fips provided and you want to show this text instead of the FIPS code on the report
 #' @param shapefile not implemented
-#' 
 #' @param format_report_or_json default is "pjson" but could "report" to get URL for a pdf report
 #' @param ipurl IP or URL start
 #' @param getstatefromplacename set to FALSE if you need the exact output of API and
@@ -62,8 +62,9 @@
 #' @keywords internal
 #'  
 ejscreenapi1 <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326, 
-                         fips = NULL,
+                         fips = NULL, 
                          shapefile = NULL,
+                         namestr = '',
                          format_report_or_json = 'pjson', ipurl = 'ejscreen.epa.gov',
                          getstatefromplacename = TRUE) {
   
@@ -102,8 +103,10 @@ ejscreenapi1 <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326,
     myurl <- url_ejscreen_report(
       lon = lon, lat = lat, radius = radius, 
       as_html = FALSE, mobile = FALSE, 
-      # areatype = , 
-      areaid = fips, # namestr = , 
+      # areatype = ,  # function infers that from fips
+      # shapefile = shapefile, ## how would shapefile be handled?
+      areaid = fips, 
+      namestr = namestr, # to test
       wkid = wkid, unit = unit, 
       f = "report")
     return(myurl)
@@ -114,7 +117,8 @@ ejscreenapi1 <- function(lon, lat, radius = 3, unit = 'miles', wkid = 4326,
   
   ej.data <- try(ejscreenRESTbroker(
     fips = fips, 
-    # shapefile = shapefile, # would need POST not GET
+    namestr = namestr,  # to test
+    shapefile = shapefile, # would need POST not GET
     lon = lon, lat = lat, 
     radius = radius, 
     unit = unitcode, wkid = wkid,

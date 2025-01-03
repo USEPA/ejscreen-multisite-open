@@ -9,12 +9,14 @@ ejscreenRESTbroker(
   lat = NULL,
   radius = 3,
   fips = NULL,
-  url = c("https://ejscreen.epa.gov/mapper/ejscreenRESTbroker1.aspx?namestr=",
-    "https://ejscreen.epa.gov/mapper/ejscreenRESTbroker.aspx?namestr=")[1],
+  namestr = "",
+  shapefile = NULL,
+  url = c("https://ejscreen.epa.gov/mapper/ejscreenRESTbroker1.aspx?",
+    "https://ejscreen.epa.gov/mapper/ejscreenRESTbroker.aspx?")[1],
+  ipurl = "ejscreen.epa.gov",
   wkid = 4326,
   unit = 9035,
   f = "pjson",
-  ipurl = "ejscreen.epa.gov",
   reportstyle = c("EJscreen_SOE_report", "EJSCREEN_report")[1]
 )
 }
@@ -25,20 +27,26 @@ ejscreenRESTbroker(
 
 \item{radius}{radius of the circular buffer (normally in miles)}
 
-\item{fips}{If specified, lon and lat are ignored, and fips must be the
-FIPS code of a blockgroup or tract (or county).}
+\item{fips}{If specified, lon and lat are ignored, and the one fips code must be the
+FIPS code of a blockgroup or tract, or county (5 digits with leading zero)
+or city/town/cdp/etc. (7 digits with leading zero).
+A character string is best, with leading zero if relevant.}
+
+\item{namestr}{optional text}
+
+\item{shapefile}{not implemented}
 
 \item{url}{URL base for API (provides access to the shorter version vs default longer list of indicators),
 where newer 2023 version is default, using ejscreenRESTbroker1.aspx,
 and old style/mini version is at ejscreenRESTbroker.aspx}
+
+\item{ipurl}{fixed ip or domain/URL to try}
 
 \item{wkid}{spatial reference. https://epsg.io/4326}
 
 \item{unit}{9035 for miles, 9036 for kilometers, but default is miles}
 
 \item{f}{pjson for results in JSON format, or report for the URL of the pdf report}
-
-\item{ipurl}{fixed ip or domain/URL to try}
 
 \item{reportstyle}{EJscreen_SOE_report for the full community profile that was new as of 7/2023,
 or EJSCREEN_report for the older style standard report (which has fewer indicators on it).}

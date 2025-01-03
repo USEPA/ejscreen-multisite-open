@@ -66,6 +66,14 @@ ejam2barplot = function(ejamitout, varnames = c(names_d_ratio_to_avg , names_d_s
 ############################################################################################# #
 
 #' Same as ejam2barplot() but ejam2barplot() handles a sitenumber parameter
+#' 
+#' @inheritParams ejam2barplot
+#' @param out the list of tables that is the output of ejamit() or a related function
+#' @param single_location set to TRUE if using row_index to view one site,
+#'  set to FALSE to view overall results from out$results_overall
+#' @param row_index the number of the row to use from out$results_bysite
+#' @inheritDotParams ejam2barplot
+#' 
 #' @export
 #'
 plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),
@@ -179,19 +187,43 @@ plot_barplot_ratios <- function(ratio.to.us.d.overall,
 
 thisdata <-  data.frame(name = names(ratio.to.us.d.overall),
              value = ratio.to.us.d.overall,
-             color = mycolors) %>%
+             color =  factor(
+               mycolors,
+               levels = c("gray", "yellow", "orange", "red") #Set corect order from least to most
+             )) %>%
     ## drop any indicators with Inf or NaNs
     dplyr::filter(is.finite(value))
 
 thisdata$name <- factor(thisdata$name) # factor(thisdata$name, levels = thisdata$name)
 
+#Dynamically generate the color legend based on title
+if (grepl("State", main, ignore.case = TRUE)) {
+  color_labels <- c(
+    "gray" = "Below State Average",
+    "yellow" = "1-2x State Average",
+    "orange" = "2-3x State Average",
+    "red" = "At least 3x State Average"
+  )
+  legendTitle <- "Ratio vs State Average"
+} else {
+  color_labels <- c(
+    "gray" = "Below US Average",
+    "yellow" = "1-2x US Average",
+    "orange" = "2-3x US Average",
+    "red" = "At least 3x US Average"
+  )
+  legendTitle <- "Ratio vs US Average"
+}
 
 thisplot <- thisdata %>%
     ggplot2::ggplot(ggplot2::aes(x = name, y = value, fill = color)) +
     ggplot2::geom_bar(stat = 'identity') +
-    ## way to add legend in future - needs tweaking
-    #ggplot2::scale_fill_identity(guide='legend', labels = c('gray'='0-1','yellow'='1-2', 'orange'='2-3', 'red'='> 3'),) +
-    ggplot2::scale_fill_identity() +
+    ## Legend for colors of bars
+    ggplot2::scale_fill_manual(
+      values = setNames(mycolorsavailable, mycolorsavailable),
+      labels = color_labels,
+      name = legendTitle
+    ) +
     ggplot2::theme_bw() +
     ggplot2::labs(x = NULL, y = 'Ratio vs. Average', #fill = 'Legend',
                   title = main) +
@@ -203,9 +235,12 @@ thisplot <- thisdata %>%
   ggplot2::geom_hline(ggplot2::aes(yintercept = 1)) +
 
     ggplot2::scale_y_continuous(limits = c(0, NA), expand = ggplot2::expansion(mult = c(0, 0.05), add = c(0, 0))) +
-    ggplot2::theme(plot.margin = ggplot2::unit(c(0,100,0,0), "points"),
+    ggplot2::theme(plot.margin = ggplot2::unit(c(20,100,20,20), "points"),
                    plot.title = ggplot2::element_text(size = 14, hjust = 0.5),
-                   axis.text.x = ggplot2::element_text(size = 10 , angle = -30, hjust = 0, vjust = 1)) + #
+                   axis.text.x = ggplot2::element_text(size = 10 , angle = -30, hjust = 0, vjust = 1),
+                   legend.title = ggplot2::element_text(size = 12),  
+                   legend.text = ggplot2::element_text(size = 10)   
+                   ) + #
     NULL
 
 return(thisplot)

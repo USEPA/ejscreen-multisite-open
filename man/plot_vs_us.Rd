@@ -66,7 +66,7 @@ Could be edited to allow multiple types of sites and/or reference zones
 more generally like for ejamit_compare_types_of_places()
 }
 \examples{
-dontrun{
+\dontrun{
   out <- testoutput_ejamit_1000pts_1miles
   # ejam2boxplot(out)
   # plot_boxplot_vs_ref(out$results_bysite)
@@ -75,7 +75,6 @@ dontrun{
   plot_vs_us(out$results_bysite, varname = "pctlingiso", type =  'ggplot')
   plot_vs_us(out$results_bysite, varname = "pctnhaa", type =  'ggplot')
   plot_vs_us(out$results_bysite, varname = "pctnhaa", type = 'box', ylim = c(0, 20))
-  }
   
  # td = testoutput_ejamit_1000pts_1miles$results_bysite
  # plot_vs_us(, type = 'box')
@@ -84,6 +83,8 @@ dontrun{
  # plot_vs_us(td, varname = "pctnhaa", type =  'ggplot')
  # plot_vs_us(td, varname = "pctnhaa", type = 'box', ylim = c(0,20))
  # plot_vs_us(td[td$ST \%in\% "DE", ], 'pcthisp', refdata = blockgroupstats[ST \%in\% "DE", .(pop, pcthisp)])
+  }
+  
 }
 \seealso{
 See \code{\link[=plot_boxplot_pctiles]{plot_boxplot_pctiles()}} for Percentile indicators compared in one plot.

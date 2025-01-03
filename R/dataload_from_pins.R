@@ -31,6 +31,7 @@
 #' @param justchecking can set to TRUE to just see a list of what pins are stored in that board
 #' @param silent set to TRUE to suppress cat() msgs to console
 #' @param ignorelocal set it to TRUE to avoid 1st checking local disk for copies of files
+#' @param onAttach Indicates whether the function is being called from onAttach. IF so, it will download all arrow files if user cannot connect to PINS board
 #' @import pins
 #'
 #' @return If justchecking = FALSE,
@@ -54,11 +55,7 @@
 #' @export
 #'
 dataload_from_pins <- function(
-    varnames = c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-                 # load only if /when needed:
-                 'bgej',
-                 'bgid2fips',
-                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")[1:4],
+    varnames = .arrow_ds_names[1:3],
     boardfolder = "Mark",
     auth = "auto",
     server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
@@ -67,7 +64,8 @@ dataload_from_pins <- function(
     envir = globalenv(),
     justchecking = FALSE,
     ignorelocal = FALSE,
-    silent = FALSE) {
+    silent = FALSE,
+    onAttach = FALSE) {
   
   if (!all(is.character(varnames))) {
     ok = FALSE
@@ -84,12 +82,7 @@ dataload_from_pins <- function(
     }}
   
   if ('all' %in% tolower(varnames)) {
-    varnames <- c(
-      c('blockwts', 'blockpoints', 'blockid2fips', "quaddata"),
-      'bgej',
-      'bgid2fips',
-      c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
-    )
+    varnames <- .arrow_ds_names
   }
   
   if (justchecking) {
@@ -115,6 +108,12 @@ dataload_from_pins <- function(
   if (inherits(board, "error")) {
     board_available <- FALSE
     if (!silent) {cat("Failed trying to connect to pins board server.\n\n")}
+    
+    # since can't connect to pins, download all arrow files to data directory
+    download_latest_arrow_data(
+      varnames = if(onAttach) .arrow_ds_names else varnames,
+      envir = envir
+    )
   } else {
     board_available <- TRUE
     if (!silent) {cat("Successfully connected to Posit Connect pins board.\n\n")}

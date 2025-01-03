@@ -4,6 +4,8 @@ dataload_pin_available <- function(boardfolder = "Mark",
                                    auth = "auto",
                                    server = "https://rstudio-connect.dmap-stage.aws.epa.gov", 
                                    silent = FALSE) {
+  
+  offline_warning()
   board <- tryCatch(pins::board_connect(server = server, auth = auth),
                     error = function(e) e)
   if (inherits(board, "error")) {

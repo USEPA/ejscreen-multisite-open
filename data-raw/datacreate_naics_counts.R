@@ -5,7 +5,7 @@ library(magrittr) # or maybe can now use |>  that is built into R
 naics_counts_nosub <- frs_by_naics[, .N, by = 'NAICS']
 
 ## compute counts with subcodes
-naics_counts_w_subs <- sapply(NAICS, function(x) {frs_from_naics(x, children = T)[, .N]})
+naics_counts_w_subs <- sapply(NAICS, function(x) {frs_from_naics(x, childrenForNAICS = T)[, .N]})
 
 ## make counts data.frame
 naics_counts <- data.frame(NAICS, count_w_subs = naics_counts_w_subs)

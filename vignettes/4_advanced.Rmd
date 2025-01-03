@@ -65,17 +65,23 @@ Note: This article is a work in progress
 
 ## EXAMPLES OF FILES & TEST DATA EJAM CAN IMPORT OR OUTPUT
 
+
 ### Sample spreadsheets & shapefiles for trying the web app
 
-Examples of .xlsx files are installed locally with EJAM, as input files you can
-use to try out EJAM functions or the web app, or to see what an input file
-should look like.
+Examples of .xlsx files and shapefiles are installed locally with EJAM, as input files you can use to try out EJAM functions or the web app, or to see what an input file should look like.
 
 **Local folders with sample files**
 
-To see a list of local folders (where EJAM is installed locally) with files that
-can be uploaded to the EJAM web app or provided as inputs to EJAM functions (as
-examples or for testing):
+The best, simplest way to see all these files is the function called testdata()
+```{r, eval=FALSE}
+
+testdata()
+
+```
+For more details, you might find the following useful, but testdata() will probably provide what you are looking for.
+
+
+Another way to see a list of local folders (where EJAM is installed locally) with files that can be uploaded to the EJAM web app or provided as inputs to EJAM functions (as examples or for testing):
 
 ```{r, eval=FALSE, echo=TRUE}
 x <- list.dirs(system.file("testdata/", package = "EJAM"), recursive = FALSE)
@@ -112,6 +118,7 @@ MacOS Finder)
 browseURL(system.file("testdata", package = "EJAM"))
 ```
 
+
 **Example of using a file in EJAM**
 
 ```{r, eval=FALSE, echo=TRUE}
@@ -124,12 +131,19 @@ testpoint_files
 latlon_from_anything(testpoint_files[2]) 
 ```
 
+
+
 ### Sample R data objects: Examples of inputs & outputs of EJAM functions
 
-To see examples of data objects, installed as part of EJAM and related packages,
-as inputs or intermediate data objects that you can use to try out EJAM
-functions, to see what the outputs and inputs look like, or to use for testing
-purposes -- This code snippet provides a useful list of test/ sample data
+The package has a number of data objects, installed as part of EJAM and related packages,
+that are examples of inputs or intermediate data objects that you can use to try out EJAM
+functions, or you may just want to see what the outputs and inputs look like, 
+or you could use them for testing purposes.
+
+For documentation on each input or output item (R object), see 
+https://usepa.github.io/EJAM/reference/index.html#test-data
+
+This code snippet provides a useful list of test/ sample data
 objects in EJAM and related packages:
 
 **POINT DATA (LAT/LON COORDINATES)** for testing ejamit(), mapfast(),
@@ -172,9 +186,16 @@ x[grepl("^testout", x$Item), ]
 cat("\n\n")
 ```
 
-Note that the largest files included in the package are mostly the
-blockgroupstats dataset from EJScreen. Note the block datasets are not in the
-package - they get downloaded by the package at launch or as needed.
+**LARGE DATASETS USED BY THE PACKAGE**
+
+Note that the largest files used by the package are mostly the block-related datasets with info about population size and location of US blocks, the facility datasets with info about EPA-regulated sites, and the blockgroup-related datasets with EJScreen indicators. 
+
+Some datasets get downloaded by the package at installation or launch or as needed. Datasets may include for example: 
+[blockwts], [blockpoints], [quaddata], [blockid2fips], [frs], [frs_by_programid], [frs_by_naics], [frs_by_sic], and [frs_by_mact].
+
+Blockgroup-related datasets incude [blockgroupstats], [bgpts], [bgej], [usastats], [statestats], [bgid2fips], and [bg_cenpop2020]. For more info see 
+https://usepa.github.io/EJAM/reference/index.html#datasets-with-indicators-etc-
+
 
 --------------------------------------------------------------------------------
 

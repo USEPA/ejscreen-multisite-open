@@ -22,16 +22,18 @@
 #' @noRd
 #' 
 .onAttach <- function(libname, pkgname) {
-  
-  # These instead could be set in the golem-config.yml file
 
+  # These instead could be set in the golem-config.yml file
+  
   asap_aws   <- TRUE  # download large datasets now?           Set to FALSE while Testing/Building often
   asap_index <- TRUE  # build index those now?                 Set to FALSE while Testing/Building often 
   asap_bg    <- FALSE  # load now vs lazyload blockgroup data?  Set to FALSE while Testing/Building often
   
   # startup msg shown at library(EJAM) or when reinstalling from source ####
   packageStartupMessage("Now running .onAttach(), as part of attaching the EJAM package.")
-  # packageStartupMessage('The leaflet package is what requires sp\n')
+  
+  # make sure to run the manage-public-private script, in case user is not running the app
+  source(system.file("manage-public-private.R", package = "EJAM")) 
   
   # packageStartupMessage(
   #    
@@ -75,22 +77,24 @@
   #     \n\n"
   # )
   
-  # download BLOCK (not blockgroup) data, etc, from EPA AWS Data Commons ####
+  # download BLOCK (not blockgroup) data, etc ####
   
   if (asap_aws) {
-    
     # Note this duplicates code in global.R too
-    
     if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
       
       dataload_from_pins(varnames = c("blockpoints", "blockwts", "quaddata"), 
-                         folder_local_source = app_sys('data')) # use default local folder when trying dataload_from_local()
+                         folder_local_source = app_sys('data'),
+                         onAttach = TRUE) # use default local folder when trying dataload_from_local()
       # EJAM function ... but does it have to say EJAM :: here? trying to avoid having packrat see that and presume EJAM pkg must be installed for app to work. ***
     }
     
     #################### # 
-    #   blockid2fips is used only in state_from_blockid_table() and state_from_blockid(), which are not necessarily used, 
-    #   so not loaded unless/until needed
+    #   blockid2fips was used only in  state_from_blockid(), which is no longer used by testpoints_n(), 
+    #     so not loaded unless/until needed.
+    #     Avoids loading the huge file "blockid2fips" (100MB) and just uses "bgid2fips" (3MB) as needed, that is only 3% as large in memory.
+    #     blockid2fips was roughly 600 MB in RAM because it stores 8 million block FIPS as text.
+    #
     # Alternative to pins board was DMAP data commons / AWS, where .rda format had been used: 
     # EJAM:::dataload_from_aws(justchecking = TRUE)
     ## could download directly like this:
@@ -109,7 +113,7 @@
     # this duplicates code from  global.R 
     
     if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
-    
+      
       indexblocks()   # EJAM function works only AFTER shiny does load all/source .R files or package attached
     }
   }

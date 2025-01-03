@@ -8,6 +8,7 @@
 #' and see it in your web browser.
 #' @param ejamitout output of ejamit()
 #' @param radius radius in miles
+#' @param column_names can be "ej", passed to [mapfast()]
 #' @param browse logical optional whether to open the web browser to view the map
 #' @return like what [mapfastej()] returns
 #' @examples

@@ -22,11 +22,13 @@
 
 ## fname <- system.file("testdata/address/street_address_9.xlsx", package = "EJAM")
 
+offline_warning()
+
 ################################ #
 
-
 testthat::test_that("address_from_table_goodnames works", {
-  
+
+  testthat::skip_if_offline()
   testthat::expect_no_error({
     x <- address_from_table_goodnames(test_address_table_goodnames)
   })
@@ -35,6 +37,8 @@ testthat::test_that("address_from_table_goodnames works", {
 ###################### #
 
 testthat::test_that("address_from_table works", {
+  
+  testthat::skip_if_offline()
   
   ### address_from_table() works with filename??
   ## fname <- system.file(  ..........................)
@@ -52,7 +56,9 @@ testthat::test_that("address_from_table works", {
 })
 
 # testthat::test_that("address_from_table works in odd case (Address colname has different FULL address than STREET etc do)", {
-#   suppressWarnings({
+# 
+# testthat::skip_if_offline()
+# suppressWarnings({
 #     testthat::expect_no_error({
 #       
 #       x <- address_from_table(test_address_table_withfull)
@@ -66,6 +72,8 @@ testthat::test_that("address_from_table works", {
 ###################### #
 
 testthat::test_that("latlon_from_address works", {
+  
+  testthat::skip_if_offline()
   skip_if_not_installed("AOI")
   if (!exists("geocode")) {
     library(AOI)
@@ -93,11 +101,15 @@ testthat::test_that("latlon_from_address works", {
 ###################### #
 
 testthat::test_that("latlon_from_address err if too many addresses", {
+  
+  testthat::skip_if_offline()
   testthat::expect_error(latlon_from_address(rep("a", 1001)))
   })
 ###################### #
 
 testthat::test_that("latlon_from_address_table works on test_address_table", {
+  
+  testthat::skip_if_offline()
   skip_if_not_installed("AOI")
   testthat::expect_no_error({
     x <- latlon_from_address_table(test_address_table)
@@ -120,6 +132,7 @@ testthat::test_that("latlon_from_address_table works on test_address_table", {
 
 testthat::test_that("odd case- latlon_from_address_table works on test_address_table_withfull", {
   
+  testthat::skip_if_offline()
   skip_if_not_installed("AOI")
   
   x <- latlon_from_address_table(test_address_table_withfull)

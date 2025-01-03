@@ -28,7 +28,7 @@ test_that('naics_from_any URL and scrape lookup works', {
 # in this case 21112 gives no results because it wants 211120, which in previous examples
 # was looked up by webscrape = TRUE or using "crude pretroleum" as the query
 test_that('some naics have no sites',{
-  expect_equal(0, nrow(frs_from_naics(21112))) # "crude petroleum extraction"
+  expect_equal(0, nrow(frs_from_naics(21112, childrenForNAICS= FALSE))) # "crude petroleum extraction"
 })
 
 # others return results
@@ -39,18 +39,19 @@ test_that('some naics have no sites',{
 test_that('results of subcategories only output when children = TRUE',{
   expect_no_warning(frs_from_naics(21222)) # "silver and gold mining"
   suppressWarnings({
-    expect_no_error(frs_from_naics(21222, children = TRUE)) # "silver and gold mining" # warns now about the function - see warning
+    expect_no_error(frs_from_naics(21222)) # "silver and gold mining" # warns now about the function - see warning
   })
-    expect_no_warning(frs_from_naics(212221)) # "gold mining"
+  expect_no_warning(frs_from_naics(212221)) # "gold mining"
   expect_no_warning(frs_from_naics(212222)) # "silver mining"
-suppressWarnings({
-  x <- frs_from_naics(21222, children = TRUE) # 373 # all gold and silver mining
-})
+  suppressWarnings({
+    x <- frs_from_naics(21222) # 373 # all gold and silver mining
+  })
 
-  expect_equal(length(which(grepl(212221,x$NAICS))), nrow(frs_from_naics(212221))) # 354 count of gold, matches subset from 21222 w/ children
-  expect_equal(length(which(grepl(212222,x$NAICS))), nrow(frs_from_naics(212222))) # 41 count of silver, matches subset from 21222 w/ children
-  expect_equal(nrow(frs_from_naics(21222)), sum(!grepl(212221,x$NAICS ) & !grepl(212222, x$NAICS))) # 1, that was returned by 21222 w/o children (both gold and silver mining)
-
+  expect_equal(length(which(grepl(212221,x$NAICS))), nrow(frs_from_naics(212221, childrenForNAICS= TRUE))) # 354 count of gold, matches subset from 21222 w/ children
+  expect_gt(length(which(grepl(212222,x$NAICS))), nrow(frs_from_naics(21222, childrenForNAICS= FALSE))) # 41 count of silver, matches subset from 21222 w/ children
+  
+  expect_equal(nrow(frs_from_naics(21222, childrenForNAICS= FALSE)), sum(!grepl(212221,x$NAICS ) & !grepl(212222, x$NAICS))) # 1, that was returned by 21222 w/o children (both gold and silver mining)
+  expect_equal(nrow(frs_from_naics(21222, childrenForNAICS = TRUE)), sum((grepl(212221,x$NAICS ) | grepl(212222, x$NAICS) | grepl(21222, x$NAICS))))
 })
 
 # string queries I believe are based on longest common string. For example "gold ore"

@@ -25,6 +25,8 @@ table_xls_format(
   radius_or_buffer_description =
     "Miles radius of circular buffer (or distance used if buffering around polygons)",
   notes = NULL,
+  custom_tab = NULL,
+  custom_tab_name = "other",
   heatmap_colnames = NULL,
   heatmap_cuts = c(80, 90, 95),
   heatmap_colors = c("yellow", "orange", "red"),
@@ -40,6 +42,7 @@ table_xls_format(
   updateProgress = NULL,
   launchexcel = FALSE,
   saveas = NULL,
+  ejscreen_ejam_caveat = NULL,
   ...
 )
 }
@@ -78,9 +81,15 @@ This requires that bybg be provided as a parameter input to this function.}
 
 \item{buffer_desc}{optional description of buffer used in analysis, passed to 'Notes' sheet}
 
+\item{radius_or_buffer_in_miles}{If provided, miles buffer distance (from polygon or from point if circular buffers)}
+
 \item{radius_or_buffer_description}{optional text saying if distance is radius or polygon buffer, passed to 'Notes' sheet}
 
 \item{notes}{Text of additional notes to put in the notes tab, optional vector of character elements pasted in as one line each.}
+
+\item{custom_tab}{optional table to put in an extra tab}
+
+\item{custom_tab_name}{optional name of optional custom_tab}
 
 \item{heatmap_colnames}{optional vector of colnames to apply heatmap colors}
 
@@ -109,9 +118,9 @@ second color is for those >=2d cutpoint but <3d, etc.}
 \item{saveas}{If not NULL, and a valid path with filename.xlsx is provided,
 the workbook will be saved locally at that path and name. Warning: it will overwrite an existing file.}
 
-\item{...}{other params passed along to \code{\link[openxlsx:writeData]{openxlsx::writeData()}}}
+\item{ejscreen_ejam_caveat}{optional text if you want to change this in the notes tab}
 
-\item{radius_miles}{If provided, miles buffer distance (from polygon or from point if circular buffers)}
+\item{...}{other params passed along to \code{\link[openxlsx:writeData]{openxlsx::writeData()}}}
 }
 \value{
 a workbook, ready to be saved in spreadsheet format, with tabs like "Overall" and "Each Site"

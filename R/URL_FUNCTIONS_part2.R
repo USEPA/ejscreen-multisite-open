@@ -1,17 +1,42 @@
+################################################### #################################################### #
 
+# LIST OF FUNCTIONS HERE ####
+# 
+#   see outline via ctrl-shift-O
+#   see also URL_FUNCTIONS_part1.R
+
+
+
+######################################################################### #
 
 #' URL functions - Create URLs in columns, for EJAM
 #' 
 #' Could start to use this in server and ejamit(), and already used in table_xls_format() 
-#'
+#' @details used in [table_xls_format()] 
+#' 
 #' @param lat vector of latitudes
 #' @param lon vector of longitudes
+#' 
 #' @param radius vector of values for radius in miles
+#' 
 #' @param regid optional vector of FRS registry IDs if available to use to create links
 #'   to detailed ECHO facility reports
+#'   
+#' @param fips vector of FIPS codes if relevant, to use instead of lat lon,
+#'   Passed to [url_ejscreen_report()] as areaid
+#' @param wherestr optional because inferred from fips if provided.
+#'   Passed to [url_ejscreenmap()] and can be name of city, county, state like
+#'   from fips2name(201090), or "new rochelle, ny" or "AK"
+#'   or even a zip code, but NOT a fips code!
+#' @param namestr passed to [url_ejscreen_report()]
+#' 
+#' @param shapefile not implemented
+#' 
 #' @param as_html logical, optional.
-#'   passed to url_ejscreen_report() and url_ejscreenmap()
-#' @seealso [url_ejscreen_report()] [url_ejscreenmap()] [url_echo_facility_webpage()]
+#'   passed to [url_ejscreen_report()] and [url_ejscreenmap()]
+#' @param ... passed to [url_ejscreen_report()] such as areaid="0201090" for a city fips
+#' 
+#' @seealso  [url_ejscreen_report()] [url_ejscreenmap()] [url_echo_facility_webpage()] [urls_clusters_and_sort_cols()]
 #' @return list of data.frames to append to the list of data.frames created by
 #'   [ejamit()] or [doaggregate()],
 #'   
@@ -22,20 +47,32 @@
 #' @export
 #' @keywords internal
 #'
-url_4table <- function(lat, lon, radius, regid = NULL, as_html = TRUE) {
+url_4table <- function(lat, lon, radius=NULL, regid = NULL, 
+                       fips, wherestr = "", namestr = NULL, 
+                       shapefile = NULL,
+                       as_html = TRUE, ...) {
   
   # add error checking***
+  
+  if (!missing(fips) & !is.null(fips) & !all(is.na(fips))) {
+    if (missing(wherestr)) {
+    wherestr <- fips2name(fips)
+    }
+    if (!missing(lat) & !is.null(lat) & !all(is.na(fips))) {warning('should provide lat,lon or fips but both were provided')}
+    lat = NULL
+    lon = NULL
+  }
   
   # Also could add other links such as these:
   #   url_frs_report()
   #   url_enviromapper()
   #   url_envirofacts_data()  ?
-  
+  # url_countyhealthrankings() ?
   
   if (!is.null(regid)) {
     echolink <- url_echo_facility_webpage(regid, as_html = as_html)
   } else {
-    echolink <- rep(NA, NROW(lat)) # server used 'N/A' instead of NA -- which do we want to use?
+    echolink <- rep(NA, max(NROW(lat), NROW(fips))) # server used 'N/A' instead of NA -- which do we want to use?
   }
   
   newcolnames <- c(
@@ -45,8 +82,13 @@ url_4table <- function(lat, lon, radius, regid = NULL, as_html = TRUE) {
   )
   
   results_bysite <- data.table(
-    `EJScreen Report` = url_ejscreen_report(lat = lat, lon = lon, radius = radius, as_html = as_html, interactiveprompt = FALSE),
-    `EJScreen Map`    = url_ejscreenmap(    lat = lat, lon = lon,                  as_html = as_html),
+    `EJScreen Report` = url_ejscreen_report(lat = lat, lon = lon, radius = radius, as_html = as_html, 
+                                            areaid = fips, namestr = namestr, 
+                                            shapefile = shapefile, interactiveprompt = FALSE, ...), # linktext = 
+    
+    `EJScreen Map`    = url_ejscreenmap(    lat = lat, lon = lon,                  as_html = as_html, 
+                                            wherestr = wherestr,              
+                                            shapefile = shapefile),  # linktext =   would need to be different than for report
     `ECHO report` = echolink
   )
   
@@ -59,6 +101,7 @@ url_4table <- function(lat, lon, radius, regid = NULL, as_html = TRUE) {
   # setcolorder(out$results_bysite,  neworder = newcolnames)
   # setcolorder(out$results_overall, neworder = newcolnames)
   # out$longnames <- c(newcolnames, out$longnames)
+  
   return(list(
     results_bysite  = results_bysite,
     results_overall = results_overall,

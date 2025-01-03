@@ -113,29 +113,29 @@ state_from_sitetable <- function(sites, ignorelatlon = FALSE) {
       
       if (!ignorelatlon) {
         
-      # 3. lat lon of site points (not blocks) ####
+        # 3. lat lon of site points (not blocks) ####
         # IF ALREADY THERE OR HAD BEEN ESTIMATED VIA latlon_from_s2b() 
-     
-         # *** Note this MIGHT also occur in shapefile case now?
         
-      sites2states <- latlon_from_anything(sites2states, interactiveprompt = FALSE) # ejam_uniq_id if already was there is preserved here
-      if (("lat" %in% names(sites2states) ) && ("lon" %in% names(sites2states))) {
-        # use lat lon to get ST, but it takes a few seconds to use the shapefile to do this:
-        sites2states <- cbind(
-          sites2states,   # ejam_uniq_id if already was there is preserved here
-          state_from_latlon(lat = sites2states$lat, lon = sites2states$lon)  ## VERY SLOW STEP ***  
-        )
-      } else {
+        # *** Note this MIGHT also occur in shapefile case now?
         
-        # 4. shapefiles case ####
-        # assuming no latlon was found ***
-        
-        # if("sf" %in% class(sites2states)) {}  # but only the non-geometry part, a data.frame, would get passed here from 
-        
-        
-        
-        bad_sites2states <- TRUE
-      }
+        sites2states <- latlon_from_anything(sites2states, interactiveprompt = FALSE) # ejam_uniq_id if already was there is preserved here
+        if (("lat" %in% names(sites2states) ) && ("lon" %in% names(sites2states))) {
+          # use lat lon to get ST, but it takes a few seconds to use the shapefile to do this:
+          sites2states <- cbind(
+            sites2states,   # ejam_uniq_id if already was there is preserved here
+            state_from_latlon(lat = sites2states$lat, lon = sites2states$lon)  ## VERY SLOW STEP ***  
+          )
+        } else {
+          
+          # 4. shapefiles case ####
+          # assuming no latlon was found ***
+          
+          # if("sf" %in% class(sites2states)) {}  # but only the non-geometry part, a data.frame, would get passed here from 
+          
+          
+          
+          bad_sites2states <- TRUE
+        }
       } else {
         bad_sites2states <- TRUE
       }
@@ -144,8 +144,20 @@ state_from_sitetable <- function(sites, ignorelatlon = FALSE) {
   
   # if nothing found to tell us the ST info, fill in NA values
   if (bad_sites2states) {
-    
-    sites2states <- data.frame(ejam_uniq_id = 1:length(unique(sites2states$ejam_uniq_id)), ST = NA)
+    if ("ejam_uniq_id" %in% names(sites2states)) {
+      # preserve id if already there, (which it always is at this point since it was checked and created if missing, above)
+      #   in case using ejamit_compare_types_of_places() e.g.
+      sites2states$ST <- NA
+      sites2states <- sites2states[, c("ejam_uniq_id", "ST")] # get rid of extra columns (even if latlon were there, if ignorelatlon=T)
+      sites2states <- unique(sites2states) # get rid of redundant rows
+    } else {
+      ## this case should not occur now, because of code above. It used to do this:
+      # sites2states <- data.frame(ejam_uniq_id = 1:length(unique(sites2states$ejam_uniq_id)), ST = NA)
+      
+      ## get rid of extra columns and redundant rows, to retain only 1 row per id and only ST and ejam_uniq_id cols)
+      sites2states <- data.frame(ejam_uniq_id = 1:NROW(sites2states), ST = NA)
+    }
+
   }
   # confirm quality of ST info found or looked up
   # note that 

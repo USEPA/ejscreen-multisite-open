@@ -22,13 +22,13 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-# EPA's EJ Analysis Multi-site (EJAM) tool
+# EPA's EJ Analysis Multisite (EJAM) tool
 
 EJAM lets you easily and quickly see demographic and environmental information aggregated within and across hundreds or thousands of places, all at the same time.
 
 Using EJAM is like running an EJScreen report, but for hundreds or thousands of places, all at the same time.
 
-EJAM will be powering new "multi-site" features in [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen"){.uri target="_blank" rel="noreferrer noopener"}, and is a new toolkit developed by the United States Environmental Protection Agency (US EPA). It will be available through EJScreen and also as an open-source software package for developers and analysts.
+EJAM will be powering new "multisite" features in [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen"){.uri target="_blank" rel="noreferrer noopener"}, and is a new toolkit developed by the United States Environmental Protection Agency (US EPA). It will be available through EJScreen and also as an open-source software package for developers and analysts.
 
 You can see a quick summary, explore interactive maps, tables, and plots, and download a summary report or detailed spreadsheet.
 

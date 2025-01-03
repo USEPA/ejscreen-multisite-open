@@ -70,7 +70,8 @@ frs_from_program  <- function(program) {
 
 #' Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
 #'
-#' @param naics_code_or_name 
+#' @param naics_code_or_name passed to [naics_from_any()] as the query
+#' @param childrenForNAICS passed to [naics_from_any()] as the children param of that function
 #' @param ... passed to [naics_from_any()]
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
@@ -95,11 +96,11 @@ frs_from_program  <- function(program) {
 #'   
 #' @export
 #'
-frs_from_naics <- function(naics_code_or_name, ...) {
+frs_from_naics <- function(naics_code_or_name, childrenForNAICS = TRUE, ...) {
   
   if (!exists("frs")) dataload_from_pins("frs")
   #  return results in any order since we are getting an entire NAICS, not a list of facilities in some specified order
-  frs[REGISTRY_ID %in% regid_from_naics(naics_from_any(naics_code_or_name, ...)$code, id_only = TRUE) , ]
+  frs[REGISTRY_ID %in% regid_from_naics(naics_from_any(naics_code_or_name, children = childrenForNAICS,...)$code, children = FALSE, id_only = TRUE) , ]
 }
 ########################################## # 
 

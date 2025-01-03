@@ -7,8 +7,15 @@
 fips2name(fips, ...)
 }
 \arguments{
-\item{fips}{vector of US Census FIPS codes for Counties (5 digits each) or States (2 digits).
-Can be string or numeric, with or without leading zeroes.}
+\item{fips}{vector of US Census FIPS codes for
+\itemize{
+\item States (2 digits once any required leading zeroes are included)
+\item Counties (5)
+\item City/town/CDP (7)
+\item Tracts (11)
+\item Blockgroups (12)
+Can be string or numeric, with or without leading zeroes.
+}}
 
 \item{...}{passed to fips2countyname() to control whether it appends something like , NY or , New York
 after county name}

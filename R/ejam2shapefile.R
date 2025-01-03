@@ -1,23 +1,28 @@
 
 
 
-#' DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.
+#' DRAFT - export EJAM results as shapefile/geojson/kml for use in ArcPro, EJScreen, etc.
 #'
 #' @param ejamitout output of EJAM such as from [ejamit()]
-#' @param fname optional filename with no path and must be .shp extension
+#' @param fname optional filename with no path, with extension one of "geojson"/"json", "shp", "kml"
+#'   Ignored if save=F.
 #' @param folder optional - If omitted (and not running in shiny and if interactive() mode),
-#'   this function prompts you to specify the folder, path to where the .zip should be saved.
-#' @param crs optional coord ref system
-#' @param shortcolnames Whether to cut colnames to 10 characters for .shp format
-#' @return path to saved .zip file
+#'   this function prompts you to specify the folder where the file should be saved.
+#'   If omitted and not running in shiny or not interactive() mode, it uses tempdir().
+#'   Ignored if save=F.
 #' @param save whether to save file - if FALSE, it returns the object not the file path
+#' @param crs optional coord ref system
+#' @param shortcolnames Whether to cut colnames to 10 characters only if using .shp format
 #' @param varnames optional vector of which colnames of ejamitout$results_bysite 
 #'   to include in shapefile. DJefault is all other than averages, ratios, and raw EJ scores.
 #'   Can be "all" or NULL to include all columns.
+#' @param sf_data.frame data.frame that is also "sf" class, with "geometry" column for mapping,
+#'   rows exactly corresponding to those in ejamitout$results_bysite
+#' @return path to saved file
 #' @examples \dontrun{
-#'   # folder = "~/../Downloads"
+#'   # folder = getwd()
 #'   # out <- ejamit(testpoints_100 , radius = 3.1)
-#'   # fname <- ejam2shapefile(out, "test100_3miles.shp", folder = folder)
+#'   # fname <- ejam2shapefile(out, "test100_3miles.geojson", folder = folder)
 #'   
 #'   out <- testoutput_ejamit_10pts_1miles
 #'   fname <- ejam2shapefile(out)
@@ -31,9 +36,13 @@
 #' 
 #' @export
 #' 
-ejam2shapefile <- function(ejamitout, fname = "EJAM_results_bysite_date_time.shp",  folder = ".", 
-                           crs = 4269, shortcolnames=TRUE, save = TRUE, 
-                           varnames = "basic250"
+ejam2shapefile <- function(ejamitout, 
+                           fname = "EJAM_results_bysite_date_time.geojson", 
+                           folder = tempdir(), # only used if not specified and in shiny or not interactive 
+                           save = TRUE, 
+                           crs = 4269, 
+                           shortcolnames=TRUE, varnames = "basic250",
+                           sf_data.frame = NULL
 ) { 
   # ,   ...) {
   
@@ -41,6 +50,7 @@ ejam2shapefile <- function(ejamitout, fname = "EJAM_results_bysite_date_time.shp
   
   df <- data.table::setDF(ejamitout$results_bysite)
   
+  # WHICH COLUMNS? ####
   if (is.null(varnames) || all(is.na(varnames)) || varnames[1] == "all") {
     varnames <- "all"
     # df <- df
@@ -64,90 +74,159 @@ To include specific columns provides those as a character vector of varnames.")
     }
   }
   
+  # URLS ####
   ## shapefile may not support 255 or larger number of characters in a field like the URLs so they get truncated
-  ## perhaps should alter or remove the url columns
-urlcols = which(grepl("a href=", names(df)))
-if (length(urlcols) > 0) {
-  df[ , urlcols] <- unlinkify(df[ , urlcols])
-}  
-
-  if (all(is.na(df$lat)) || all(is.na(df$lon))) {
-    # *** probably it was analysis of FIPS or Shapefile, not latlon
-    cat(
-    'Shapefile of results gets mapped in the shiny app, but 
-this save function only handles ejamit analysis of proximity to latlon points --
-it is not yet implemented here for ejamit analysis of polygons from Shapefile or analysis of FIPS -- 
-would need original shapefile to join it to table of results.
-Except, if Counties were analyzed, see  mapfastej_counties() \n')
-    warning(   "latlon at all sites are NA values")
-    
-    return(NA)
-
-  } else {
-    if (any(is.na(df$lat)) || any(is.na(df$lon))) {warning("latlon at some sites are NA values")}
+  ##  should at least alter or maybe just remove the url columns
+  urlcols = which(grepl("a href=", names(df)))
+  if (length(urlcols) > 0) {
+    df[ , urlcols] <- unlinkify(df[ , urlcols])
   }
-  bysite_shp <- shapefile_from_sitepoints(df, crs = crs)
   
-  ## just does sf::st_as_sf()
-  ## later will want to handle ejamit() outputs where shapefile was analyzed not just circles around points
-  # usedpoints <- "sfc_POINT" %in% class(st_geometry(bysite_shp))
+  if (!is.null(sf_data.frame)) {
+    if (!all(c("sf", "data.frame") %in% sapply(sf_data.frame, class))) {stop('sf_data.frame must be class "sf" and "data.frame" ')}
+    # sf_data.frame <- shapefix(sf_data.frame) # ?? in case problems with columns but should have fixed when imported.
+    if (!NROW(sf_data.frame) == NROW(df)) {stop("ejamitout$results_bysite and sf_data.frame must have exactly the same number of rows, matching each other")}
+    df <- cbind(df, sf_data.frame) # check this works
+  } else {
+    
+    # LATLON? no shp provided ####
+    
+    ## cant map if no shp & no latlon ####
+    if (all(is.na(df$lat)) || all(is.na(df$lon))) {
+      # *** probably it was analysis of FIPS or Shapefile, not latlon
+      cat(
+        'Shapefile of results gets mapped in the shiny app, but 
+this save function does not work for ejamit analysis of polygons from Shapefile or analysis of FIPS unless 
+shapefile provided as sf_data.frame to join it to table of results.
+Except, if Counties were analyzed, see  mapfastej_counties() \n')
+      # warning(   "latlon at all sites are NA values")
+      return(NA)
+    } else {
+      
+      if (any(is.na(df$lat)) || any(is.na(df$lon))) {warning("latlon at some sites are NA values")}
+    }
+    ## create circles at lat,lon pts ####
+    bysite_shp <- shapefile_from_sitepoints(df, crs = crs)
+    
+    ## just does sf::st_as_sf()
+    ## later will want to handle ejamit() outputs where shapefile was analyzed not just circles around points
+    # usedpoints <- "sfc_POINT" %in% class(st_geometry(bysite_shp))
+    
+    ## add circular buffers ####
+    radius <- df$radius.miles
+    bysite_shp <-  shape_buffered_from_shapefile_points(bysite_shp, radius.miles = radius, crs = crs)
+    ## note this removes the columns lat,lon   and  adds a column at the end called geometry
+    ## so its columns are not directly comparable to column names of ejamitout$results_bysite
+    bysite_shp$lat = df$lat
+    bysite_shp$lon = df$lon
+  }
   
-  ### ADD CIRCULAR BUFFERS FOR MAPPING ETC. 
-  radius <- df$radius.miles
-  bysite_shp <-  shape_buffered_from_shapefile_points(bysite_shp, radius.miles = radius, crs = crs)
   
-  ## note this removes the columns lat,lon   and  adds a column at the end called geometry
-  ## so its columns are not directly comparable to column names of ejamitout$results_bysite
-  bysite_shp$lat = df$lat
-  bysite_shp$lon = df$lon
+  # SAVE  ####
   if (!save) {
     return(bysite_shp)
-    
   } else {
     
-    ### need >=10 character colnames to save as .shp file format. see sf:::abbreviate_shapefile_names etc.
-    ### so shortening them but "geometry" must not be changed
-    if (shortcolnames) {
-      names(bysite_shp)[names(bysite_shp) != "geometry"] <- paste0(
-        substr(names(bysite_shp)[names(bysite_shp) != "geometry"] , 1, 7),
-        1:length(names(bysite_shp)[names(bysite_shp) != "geometry"]))
-      names(bysite_shp) <- tolower(names(bysite_shp))
-      ###  but renaming ejam_uniq_id  is not ideal - try to keep it?
-      # bysite_shp$ejam_uniq_id <- bysite_shp$ejam_4
-    }
-    #  Creating a 256th field, but some DBF readers might only support 255 fields
-    
-    
+    ## folder OK? #### 
     if (interactive() && !shiny::isRunning()) {
       if (missing(folder)) {
-        folder <- rstudioapi::selectDirectory("Select/confirm Folder to Save .zip in", path = folder)
+        folder <- rstudioapi::selectDirectory("Select/confirm Folder to Save in", path = folder)
       }
     }
-    if (missing(fname)) {
-      fname <- create_filename(ext = ".shp", file_desc = "results_bysite") # e.g.,  "EJAM_results_bysite_20240901_162119.shp"
-    }
+    if (!dir.exists(folder)) {stop("folder does not exist")}
     # folder <- normalizePath(folder) # ?? converts from x/y/z  to  x\\y\\z  on windows.
-    if (tools::file_ext(fname) != "shp") {stop("fname extension must be .shp, and the saved file in specified folder will be a .zip file with the .shp etc.")}
-    tds <- file.path(tempdir(), "shp")
-    if (!dir.exists(tds)) {dir.create(tds)}
     
-    sf::st_write(
-      obj = bysite_shp,
-      dsn = file.path(tds, fname),
-      append = FALSE, delete_layer = TRUE # ,  # should overwrite any existing, but fails if already exists?
-      # ...
-    )
+    ## fname and type OK? ####
+    ftype <- tools::file_ext(fname) # it removes the dot
+    if (missing(fname)) {
+      fname <- create_filename(ext = paste0(".", ftype), file_desc = "results_bysite") # e.g.,  "EJAM_results_bysite_20240901_162119.shp"
+    }
+    if (basename(fname) != fname) {
+      stop("fname must not include path, only filename with extension - use folder parameter to specify folder")
+    }
+    ok.ext <- c("shp", "geojson", "kml", "json")
+    if (!tools::file_ext(fname) %in% ok.ext) {
+      stop(paste0('fname extension must be one of \"', paste0(ok.ext, collapse = "\", \""), '\"'))
+    }
     
-    zipname <- paste0(fname, ".zip")
-    fname_noext <- gsub( paste0("\\.", tools::file_ext(fname), "$"), "", dir(tds, pattern = fname))  # ?? 
-    fnames <- dir(tds, pattern = fname_noext)
-    fnames <- fnames[!grepl("zip$", fnames)]
-    if (file.exists(zipname)) {file.remove(zipname)}
+    ##################################### # 
+    
+    ## .geojson, .json, .kml    ####
+    
+    if (ftype != "shp") {
+      
+      finalpath = paste0(normalizePath(folder), "\\", fname)
+      if (file.exists(finalpath)) {
+        warning("File by that name already exists, but will overwrite it.")
+        file.remove(finalpath)
+      }
+      
+      if (ftype %in% c("geojson", "json")) {
+        sf::st_write(
+          obj = bysite_shp,
+          dsn = finalpath,
+          driver = "GeoJSON", # "json" is not recognized but this way it works
+          delete_layer = TRUE, # delete_layer not supported?
+          append = FALSE
+        )
+      } else {
+        sf::st_write(
+          obj = bysite_shp,
+          dsn = finalpath,
+          # driver = "KML", # infers it from extension
+          delete_layer = TRUE, # delete_layer not supported?
+          append = FALSE
+        )
+      }
 
-    zipfullpath <- paste0(normalizePath(folder), "/", zipname)
-    zip(zipfullpath, files = file.path(tds, fnames), extras = c('-j', '-D')) # unzip from tempdir to folder specified by parameter. -D should prevent storing Directory info, -j is supposed to use no path info so files are all in root of .zip and there are not folders inside the .zip
+    }
+    ##################################### # 
     
-    return(zipfullpath)
+    ## .shp  ####
+    
+    if (ftype == "shp") {
+      ### need >=10 character colnames to save as .shp file format. see sf:::abbreviate_shapefile_names etc.
+      ### so shortening them but "geometry" must not be changed
+      if (shortcolnames) {
+        names(bysite_shp)[names(bysite_shp) != "geometry"] <- paste0(
+          substr(names(bysite_shp)[names(bysite_shp) != "geometry"] , 1, 7),
+          1:length(names(bysite_shp)[names(bysite_shp) != "geometry"]))
+        names(bysite_shp) <- tolower(names(bysite_shp))
+        ###  but renaming ejam_uniq_id  is not ideal - try to keep it?
+        # bysite_shp$ejam_uniq_id <- bysite_shp$ejam_4
+      }
+      #  Creating a 256th field, but some DBF readers might only support 255 fields
+      
+      tds <- file.path(tempdir(), ftype)
+      if (!dir.exists(tds)) {dir.create(tds)}
+      if (!dir.exists(tds)) {stop('could not create temp directory')}
+      if (file.exists(file.path(tds, fname))) {
+        warning("File by that name already exists, but will overwrite it.")
+        file.remove(file.path(tds, fname))
+      }
+      sf::st_write(
+        obj = bysite_shp,
+        dsn = file.path(tds, fname),
+        delete_layer = TRUE, # delete_layer not supported?
+        append = FALSE
+      )
+      if (!file.exists(file.path(tds, fname))) {stop('could not write to file at ', file.path(tds, fname))}
+      zipname <- paste0(fname, ".zip")
+      fname_noext <- gsub( paste0("\\.", tools::file_ext(fname), "$"), "", dir(tds, pattern = fname))  # ?? 
+      fnames <- dir(tds, pattern = fname_noext)
+      fnames <- fnames[!grepl("zip$", fnames)]
+      if (file.exists(zipname)) {file.remove(zipname)}
+      zipfullpath <- paste0(normalizePath(folder), "\\", zipname)
+      zip(zipfullpath, files = file.path(tds, fnames), extras = c('-j', '-D')) 
+      #  
+      # -D should prevent storing Directory info, 
+      # -j is supposed to use no path info so files are all in root of .zip and there are not folders inside the .zip
+      if (!file.exists(zipfullpath)) {stop('could not create zip file at ', zipfullpath)}
+      finalpath = zipfullpath
+    }
+    ##################################### # 
+    
+    return(finalpath)
   }
 }
 ################################################################################### #
