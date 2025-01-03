@@ -110,7 +110,7 @@ dataload_from_pins <- function(
     if (!silent) {cat("Failed trying to connect to pins board server.\n\n")}
     
     # since can't connect to pins, download all arrow files to data directory
-    EJAM:::download_latest_arrow_data(
+    download_latest_arrow_data(
       varnames = if(onAttach) .arrow_ds_names else varnames,
       envir = envir
     )
