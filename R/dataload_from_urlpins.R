@@ -11,7 +11,7 @@
 #'
 #' @export
 #'
-dataload_from_urlpins <- function(varnames = .arrow_ds_names[1:4],
+dataload_from_urlpins <- function(varnames = .arrow_ds_names[1:3],
                                   server = "https://ejanalysis.github.io/ejscreendata/pins/",
                                   envir = globalenv(),
                                   justchecking = FALSE) {
