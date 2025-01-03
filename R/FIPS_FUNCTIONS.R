@@ -1002,8 +1002,8 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = FALSE,
       results <- fips_place_from_placename_grep(place_st_dont_say_cdp_or_city,
                                                 all_placename = pre_comma(all_place_st_dont_say_cdp_or_city, trim = TRUE),
                                                 all_ST = post_comma(all_place_st_dont_say_cdp_or_city, trim = TRUE))
-      results <- results[, .( query,placename,ST,countyname,fips, count_city_matched, count_city_state_matched)]
       
+      results <- results[, .( query,placename,ST,countyname,fips, count_city_matched, count_city_state_matched)]
       ### Get back a table of candidates,
       ###   but where do we check for exact match ? and where to choose which of possible hits is best ?
       
@@ -1070,14 +1070,15 @@ fips_place_from_placename = function(place_st, geocoding = FALSE, exact = FALSE,
     }
     #################################################### # 
     ## compile those findings and print to show possible hits, duplicates, county info, etc.
-    
-    if (is.data.frame(results[[1]])) {
+    if(is.data.table(results) && usegrep){
+      #This condition is for usegrep = true. Without it, this if else would result in results being an empty dataframe
+    }
+    else if (is.data.frame(results[[1]])) {
       results <- data.frame(rbindlist(results))
       rownames(results) <- NULL
     } else {
       results = data.frame() # and results$fips will be NULL and NROW is 0
     }
-    
     if (verbose) {
       if (NROW(results) == 0) {
         cat(paste0('\n\nyou can also try, for example:\n  censusplaces[grep("', place_st[1], '", censusplaces$placename, ignore.case = T), ]\n\n'))
