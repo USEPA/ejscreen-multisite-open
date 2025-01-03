@@ -1528,6 +1528,8 @@ fips_counties_from_countynamefull <- function(fullname, exact = TRUE) {
 # fips2...   ####
 ############################################################################# #
 
+# fips2pop() and f2p() helper
+
 # fips_st2eparegion()
 # fips2state_abbrev()
 # fips2state_fips()
@@ -1535,6 +1537,84 @@ fips_counties_from_countynamefull <- function(fullname, exact = TRUE) {
 # fips2countyname()
 # fips2name()
 ############################################################################# #
+################################################## # 
+
+#' Get population counts (ACS EJScreen) by FIPS
+#' Utility to aggregate just population count for each FIPS Census unit
+#' 
+#' @param fips vector of fips (can be state, county, tract, blockgroup, block).
+#'  If block, it estimates using weights like it does when aggregating for a report.
+#'  If city/cdp, it returns NA currently since those pop counts are not in blockgroupstats.
+#'
+#' @return vector of population counts same length as fips vector
+#' 
+#' @export
+#'
+fips2pop <- function(fips) {
+  
+  pop = rep(NA, times = length(fips))
+  ftype = fipstype(fips)
+  
+  # to handle possibly multiple types of fips in one shapefile:
+  for (onetype in unique(ftype)) {
+    pop[ftype == onetype]  <- f2p(fips[ftype == onetype], onetype = onetype)
+  }
+  
+  # Population <- prettyNum(pop, big.mark = ",")
+  
+  return(pop)
+}
+################################################## # 
+
+
+# helper function to get population counts (ACS EJScreen) by FIPS, for just 1 type of fips at a time
+
+f2p = function(fips, onetype) {
+  
+  if (missing(onetype)) {
+    onetype = unique(fipstype(fips))
+    if (length(onetype) > 1) {stop('can only handle 1 fipstype at a time, so all must be e.g., state fips')}
+  }
+  
+  pop <- rep(NA, times = length(fips))
+  
+  if (onetype == 'city') {
+    # harder case - will not address here for now
+  }
+  
+  if (onetype == 'blockgroup') {
+    pop <- blockgroupstats[fips, pop, on = 'bgfips']
+    # pop <- blockgroupstats$pop[match(fips, blockgroupstats$bgfips)]
+  }
+  
+  if (onetype %in% c('state', 'county', 'tract')) {
+    if (onetype == 'state')  {fipslen = 2}
+    if (onetype == 'county') {fipslen = 5}
+    if (onetype == 'tract')  {fipslen = 11}
+    poptable <- blockgroupstats[substr(bgfips, 1, fipslen) %in% fips,
+                                .(pop = sum(pop, na.rm = T)),
+                                by = .(fips = substr(bgfips, 1, fipslen))]
+    pop <- poptable$pop[match(fips, poptable$fips)]
+  }
+  
+  if (onetype == 'block') {
+    ## very inefficient draft but it works
+    if (exists("blockid2fips")) {
+      # pop is not essential and 
+      # it is slow to load and slow to do this, 
+      # so dont bother to load if not already here?
+      
+      ##  use rounded (parent blockgroupstats$pop * blockwts$blockwt)
+      bgpop <- blockgroupstats[substr(fips, 1, 12), pop, on = 'bgfips']
+      inputfips = data.table(blockfips = fips)
+      inputid = data.table(blockid = blockid2fips[inputfips, blockid, on = 'blockfips'])
+      pop <- round(bgpop * blockwts[inputid, blockwt, on = 'blockid'], 0)
+    }
+  }
+  
+  return(pop)
+}
+################################################## # 
 
 
 #' FIPS - Get EPA Region number from state FIPS code

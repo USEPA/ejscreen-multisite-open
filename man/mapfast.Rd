@@ -42,7 +42,7 @@ launch a default browser window to show the map
 and print the temp filepath and filename in the console.
 Normally the map would be shown in the default RStudio viewer pane.}
 
-\item{color}{color of circles, default is "#03F"}
+\item{color}{color of circles or polygons}
 }
 \value{
 plots a leaflet map with popups with all the columns from mydf,
