@@ -95,11 +95,11 @@ frs_from_program  <- function(program) {
 #'   
 #' @export
 #'
-frs_from_naics <- function(naics_code_or_name, ...) {
+frs_from_naics <- function(naics_code_or_name, childrenForNAICS = TRUE, ...) {
   
   if (!exists("frs")) dataload_from_pins("frs")
   #  return results in any order since we are getting an entire NAICS, not a list of facilities in some specified order
-  frs[REGISTRY_ID %in% regid_from_naics(naics_from_any(naics_code_or_name, ...)$code, id_only = TRUE) , ]
+  frs[REGISTRY_ID %in% regid_from_naics(naics_from_any(naics_code_or_name, children = childrenForNAICS,...)$code, children = FALSE, id_only = TRUE) , ]
 }
 ########################################## # 
 

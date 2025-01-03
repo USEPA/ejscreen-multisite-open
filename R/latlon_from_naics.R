@@ -144,8 +144,9 @@ latlon_from_naics <- function(naics, children = TRUE, id_only = FALSE, ...) {
 #' 
 #' @export
 #'
-regid_from_naics <- function(naics, children = FALSE, id_only = TRUE, ...) {
+regid_from_naics <- function(naics, children = TRUE, id_only = TRUE, ...) {
   
-  latlon_from_naics(naics = naics, children = children, id_only = id_only, ...)
+  result <- latlon_from_naics(naics = naics, children = children, id_only = id_only, ...)
+  return(unique(result))
 }
 ######################################## #
