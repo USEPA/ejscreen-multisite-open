@@ -354,11 +354,28 @@ app_server <- function(input, output, session) {
   
   num_valid_pts_uploaded <- reactiveValues('SHP' = 0)
   
+  ## initialize SHP file extension error message
+  error_message <- reactiveVal(NULL)
+  
   data_up_shp <- reactive({
 
     req(input$ss_upload_shp)
     infiles <- input$ss_upload_shp$datapath # get path and temp (not original) filename of the uploaded file
     print(infiles)
+    infile_ext <- tools::file_ext(input$ss_upload_shp$name)
+    
+    required_extensions <- c('shp', 'shx', 'dbf', 'prj')
+    valid_zip <- 'zip'
+    has_required_files <- all(required_extensions %in% infile_ext) || any(infile_ext == valid_zip)
+    
+    if (!has_required_files) {
+      missing_files <- required_extensions[!required_extensions %in% infile_ext]
+      error_message(paste("Missing required file types:", paste(missing_files, collapse = ", ")))
+      disable_buttons[['SHP']] <- TRUE
+    } else {
+      error_message(NULL)  
+      disable_buttons[['SHP']] <- FALSE
+    }
     
     if (use_shapefile_from_any) { # newer way
       
@@ -453,6 +470,12 @@ app_server <- function(input, output, session) {
     
   }) # END OF SHAPEFILE UPLOAD
   
+  ## show error message when any SHP file extensions are missing
+  output$error_message <- renderText({
+    if (!is.null(error_message())) {
+      error_message()
+    }
+  })
   #############################################################################  #
   
   ## *** note: repeated file reading code below could be replaced by  latlon_from_anything() ####
