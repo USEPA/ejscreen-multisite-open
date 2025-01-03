@@ -70,7 +70,8 @@ frs_from_program  <- function(program) {
 
 #' Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
 #'
-#' @param naics_code_or_name 
+#' @param naics_code_or_name passed to [naics_from_any()] as the query
+#' @param childrenForNAICS passed to [naics_from_any()] as the children param of that function
 #' @param ... passed to [naics_from_any()]
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"

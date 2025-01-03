@@ -40,6 +40,8 @@ look in for locally saved copies in case pins board is not reachable by user.}
 \item{ignorelocal}{set it to TRUE to avoid 1st checking local disk for copies of files}
 
 \item{silent}{set to TRUE to suppress cat() msgs to console}
+
+\item{onAttach}{Indicates whether the function is being called from onAttach. IF so, it will download all arrow files if user cannot connect to PINS board}
 }
 \value{
 If justchecking = FALSE,
