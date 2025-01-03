@@ -8,88 +8,6 @@
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Map - points - Create leaflet map of points, in shiny app
-#'
-#' @description make a leaflet map of uploaded points such as facilities
-#' @param mypoints, data frame of uploaded points
-#' @param rad, a size for drawing each circle (buffer search radius)
-#' @param highlight, a logicial for whether to highlight overlapping points (defaults to FALSE)
-#' @param clustered, a vector of T/F values for each point, indicating if they overlap with another
-#'
-#' @return a leaflet map with circles, circleMarkers, and basic popup
-#' @seealso [mapfast()] [map_facilities_proxy()]
-#'
-#' @export
-#'
-map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {
-  
-  #, map_units = 'miles'){
-  
-  ## map settings
-  base_color      <- '#000080'
-  cluster_color   <- 'red'
-  highlight_color <- 'orange'   #  NOT USED YET
-  circleweight <- 4
-  
-  ## convert units to miles for circle size
-  # if (map_units == 'kilometers'){
-  #   rad = rad * 0.62137119
-  # }
-  
-  ## if checkbox to highlight clusters is checked
-  if (highlight == TRUE) {
-    ## compare latlons using is_clustered() reactive
-    circle_color <- ifelse(clustered == TRUE, cluster_color, base_color)
-  } else {
-    circle_color <- base_color
-  }
-  # print(head(mypoints))
-  
-  if (length(mypoints) != 0) {
-    #isolate({ # do not redraw entire map and zoom out and reset location viewed just because radius changed?
-    
-    #if (circle_type == 'circles'){
-    mymap <- leaflet::leaflet(mypoints) %>%
-      addTiles()  %>%
-      addCircles(
-        #radius = input$radius * meters_per_mile,
-        radius = rad * meters_per_mile,
-        color = circle_color, fillColor = circle_color,
-        fill = TRUE, weight = circleweight,
-        group = 'circles',
-        popup = popup_from_any(mypoints)
-        
-      ) %>%
-      addCircleMarkers(
-        #radius = input$radius * meters_per_mile,
-        radius = rad,
-        color = circle_color, fillColor = circle_color,
-        fill = TRUE, weight = circleweight,
-        clusterOptions = markerClusterOptions(),
-        popup = popup_from_any(mypoints)
-        ## possible way to use circleMarkers - need conversion of meters to pixels so they scale properly
-        #meters_per_px <- 156543.03392 * cos(mean(m$x$limits$lat) * pi/180) / m$x$options
-      ) %>%
-      groupOptions(group = 'markers', zoomLevels = 1:6) %>%
-      groupOptions(group = 'circles', zoomLevels = 6:20) %>%
-      leaflet.extras::addFullscreenControl()
-    
-    ## return map
-    mymap
-    
-    #})
-  } else {  # length(mypoints) == 0
-    mymap <- leaflet() %>%
-      addTiles() %>%
-      setView(-110, 46, zoom = 3)
-    mymap
-  }
-  ### Button to print map 
-  leaflet.extras2::addEasyprint(map = mymap, options = leaflet.extras2::easyprintOptions(exportOnly = TRUE, title = 'Save Map Snapshot'))
-}
-########################### # ########################### # ########################### # ########################### #
-
-
 #' Map - points - Update leaflet map of points, in shiny app
 #'
 #' @description update a leaflet map within the EJAM shiny app with uploaded points such as facilities
@@ -99,10 +17,9 @@ map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {
 #' @param clustered, a vector of T/F values for each point, indicating if they overlap with another
 #' @param popup_vec, a vector of popup values to display when points are clicked. Length should match number of rows in the dataset.
 #' @param use_marker_clusters, boolean for whether to group points into markerClusters. Uses logic from shiny app to only implement when n > 1000.
-#' @seealso [map_facilities()]
 #' @return a leaflet map with circles, circleMarkers, and basic popup
-#'
-#' @export
+#' 
+#' @keywords internal
 #'
 map_facilities_proxy <- function(mymap, rad = 3, highlight = FALSE, clustered = FALSE,
                                  popup_vec = NULL, use_marker_clusters = FALSE) {
@@ -162,7 +79,7 @@ map_facilities_proxy <- function(mymap, rad = 3, highlight = FALSE, clustered = 
 
 
 #' Basic map of county outlines within specified state(s)
-#'
+#' Not used by shiny app
 #' @param ST a vector of one or more state abbreviations, like 
 #' 
 #'   ST = "ME"  or  ST = c("de", "RI"), or 
@@ -194,20 +111,27 @@ map_facilities_proxy <- function(mymap, rad = 3, highlight = FALSE, clustered = 
 #' 
 #' @export
 #'
-map_counties_in_state <- function(ST = "DE", colorcolumn = c("NAME", "POP_SQMI", "STATE_NAME")[1], 
+map_counties_in_state <- function(ST = "DE", colorcolumn = c('pop', "NAME", "POP_SQMI", "STATE_NAME")[1], 
                                   type = c("leaflet", "mapview")[1]) {
-  
-  # to add to vignette etc.
   
   cshapes <- shapes_counties_from_countyfips(fips_counties_from_state_abbrev(ST))
   
+  area_sqmi_from_shp <- function(shp) {sf::st_area(shp) / meters_per_mile^2}
+  cshapes$area_sqmi <- round(area_sqmi_from_shp(cshapes), 0)
+  
+  countypops <- blockgroupstats[substr(bgfips, 1, 5) %in% cshapes$FIPS, 
+                                .(countypop = sum(pop, na.rm = T)),
+                                by = .(countyfips = substr(bgfips, 1, 5))]
+  cshapes$pop <- countypops$countypop[match(cshapes$FIPS, countypops$countyfips)]
+  cshapes$CountyPopulation <- prettyNum(cshapes$pop, big.mark = ",")
+  
   if (is.null(colorcolumn) || !(colorcolumn %in% names(cshapes))) {
-    if ("STATE_NAME" %in% names(cshapes)) {
-      colorcolumn <- "STATE_NAME"
+    if ("pop" %in% names(cshapes)) {
+      colorcolumn <- "pop"
     } else {
       colorcolumn <- names(cshapes)[1]
     }}
-  colorscore = as.vector(unlist(sf::st_drop_geometry(cshapes[,colorcolumn])))
+  colorscore = as.vector(unlist(sf::st_drop_geometry(cshapes[, colorcolumn])))
   
   if (type == "leaflet") {
     
@@ -218,7 +142,7 @@ map_counties_in_state <- function(ST = "DE", colorcolumn = c("NAME", "POP_SQMI",
                              color = ~vpal(colorscore))
     } else {
       # bins of map color
-      vpal <- leaflet::colorFactor('viridis' , domain = NULL)
+      vpal <- leaflet::colorFactor('viridis', domain = NULL)
       x = map_shapes_leaflet(cshapes, 
                              color = ~vpal(factor(colorscore))  ) }
   }
@@ -246,8 +170,13 @@ map_counties_in_state <- function(ST = "DE", colorcolumn = c("NAME", "POP_SQMI",
 #'
 #' @param mydf something like  ejamit(fips = fips_counties_from_statename("Kentucky"), radius = 0)$results_bysite
 #' @param colorvarname colname of indicator in mydf that drives color-coding
+#'   (or alternatively, colorvarname = "green" means a single specific color for all, like "green")
 #' @param static_not_leaflet set TRUE to use [map_shapes_plot()] instead of [map_shapes_leaflet()]
 #' @param main title for map
+#' @param colorfills = c('yellow', 'orange', 'red')
+#' @param colorlabels = c(80, 90, 95)
+#' @param colorbins =  c(80, 90, 95)
+#' @param colorpalette = c("yellow", "yellow", "orange", "red")
 #' @param ... passed to map_shapes_plot() if relevant
 #' 
 #' @details THIS ASSUMES THAT mydf$ejam_unique_id is the county FIPS codes
@@ -265,19 +194,55 @@ map_counties_in_state <- function(ST = "DE", colorcolumn = c("NAME", "POP_SQMI",
 #' @export
 #'
 mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
-                               static_not_leaflet = FALSE, main = "Selected Counties", ...) {
+                               colorfills = c('yellow', 'orange', 'red'),
+                               colorlabels = c(80, 90, 95),
+                               colorbins =  c(80, 90, 95),
+                               colorpalette = c("yellow","yellow", "orange", "red"),                               
+                               static_not_leaflet = FALSE, main = "Selected Counties", 
+                               ...) {
   
   # *** CANNOT HANDLE colorvarname = ANYTHING ELSE BESIDES THOSE SCALED 0 TO 100, SO FAR
   if (!(colorvarname %in% names(mydf))) {
-    warning('Selected value for "colorvarname" not found. Please try a different indicator.')
-    return(NULL)
+    if ( (colorvarname[1] %in% colors()) | substr(colorvarname[1], 1, 1) == "#") {
+      # try to interpret colorvarname as a single R color name like "red" or as hex code of color
+      if (length(colorvarname) != 1) {
+        warning('using only first colorvarname')
+        colorvarname = colorvarname[1]
+      }
+      colorfills <- colorvarname
+      colorlabels <- "CountyMap"
+      colorbins <- 100
+      colorpalette <- rep(colorvarname, 2)
+      mydf$countymap <- 100 # colorvarname
+      colorvarname <- 'countymap'
+    } else {
+      warning('Selected value for "colorvarname" not found. Please try a different indicator.')
+      return(NULL)
+    }
+  } else {
+    if (missing(colorfills) & missing(colorlabels) & missing(colorbins) & missing(colorpalette)) {
+      if (!grepl('pctile', colorvarname)) {
+        # it is not one of the standard percentile variables so it might not vary 0:100 as defaults assume it does
+        setDF(mydf)
+        scores <- mydf[ , colorvarname]
+        colorfills = colorfills
+        probs = c(0.80, 0.90, 0.95)
+        colorbins = quantile(scores, probs = probs) # quantiles of provided values not of all in some universe overall
+        colorlabels = paste0(round(colorbins,2), " (", 100*probs, "%ile of these)")
+        colorpalette = colorpalette
+      }
+    }
   }
   
   mymapdata <- shapes_counties_from_countyfips(mydf$ejam_uniq_id)
   
   setDT(mydf)
   ## see color-coding of one percentile variable:
-  pal <- colorBin(palette = c("yellow","yellow", "orange", "red"), bins = 80:100)
+  pal <- colorBin(
+    palette = colorpalette, # c("yellow","yellow", "orange", "red"),
+    domain = NULL,
+    bins = colorbins # 80:100
+  )
   shading <- pal(as.vector(unlist(mydf[ , ..colorvarname])))
   
   if (static_not_leaflet) {
@@ -288,7 +253,10 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
     # flagged <- which.max(df[ , ..colorvarname])
     # plot(mymapdata[flagged, ], col = "purple", add = TRUE)
     mymap <- mymapdata # if ggplot, youd return the plot object but with plot() you cannot I think do that
-    legend("topright", legend = c(80, 90, 100), fill = c("yellow", "orange", "red"), title = fixcolnames(colorvarname, 'rname', 'shortlabel'))
+    legend("topright",
+           fill = colorfills, # c("yellow", "orange", "red"),
+           legend = colorlabels, # c(80, 90, 100), 
+           title = fixcolnames(colorvarname, 'rname', 'shortlabel'))
     
   } else {
     
@@ -303,8 +271,8 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
     
     mymap <- map_shapes_leaflet(mymapdata, popup = popup2, color = shading)
     mymap <- mymap %>% leaflet::addLegend(
-      colors = c("yellow", "orange", "red"),
-      labels = c(80, 90, 100),
+      colors = colorfills, # c("yellow", "orange", "red"),
+      labels = colorlabels, # c(80, 90, 100),
       title = fixcolnames(colorvarname, 'rname', 'shortlabel'))
   }
   return(mymap)
@@ -389,6 +357,14 @@ map_shapes_plot <- function(shapes, main = "Selected Census Units", ...) {
 #'
 map_shapes_leaflet <- function(shapes, color = "green", popup = NULL) {
   
+  area_sqmi_from_shp <- function(shp) {sf::st_area(shp) / meters_per_mile^2}
+  shapes$area_sqmi <- round(area_sqmi_from_shp(shapes), 0)
+  
+  if ("FIPS" %in% names(shapes) & !("pop" %in% names(shapes))) {
+    # if it already has "pop" then dont bother with this sometimes slow way of getting pop counts:
+    shapes$Population_ACS <- fips2pop(shapes$FIPS)
+  }
+  
   if (is.null(popup)) {
     # if all but 3 colnames are in both, looks like results of ejamit(), so use that type of popup formatting
     if (length(setdiff2(names(shapes), names(testoutput_ejamit_10pts_1miles$results_overall))) < 3) {
@@ -397,6 +373,7 @@ map_shapes_leaflet <- function(shapes, color = "green", popup = NULL) {
       popup <- popup_from_any(sf::st_drop_geometry(shapes))
     }
   }
+  
   
   mymap <- leaflet(shapes) %>% 
     addPolygons(color = color, popup = popup) %>% 

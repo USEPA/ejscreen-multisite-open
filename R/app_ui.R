@@ -190,28 +190,27 @@ app_ui  <- function(request) {
                           
                           ## *Shapefile* LOCATIONS Uploads (conditional panel)  ------------------------------------- - ####
                           
-                          conditionalPanel(
-                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'SHP'",
-                            ## input: Upload list of FRS identifiers
-                            fileInput(inputId = 'ss_upload_shp',
-                                      label = 'Upload a shapefile',
-                                      accept = c(".shp",".dbf",".sbn",".sbx",".shx",".prj",
-                                                 # ".json", ".geojson",  # ***  add json,kml etc when available
-                                                 # ".gdb",               # ***  add json,kml etc when available
-                                                 # ".kml",               # ***  add json,kml etc when available
-                                                 ".zip"
-                                      ),
-                                      multiple = TRUE
-                            ),
-                            tags$ul(
-                              #                                            ***  add json,kml etc when available
-                              tags$li('Required files: .zip OR .shp, .shx, .dbf, .prj'),
-                              tags$li('Required fields: geometry'),
-                              tags$li(tags$a(href = 'https://github.com/ejanalysis/ejscreendata/blob/master/testdata/shapes/portland.gdb.zip?raw=true', target = '_blank', 
-                                             'Example of Shapefile'))
-                            ),
-                            actionButton('shp_help', label = 'More Info', class = 'usa-button usa-button--outline')
-                          ),  # end Shapefile conditionalPanel
+   conditionalPanel(
+     condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'SHP'",
+     fileInput(
+       inputId = 'ss_upload_shp',
+       label = 'Upload a shapefile',
+       accept = c(".shp", ".dbf", ".sbn", ".sbx", ".shx", ".prj", ".zip"),
+       multiple = TRUE
+     ),
+     textOutput("error_message"),
+     tags$style(HTML("#error_message { color: red; }")),
+     tags$p('You can upload shapefiles as one of the following combinations:'),
+     tags$ul(
+       tags$li('Upload 4 files with the same name and the following extensions: .shp, .shx, .dbf, .prj'),
+       tags$li('Upload a .zip file containing the 4 file extensions'),
+       tags$li('Upload a .gdb.zip file containing geodatabase files '),
+       tags$li('Required fields: geometry'),
+       tags$li(tags$a(href = 'https://github.com/ejanalysis/ejscreendata/blob/master/testdata/shapes/portland.gdb.zip?raw=true', 
+                      target = '_blank', 'Example of Shapefile'))
+     ),
+     actionButton('shp_help', label = 'More Info', class = 'usa-button usa-button--outline')
+   ), # end Shapefile conditionalPanel
                           ################################################################# #
                           
                           

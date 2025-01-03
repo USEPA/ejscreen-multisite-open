@@ -5,16 +5,17 @@
 \title{Download latest versions of arrow datasets if user doesn't have them already}
 \usage{
 download_latest_arrow_data(
-  varnames = c("blockpoints", "blockwts", "quaddata", "bgej", "bgid2fips",
-    "blockid2fips", "frs", "frs_by_mact", "frs_by_naics", "frs_by_programid",
-    "frs_by_sic"),
-  repository = "USEPA/ejamdata"
+  varnames = .arrow_ds_names,
+  repository = "USEPA/ejamdata",
+  envir = globalenv()
 )
 }
 \arguments{
 \item{varnames}{use defaults, or vector of names like "bgej" or use "all" to get all available}
 
 \item{repository}{repository name such as "USEPA/ejamdata"}
+
+\item{envir}{if needed to specify environment other than default, e.g., globalenv() or parent.frame()}
 }
 \description{
 Used when EJAM package is attached

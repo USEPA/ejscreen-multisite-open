@@ -354,11 +354,28 @@ app_server <- function(input, output, session) {
   
   num_valid_pts_uploaded <- reactiveValues('SHP' = 0)
   
+  ## initialize SHP file extension error message
+  error_message <- reactiveVal(NULL)
+  
   data_up_shp <- reactive({
 
     req(input$ss_upload_shp)
     infiles <- input$ss_upload_shp$datapath # get path and temp (not original) filename of the uploaded file
     print(infiles)
+    infile_ext <- tools::file_ext(input$ss_upload_shp$name)
+    
+    required_extensions <- c('shp', 'shx', 'dbf', 'prj')
+    valid_zip <- 'zip'
+    has_required_files <- all(required_extensions %in% infile_ext) || any(infile_ext == valid_zip)
+    
+    if (!has_required_files) {
+      missing_files <- required_extensions[!required_extensions %in% infile_ext]
+      error_message(paste("Missing required file types:", paste(missing_files, collapse = ", ")))
+      disable_buttons[['SHP']] <- TRUE
+    } else {
+      error_message(NULL)  
+      disable_buttons[['SHP']] <- FALSE
+    }
     
     if (use_shapefile_from_any) { # newer way
       
@@ -453,6 +470,12 @@ app_server <- function(input, output, session) {
     
   }) # END OF SHAPEFILE UPLOAD
   
+  ## show error message when any SHP file extensions are missing
+  output$error_message <- renderText({
+    if (!is.null(error_message())) {
+      error_message()
+    }
+  })
   #############################################################################  #
   
   ## *** note: repeated file reading code below could be replaced by  latlon_from_anything() ####
@@ -708,7 +731,7 @@ app_server <- function(input, output, session) {
         
         #   2. GET FACILITY LAT/LON INFO FROM NAICS CODES
         
-        sitepoints <- frs_from_naics(inputnaics, children = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
+        sitepoints <- frs_from_naics(inputnaics, childrenForNAICS = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
         
         sitepoints[, ejam_uniq_id := .I]
         data.table::setcolorder(sitepoints, 'ejam_uniq_id')
@@ -721,7 +744,7 @@ app_server <- function(input, output, session) {
           shiny::validate('No valid locations found under this NAICS code.')
         }
       } else{
-        sitepoints <- frs_from_naics(inputnaics, children = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
+        sitepoints <- frs_from_naics(inputnaics, childrenForNAICS = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
         
         sitepoints[, ejam_uniq_id := .I]
         data.table::setcolorder(sitepoints, 'ejam_uniq_id')
@@ -1575,11 +1598,11 @@ app_server <- function(input, output, session) {
     # ***
     ## or...
     # mapfast(data_uploaded(), radius = sanitized_bt_rad_buff(), column_names = "ej")
-    ## or...
-    # map_facilities(mypoints = data_uploaded(), #as.data.frame(data_uploaded()),
-    #                rad = sanitized_bt_rad_buff(),
-    #                highlight = input$an_map_clusters,
-    #                clustered = is_clustered())
+    #
+    #
+    #
+    #
+    #
     
     if (current_upload_method() == "SHP") {
       ## ---------------------------------------------- __MAP SHAPES uploaded ####

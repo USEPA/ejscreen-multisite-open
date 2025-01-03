@@ -17,6 +17,6 @@ An object of class \code{data.frame} with 2 rows and 6 columns.
 test_address_table
 }
 \description{
-datasets for trying address-related functions
+datasets for trying address-related functions (test_address_parts1, test_addresses2, test_address_table_9, test_addresses_9, test_address_table, test_address_table_goodnames, test_address_table_withfull)
 }
 \keyword{datasets}

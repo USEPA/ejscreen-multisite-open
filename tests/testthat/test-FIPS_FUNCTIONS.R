@@ -1201,6 +1201,100 @@ test_that('fips_bgs_in_fips - WARN if invalid text', {
 ## fips2...  ####
 #################################################################### #
 
+############################### #
+
+# test f2p()
+
+test_that("f2p pop for 1 state = its counties", {
+  
+  junk = capture.output({
+    expect_equal(
+      sum(f2p(fips_counties_from_state_abbrev('DE'))),
+      f2p(name2fips('de'))
+    ) 
+  })
+  
+})
+
+
+test_that("f2p pop for 1 tract = its blockgroups", {
+  
+  expect_equal(
+    f2p("01055000900"),
+    sum(f2p(blockgroupstats[substr(bgfips,1,11) %in% "01055000900", bgfips]))
+  )
+  
+})
+
+test_that("f2p pop ok for some blockgroups", {
+  
+  expect_true({
+    all.equal(
+      f2p(blockgroupstats[c(1000,2000,3000,4000), bgfips]),
+      blockgroupstats[c(1000,2000,3000,4000), pop]
+    )
+  })
+  
+})
+############################### #
+
+# fips2pop()
+
+test_that("fips2pop pop for 1 state = its counties", {
+  
+  junk = capture.output({
+    expect_equal(
+      sum(fips2pop(fips_counties_from_state_abbrev('DE'))),
+      fips2pop(name2fips('de'))
+    ) 
+  })
+  
+})
+
+test_that("fips2pop pop for 1 tract = its blockgroups", {
+  
+  expect_equal(
+    fips2pop("01055000900"),
+    sum(fips2pop(blockgroupstats[substr(bgfips,1,11) %in% "01055000900", bgfips]))
+  )
+  
+})
+
+test_that("fips2pop pop ok for some blockgroups", {
+  
+  expect_true({
+    all.equal(
+      fips2pop(blockgroupstats[c(1000,2000,3000,4000), bgfips]),
+      blockgroupstats[c(1000,2000,3000,4000), pop]
+    )
+  })
+  
+})
+
+test_that("fips2pop ok if multiple types", {
+  
+  # returns NA for block if this is not already loaded, but to ensure we test it....
+  dataload_from_pins('blockid2fips')
+  
+  expect_no_error(
+    
+    fips2pop(
+      c(
+        '01', # state
+        '10001', # county
+        "1377540", # city/cdp  # name2fips('Trion, GA'),
+        "01055000900", # tract
+        blockgroupstats$bgfips[4000], # bg
+        "010090507011017" # block  blockid2fips$blockfips[12345]
+      )
+    )
+    
+  )
+  
+})
+############################### #
+
+
 # fips_st2eparegion()  # fips_st2eparegion(fips_state_from_state_abbrev(stateinfo$ST))
 
 test_that("fips_st2eparegion() works", {

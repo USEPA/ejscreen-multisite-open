@@ -168,6 +168,7 @@ reference:
   - fipstype
   - fips_valid
   - fips_lead_zero
+  - fips2pop
   - fips_bgs_in_fips
   - fips_from_table
   - fips_place_from_placename
@@ -210,6 +211,7 @@ reference:
   - getblocks_diagnostics
   - indexblocks
   - convert_units
+  - fips2pop
 - title: "Calculating and Aggregating"
   desc: >
     Tools that Calculate and Aggregate Indicators
@@ -436,7 +438,6 @@ reference:
   - change.fieldnames
   - rmost
   - map_shapes_leaflet_proxy
-  - map_facilities
   - map_facilities_proxy
   - popup_from_df
   - is.island

@@ -41,7 +41,7 @@ mapfastej <- function(mydf, radius = 3, column_names = 'ej', labels = column_nam
 #'   launch a default browser window to show the map
 #'   and print the temp filepath and filename in the console.
 #'   Normally the map would be shown in the default RStudio viewer pane.
-#' @param color color of circles, default is "#03F"
+#' @param color color of circles or polygons
 #' @seealso [ejam2map()] [popup_from_any()] [mapfastej()]
 #' @return plots a leaflet map with popups with all the columns from mydf,
 #'   and returns html widget
@@ -52,7 +52,7 @@ mapfastej <- function(mydf, radius = 3, column_names = 'ej', labels = column_nam
 #' @export
 #'
 mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names, browse = FALSE, color = "#03F") {
-  
+
   # if the whole list from ejamit(), not a data.frame, was provided
   if (is.list(mydf) && 'results_bysite' %in% names(mydf)) {
     warning("mydf seems to be a list of tables such as output from ejamit() so using just the results_bysite table here")
@@ -133,7 +133,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
   
   if (sitetype == 'shp') {
     
-    x <- map_shapes_leaflet(mydf, popup = mypop)
+    x <- map_shapes_leaflet(mydf, popup = mypop, color = color)
     xok = TRUE
     
     # cat('For analysis and map of shapefile data, you can try something like this:
@@ -191,7 +191,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     if (all(ftype %in% 'state')) {
       fips <- mydf$ejam_uniq_id
       shp <- shapes_from_fips(fips) #  # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      x <- map_shapes_leaflet(shp, popup = mypop)
+      x <- map_shapes_leaflet(shp, popup = mypop, color = color)
       xok = TRUE
     }
     ######################### #
@@ -203,10 +203,10 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
       # fips <- mydf$ejam_uniq_id
       ### also see  shapes_counties_from_countyfips()
       # shp <- shapes_from_fips(fips) #  # <<<<<<<<<<<< 
-      # x <- map_shapes_leaflet(shp, popup = mypop)
+      # x <- map_shapes_leaflet(shp, popup = mypop, color = color)
       # xok = TRUE
-      
-      x <- mapfastej_counties(mydf) # handles popups, ignores params above, assumes mydf$ejam_uniq_id is fips
+      ## *** handle specified color here... 
+      x <- mapfastej_counties(mydf, colorvarname = color) # handles popups, ignores params above, assumes mydf$ejam_uniq_id is fips
       xok <- TRUE
     }
     ######################### #
@@ -217,7 +217,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
       fips <- mydf$ejam_uniq_id
       # shp <- shapes_places_from_placefips(fips)
       shp <- shapes_from_fips(fips) #  # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      x <- map_shapes_leaflet(shp, popup = mypop)
+      x <- map_shapes_leaflet(shp, popup = mypop, color = color)
       xok = TRUE
     }
     ######################### #
@@ -225,7 +225,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     if (all(ftype %in% 'blockgroup')) {
       fips <- mydf$ejam_uniq_id
       shp <- shapes_from_fips(fips) #  SLOW if many, like > 20  #  # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      x <- map_shapes_leaflet(shp, popup = mypop)
+      x <- map_shapes_leaflet(shp, popup = mypop, color = color)
       xok <- TRUE
     }
     ######################### #
@@ -235,7 +235,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
       fips <- mydf$ejam_uniq_id
       # shp <- shapes_blockgroups_from_bgfips(fips)
       shp <- shapes_from_fips(fips) #  SLOW if many, like > 20  #  # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-      x <- map_shapes_leaflet(shp, popup = mypop)
+      x <- map_shapes_leaflet(shp, popup = mypop, color = color)
       xok <- TRUE
 
       ######################### #

@@ -51,6 +51,7 @@ update_pkgdown = function(
     doask              = FALSE,
     dotests            = FALSE,
     testinteractively  = FALSE, ## maybe we want to do this interactively even if ask=F ?
+    doyamlcheck        = TRUE, ## dataset_pkgdown_yaml_check() does siterep but also check internal v exported, listed in pkgdown reference TOC etc.
     dodocument         = TRUE,  ## in case we just edited help, exports, or func names,
     ##   since doinstall=T via this script omits document() 
     doinstall          = TRUE,  ## but skips document() and vignettes
@@ -82,6 +83,11 @@ update_pkgdown = function(
       & missing("testinteractively")
   ) {testinteractively <- utils::askYesNo("Do you want to answer questions about the tests to run?")}
   if (is.na(testinteractively)) {stop('stopped')}
+  
+  if (doask & interactive()  & rstudioapi::isAvailable() 
+      & missing("doyamlcheck")
+  ) {dodocument <- utils::askYesNo("Use dataset_pkgdown_yaml_check() to see which functions are missing in function reference etc.?")}
+  if (is.na(doyamlcheck)) {stop('stopped')}
   
   if (doask & interactive()  & rstudioapi::isAvailable() 
       & missing("dodocument")
@@ -119,7 +125,27 @@ update_pkgdown = function(
   
   # ? devtools::test() 
   
-  ## 
+  #################### #
+  
+  # _pkgdown.yml check #### 
+  
+  if (doyamlcheck) {
+    cat('Checking _pkgdown.yml via missing_from_yml() ... please wait ... \n')
+    require(EJAM) #  dataset_pkgdown_yaml_check() will not work without this
+    missing_from_yml <- EJAM:::dataset_pkgdown_yaml_check()
+    if (doask & interactive()  & rstudioapi::isAvailable()) {
+      cat('\n\n')
+      yn <- utils::askYesNo("Halt now to fix _pkgdown.yml?")
+      if (is.na(yn)) {
+        if (file.exists('_pkgdown.yml')) {rstudioapi::documentOpen('_pkgdown.yml')}
+        message('stopped to fix _pkgdown.yml')
+        cat('\n\n MISSING according to missing_from_yml() are the following: \n\n')
+        print(dput(missing_from_yml))
+        return(missing_from_yml)
+        # stop('stopped to fix _pkgdown.yml')
+        }
+    }
+  }
   #################### # #################### # #################### # #################### # 
   
   # README & DOCUMENT ####
@@ -309,6 +335,7 @@ update_pkgdown(
   doask              = FALSE,
   dotests            = FALSE,
   testinteractively  = FALSE, ## maybe we want to do this interactively even if ask=F ?
+  doyamlcheck        = TRUE,  ## dataset_pkgdown_yaml_check() does siterep but also check pkgdown reference TOC etc.
   dodocument         = TRUE,  ## in case we just edited help, exports, or func names,
                               ##   since doinstall=T via this script omits document() 
   doinstall          = TRUE,  ## but skips document() and vignettes

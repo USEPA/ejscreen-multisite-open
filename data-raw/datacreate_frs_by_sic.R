@@ -140,7 +140,7 @@ naics_counts_names <- enframe(NAICS) %>%
   select(-N) %>%
   deframe()
 
-naics_counts_w_subs <- sapply(NAICS, function(x) {frs_from_naics(x, children = T)[, .N]})
+naics_counts_w_subs <- sapply(NAICS, function(x) {frs_from_naics(x, childrenForNAICS = T)[, .N]})
 
 naics_counts <- data.frame(NAICS, count_w_subs = naics_counts_w_subs)
 naics_counts <- enframe(NAICS,value = 'NAICS') %>% 

@@ -32,6 +32,8 @@
   # startup msg shown at library(EJAM) or when reinstalling from source ####
   packageStartupMessage("Now running .onAttach(), as part of attaching the EJAM package.")
   
+  # make sure to run the manage-public-private script, in case user is not running the app
+  source(system.file("manage-public-private.R", package = "EJAM")) 
   
   # packageStartupMessage(
   #    
@@ -82,10 +84,9 @@
     if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
       
       dataload_from_pins(varnames = c("blockpoints", "blockwts", "quaddata"), 
-                         folder_local_source = app_sys('data')) # use default local folder when trying dataload_from_local()
+                         folder_local_source = app_sys('data'),
+                         onAttach = TRUE) # use default local folder when trying dataload_from_local()
       # EJAM function ... but does it have to say EJAM :: here? trying to avoid having packrat see that and presume EJAM pkg must be installed for app to work. ***
-      
-      EJAM:::download_latest_arrow_data() # run after dataload_from_pins in case that fails to install packages
     }
     
     #################### # 

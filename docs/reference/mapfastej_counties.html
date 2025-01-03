@@ -54,6 +54,10 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mapfastej_counties</span><span class="op">(</span></span>
 <span>  <span class="va">mydf</span>,</span>
 <span>  colorvarname <span class="op">=</span> <span class="st">"pctile.Demog.Index.Supp"</span>,</span>
+<span>  colorfills <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"yellow"</span>, <span class="st">"orange"</span>, <span class="st">"red"</span><span class="op">)</span>,</span>
+<span>  colorlabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">90</span>, <span class="fl">95</span><span class="op">)</span>,</span>
+<span>  colorbins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">90</span>, <span class="fl">95</span><span class="op">)</span>,</span>
+<span>  colorpalette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"yellow"</span>, <span class="st">"yellow"</span>, <span class="st">"orange"</span>, <span class="st">"red"</span><span class="op">)</span>,</span>
 <span>  static_not_leaflet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  main <span class="op">=</span> <span class="st">"Selected Counties"</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -69,7 +73,24 @@
 
 
 <dt id="arg-colorvarname">colorvarname<a class="anchor" aria-label="anchor" href="#arg-colorvarname"></a></dt>
-<dd><p>colname of indicator in mydf that drives color-coding</p></dd>
+<dd><p>colname of indicator in mydf that drives color-coding
+(or alternatively, colorvarname = "green" means a single specific color for all, like "green")</p></dd>
+
+
+<dt id="arg-colorfills">colorfills<a class="anchor" aria-label="anchor" href="#arg-colorfills"></a></dt>
+<dd><p>= c('yellow', 'orange', 'red')</p></dd>
+
+
+<dt id="arg-colorlabels">colorlabels<a class="anchor" aria-label="anchor" href="#arg-colorlabels"></a></dt>
+<dd><p>= c(80, 90, 95)</p></dd>
+
+
+<dt id="arg-colorbins">colorbins<a class="anchor" aria-label="anchor" href="#arg-colorbins"></a></dt>
+<dd><p>=  c(80, 90, 95)</p></dd>
+
+
+<dt id="arg-colorpalette">colorpalette<a class="anchor" aria-label="anchor" href="#arg-colorpalette"></a></dt>
+<dd><p>= c("yellow", "yellow", "orange", "red")</p></dd>
 
 
 <dt id="arg-static-not-leaflet">static_not_leaflet<a class="anchor" aria-label="anchor" href="#arg-static-not-leaflet"></a></dt>

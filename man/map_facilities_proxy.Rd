@@ -35,3 +35,4 @@ update a leaflet map within the EJAM shiny app with uploaded points such as faci
 \seealso{
 \code{\link[=map_facilities]{map_facilities()}}
 }
+\keyword{internal}

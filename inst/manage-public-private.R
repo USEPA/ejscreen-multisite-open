@@ -2,7 +2,13 @@
 # if run_app(isPublic = TRUE), then it's Public
 # Most items toggled in app_server.R, unless otherwise specified
 
-# note that manage-public-private.R is sourced prior to global.R being source, by run_app()
+
+# note that manage-public-private.R is sourced, prior to global.R being sourced, by run_app()
+# it's also sourced by .onAttach, in case user is using only the package
+# this next line is necessary because while most toggled items are UI/specific to the application,
+# a few are variables used also by the package, like the report titles
+# so we need to default the isPublic parameter
+if(!exists("golem_opts")) golem_opts <- list(isPublic = TRUE)
 
 # About tab
 default_hide_about_tab <- isTRUE(golem_opts$isPublic)

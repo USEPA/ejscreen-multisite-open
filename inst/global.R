@@ -1,7 +1,5 @@
 # global.R defines variables needed in global environment
 
-# if not already done in .onAttach() step, do this now as app launches
-dataload_from_pins(varnames = c("blockpoints", "blockwts", "quaddata"))
 indexblocks()
 
 # Note: Do not set defaults for a module UNTIL INSIDE THE MODULE 

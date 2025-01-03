@@ -418,8 +418,9 @@ generate_report_footnotes <- function(
 #' @keywords internal
 #'
 generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny = FALSE, 
-                                 report_title = .community_report_title) {
+                                 report_title = NULL) {
 
+  if (is.null(report_title)) {report_title <- .community_report_title}
   
   if (in_shiny) {
     shift_hsb <- 630

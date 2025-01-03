@@ -5,9 +5,7 @@
 \title{Utility to download / load datasets from pin board}
 \usage{
 dataload_from_pins(
-  varnames = c("blockwts", "blockpoints", "quaddata", "bgej", "bgid2fips",
-    "blockid2fips", "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic",
-    "frs_by_mact")[1:3],
+  varnames = .arrow_ds_names[1:3],
   boardfolder = "Mark",
   auth = "auto",
   server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
@@ -15,7 +13,8 @@ dataload_from_pins(
   envir = globalenv(),
   justchecking = FALSE,
   ignorelocal = FALSE,
-  silent = FALSE
+  silent = FALSE,
+  onAttach = FALSE
 )
 }
 \arguments{
@@ -41,6 +40,8 @@ look in for locally saved copies in case pins board is not reachable by user.}
 \item{ignorelocal}{set it to TRUE to avoid 1st checking local disk for copies of files}
 
 \item{silent}{set to TRUE to suppress cat() msgs to console}
+
+\item{onAttach}{Indicates whether the function is being called from onAttach. IF so, it will download all arrow files if user cannot connect to PINS board}
 }
 \value{
 If justchecking = FALSE,

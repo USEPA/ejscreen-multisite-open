@@ -11,31 +11,26 @@
 #' 
 #' @param varnames use defaults, or vector of names like "bgej" or use "all" to get all available
 #' @param repository repository name such as "USEPA/ejamdata"
+#' @param envir if needed to specify environment other than default, e.g., globalenv() or parent.frame()
 #' 
 #' @keywords internal
 #' @export
 #'
+
 download_latest_arrow_data <- function(
-    varnames = c(
-      "blockpoints", 
-      "blockwts", 
-      "quaddata",
-      "bgej",
-      "bgid2fips",
-      "blockid2fips",
-      "frs",
-      "frs_by_mact",
-      "frs_by_naics",
-      "frs_by_programid",
-      "frs_by_sic"
-    ), 
-    repository = 'USEPA/ejamdata') {
+  varnames = .arrow_ds_names,
+  repository = 'USEPA/ejamdata',
+  envir = globalenv()
+) {
+  installed_data_folder <- app_sys('data')
   
-  installed_data_folder <- app_sys('data') # same as system.file('data', package = "EJAM") unless name of package changes.
+  # Check if dataset(s) already loaded
+  files_not_loaded <- sapply(varnames, function(v) !exists(v, envir = envir))
+  if(!all(files_not_loaded)) return(NULL)
   
   latestArrowVersion <- piggyback::pb_releases(
     repo = repository,
-    .token = NULL
+    .token = ""
   )[1, "tag_name"]
   ejamdata_version_fpath <- paste0(installed_data_folder,"/ejamdata_version.txt")
   if (!file.exists(ejamdata_version_fpath)) {
@@ -68,7 +63,8 @@ download_latest_arrow_data <- function(
     dest = installed_data_folder,
     repo = repository, 
     tag = "latest",
-    use_timestamps = FALSE
+    use_timestamps = FALSE,
+    .token = ""
   )
   
   message("Finished downloading. Updating stored local version.")

@@ -2,8 +2,7 @@
 #'
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
-#' @import shiny
-#' 
+#' @rawNamespace import(shiny, except = c(dataTableOutput, renderDataTable))
 #' @noRd
 #' 
 app_ui_EJAMejscreenapi <- function(request) {

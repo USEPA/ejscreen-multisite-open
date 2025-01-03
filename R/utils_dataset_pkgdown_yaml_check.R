@@ -3,6 +3,8 @@
 
 dataset_pkgdown_yaml_check = function(fname = "_pkgdown.yml") { 
   
+  cat("This only works after EJAM package is loaded/attached\n")
+  
   # pkgdown::pkgdown_sitrep()
   cat("Checking yml file for reference metadata as in pkgdown_sitrep() ...\n")
   pkgdown:::error_to_sitrep("Reference metadata", pkgdown:::data_reference_index(as_pkgdown('.')))
