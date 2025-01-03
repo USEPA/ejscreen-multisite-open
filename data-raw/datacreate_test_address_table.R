@@ -5,15 +5,17 @@
 
 # test data:
 
-# test_address_parts1
-# test_addresses2
-
-# test_address_table_9
-# test_addresses_9
-
-# test_address_table
-# test_address_table_goodnames
-# test_address_table_withfull
+tnames <- c(
+  "test_address_parts1", 
+  "test_addresses2",
+  
+  "test_address_table_9",
+  "test_addresses_9", 
+  
+  "test_address_table",
+  "test_address_table_goodnames",
+  "test_address_table_withfull"
+)
 
 ##################### #
 
@@ -72,15 +74,18 @@ test_address_table_withfull <- data.frame(Address = test_addresses2, test_addres
 
 # metadata ####
 
-test_address_parts1          = metadata_add(test_address_parts1)
-test_addresses2              = metadata_add(test_addresses2)
-
-test_address_table_9         = metadata_add(test_address_table_9)
-test_addresses_9             = metadata_add(test_addresses_9)
-
-test_address_table           = metadata_add(test_address_table)
-test_address_table_goodnames = metadata_add(test_address_table_goodnames)
-test_address_table_withfull  = metadata_add(test_address_table_withfull)
+for (objectname in tnames) {
+  assign(objectname, metadata_add(get(objectname)))
+}
+# test_address_parts1          = metadata_add(test_address_parts1)
+# test_addresses2              = metadata_add(test_addresses2)
+# 
+# test_address_table_9         = metadata_add(test_address_table_9)
+# test_addresses_9             = metadata_add(test_addresses_9)
+# 
+# test_address_table           = metadata_add(test_address_table)
+# test_address_table_goodnames = metadata_add(test_address_table_goodnames)
+# test_address_table_withfull  = metadata_add(test_address_table_withfull)
 
 # use_data ####
 
@@ -104,9 +109,10 @@ usethis::use_data(
 
 dataset_documenter("test_address_table",
                    title = "datasets for trying address-related functions",
-                   description = "datasets for trying address-related functions
-#' @aliases test_address_parts1 test_addresses2 test_address_table_9 test_addresses_9 test_address_table_goodnames test_address_table_withfull",
-                   )
+                   
+                   description = paste0("datasets for trying address-related functions (", paste0(tnames, collapse = ", "), ")
+#' @aliases ", paste0(tnames, collapse = " "))
+)
 
 ##################### #
 
