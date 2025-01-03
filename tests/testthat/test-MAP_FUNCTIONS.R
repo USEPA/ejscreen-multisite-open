@@ -9,7 +9,7 @@
 # ejam2map()
 # map2browser()
 
-# map_facilities()
+
 # map_facilities_proxy()
 # mapfastej_counties()
 # map_blockgroups_over_blocks()
@@ -168,28 +168,6 @@ test_that("map2browser() works", {
 ############################################## # 
 ############################################## # 
 
-test_that("map_facilities() works", {
-  expect_no_error({
-    suppressMessages({
-      map_facilities(mypoints = testpoints_10[1,], )
-      map_facilities(mypoints = testpoints_10[1:2,], rad = 1)
-      map_facilities(mypoints = testpoints_10[1:3,], rad = 1, highlight = TRUE, clustered = c(TRUE,TRUE,FALSE))
-    })
-  })
-  expect_error({
-    map_facilities(mypoints = testpoints_10[1:2,], rad = 1, 
-                   highlight = TRUE) # requires clustered param if highlight=T
-  })
-})
-test_that("map_facilities() works with non-data.table data.frame", {
-  expect_no_error({
-    suppressMessages({
-      map_facilities(mypoints = data.frame(testpoints_10[1,]))
-      map_facilities(mypoints = data.frame(testpoints_10[1:2,]), rad = 1)
-    })
-  })
-})
-############################################## # 
 test_that("map_facilities_proxy() works", {
   expect_no_error({
     suppressMessages({

@@ -1598,11 +1598,11 @@ app_server <- function(input, output, session) {
     # ***
     ## or...
     # mapfast(data_uploaded(), radius = sanitized_bt_rad_buff(), column_names = "ej")
-    ## or...
-    # map_facilities(mypoints = data_uploaded(), #as.data.frame(data_uploaded()),
-    #                rad = sanitized_bt_rad_buff(),
-    #                highlight = input$an_map_clusters,
-    #                clustered = is_clustered())
+    #
+    #
+    #
+    #
+    #
     
     if (current_upload_method() == "SHP") {
       ## ---------------------------------------------- __MAP SHAPES uploaded ####

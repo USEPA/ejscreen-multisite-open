@@ -438,7 +438,6 @@ reference:
   - change.fieldnames
   - rmost
   - map_shapes_leaflet_proxy
-  - map_facilities
   - map_facilities_proxy
   - popup_from_df
   - is.island
