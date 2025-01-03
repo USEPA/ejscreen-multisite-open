@@ -5,6 +5,6 @@
 #' @name test_address_table
 #' @docType data
 #' @title datasets for trying address-related functions
-#' @description datasets for trying address-related functions
-#' @aliases test_address_parts1 test_addresses2 test_address_table_9 test_addresses_9 test_address_table_goodnames test_address_table_withfull
+#' @description datasets for trying address-related functions (test_address_parts1, test_addresses2, test_address_table_9, test_addresses_9, test_address_table, test_address_table_goodnames, test_address_table_withfull)
+#' @aliases test_address_parts1 test_addresses2 test_address_table_9 test_addresses_9 test_address_table test_address_table_goodnames test_address_table_withfull
 'test_address_table'
