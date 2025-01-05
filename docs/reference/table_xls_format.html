@@ -185,17 +185,29 @@ This requires that bybg be provided as a parameter input to this function.</p></
 
 
 <dt id="arg-heatmap-colnames">heatmap_colnames<a class="anchor" aria-label="anchor" href="#arg-heatmap-colnames"></a></dt>
-<dd><p>optional vector of colnames to apply heatmap colors</p></dd>
+<dd><p>optional vector of colnames to apply heatmap colors, defaults to percentiles</p></dd>
 
 
 <dt id="arg-heatmap-cuts">heatmap_cuts<a class="anchor" aria-label="anchor" href="#arg-heatmap-cuts"></a></dt>
-<dd><p>vector of values to separate heatmap colors, between 0-100</p></dd>
+<dd><p>vector of values to separate heatmap colors, between 0-100 for percentiles</p></dd>
 
 
 <dt id="arg-heatmap-colors">heatmap_colors<a class="anchor" aria-label="anchor" href="#arg-heatmap-colors"></a></dt>
 <dd><p>vector of color names for heatmap bins, same length as
 heatmap_cuts, where first color is for those &gt;= 1st cutpoint, but &lt;2d,
 second color is for those &gt;=2d cutpoint but &lt;3d, etc.</p></dd>
+
+
+<dt id="arg-heatmap-colnames">heatmap2_colnames<a class="anchor" aria-label="anchor" href="#arg-heatmap-colnames"></a></dt>
+<dd><p>like heatmap_colnames but for ratios by default</p></dd>
+
+
+<dt id="arg-heatmap-cuts">heatmap2_cuts<a class="anchor" aria-label="anchor" href="#arg-heatmap-cuts"></a></dt>
+<dd><p>like heatmap_cuts but for ratios by default</p></dd>
+
+
+<dt id="arg-heatmap-colors">heatmap2_colors<a class="anchor" aria-label="anchor" href="#arg-heatmap-colors"></a></dt>
+<dd><p>like heatmap_colors but for ratios</p></dd>
 
 
 <dt id="arg-hyperlink-colnames">hyperlink_colnames<a class="anchor" aria-label="anchor" href="#arg-hyperlink-colnames"></a></dt>

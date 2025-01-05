@@ -91,13 +91,19 @@ This requires that bybg be provided as a parameter input to this function.}
 
 \item{custom_tab_name}{optional name of optional custom_tab}
 
-\item{heatmap_colnames}{optional vector of colnames to apply heatmap colors}
+\item{heatmap_colnames}{optional vector of colnames to apply heatmap colors, defaults to percentiles}
 
-\item{heatmap_cuts}{vector of values to separate heatmap colors, between 0-100}
+\item{heatmap_cuts}{vector of values to separate heatmap colors, between 0-100 for percentiles}
 
 \item{heatmap_colors}{vector of color names for heatmap bins, same length as
 heatmap_cuts, where first color is for those >= 1st cutpoint, but <2d,
 second color is for those >=2d cutpoint but <3d, etc.}
+
+\item{heatmap2_colnames}{like heatmap_colnames but for ratios by default}
+
+\item{heatmap2_cuts}{like heatmap_cuts but for ratios by default}
+
+\item{heatmap2_colors}{like heatmap_colors but for ratios}
 
 \item{hyperlink_colnames}{names of which to treat as URLs that should be hyperlinks}
 
