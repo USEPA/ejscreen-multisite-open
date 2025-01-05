@@ -27,11 +27,17 @@
 #' @param notes Text of additional notes to put in the notes tab, optional vector of character elements pasted in as one line each.
 #' @param custom_tab optional table to put in an extra tab
 #' @param custom_tab_name optional name of optional custom_tab
-#' @param heatmap_colnames optional vector of colnames to apply heatmap colors
-#' @param heatmap_cuts vector of values to separate heatmap colors, between 0-100
+#' 
+#' @param heatmap_colnames optional vector of colnames to apply heatmap colors, defaults to percentiles
+#' @param heatmap_cuts vector of values to separate heatmap colors, between 0-100 for percentiles
 #' @param heatmap_colors vector of color names for heatmap bins, same length as 
 #'   heatmap_cuts, where first color is for those >= 1st cutpoint, but <2d,
 #'   second color is for those >=2d cutpoint but <3d, etc.
+#'   
+#' @param heatmap2_colnames like heatmap_colnames but for ratios by default
+#' @param heatmap2_cuts  like heatmap_cuts but for ratios by default
+#' @param heatmap2_colors like heatmap_colors but for ratios
+#' 
 #' @param hyperlink_colnames names of which to treat as URLs that should be hyperlinks
 #' @param graycolnames which columns to deemphasize
 #' @param narrowcolnames which column numbers to make narrow
@@ -80,8 +86,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                              notes=NULL,
                              custom_tab = NULL, custom_tab_name = "other",
                              
-                             heatmap_colnames = NULL,   heatmap_cuts = c(80, 90, 95),  heatmap_colors  = c("yellow", "orange", "red"),
-                             heatmap2_colnames = NULL, heatmap2_cuts = c(1.009, 2, 3), heatmap2_colors = c("yellow", "orange", "red"),
+                             heatmap_colnames = NULL,   heatmap_cuts = c(80, 90, 95),  heatmap_colors  = c("yellow", "orange", "red"), # percentiles
+                             heatmap2_colnames = NULL, heatmap2_cuts = c(1.009, 2, 3), heatmap2_colors = c("yellow", "orange", "red"), # ratios
                              
                              hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"), 
                              graycolnames=NULL, narrowcolnames=NULL, graycolor='gray', narrow6=6,
@@ -92,7 +98,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                              ...) {
   
   ## check for PhantomJS installation
-  if(!webshot::is_phantomjs_installed()){
+  if (!webshot::is_phantomjs_installed()) {
     webshot::install_phantomjs()
   }
   
@@ -100,7 +106,21 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     ejscreen_ejam_caveat <- "Some numbers as shown on the EJScreen report for a single location will in some cases appear very slightly different than in EJScreen's multisite reports. All numbers shown in both types of reports are estimates, and any differences are well within the range of uncertainty inherent in the American Community Survey data as used in EJScreen. Slight differences are inherent in very quickly calculating results for multiple locations."
   }
   
-  color_legend <- "Yellow: 1-2x average of the column. \nOrange: 2-3x average of the column.  \nRed: at least 3x average of the column."
+  if (isTRUE(all.equal(heatmap_cuts,  c(80, 90, 95)))  & isTRUE(all.equal(heatmap_colors,  c("yellow", "orange", "red"))) &
+      isTRUE(all.equal(heatmap2_cuts, c(1.009, 2, 3))) & isTRUE(all.equal(heatmap2_colors, c("yellow", "orange", "red")))) {
+  color_legend <- paste0(
+    "PERCENTILES \n  Red: at least 95th, Orange: 90-95th, Yellow: 80-90th \n", 
+    "RATIOS      \n  Red: at least 3x average, Orange: 2-3x average, Yellow: 1-2x average"
+  )
+  } else {
+    if (missing(heatmap_colnames))  {h1names <- "PERCENTILES "} else {h1names <- paste0("Group 1 columns ", paste0("(", fixcolnames(heatmap_colnames[1], 'r', 'long'), ", etc.)"))} 
+    if (missing(heatmap2_colnames)) {h2names <- "RATIOS "}      else {h2names <- paste0("Group 2 columns ", paste0("(", fixcolnames(heatmap2_colnames[1], 'r', 'long'), ", etc.)"))} 
+    color_legend <-  paste0(
+      h1names, "\n", paste0(heatmap_colors,  ": ", heatmap_cuts,  collapse = ", "),
+      '\n',
+      h2names, "\n", paste0(heatmap2_colors, ": ", heatmap2_cuts, collapse = ", ")
+      )
+  }
   ###################  #   ###################  #   ###################  #   ###################  # 
   
   # HANDLE ERRORS ETC. ####
@@ -423,9 +443,10 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     openxlsx::addStyle(     wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), cols = 1,  style = openxlsx::createStyle(wrapText = TRUE), stack = TRUE)
   } else {usernoterows <- 0}
   
-  openxlsx::setRowHeights(wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), heights = 50)
+  openxlsx::setRowHeights(wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), heights = 25)
   # Row height for "Note on site-specific estimates"
   openxlsx::setRowHeights(wb, sheet = 'notes', rows = 8, heights = 91)
+  openxlsx::setRowHeights(wb, sheet = 'notes', rows = 9, heights = 120)
   openxlsx::setColWidths( wb, sheet = 'notes', cols = 1:4,            widths = "auto") # in general ok to auto-width, but...
   openxlsx::setColWidths( wb, sheet = 'notes', cols = 2, widths = 70) # so the long caveat can wrap
   openxlsx::addStyle(     wb, sheet = 'notes', rows = 1:(usernoterows + NROW(notes_df)), cols = 2, style = openxlsx::createStyle(wrapText = TRUE), stack = TRUE) # so the long caveat wraps
@@ -436,6 +457,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   if (!is.null(custom_tab)) {
     openxlsx::addWorksheet(wb, sheetName = custom_tab_name)
     openxlsx::writeData(   wb, sheet = custom_tab_name, x = custom_tab)
+    openxlsx::setColWidths(wb, sheet = custom_tab_name, cols = 1:8, widths = 21.45) # so the header row text can wrap
+    openxlsx::addStyle(    wb, sheet = custom_tab_name, rows = 1, cols = 1:8, style = openxlsx::createStyle(wrapText = TRUE), stack = TRUE) # so the header row text can wrap
   }
   ######################################################################## #
   

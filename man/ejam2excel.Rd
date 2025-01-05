@@ -70,3 +70,16 @@ ejam2excel() takes the output of something like ejamit() and
 creates a spreadsheet with an overall summary tab, a site by site table tab,
 as well as other tabs such as map, plot, notes, etc.
 }
+\examples{
+\dontrun{
+# Add purple to flag indicators at 99th percentile
+ejam2excel(testoutput_ejamit_10pts_1miles, 
+  # View spreadsheet 1st without saving it as a file
+  launchexcel = T, save_now = F, 
+  heatmap_cuts = c(80, 90, 95, 99), 
+  heatmap_colors  = c("yellow", "orange", "red", "purple"), 
+  # Apply heatmap to only a few of the ratio columns
+  heatmap2_colnames = names_d_ratio_to_state_avg)
+}
+
+}
