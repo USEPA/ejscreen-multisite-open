@@ -58,20 +58,29 @@ The package can be installed from a github repository. It can be installed local
 
 ## How to install
 
-### Try this first
-
+### Try this first (if you just want to use the package, not clone & edit source code)
 
 ```{r install_github_main, eval=FALSE, include=TRUE}
+options(timeout = 300) # Just in case the download takes longer than 60 seconds
+if (!require(remotes)) {install.packages("remotes")}
+
+remotes::install_github("USEPA/EJAM-open", dependencies = TRUE)
+
+library(EJAM)
+```
+
+You can also install it with source references and tests like this:
+```{r install_github_keepsource, eval=FALSE, include=TRUE}
+remotes::install_github("USEPA/EJAM-open", dependencies = TRUE,
+          INSTALL_opts = c("--with-keep.source", "--install-tests"))
+```
+
+If install_github does not work, you can try something like this:
+```{r install_url, eval=FALSE, include=TRUE}
 
 x <- "https://github.com/USEPA/EJAM-open/archive/refs/tags/v2.32-EJAM-open.tar.gz"
 
-options(timeout = 300)
-if (!require(remotes)) {install.packages("remotes")}
-
-remotes::install_url(url = x,
-                     dependencies = TRUE, upgrade = "never", 
-                     build = FALSE, build_manual = FALSE, build_vignettes = FALSE)
-
+remotes::install_url(url = x, dependencies = TRUE, auth_token = "")
 ```
 
 ------------------------------------------------------------------------
@@ -110,7 +119,7 @@ If a USEPA github repository is not public, you need to be inside EPA's network 
 
 #### CRAN packages needed (dependencies)
 
-EJAM needs a number of other packages to be installed that are available from CRAN. Trying to load and attach EJAM with require(EJAM) or library(EJAM) will alert you to those other packages you need to install if you don't already have them. The list of CRAN packages needed is in the `DESCRIPTION` file in the R package source code root folder (as can be found in the code repository). Note some are in Suggests and you might want to install those as well. Using dependencies=T in install_url() will make sure of that.
+EJAM needs a number of other packages to be installed that are available from CRAN. Trying to load and attach EJAM with require(EJAM) or library(EJAM) will alert you to those other packages you need to install if you don't already have them. The list of CRAN packages needed is in the `DESCRIPTION` file in the R package source code root folder (as can be found in the code repository). Note some are in Suggests and you might want to install those as well -- using dependencies=T in install_github() or install_url() will make sure of that.
 
 ## Initialize: load/attach package
 
