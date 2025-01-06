@@ -8,8 +8,8 @@ deploy:
   install_metadata: true
 navbar:
   structure:
-    left:  [intro, reference, articles,news]
-    right: [search, github]
+    left:  [intro, reference, articles, news]
+    right: [search]
 news:
   cran_dates: false
 footer:
@@ -17,7 +17,7 @@ footer:
     left: [draftmsg]
     right: [package, versionmsg]
   components:
-    draftmsg: US EPA 2024
+    draftmsg: US EPA 2025
     versionmsg: Version 2.32.0
 development:
   mode: release
@@ -27,7 +27,7 @@ home:
   title: EJAM Environmental Justice Analysis Multisite
   description: Webapp and tools summarizing demographic and environmental data for hundreds of places quickly and accurately
   sidebar:
-    structure: [dev, links, citation, license, community]
+    structure: [dev, citation, license, community]
 articles:
 - title: The EJAM Web App
   desc: Overview for EJAM Users
