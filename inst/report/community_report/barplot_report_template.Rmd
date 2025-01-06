@@ -66,11 +66,10 @@ params$summary_plot_state
 library(desc)
 library(golem)
 
-desc <- try(desc::desc(file = "DESCRIPTION"))
-if (inherits(desc, 'try-error')) {desc <- try(desc::desc(package = "EJAM"))}
+desc <- tryCatch(desc::desc(package='EJAM'), error=function(e){e})
 if (inherits(desc, 'try-error')) {desc <- desc::desc(file = EJAM:::app_sys('DESCRIPTION'))}
 if (inherits(desc, 'try-error')) {stop('cannot find DESCRIPTION file in working directory or in EJAM package')}
-version <- desc$get("Version")
+version <- ifelse('error' %in% class(desc), '', desc$get("Version"))
 ## trim version number shown in report to Major.Minor
 version <- substr(version, start = 1, stop = gregexpr('\\.',version)[[1]][2] - 1)
 
