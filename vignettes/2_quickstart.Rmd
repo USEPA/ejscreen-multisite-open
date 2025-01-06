@@ -58,17 +58,26 @@ indexblocks()
 
 # A Brief Intro to Using EJAM in RStudio
 
-After EJAM has been installed (and can access the datasets), here's how you can run an EJAM analysis and view results right away:
+This document is about analysts or coders using the EJAM R package in RStudio. After you [install the EJAM R package](https://usepa.github.io/EJAM/articles/1_installing.html), this document explains how you can run an EJAM analysis and view results right away using R.
+
+## EJAM as a web app
+
+This document is not about using EJAM as a web application.
+
+If you just want to use a public web app to do this type of analysis, use the EJScreen Multisite Tool that is part of the [EJScreen website](https://www.epa.gov/ejscreen) and is based on EJAM's tools.
+
+If you did [install the EJAM R package](https://usepa.github.io/EJAM/articles/1_installing.html), but you do not want to use R functions, and you just want to use EJAM as a local web app launched from R/RStudio, see the instructions for [using EJAM as a local web app](https://usepa.github.io/EJAM/articles/0_webapp.html). To see a User Guide for (the public version of) the web application itself, launch the web app and click the "Help" link at the upper right of that page.
 
 ## Load EJAM
 
+To start using EJAM in RStudio/R, you first attach/load the R package using `library()` or `require()`.
 ```{r library, eval=FALSE}
 library(EJAM)
 ```
 
 ## Analyze Places with `ejamit()`
 
-To quickly try EJAM in RStudio
+To quickly try EJAM in RStudio:
 
 ```{r ejamit100, message=FALSE, warning=FALSE, echo=TRUE, eval=FALSE}
 # EJAM analysis of 100 places, for everyone within 3 miles
@@ -97,12 +106,10 @@ If you need examples of spreadsheets (and other input files you can try), you ca
 
 ```{r systemfile, eval=FALSE, echo=TRUE}
 ## See where the folder is and see what files are there:
-system.file("testdata/latlon", package = "EJAM")
-dir(system.file("testdata/latlon", package = "EJAM"))
-# out <- ejamit()
+testdata()
 
-## or just open that folder like this: 
-browseURL(system.file("testdata", package = "EJAM"))
+# or see just the latlon files:
+dir(system.file("testdata/latlon", package = "EJAM"))
 ```
 
 
@@ -110,24 +117,23 @@ browseURL(system.file("testdata", package = "EJAM"))
 
 You can specify the radius in miles. EJAM will analyze all residents within that many miles of each point (site).
 ```{r RADIUS, eval = TRUE}
-radius <- 3 # radius (in miles).  5 km = 3.1 miles, 10 km = 6.2 miles
+radius <- 3 # radius (in miles).  5 km = 3.106856 miles, 10 km = 6.2 miles
 ```
 Converting between miles and kilometers -- If you know you want to analyze for 5 kilometers, for example, you can turn it into miles.
 ```{r convert units, eval=TRUE}
+5000 / meters_per_mile
 convert_units(5, 'km', 'miles')
 ```
 
 
-## Map your sites before or after analyzing them
+## Map your sites before analyzing them
 
-This creates an interactive map. Click a point on the map to see a popup with details about people near that point.
+This creates an interactive map. Click a point on the map to see a popup with details about that point.
 
 ```{r eval = FALSE}
 # input to EJAM
-mapfast(testpoints_100)
-
-# output, results of EJAM
-mapfastej(testoutput_ejamit_100pts_1miles$results_bysite) 
+pts <- testpoints_100
+mapfast(pts)
 ```
  
 ## Map results with `ejam2map()`
@@ -148,9 +154,9 @@ ejam2map(out)
 
 ```{r ejam2report1, eval=FALSE}
 out <- testoutput_ejamit_100pts_1miles
-
 ejam2report(out)
-y <- ejam2report(out, sitenumber = 1, analysis_title = "EJAM Report on Site Number 1")
+
+y <- ejam2report(out, sitenumber = 1, analysis_title = "Site #1")
 ```
 
 ![Summary table of environmental and demographic indicators as raw value, average and percentile (in State and in US overall)](images/image-report_top_example.png){width="100%"}
@@ -161,7 +167,8 @@ y <- ejam2report(out, sitenumber = 1, analysis_title = "EJAM Report on Site Numb
 
 ## Table of Results in RStudio console
 
-This gives you a quick, simple list of results for all the indicators:
+As an alternative to the pdf report created by `ejam2report()`, 
+this gives you a quick, simple list of results for all the indicators:
 ```{r ejam2table_tall, eval=FALSE}
 ejam2table_tall(out)
 ejam2table_tall(out, sitenumber = 1)

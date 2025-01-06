@@ -1,9 +1,9 @@
 ---
-title: "Basics of Using EJAM for Analysis in RStudio"
-description: "3. Basics of Using EJAM for Analysis in RStudio"
+title: "Using EJAM for Analysis in R"
+description: "3. Using EJAM for Analysis in R"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Basics of Using EJAM for Analysis in RStudio}
+  %\VignetteIndexEntry{Using EJAM for Analysis in R}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

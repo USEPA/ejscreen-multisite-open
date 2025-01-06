@@ -18,20 +18,13 @@ thousands of places, all at the same time.
 
 ### What is EJAM?
 
-- [What is EJAM?](https://usepa.github.io/EJAM/articles/0_whatis.html)
+- [What is EJAM?](articles/0_whatis.html)
 
-### EJAM’s multisite analysis as a part of EJScreen
+### EJAM as a Web Application
 
-- EJAM powers EJScreen’s Multisite Tool, for providing public access to
-  multisite reports. The EJScreen Multisite Tool can be reached from the
-  [EJScreen website](https://www.epa.gov/ejscreen) or [EJScreen Mapping
-  application](https://ejscreen.epa.gov/mapper/).
-
-### EJAM as a web app for use by EPA staff
-
-- EPA staff who are authenticated on the Agency’s internal network (by
-  VPN or within the office) have access to a version of the web app that
-  is configured specifically for staff use.
+[EJAM can be used as a web app](articles/0_webapp.html), providing a
+simple user interface that lets anyone quickly see the results of a
+basic analysis.
 
 ### EJAM as a Software Toolkit (and Local Web App) for Analysts and Developers
 
@@ -42,11 +35,11 @@ provides functions to help analysts work with block group data, points,
 and polygons, to very quickly aggregate and compare large numbers of
 locations.
 
-Note that installing the R package also allows one to use EJAM as a
-local web app, if the shiny app is launched locally on a user’s own
-computer. The EJScreen Multisite Tool configuration is available via
-`run_app(isPublic=T)` and the version for staff use is available via
-`run_app(isPublic=F)`
+Again, installing the R package also allows one to use [EJAM as a local
+web app](articles/0_webapp.html) if the shiny app is launched locally on
+a user’s own computer.
+
+More information about the EJAM R package:
 
 - [Installing the R
   package](https://usepa.github.io/EJAM/articles/1_installing.html)
@@ -140,6 +133,6 @@ States Government.**
 
 ### Contact
 
-If you have questions or comments, please contact the EJScreen team in
-EPA’s OEJECR, and for technical questions contact Mark Corrales
-(corrales.mark@epa.gov).
+If you have questions or comments, please email
+[ENVIROMAIL_GROUP@epa.gov](mailto:ENVIROMAIL_GROUP@epa.gov?subject=EJAM%20package%20question)
+and put “EJAM package question” in the subject line.
